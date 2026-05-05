@@ -38,6 +38,8 @@ Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุ
 | B7 — Restart server (P7-4 health route) | ✅ Done | ops — no commit |
 | B8 — Calendar graceful degradation `.catch(()=>[])` | ✅ Done | `d9ce8b1` |
 | P8-1 — Notification & Alert System | ✅ Done | `d9ce8b1` |
+| B9 — dblclick fires modal before inline edit (click guard fix) | ✅ Done | `e8e4b75` |
+| P8-2 — Card Quick-Edit Inline | ✅ Done | `e8e4b75` |
 
 ---
 
@@ -69,10 +71,10 @@ Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุ
 - Save on Enter / blur; Cancel on Escape
 
 **AC:**
-- [ ] Double-click card name ใน All Tasks → editable input แทนที่
-- [ ] Enter → save ชื่อใหม่ผ่าน Trello API → refresh view
-- [ ] Escape → ยกเลิก ไม่เปลี่ยนแปลงอะไร
-- [ ] Inline date picker สำหรับ overdue cards ใน Today view
+- [x] Double-click card name ใน All Tasks → editable input แทนที่
+- [x] Enter → save ชื่อใหม่ผ่าน Trello API → refresh view
+- [x] Escape → ยกเลิก ไม่เปลี่ยนแปลงอะไร
+- [x] Inline date picker สำหรับ overdue cards ใน Today view
 
 ---
 
@@ -131,6 +133,7 @@ Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุ
 | Date | Round | Result | Notes |
 |---|---|---|---|
 | 2026-05-05 | E2E Full MVP Test (P0–P7) | 🟡 2 Bugs | ทุก view โหลดได้ · Trello data ถูกต้อง · พบ B7 (health endpoint 404 — server ไม่ restart) + B8 (Calendar blank เมื่อ GCal fail) · GCal/GTasks "invalid_client" เป็น env credentials issue ไม่ใช่ code bug |
+| 2026-05-06 | P8-2 Card Quick-Edit Inline | 🟡 1 Bug → ✅ Fixed | AC 4/4 pass · พบ B9 (click fires before dblclick → modal blocks rename) · fixed `e8e4b75` · E3 cursor hint แก้ด้วย |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -139,31 +142,31 @@ Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุ
 |---|---|---|---|
 | B7 | `GET /api/boards/:id/health` คืน 404 — server process (PID 33628) start ก่อน P7-4 commit `a84312e` (09:13 vs 15:35) → route ไม่ได้ register → convention badges ไม่แสดงเลย · frontend `.catch(()=>({ok:true}))` ซ่อน error ไว้ | `server.js:177` (code ถูก — ต้อง restart server เท่านั้น) | ✅ Done (2026-05-06) |
 | B8 | Calendar view ว่างสนิทเมื่อ GCal API fail — `Promise.all([gcalEvents, trelloData])` ไม่มี `.catch()` บน gcalEvents → reject ทั้งคู่ → Trello deadlines หายไปด้วยทั้งที่ไม่เกี่ยวกับ GCal | `app.js:3130` — เพิ่ม `.catch(()=>[])` | ✅ Done `d9ce8b1` |
+| B9 | Double-click บน `.task-title` ใน All Tasks — browser fires `click` ก่อน `dblclick` → `openEditAllTasks()` เปิด modal ก่อน inline edit ทำงานได้ → rename ไม่ทำงานจริง | `app.js:2221` — เพิ่ม `if (e.target.closest(".task-title")) return;` ใน click handler | ✅ Done `e8e4b75` |
 
 ---
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**B7 ✅ · B8 ✅ · P8-1 ✅ — เริ่ม P8-2 ได้เลย**
+**P8-1 ✅ · P8-2 ✅ — เริ่ม P8-3 ได้เลย**
 
 ---
 
-### 🟡 P8-2 · Card Quick-Edit Inline
+### ⚪ P8-3 · Export / Report CSV
 
-ดู Active Tasks § P8-2 สำหรับ AC ครบถ้วน
+ดู Active Tasks § P8-3 สำหรับ AC ครบถ้วน
 
 **จุดระวัง:**
-- All Tasks view: `renderAllTasks()` สร้าง card rows — ต้องเพิ่ม `ondblclick` บนชื่อ card
-- Double-click → แทนที่ text node ด้วย `<input>` ที่ focus ทันที
-- Enter / blur → call `api.put("/api/cards/:id", { name })` → `refreshCurrentView()`
-- Escape → คืน original text ไม่ call API
-- Today view inline date picker: หา overdue cards ใน `showTodayPage()` → เพิ่ม date input ใต้ card name
-- Date change → call `api.put("/api/cards/:id", { due: newDate })` → refresh
+- Export เฉพาะ cards ที่ filter อยู่ในขณะนั้น — ต้องเข้าถึง filtered state ของ `renderAllTasks()`
+- วิธีที่ดีที่สุด: expose filtered cards ผ่าน `window._filteredCards` ใน `render()` ก่อน build rows
+- CSV generation ทำใน frontend (ไม่ต้องแก้ server) — ใช้ Blob + `<a download>`
+- Filename format: `trisilar-tasks-YYYY-MM-DD.csv` (ใช้ `new Date().toISOString().slice(0,10)`)
+- Columns ตาม AC: Title, Board, List, Owner, Due Date, Labels, Status
 
 **Grep เริ่มต้น:**
 ```
-Grep("renderAllTasks", "public/app.js")       → หา function หลัก
-Grep("due-border-overdue\|overdue.*card", "public/app.js") → หา overdue cards ใน Today
+Grep("renderAllTasks", "public/app.js")     → หา function + render() inner function
+Grep("all-tasks-content\|task-table-head", "public/app.js") → หา header HTML ที่ต้องเพิ่ม button
 ```
 
 เมื่อเสร็จ: `git commit + git push`
