@@ -1,5 +1,5 @@
 # Current Sprint — Trisilar Task Hub
-**Phase 6 · Hardening & Polish**
+**Phase 7 · OKR / Portfolio Layer**
 **Started:** 2026-05-05 · **Status:** ⬜ In Progress
 
 > **วิธีใช้ไฟล์นี้:**
@@ -9,7 +9,7 @@
 ---
 
 ## Sprint Goal
-ทำให้ระบบ reliable ก่อน production use: error handling, loading/empty states, review badge, cache strategy, OAuth fix, task-diff hygiene
+ทำให้ระบบรองรับแผนบริหาร Trello แบบ Project Boards + Dashboard กลาง โดย map งานจาก project/initiative boards กลับหา OKR Board, category, priority, owner และ AI agent support
 
 ---
 
@@ -18,125 +18,96 @@
 
 | Task | Status | Commit |
 |---|---|---|
-| P6-1 Error handling | ✅ Done | 781815b |
-| P6-2 Loading/Empty/Error states | ⬜ Not started | — |
-| P6-3 Review badge in sidebar | ✅ Done | 781815b |
-| P6-4 Cache & refresh strategy | ⬜ Not started | — |
-| P6-5 OAuth postMessage origin fix | ✅ Done | 8dcdd69 |
-| P6-6 Task diff skip Done lists | ⬜ Not started | — |
-| P6-7 matchReason cleanup | ⬜ Not started | — |
-| P6-8 matchReason in processed view | ⬜ Not started | — |
+| P7-1 Trello metadata ingestion | ⬜ Not started | — |
+| P7-2 Portfolio filters | ⬜ Not started | — |
+| P7-3 OKR Progress View | ⬜ Not started | — |
+| P7-4 Board convention validator | ⬜ Not started | — |
+| P7-5 Weekly Focus view | ⬜ Not started | — |
 
 ---
 
 ## Active Tasks
 
-### P6-1 · Error Handling: ไม่ Expose Raw Trello Errors
-**File:** `server.js`
+### P7-1 · Trello Metadata Ingestion
+**Priority:** 🔴 High (ทุก task ต่อจากนี้ depend on ข้อมูลนี้)
+**Files:** `trello.js`, `server.js`, `public/app.js`
 
 **What to do:**
-- Wrap ทุก Trello/GCal API call ใน try-catch
-- Response error ส่งแค่ `{ error: "friendly message" }` ไม่ส่ง raw response
-- Log full error ไว้ใน server console เท่านั้น
+- ขยาย Trello card fetch ให้ดึง labels, member ids, checklist progress และ custom field data ถ้ามี
+- Normalize metadata ใน `/api/all-cards` และ `/api/boards/cards` ให้ทุก view ใช้ shape เดียวกัน
 
 **AC:**
-- [ ] Trello API key หมดอายุ → client เห็น "Trello connection failed. Check API key in .env"
-- [ ] GCal token expire → client เห็น "Google Calendar session expired. Please reconnect."
-- [ ] ไม่มี stack trace หรือ internal URL ใน response
+- [ ] Card object ใน `/api/all-cards` มี field: `labels[]`, `members[]`, `checklistProgress` (done/total)
+- [ ] Custom fields ถ้ามี — expose เป็น `customFields: { [name]: value }`
+- [ ] `/api/boards/cards` ใช้ shape เดียวกัน
+- [ ] ไม่มี regression ใน existing views (Today, All Tasks, Kanban, Calendar)
 
 ---
 
-### P6-2 · Loading / Empty / Error States ครบทุกหน้า
-**File:** `public/app.js`, `public/style.css`
+### P7-2 · Portfolio Filters
+**Priority:** 🔴 High
+**Files:** `public/app.js`, `public/style.css`
+
+**What to do:**
+- เพิ่ม filter chips ใน All Tasks view: Category / OKR / Priority / Owner / Agent
+- Filter ใช้ labels และ member ids จาก P7-1 metadata
+- Group by selector เพิ่ม option: "By Label" / "By Member"
 
 **AC:**
-- [ ] Today: loading spinner → empty state → error state
-- [ ] Review Queue: empty state แนะนำให้ upload transcript
-- [ ] All Tasks: empty per-filter state
-- [ ] Boards Monitor: empty state ถ้าไม่มี visible boards
-- [ ] Calendar: empty state ถ้าไม่มี events
-- [ ] Planner: empty state แยก Google Tasks vs Trello
+- [ ] Filter chip "Label" → กรอง cards ที่มี label ที่เลือก
+- [ ] Filter chip "Owner" → กรอง cards ที่ assigned member ตรง
+- [ ] Group by "By Label" → แสดง cards จัดกลุ่มตาม label
+- [ ] ไม่กระทบ existing filter chips (All, Today, Overdue, etc.)
 
 ---
 
-### P6-3 · nav-badge: Review Queue Count ใน Sidebar
-**File:** `public/app.js`, `public/index.html`
+### P7-3 · OKR Progress View
+**Priority:** 🟡 Medium
+**Files:** `public/app.js`, `public/style.css`, `public/index.html`
 
 **What to do:**
-- `id="review-badge"` มีแล้วใน HTML แต่ยัง hardcode `display:none`
-- หลัง init: ดึง pending task count จาก `GET /api/reviews` → แสดง badge
-- Refresh badge หลัง approve/reject
+- สร้าง view ใหม่ "OKR" ใน sidebar
+- ดึง cards จาก board ที่ชื่อหรือ label match "OKR" / "Objective"
+- แสดง Objectives/KRs จาก OKR board และ link ไปยัง Project Boards ที่เกี่ยวข้องผ่าน labels/naming convention
+- คำนวณ progress จาก card completion, checklist completion, overdue count
 
 **AC:**
-- [ ] มี pending tasks → badge โชว์ตัวเลขสีม่วง
-- [ ] ไม่มี pending → badge hidden
-- [ ] หลัง approve ทุก task → badge หายทันที
+- [ ] เห็น Objective 1–N จาก OKR board พร้อม KR summary
+- [ ] แต่ละ KR แสดง linked project cards/boards, progress %, overdue, next due
+- [ ] คลิก KR → drill down ไป task list ที่เกี่ยวข้องได้
+- [ ] ถ้าไม่มี OKR board → แสดง empty state แนะนำให้ตั้งค่า
 
 ---
 
-### P6-4 · Performance: Cache & Refresh Strategy
-**File:** `public/app.js`, `task-diff.js`
+### P7-4 · Project Board Convention Validator
+**Priority:** 🟡 Medium
+**Files:** `server.js`, `public/app.js`
 
 **What to do:**
-- topbar refresh button (`topbarRefresh()`) ทำงานได้ทุกหน้า
-- `task-diff.js`: cache board cards keyed by `targetBoardId` ภายใน single request — ลด Trello API calls จาก N×(1+M) เป็น 1×(1+M)
+- ตรวจ list names ของแต่ละ board ว่าตรง convention หรือไม่ (เช่น มี "Done"/"Backlog"/"In Progress")
+- แสดง warning badge ใน Boards Monitor ถ้า board ไม่ครบ convention
+- API endpoint: `GET /api/boards/:id/health`
 
 **AC:**
-- [ ] กด ↻ บน topbar ทุกหน้า → refetch ข้อมูลใหม่ + re-render
-- [ ] Create/update card ใน modal → `S.allCardsCache = null` → Today/Tasks แสดงข้อมูลใหม่
-- [ ] Session ที่มี 5 tasks บน board เดียวกัน → Trello `getLists` ถูกเรียกแค่ 1 ครั้ง
+- [ ] Board ที่ขาด required list names → แสดง ⚠ badge ใน Boards Monitor
+- [ ] `GET /api/boards/:id/health` คืน `{ ok: bool, missing: string[] }`
+- [ ] Board ที่ครบ convention → ไม่มี badge
 
 ---
 
-### P6-5 · Fix: OAuth Callback postMessage Origin
-**Priority:** ⚪ Low  
-**File:** `server.js`
+### P7-5 · Weekly Focus View
+**Priority:** ⚪ Low (MVP placeholder)
+**Files:** `public/app.js`, `public/style.css`, `public/index.html`
 
 **What to do:**
-- เปลี่ยน `postMessage('cal_connected', '*')` → `postMessage('cal_connected', 'http://localhost:3000')`
+- สร้าง view "Weekly Focus" ใน sidebar — operating view สำหรับทีม 2 คน + AI Agent
+- แสดง: tasks ที่กำหนดให้ตัวเอง (by owner filter) + upcoming 7 days + pending review count
+- Quick-assign: drag task ไปหา owner slot
 
 **AC:**
-- [ ] `postMessage` ระบุ target origin ที่ถูกต้องแทน `'*'`
-- [ ] GCal connect flow ยังทำงานได้ปกติหลังแก้
-
----
-
-### P6-6 · Fix: Task Diff ข้ามบัตรในลิสต์ "Done" / "Completed"
-**Priority:** ⚪ Low  
-**File:** `task-diff.js`
-
-**What to do:**
-- เพิ่ม option skip lists ที่ชื่อ match pattern "done", "completed", "archive" (case-insensitive)
-
-**AC:**
-- [ ] Card ในลิสต์ชื่อ "Done" หรือ "Completed" ไม่ถูกนับเป็น match candidate
-- [ ] Lists ปกติยังถูก compare ตามเดิม
-
----
-
-### P6-7 · Data Hygiene: `matchReason` ใน `create_new` tasks
-**Priority:** ⚪ Low  
-**File:** `task-diff.js`
-
-**What to do:**
-- ให้ `matchReason = ""` เมื่อ `diffStatus === "create_new"`
-
-**AC:**
-- [ ] Tasks ที่ `diffStatus: "create_new"` มี `matchReason: ""` ใน JSON
-- [ ] Tasks ที่ `diffStatus: "update_existing"` หรือ `"possible_duplicate"` ยังมี `matchReason` ปกติ
-
----
-
-### P6-8 · UX: แสดง `matchReason` ใน Processed Task View
-**Priority:** ⚪ Low  
-**File:** `public/app.js`
-
-**What to do:**
-- `buildProcessedTaskHTML()`: เพิ่ม `matchReason` เป็น tooltip หรือ small text ข้างล่าง สำหรับ task ที่เคยเป็น `update_existing` หรือ `possible_duplicate`
-
-**AC:**
-- [ ] Processed task ที่เคยเป็น update/duplicate แสดง matchReason เป็น muted text ใต้ title
-- [ ] Processed task ที่เป็น create_new ไม่แสดง matchReason (empty)
+- [ ] แสดง tasks ของ owner ที่เลือกใน 7 วันข้างหน้า
+- [ ] Pending review count badge ในหน้า
+- [ ] Empty state ถ้าไม่มี tasks assigned ใน 7 วัน
 
 ---
 
@@ -145,59 +116,34 @@
 
 | Date | Round | Result | Notes |
 |---|---|---|---|
-| 2026-05-05 | QA Pass 1 (pre-impl) | ⚠ Not started | P6-1 ถึง P6-8 ยังไม่มีโค้ด |
-| 2026-05-05 | QA Pass 1 (P6-1,3,5) | 🔴 3 Bugs | P6-5 ✅, P6-1 partial (B2,B3), P6-3 partial (B4), Edge E2 |
-| 2026-05-05 | QA Pass 2 (bug fixes) | ✅ Clean | B2+B3+B4+E2 แก้แล้ว, P6-1+P6-3+P6-5 AC 10/10 ผ่าน, 0 regression |
+| — | — | — | Phase 7 ยังไม่เริ่ม |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
 
 | ID | Bug | File:Line | Status |
 |---|---|---|---|
-| B2 | `pushTaskToTrello()` return `e.message` → raw Trello error โผล่ใน single approve response body | `server.js:455` | ✅ Fixed (781815b) |
-| B3 | bulk approve inner catch return `e.message` → raw error ใน results array ที่ส่งกลับ client | `server.js:532` | ✅ Fixed (781815b) |
-| B4 | `.nav-badge` ใช้ `var(--danger)` (red) แทน `var(--purple)` ตาม AC "สีม่วง" | `style.css:166` | ✅ Fixed (781815b) |
+| — | — | — | — |
 
 ---
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**Dev: implement P6-4, P6-6, P6-7, P6-8 ตามลำดับ แล้วจบด้วย P6-2**
+**Dev: implement P7-1 ก่อน (P7-2/3/4/5 ทั้งหมด depend on metadata นี้)**
 
-### P6-4 · Cache & Refresh Strategy
-**Files:** `public/app.js`, `task-diff.js`
+### P7-1 · Trello Metadata Ingestion
+**Files:** `trello.js`, `server.js`
 
-- `topbarRefresh()` มีอยู่แล้ว — ตรวจว่า Grep `topbarRefresh` แล้ว Read รอบนั้น เพื่อดูว่าทำงานได้ทุกหน้าหรือไม่
-- `task-diff.js`: เพิ่ม cache keyed by `targetBoardId` ภายใน single request — ลด Trello `getLists` calls
+- Grep `getCards\|all-cards` ใน `trello.js` + `server.js` ก่อน — เพื่อดู shape ปัจจุบัน
+- ขยาย Trello API call ใน `trello.js` ให้ดึง `fields=...&labels=true&members=true&checklists=allItems&customFieldItems=true`
+- Normalize ใน server.js ก่อน return
 
 **จุดระวัง:**
-- `topbarRefresh()` ต้อง invalidate cache แล้วเรียก `refreshCurrentView()` หรือ show function ของ page ปัจจุบัน
-- task-diff cache เป็น in-request cache เท่านั้น (ไม่ใช่ global) — ใช้ `Map` ใน `diff.diffSession()` หรือ `POST /api/reviews`
+- อย่าทำลาย shape เดิม — เพิ่ม field ใหม่เท่านั้น (backward compatible)
+- Checklist progress = `{ done: N, total: M }` ไม่ใช่ raw checklist objects
+- Custom fields ถ้า board ไม่มี → `customFields: {}` (ไม่ใช่ null/undefined)
 
-### P6-6 · Task Diff: Skip Done/Completed Lists
-**File:** `task-diff.js`
-
-- `diffTask()` หรือ `getLists` + filter: skip lists ที่ name match `/^(done|completed|archive)/i`
-- Grep `getLists\|diffTask` ใน task-diff.js ก่อน
-
-### P6-7 · matchReason Cleanup
-**File:** `task-diff.js`
-
-- หลัง set `diffStatus = "create_new"` → set `matchReason = ""`
-- Grep `create_new\|matchReason` ใน task-diff.js
-
-### P6-8 · matchReason ใน Processed Task View
-**File:** `public/app.js`
-
-- Grep `buildProcessedTaskHTML` → Read ส่วนนั้น → เพิ่ม muted text ถ้า matchReason ไม่ว่าง
-
-### P6-2 · Loading/Empty/Error States (ทำสุดท้าย)
-**Files:** `public/app.js`, `public/style.css`
-
-- กระทบหลายหน้า — ทิ้งไว้ท้ายสุด
-- ตรวจแต่ละหน้า: loading spinner + empty state + error state
-
-เมื่อเสร็จแต่ละกลุ่ม: `git commit + git push`
+เมื่อเสร็จ P7-1: git commit + git push แล้วทำ P7-2
 
 ---
 
@@ -206,12 +152,12 @@
 
 | สิ่งที่ต้องการ | คำสั่ง |
 |---|---|
-| Trello/GCal try-catch ใน server.js | `Grep("trello\|gcal\|catch", "server.js")` |
-| `review-badge` ใน HTML/JS | `Grep("review-badge", "public/index.html")` + `Grep("review-badge", "public/app.js")` |
-| `postMessage` wildcard | `Grep("postMessage", "server.js")` |
-| `topbarRefresh` function | `Grep("topbarRefresh", "public/app.js")` |
-| `buildProcessedTaskHTML` | `Grep("buildProcessedTaskHTML", "public/app.js")` |
-| `diffStatus.*create_new` ใน task-diff.js | `Grep("create_new\|matchReason", "task-diff.js")` |
+| Trello card fetch shape | `Grep("getCards\|fields=", "trello.js")` |
+| `/api/all-cards` endpoint | `Grep("all-cards", "server.js")` |
+| `/api/boards/cards` endpoint | `Grep("boards/cards", "server.js")` |
+| All Tasks render / filter chips | `Grep("renderAllTasks\|filter-chip", "public/app.js")` |
+| Sidebar nav items | `Grep("nav-item\|navigateTo", "public/index.html")` |
+| Boards Monitor render | `Grep("renderBoardsMonitor", "public/app.js")` |
 
 ---
 
@@ -221,8 +167,8 @@
 ```
 คุณ Dev — อ้างอิง CURRENT_SPRINT.md เท่านั้น (ไม่ต้องอ่าน DEVELOPMENT_PLAN.md)
 
-ทำ P6-1, P6-3, P6-5 ให้เสร็จตาม Acceptance Criteria (เริ่มจาก 3 tasks ที่ impact สูงสุดก่อน)
-ดู ⚡ Next Action ใน CURRENT_SPRINT.md สำหรับลำดับและ key notes
+ทำ P7-1 ให้เสร็จตาม AC ใน CURRENT_SPRINT.md
+ดู ⚡ Next Action สำหรับลำดับและ key notes
 
 กฎการอ่านไฟล์:
 - ใช้ Grep หา function/line ที่ต้องแก้ก่อน
@@ -277,7 +223,7 @@ Output format:
 | P3 Task Diff Engine | ✅ Done |
 | P4 Google Tasks Planner | ✅ Done (2026-05-05) |
 | P5 Today Enhanced | ✅ Done (2026-05-05) |
-| **P6 Hardening & Polish** | **⬜ Current** |
-| P7 OKR / Portfolio Layer | ⬜ Post-MVP |
+| P6 Hardening & Polish | ✅ Done (2026-05-05) |
+| **P7 OKR / Portfolio Layer** | **⬜ Current** |
 
-*รายละเอียด P7 tasks: ดู DEVELOPMENT_PLAN.md § PHASE 7*
+*รายละเอียด P7 tasks เต็ม: ดู DEVELOPMENT_PLAN.md § PHASE 7*

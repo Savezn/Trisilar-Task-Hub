@@ -2,7 +2,7 @@
 **Role:** Project Manager Reference Document  
 **Purpose:** Track Claude Code sessions against a structured build sequence  
 **Based on:** MVP_PRD.md  
-**Last updated:** 2026-05-05 (Phase 5 complete · Phase 6 ← current · ใช้ CURRENT_SPRINT.md สำหรับ active work)
+**Last updated:** 2026-05-05 (Phase 6 complete · Phase 7 ← current · ใช้ CURRENT_SPRINT.md สำหรับ active work)
 
 ---
 
@@ -32,7 +32,7 @@
 | Settings Page | ✅ Done |
 | Review Queue (Data Layer) | ✅ Done (Phase 1) |
 | Task Diff Engine | ✅ Done (Phase 3) |
-| Google Tasks Planner | ❌ Not started |
+| Google Tasks Planner | ✅ Done (Phase 4) |
 | Bug Fixes (PRD §12) | ✅ Done |
 
 ---
@@ -46,8 +46,8 @@ Phase 2 — Review Queue: UI & Actions       ✅ COMPLETE  (2026-05-04)
 Phase 3 — Task Diff Engine                 ✅ COMPLETE  (2026-05-04, QA clean)
 Phase 4 — Google Tasks Daily Planner       ✅ COMPLETE  (2026-05-05)
 Phase 5 — Today Dashboard: Enhanced        ✅ COMPLETE  (2026-05-05)
-Phase 6 — Hardening & Polish               ⬜ TODO      [~1 session]   ← current
-Phase 7 — OKR / Portfolio Layer            ⬜ TODO      [~1-2 sessions] (post-MVP)
+Phase 6 — Hardening & Polish               ✅ COMPLETE  (2026-05-05)
+Phase 7 — OKR / Portfolio Layer            ⬜ TODO      [~1-2 sessions] ← current
 ```
 
 **Critical path:** Phase 0 → 1 → 2 → 3 (ต้องทำตามลำดับ)  
@@ -901,14 +901,14 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P5** | **P5-2** Calendar events section | ✅ Done | 2026-05-05 | app.js: fetch /api/calendar/events when GCal connected, compact list with time range + Open ↗ |
 | **P5** | **P5-3** Quick add → Trello | ✅ Done | 2026-05-05 | app.js: inline board/list selector, confirmTodayQuickAdd clears input after success, cache invalidation |
 | **P5** | QA Pass 3 | ✅ Clean | 2026-05-05 | 11/11 AC ผ่าน, B1 chip class fixed (5e47a0b), E1 loop var rename, 0 regression |
-| **P6** | **P6-1** Error handling | ⬜ Todo | — | |
-| **P6** | **P6-2** Empty/Error states | ⬜ Todo | — | |
-| **P6** | **P6-3** Review badge | ⬜ Todo | — | |
-| **P6** | **P6-4** Cache strategy | ⬜ Todo | — | |
-| **P6** | **P6-5** OAuth postMessage origin | ⬜ Todo | — | wildcard `'*'` → specify localhost origin |
-| **P6** | **P6-6** Task diff skip Done/Completed lists | ⬜ Todo | — | QA Edge Case 2 (defer from P3 pass 1) |
-| **P6** | **P6-7** matchReason cleanup for create_new | ⬜ Todo | — | QA Missing 1 (defer from P3 pass 2) |
-| **P6** | **P6-8** Processed task matchReason display | ⬜ Todo | — | QA Edge Case 1 (defer from P3 pass 2) |
+| **P6** | **P6-1** Error handling | ✅ Done | 2026-05-05 | friendlyError() helper; all 33 raw e.message → friendly strings |
+| **P6** | **P6-2** Empty/Error states | ✅ Done | 2026-05-05 | All 6 pages: loading+empty+error; Review upload transcript CTA; Calendar empty notice |
+| **P6** | **P6-3** Review badge | ✅ Done | 2026-05-05 | updateReviewBadge() wired at init + approve/reject/dismiss; purple badge |
+| **P6** | **P6-4** Cache strategy | ✅ Done | 2026-05-05 | boardCardsCache Map in POST /api/reviews; refreshCurrentView all 8 modes incl. review/planner/settings |
+| **P6** | **P6-5** OAuth postMessage origin | ✅ Done | 2026-05-05 | postMessage('cal_connected','http://localhost:3000'); origin check in client |
+| **P6** | **P6-6** Task diff skip Done/Completed lists | ✅ Done | 2026-05-05 | DONE_LIST_PATTERN regex; filter before card fetch |
+| **P6** | **P6-7** matchReason cleanup for create_new | ✅ Done | 2026-05-05 | All 3 create_new return paths: matchReason: "" |
+| **P6** | **P6-8** Processed task matchReason display | ✅ Done | 2026-05-05 | buildProcessedTaskHTML: reasonTip muted text for update/duplicate |
 | **P7** | **P7-1** Trello metadata ingestion | ⬜ Todo | — | labels, members, checklist progress, custom fields |
 | **P7** | **P7-2** Portfolio filters | ⬜ Todo | — | category / OKR / priority / owner / agent filters |
 | **P7** | **P7-3** OKR Progress View | ⬜ Todo | — | map OKR Board to linked Project Boards |
