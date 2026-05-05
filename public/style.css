@@ -1095,6 +1095,25 @@ a { text-decoration: none; }
 }
 .at-select:focus { outline: none; border-color: var(--primary); }
 
+/* M6: chip-group labels and dividers in filters-row2 */
+.at-chip-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+}
+.at-chip-divider {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 2px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
 /* Label chips inside task rows */
 .task-label-chips {
   display: flex;
@@ -1160,6 +1179,185 @@ a { text-decoration: none; }
 .task-table-head,
 .task-row {
   grid-template-columns: 1fr 140px 110px 110px 90px 90px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   OKR PROGRESS VIEW (P7-3)
+   ════════════════════════════════════════════════════════════ */
+.okr-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+  overflow-y: auto;
+  flex: 1;
+}
+.okr-board-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.okr-objective {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.okr-objective-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--list-bg);
+  border-bottom: 1px solid var(--border);
+}
+.okr-objective-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+.okr-objective-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Progress bar */
+.okr-progress-bar {
+  width: 80px;
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.okr-progress-bar--lg {
+  width: 120px;
+  height: 7px;
+}
+.okr-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+.okr-progress-pct {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+  min-width: 32px;
+  text-align: right;
+}
+/* KR rows */
+.okr-kr-list { display: flex; flex-direction: column; }
+.okr-kr-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.okr-kr-row:last-child { border-bottom: none; }
+.okr-kr-row:hover { background: #f8fafc; }
+.okr-kr-name {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+.okr-kr-progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.okr-kr-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.okr-meta-tag {
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--list-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.okr-meta-overdue {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: #fff5f5;
+}
+/* Detail view */
+.okr-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+.okr-back-btn { align-self: flex-start; }
+.okr-detail-header {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.okr-detail-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.okr-detail-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.okr-detail-stats {
+  display: flex;
+  gap: 12px;
+}
+.okr-stat {
+  flex: 1;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  box-shadow: var(--shadow);
+}
+.okr-stat-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+}
+.okr-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.okr-linked-table {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
 }
 
 /* ════════════════════════════════════════════════════════════
