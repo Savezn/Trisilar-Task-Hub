@@ -22,7 +22,8 @@ const S = {
   currentBoardId: null,
   currentGroupId: null,
   currentLists: [],
-  mode: "today",   // "today" | "review" | "all" | "board" | "group" | "calendar" | "planner" | "settings"
+  mode: "today",   // "today" | "review" | "all" | "board" | "group" | "calendar" | "planner" | "okr" | "focus" | "settings"
+  focusOwner: "",  // P7-5: selected owner id in Weekly Focus (persists across re-renders)
   allCardsCache: null,
   editing: null,
   pendingDeleteId: null,
@@ -77,6 +78,7 @@ function navigateTo(page) {
     case "calendar": showCalendar();        break;
     case "planner":  showPlannerPage();     break;
     case "okr":      showOKRPage();         break;
+    case "focus":    showWeeklyFocusPage(); break;
     case "settings": showSettingsPage();    break;
     default:
       // board / group navigation handled by selectBoard / selectGroup
@@ -950,9 +952,10 @@ async function updateReviewBadge() {
   const sessions = await api.get("/api/reviews");
   const count = sessions.reduce((n, s) => n + s.tasks.filter(t => t.status === "pending").length, 0);
   const badge = $("review-badge");
-  if (!badge) return;
-  badge.textContent = count;
-  badge.style.display = count > 0 ? "" : "none";
+  if (badge) { badge.textContent = count; badge.style.display = count > 0 ? "" : "none"; }
+  // P7-5: also update Weekly Focus sidebar badge
+  const focusBadge = $("focus-pending-badge");
+  if (focusBadge) { focusBadge.textContent = count || ""; focusBadge.style.display = count ? "" : "none"; }
 }
 
 // ── Review: transcript upload modal (P2-4) ────────────────────────────────────
@@ -2383,6 +2386,161 @@ function renderOKRPage(allCards, boards) {
   renderOverview();
 }
 
+// ── Weekly Focus View (P7-5) ──────────────────────────────────────────────────
+async function showWeeklyFocusPage() {
+  S.mode = "focus";
+  S.currentBoardId = null;
+  S.currentGroupId = null;
+  $("board-title").textContent = "Weekly Focus";
+  $("board-subtitle").textContent = "";
+  $("add-list-btn").classList.add("hidden");
+
+  const content = $("board-content");
+  content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading…</div>';
+  try {
+    const [sessions] = await Promise.all([
+      api.get("/api/reviews").catch(() => []),
+    ]);
+    if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
+    const pendingCount = sessions.reduce((n, s) => n + (s.tasks || []).filter(t => t.status === "pending").length, 0);
+
+    // Update sidebar badge
+    const badge = $("focus-pending-badge");
+    if (badge) {
+      badge.textContent = pendingCount || "";
+      badge.style.display = pendingCount ? "" : "none";
+    }
+
+    renderWeeklyFocusPage(getAllowedCards(), pendingCount);
+  } catch (e) {
+    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
+  }
+}
+
+function renderWeeklyFocusPage(allCards, pendingCount) {
+  const content = $("board-content");
+  const now = new Date();
+  const weekEnd = new Date(now);
+  weekEnd.setDate(weekEnd.getDate() + 7);
+  weekEnd.setHours(23, 59, 59, 999);
+
+  // Collect unique members
+  const allMembers = [];
+  const seenMembers = new Set();
+  allCards.forEach(c => {
+    (c.members || []).forEach(m => {
+      if (m.id && !seenMembers.has(m.id)) { seenMembers.add(m.id); allMembers.push(m); }
+    });
+  });
+
+  // Owner state (persisted on S so it survives re-render)
+  if (!S.focusOwner) S.focusOwner = allMembers[0]?.id || "";
+
+  function getWeekCards(ownerId) {
+    let result = allCards.filter(c =>
+      c.due && !c.dueComplete &&
+      new Date(c.due) >= now &&
+      new Date(c.due) <= weekEnd
+    );
+    if (ownerId) result = result.filter(c => (c.members || []).some(m => m.id === ownerId));
+    return result.sort((a, b) => new Date(a.due) - new Date(b.due));
+  }
+
+  function groupByDay(cards) {
+    const groups = new Map();
+    cards.forEach(c => {
+      const d = new Date(c.due);
+      const key = d.toDateString();
+      if (!groups.has(key)) groups.set(key, { label: formatDayLabel(d), cards: [] });
+      groups.get(key).cards.push(c);
+    });
+    return groups;
+  }
+
+  function formatDayLabel(d) {
+    const today = new Date();
+    const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+    if (d.toDateString() === today.toDateString()) return "Today";
+    if (d.toDateString() === tomorrow.toDateString()) return "Tomorrow";
+    return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  }
+
+  function render() {
+    const ownerCards = getWeekCards(S.focusOwner);
+    const groups = groupByDay(ownerCards);
+
+    const ownerOpts = allMembers.map(m =>
+      `<option value="${esc(m.id)}"${S.focusOwner === m.id ? " selected" : ""}>${esc(m.fullName || m.username || m.id)}</option>`
+    ).join("");
+
+    const pendingBadgeHtml = pendingCount
+      ? `<span class="focus-pending-badge">📋 ${pendingCount} pending review</span>`
+      : "";
+
+    const dayGroupsHtml = [...groups.entries()].map(([, { label, cards }]) => `
+      <div class="focus-day-group">
+        <div class="focus-day-header">
+          <span class="focus-day-label">${esc(label)}</span>
+          <span class="focus-day-count">${cards.length}</span>
+        </div>
+        ${cards.map(c => `
+          <div class="focus-task-row" data-card-id="${c.id}">
+            <div class="focus-task-name">${esc(c.name)}
+              ${(c.labels || []).filter(l => l.name).map(l =>
+                `<span class="task-label-chip" style="background:${labelColor(l.color)}">${esc(l.name)}</span>`
+              ).join("")}
+            </div>
+            <div class="focus-task-meta">
+              <span class="focus-task-board">${esc(c.boardName)}</span>
+              ${buildDueBadge(c.due, c.dueComplete)}
+            </div>
+          </div>`).join("")}
+      </div>`).join("");
+
+    const emptyHtml = !ownerCards.length
+      ? `<div class="empty-state" style="padding:48px">
+          <div class="empty-icon">🗓</div>
+          <h3>No tasks in the next 7 days</h3>
+          <p>${S.focusOwner ? "No assigned tasks for this owner in the next 7 days." : "No tasks with due dates in the next 7 days."}</p>
+        </div>`
+      : "";
+
+    content.innerHTML = `
+      <div class="focus-wrap">
+        <div class="focus-toolbar">
+          ${allMembers.length ? `
+            <span class="at-chip-label">Owner:</span>
+            <select class="at-select" id="focus-owner-sel">
+              <option value="">Everyone</option>${ownerOpts}
+            </select>` : ""}
+          ${pendingBadgeHtml}
+        </div>
+        <div class="focus-summary">
+          <div class="focus-stat"><span class="focus-stat-num">${ownerCards.length}</span><span class="focus-stat-label">Tasks this week</span></div>
+          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--warning)">${ownerCards.filter(c => { const d = new Date(c.due); const t = new Date(); t.setDate(t.getDate()+1); return d.toDateString() === new Date().toDateString() || d.toDateString() === t.toDateString(); }).length}</span><span class="focus-stat-label">Due today/tomorrow</span></div>
+          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--purple,#8b5cf6)">${pendingCount}</span><span class="focus-stat-label">Pending review</span></div>
+        </div>
+        <div class="focus-task-list">
+          ${dayGroupsHtml}${emptyHtml}
+        </div>
+      </div>`;
+
+    const sel = $("focus-owner-sel");
+    if (sel) sel.onchange = () => { S.focusOwner = sel.value; render(); };
+
+    content.querySelectorAll(".focus-task-row").forEach(row => {
+      row.onclick = () => {
+        const card = (window._allCards || allCards).find(c => c.id === row.dataset.cardId);
+        if (card) openEditAllTasks(card);
+      };
+    });
+  }
+
+  // Make allCards available for card modal
+  window._allCards = allCards;
+  render();
+}
+
 // ── Card Modal ────────────────────────────────────────────────────────────────
 function openCreate(listId, lists) {
   S.editing = { cardId: null, listId, lists: lists || S.currentLists };
@@ -2503,6 +2661,7 @@ async function refreshCurrentView() {
   else if (S.mode === "review")   await showReviewPage();
   else if (S.mode === "planner")  await showPlannerPage();
   else if (S.mode === "okr")      await showOKRPage();
+  else if (S.mode === "focus")    await showWeeklyFocusPage();
   else if (S.mode === "settings") showSettingsPage();
 }
 
