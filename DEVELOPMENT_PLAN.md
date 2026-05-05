@@ -2,7 +2,7 @@
 **Role:** Project Manager Reference Document  
 **Purpose:** Track Claude Code sessions against a structured build sequence  
 **Based on:** MVP_PRD.md  
-**Last updated:** 2026-05-05 (Phase 4 complete · Phase 5 ← current · ใช้ CURRENT_SPRINT.md สำหรับ active work)
+**Last updated:** 2026-05-05 (Phase 5 complete · Phase 6 ← current · ใช้ CURRENT_SPRINT.md สำหรับ active work)
 
 ---
 
@@ -45,8 +45,8 @@ Phase 1 — Review Queue: Data Layer         ✅ COMPLETE  (2026-05-04, QA fixes
 Phase 2 — Review Queue: UI & Actions       ✅ COMPLETE  (2026-05-04)
 Phase 3 — Task Diff Engine                 ✅ COMPLETE  (2026-05-04, QA clean)
 Phase 4 — Google Tasks Daily Planner       ✅ COMPLETE  (2026-05-05)
-Phase 5 — Today Dashboard: Enhanced        ⬜ TODO      [~1 session]   ← current
-Phase 6 — Hardening & Polish               ⬜ TODO      [~1 session]
+Phase 5 — Today Dashboard: Enhanced        ✅ COMPLETE  (2026-05-05)
+Phase 6 — Hardening & Polish               ⬜ TODO      [~1 session]   ← current
 Phase 7 — OKR / Portfolio Layer            ⬜ TODO      [~1-2 sessions] (post-MVP)
 ```
 
@@ -897,9 +897,10 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P3** | QA Pass 3 | ✅ Clean | 2026-05-04 | ไม่มีข้อบกพร่องใหม่ — Phase 3 QA ผ่านสมบูรณ์ |
 | **P4** | **P4-1** Google Tasks OAuth | ✅ Done | 2026-05-05 | server.js: getTasksClient, todayBangkok, 4 endpoints, Tasks scope added to OAuth |
 | **P4** | **P4-2** Planner UI | ✅ Done | 2026-05-05 | app.js: showPlannerPage async, GTasks + Trello sections, quick-add, complete task |
-| **P5** | **P5-1** Wire review count | ⬜ Todo | — | |
-| **P5** | **P5-2** Calendar conflicts | ⬜ Todo | — | |
-| **P5** | **P5-3** Quick add → Trello | ⬜ Todo | — | |
+| **P5** | **P5-1** Wire review count | ✅ Done | 2026-05-05 | app.js: live pendingCount from /api/reviews, stat card onclick, review section with diff badges + click→expand |
+| **P5** | **P5-2** Calendar events section | ✅ Done | 2026-05-05 | app.js: fetch /api/calendar/events when GCal connected, compact list with time range + Open ↗ |
+| **P5** | **P5-3** Quick add → Trello | ✅ Done | 2026-05-05 | app.js: inline board/list selector, confirmTodayQuickAdd clears input after success, cache invalidation |
+| **P5** | QA Pass 3 | ✅ Clean | 2026-05-05 | 11/11 AC ผ่าน, B1 chip class fixed (5e47a0b), E1 loop var rename, 0 regression |
 | **P6** | **P6-1** Error handling | ⬜ Todo | — | |
 | **P6** | **P6-2** Empty/Error states | ⬜ Todo | — | |
 | **P6** | **P6-3** Review badge | ⬜ Todo | — | |
