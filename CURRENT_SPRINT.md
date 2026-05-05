@@ -186,5 +186,6 @@ Output format:
 | P4 Google Tasks Planner | ✅ Done (2026-05-05) |
 | **P5 Today Enhanced** | **⬜ Current** |
 | P6 Hardening & Polish | ⬜ Next |
+| P7 OKR / Portfolio Layer | ⬜ Post-MVP |
 
-*รายละเอียด P6 tasks: ดู DEVELOPMENT_PLAN.md § PHASE 6*
+*รายละเอียด P6/P7 tasks: ดู DEVELOPMENT_PLAN.md § PHASE 6 และ § PHASE 7*

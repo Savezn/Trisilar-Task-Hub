@@ -47,10 +47,12 @@ Phase 3 — Task Diff Engine                 ✅ COMPLETE  (2026-05-04, QA clean
 Phase 4 — Google Tasks Daily Planner       ✅ COMPLETE  (2026-05-05)
 Phase 5 — Today Dashboard: Enhanced        ⬜ TODO      [~1 session]   ← current
 Phase 6 — Hardening & Polish               ⬜ TODO      [~1 session]
+Phase 7 — OKR / Portfolio Layer            ⬜ TODO      [~1-2 sessions] (post-MVP)
 ```
 
 **Critical path:** Phase 0 → 1 → 2 → 3 (ต้องทำตามลำดับ)  
-**Parallel after Phase 0:** Phase 4 ทำคู่ Phase 1–2 ได้
+**Parallel after Phase 0:** Phase 4 ทำคู่ Phase 1–2 ได้  
+**Post-MVP path:** Phase 7 เริ่มหลัง Phase 5–6 เพื่อยกระดับ Task Hub จาก daily dashboard เป็น portfolio command center สำหรับ Project Boards + OKR Board
 
 ---
 
@@ -780,6 +782,86 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 
 ---
 
+## PHASE 7 — OKR / Portfolio Layer
+**Goal:** ทำให้ Trisilar Task Hub รองรับแผนบริหาร Trello แบบ Project Boards + Dashboard กลาง โดย map งานจาก project/initiative boards กลับไปหา OKR Board, category, priority, owner และ AI agent support ได้  
+**Depends on:** Phase 5–6 complete  
+**Session prompt:** `"ทำ Phase 7 ใน DEVELOPMENT_PLAN.md — OKR / Portfolio Layer ให้ครบตาม Acceptance Criteria"`
+
+### P7-1 · Trello Metadata Ingestion: labels, members, checklist progress, custom fields
+**Files:** `trello.js`, `server.js`, `public/app.js`
+
+**What to do:**
+- ขยาย Trello card fetch ให้ดึง labels, member ids, checklist progress และ custom field data ถ้ามี
+- Normalize metadata ใน `/api/all-cards` และ `/api/boards/cards` ให้ทุก view ใช้ shape เดียวกัน
+- เพิ่ม fallback convention: ถ้ายังไม่มี custom fields ให้ใช้ Trello labels เช่น `Revenue`, `SaaS`, `O1`, `KR1.1`, `P0`, `AI Agent`
+
+**Acceptance Criteria:**
+- [ ] All Tasks / Today / Boards Monitor ได้ card object ที่มี `labels`, `members`, `checklistProgress`, `okrRefs`, `category`, `priority`, `agent`
+- [ ] Board ที่ไม่มี labels/custom fields ยัง render ได้เหมือนเดิม
+- [ ] Hidden boards และ allowed workspaces ยังถูกกรองเหมือนเดิม
+
+---
+
+### P7-2 · Portfolio Filters: category / OKR / priority / owner / agent
+**Files:** `public/app.js`, `public/style.css`
+
+**What to do:**
+- เพิ่ม filter chips หรือ compact filter bar ใน All Tasks และ Boards Monitor
+- Filter ต้องรองรับ category, OKR objective/KR, priority, owner และ AI agent/source
+- เพิ่ม group-by ที่จำเป็นสำหรับทีม 2 คน: by board, category, OKR, priority, owner
+
+**Acceptance Criteria:**
+- [ ] All Tasks filter ตาม category/OKR/priority/owner/agent ได้
+- [ ] Boards Monitor แสดง board stats แบบ filter-aware
+- [ ] Filter state ไม่ทำให้ Today/Planner เสีย behavior เดิม
+
+---
+
+### P7-3 · OKR Progress View
+**Files:** `public/index.html`, `public/app.js`, `public/style.css`, `server.js`
+
+**What to do:**
+- เพิ่มหน้า `OKR` หรือ `Portfolio` ใน sidebar
+- แสดง Objectives/KRs จาก OKR board และ link ไปยัง Project Boards ที่เกี่ยวข้องผ่าน labels/custom fields/naming convention
+- คำนวณ progress จาก card completion, checklist completion, overdue count และ due timeline
+
+**Acceptance Criteria:**
+- [ ] เห็น Objective 1–4 จาก OKR board พร้อม KR summary
+- [ ] แต่ละ KR แสดง linked project cards/boards, progress %, overdue, next due
+- [ ] คลิก KR แล้ว drill down ไป task list ที่เกี่ยวข้องได้
+
+---
+
+### P7-4 · Project Board Convention Validator
+**Files:** `server.js`, `public/app.js`
+
+**What to do:**
+- ตรวจแต่ละ Project Board ว่ามี list names มาตรฐาน เช่น Backlog, Ready, Doing, Review/QA, Done หรือ mapping ที่ตั้งค่าได้
+- ตรวจ required metadata: category, OKR/KR reference, priority, owner/agent, due date สำหรับงาน execution
+- แสดง warnings ใน Boards Monitor หรือ Portfolio page
+
+**Acceptance Criteria:**
+- [ ] Board ที่ขาด list สำคัญถูก flag พร้อมคำแนะนำแก้
+- [ ] Card ที่ขาด OKR/category/priority/owner/due ถูกนับเป็น hygiene issue
+- [ ] User สามารถ open board/card เพื่อแก้ใน Trello/Task Hub ได้
+
+---
+
+### P7-5 · Weekly Focus View for 2-person + AI Agent Team
+**Files:** `public/app.js`, `public/style.css`, `server.js`
+
+**What to do:**
+- เพิ่มมุมมอง Weekly Focus ที่ดึง P0/P1, due this week, blocked, pending review และ AI-agent tasks จากทุก Project Board
+- สรุปเป็น action queue สำหรับคน 2 คน: `Do Now`, `Review AI`, `Waiting/Blocked`, `Schedule`, `Done This Week`
+- ใช้ข้อมูลเดียวกับ Today/Planner โดยไม่สร้าง Team Board ซ้ำใน Trello
+
+**Acceptance Criteria:**
+- [ ] User เห็น weekly focus จากทุก Project Board ในหน้าเดียว
+- [ ] Pending Review และ AI Agent tasks ถูกยกขึ้นมาให้ตรวจง่าย
+- [ ] งานที่ done this week แสดงเพื่อใช้ทำ weekly review ได้
+
+---
+
 ## Progress Tracker
 
 อัปเดตหลังแต่ละ session:
@@ -826,6 +908,11 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P6** | **P6-6** Task diff skip Done/Completed lists | ⬜ Todo | — | QA Edge Case 2 (defer from P3 pass 1) |
 | **P6** | **P6-7** matchReason cleanup for create_new | ⬜ Todo | — | QA Missing 1 (defer from P3 pass 2) |
 | **P6** | **P6-8** Processed task matchReason display | ⬜ Todo | — | QA Edge Case 1 (defer from P3 pass 2) |
+| **P7** | **P7-1** Trello metadata ingestion | ⬜ Todo | — | labels, members, checklist progress, custom fields |
+| **P7** | **P7-2** Portfolio filters | ⬜ Todo | — | category / OKR / priority / owner / agent filters |
+| **P7** | **P7-3** OKR Progress View | ⬜ Todo | — | map OKR Board to linked Project Boards |
+| **P7** | **P7-4** Project Board convention validator | ⬜ Todo | — | list names + required metadata hygiene |
+| **P7** | **P7-5** Weekly Focus view | ⬜ Todo | — | operating view for 2-person + AI Agent team |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · ⏸ Blocked · ➡ Deferred
 
@@ -842,13 +929,16 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | Q3 | Google Tasks: two-way sync หรือ push-only ก่อน? | — | |
 | Q4 | OKR board naming convention ตายตัวแล้วหรือยัง? | — | |
 | Q5 | Single-user หรือ multi-user? | — | |
+| Q6 | ใช้ Trello labels หรือ custom fields เป็น source of truth สำหรับ category/OKR/priority/owner/agent? | — | |
+| Q7 | OKR Board จะ map กับ Project Boards ผ่าน label (`O1`, `KR1.1`) หรือ card links/checklists? | — | |
+| Q8 | Weekly Focus ควรใช้ due date, priority label, list position หรือ manual pin เป็นเกณฑ์หลัก? | — | |
 
 ---
 
 ## Dependency Map
 
 ```
-P0 (Bugs) ──────┬─→ P1 (Data) ──→ P2 (UI) ──→ P5 (Today+)
+P0 (Bugs) ──────┬─→ P1 (Data) ──→ P2 (UI) ──→ P5 (Today+) ──→ P6 (Polish) ──→ P7 (OKR/Portfolio)
                 │                  │
                 │                  └─→ P3 (Diff)
                 │
@@ -859,9 +949,14 @@ P0 (Bugs) ──────┬─→ P1 (Data) ──→ P2 (UI) ──→ P5 (
 
 ## Next Session Prompt (copy-paste ready)
 
-**Phase 4 (Phase 3 complete — พร้อมเริ่มได้เลย):**
+**Phase 5 (current):**
 ```
-คุณ Dev อ้างอิง DEVELOPMENT_PLAN.md — ทำ Phase 4 ทั้งหมด (P4-1, P4-2) ให้เสร็จตาม Acceptance Criteria
+คุณ Dev อ้างอิง CURRENT_SPRINT.md — ทำ Phase 5 ทั้งหมด (P5-1, P5-2, P5-3) ให้เสร็จตาม Acceptance Criteria
+```
+
+**Phase 7 (post-MVP, after Phase 6):**
+```
+คุณ Dev อ้างอิง DEVELOPMENT_PLAN.md — ทำ Phase 7: OKR / Portfolio Layer โดยเริ่มจาก P7-1 metadata ingestion แล้วต่อ P7-2 filters และ P7-3 OKR Progress View
 ```
 
 ---
