@@ -18,8 +18,8 @@
 
 | Task | Status | Commit |
 |---|---|---|
-| P7-1 Trello metadata ingestion | 🔧 Partial (B5) | ad10e90 |
-| P7-2 Portfolio filters | ⬜ Not started | — |
+| P7-1 Trello metadata ingestion | ✅ Done | c833189 |
+| P7-2 Portfolio filters | 🔧 Partial (M6) | c833189 |
 | P7-3 OKR Progress View | ⬜ Not started | — |
 | P7-4 Board convention validator | ⬜ Not started | — |
 | P7-5 Weekly Focus view | ⬜ Not started | — |
@@ -117,62 +117,43 @@
 | Date | Round | Result | Notes |
 |---|---|---|---|
 | 2026-05-05 | QA Pass 1 (P7-1) | 🟡 1 Missing | P7-1 AC 4/5 ผ่าน — B5: customFields keyed by idCustomField ไม่ใช่ name |
+| 2026-05-05 | QA Pass 2 (B5 + P7-2) | 🟡 1 Missing | B5 ✅, P7-1 ✅ ครบ, P7-2 AC 3/4 — M6: Label/Owner ใช้ `<select>` แทน filter chip ตาม AC spec |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
 
 | ID | Bug | File:Line | Status |
 |---|---|---|---|
-| B5 | `customFields` keyed by `idCustomField` (hex string) แทน field name — AC ระบุ `{ [name]: value }` — ต้องการ `GET /boards/:id/customFields` per board เพื่อ resolve names | `server.js:76` | ⬜ Pending |
+| B5 | `customFields` keyed by `idCustomField` (hex string) แทน field name — AC ระบุ `{ [name]: value }` — ต้องการ `GET /boards/:id/customFields` per board เพื่อ resolve names | `server.js:76` | ✅ Fixed (c833189) |
+| M6 | P7-2 AC ระบุ "Filter chip 'Label'" และ "Filter chip 'Owner'" — implementation ใช้ `<select class="at-select">` dropdown แทน pill chip — ฟังก์ชันกรองถูกต้องแต่ UI ไม่ตรง spec | `app.js:2136–2143` | ⬜ Pending |
 
 ---
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**Dev: แก้ B5 ก่อน แล้วจึง implement P7-2**
+**Dev: แก้ M6 ก่อน แล้วจึง implement P7-3**
 
-### B5 · แก้ customFields key — idCustomField → name
-**File:** `server.js:61–95` (`normalizeCard` function)
+### M6 · เปลี่ยน Label/Owner filter จาก `<select>` → pill chips
+**File:** `public/app.js:2136–2143`, `public/style.css`
 
 **วิธีแก้:**
-1. เพิ่ม helper ใน `server.js` สำหรับดึง custom field definitions ต่อ board:
-   ```js
-   // cache ไว้ใน Map เพื่อไม่ต้อง fetch ซ้ำ
-   const cfNameCache = new Map(); // boardId → Map<idCustomField, name>
-   async function getCustomFieldNames(boardId) {
-     if (cfNameCache.has(boardId)) return cfNameCache.get(boardId);
-     const fields = await trello.getBoardCustomFields(boardId);
-     const map = new Map(fields.map(f => [f.id, f.name]));
-     cfNameCache.set(boardId, map);
-     return map;
-   }
-   ```
-2. เพิ่ม `getBoardCustomFields(boardId)` ใน `trello.js`:
-   ```js
-   async function getBoardCustomFields(boardId) {
-     return trelloRequest("GET", `/boards/${boardId}/customFields`);
-   }
-   ```
-3. อัปเดต `normalizeCard()` ให้รับ `cfNames` (Map) เพิ่ม parameter:
-   ```js
-   function normalizeCard(card, cfNames = new Map()) {
-     ...
-     customFields[cf.idCustomField] → customFields[cfNames.get(cf.idCustomField) || cf.idCustomField]
-   }
-   ```
-4. ใน `/api/all-cards` และ `/api/boards/cards` — ดึง `cfNames` per board แล้วส่งเข้า `normalizeCard(card, cfNames)`
-5. Cache `cfNameCache` reset เมื่อจบ request (local variable ต่อ request ก็ได้)
+- แทนที่ `<select id="at-label-sel">` ด้วย chip set — render 1 chip ต่อ 1 label name
+- แทนที่ `<select id="at-owner-sel">` ด้วย chip set — render 1 chip ต่อ 1 member
+- Chip active state เมื่อ selected (class `active`), คลิกซ้ำ = deselect (toggle)
+- ยัง keep `<select id="at-group-sel">` ไว้ได้ (Group by เป็น selector ตาม spec)
 
 **จุดระวัง:**
-- Board ที่ไม่มี custom fields → `getBoardCustomFields` คืน `[]` → `cfNames` เป็น empty Map → key fallback เป็น `idCustomField` (ยัง safe)
-- Trello API endpoint: `GET /boards/:boardId/customFields` — ตรวจ trello.js ก่อนว่ามีหรือยัง (Grep `getBoardCustomFields`)
+- ถ้า labels/members มีจำนวนมาก chips อาจล้น — ใช้ `flex-wrap` (มีใน `.filters` อยู่แล้ว)
+- Filter state (`labelFilter`, `ownerFilter`) ยังเป็น string เดิม — แค่เปลี่ยน UI ที่ set ค่า
+- อย่า break existing `filter` state (All/Overdue/Today/No Due/Done chips)
 
-### P7-2 · Portfolio Filters (ทำหลัง B5 เสร็จ)
-**Files:** `public/app.js`, `public/style.css`
+### P7-3 · OKR Progress View (ทำหลัง M6 เสร็จ)
+**Files:** `public/app.js`, `public/style.css`, `public/index.html`
 
-- filter chips Label / Owner ใน All Tasks view
-- Group by "By Label" / "By Member"
-- ใช้ `card.labels[]` และ `card.members[]` จาก P7-1 metadata
+- สร้าง view ใหม่ "OKR" ใน sidebar
+- ดึง cards จาก board ที่ชื่อหรือ label match "OKR" / "Objective"
+- แสดง Objectives/KRs + progress % จาก card/checklist completion
+- ดู AC ใน Active Tasks § P7-3 ด้านบน
 
 เมื่อเสร็จแต่ละกลุ่ม: `git commit + git push`
 
