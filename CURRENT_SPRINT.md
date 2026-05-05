@@ -18,9 +18,9 @@
 
 | Task | Status | Commit |
 |---|---|---|
-| P6-1 Error handling | 🔧 Bug fix pending | 8dcdd69 |
+| P6-1 Error handling | ✅ Done | 781815b |
 | P6-2 Loading/Empty/Error states | ⬜ Not started | — |
-| P6-3 Review badge in sidebar | 🔧 Bug fix pending | 8dcdd69 |
+| P6-3 Review badge in sidebar | ✅ Done | 781815b |
 | P6-4 Cache & refresh strategy | ⬜ Not started | — |
 | P6-5 OAuth postMessage origin fix | ✅ Done | 8dcdd69 |
 | P6-6 Task diff skip Done lists | ⬜ Not started | — |
@@ -147,74 +147,57 @@
 |---|---|---|---|
 | 2026-05-05 | QA Pass 1 (pre-impl) | ⚠ Not started | P6-1 ถึง P6-8 ยังไม่มีโค้ด |
 | 2026-05-05 | QA Pass 1 (P6-1,3,5) | 🔴 3 Bugs | P6-5 ✅, P6-1 partial (B2,B3), P6-3 partial (B4), Edge E2 |
+| 2026-05-05 | QA Pass 2 (bug fixes) | ✅ Clean | B2+B3+B4+E2 แก้แล้ว, P6-1+P6-3+P6-5 AC 10/10 ผ่าน, 0 regression |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
 
 | ID | Bug | File:Line | Status |
 |---|---|---|---|
-| B2 | `pushTaskToTrello()` return `e.message` → raw Trello error โผล่ใน single approve response body | `server.js:455` | ⬜ Fix needed |
-| B3 | bulk approve inner catch return `e.message` → raw error ใน results array ที่ส่งกลับ client | `server.js:532` | ⬜ Fix needed |
-| B4 | `.nav-badge` ใช้ `var(--danger)` (red) แทน `var(--purple)` ตาม AC "สีม่วง" | `style.css:166` | ⬜ Fix needed |
+| B2 | `pushTaskToTrello()` return `e.message` → raw Trello error โผล่ใน single approve response body | `server.js:455` | ✅ Fixed (781815b) |
+| B3 | bulk approve inner catch return `e.message` → raw error ใน results array ที่ส่งกลับ client | `server.js:532` | ✅ Fixed (781815b) |
+| B4 | `.nav-badge` ใช้ `var(--danger)` (red) แทน `var(--purple)` ตาม AC "สีม่วง" | `style.css:166` | ✅ Fixed (781815b) |
 
 ---
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**Dev: แก้ Bug B2, B3, B4 (บังคับ) + optionally E2**
+**Dev: implement P6-4, P6-6, P6-7, P6-8 ตามลำดับ แล้วจบด้วย P6-2**
 
-### 🔴 B2 + B3 — wrap `e.message` ใน pushTaskToTrello (server.js)
+### P6-4 · Cache & Refresh Strategy
+**Files:** `public/app.js`, `task-diff.js`
 
-**B2** `server.js:455` ใน `pushTaskToTrello()`:
-```js
-// เดิม
-return { ok: false, error: e.message };
-// ใหม่
-return { ok: false, error: friendlyError(e) };
-```
+- `topbarRefresh()` มีอยู่แล้ว — ตรวจว่า Grep `topbarRefresh` แล้ว Read รอบนั้น เพื่อดูว่าทำงานได้ทุกหน้าหรือไม่
+- `task-diff.js`: เพิ่ม cache keyed by `targetBoardId` ภายใน single request — ลด Trello `getLists` calls
 
-**B3** `server.js:532` ใน bulk approve inner catch:
-```js
-// เดิม
-} catch (e) { return { taskId, ok: false, error: e.message }; }
-// ใหม่
-} catch (e) { return { taskId, ok: false, error: friendlyError(e) }; }
-```
+**จุดระวัง:**
+- `topbarRefresh()` ต้อง invalidate cache แล้วเรียก `refreshCurrentView()` หรือ show function ของ page ปัจจุบัน
+- task-diff cache เป็น in-request cache เท่านั้น (ไม่ใช่ global) — ใช้ `Map` ใน `diff.diffSession()` หรือ `POST /api/reviews`
 
-### 🔴 B4 — badge สีม่วง (style.css:166)
-```css
-/* เดิม */
-background: var(--danger);
-/* ใหม่ */
-background: var(--purple);
-```
-**หมายเหตุ:** `.nav-badge` CSS block เริ่มที่ line 164 — แก้เฉพาะ `background` ใน block นั้น (ไม่ใช่ block อื่น)
+### P6-6 · Task Diff: Skip Done/Completed Lists
+**File:** `task-diff.js`
 
-### 🔵 E2 — origin check (optional แต่แนะนำ)
-**File:** `public/app.js:2587`
-```js
-// เพิ่มบรรทัดแรกใน listener
-window.addEventListener("message", e => {
-  if (e.origin !== "http://localhost:3000") return;  // เพิ่มบรรทัดนี้
-  if (e.data === "cal_connected") { ...
-```
+- `diffTask()` หรือ `getLists` + filter: skip lists ที่ name match `/^(done|completed|archive)/i`
+- Grep `getLists\|diffTask` ใน task-diff.js ก่อน
 
-เมื่อเสร็จ: `git commit + git push`
+### P6-7 · matchReason Cleanup
+**File:** `task-diff.js`
 
----
+- หลัง set `diffStatus = "create_new"` → set `matchReason = ""`
+- Grep `create_new\|matchReason` ใน task-diff.js
 
-### หลังจาก B2/B3/B4 แก้แล้ว — ลำดับ tasks ถัดไป:
-4. **P6-4** — topbarRefresh ทุกหน้า + task-diff.js board cache
-5. **P6-6** — task-diff.js: skip list name filter
-6. **P6-7** — task-diff.js: matchReason = "" สำหรับ create_new
-7. **P6-8** — app.js: buildProcessedTaskHTML เพิ่ม matchReason
-8. **P6-2** — app.js + style.css: empty/error states ครบทุกหน้า
+### P6-8 · matchReason ใน Processed Task View
+**File:** `public/app.js`
 
-**จุดที่ต้องระวัง:**
-- P6-1: อย่า expose `err.message` จาก Trello/GCal ไป client โดยตรง — ใช้ friendly string แทน
-- P6-3: badge ต้อง refresh ทุกครั้งที่ approve/reject — หา event hook ที่มีอยู่แล้ว
-- P6-5: อย่าลืมตรวจว่า postMessage ใน server.js มี `'*'` กี่ที่
-- P6-4: topbarRefresh ต้องเรียก `refreshCurrentView()` หรือ show function ของ page ปัจจุบัน
+- Grep `buildProcessedTaskHTML` → Read ส่วนนั้น → เพิ่ม muted text ถ้า matchReason ไม่ว่าง
+
+### P6-2 · Loading/Empty/Error States (ทำสุดท้าย)
+**Files:** `public/app.js`, `public/style.css`
+
+- กระทบหลายหน้า — ทิ้งไว้ท้ายสุด
+- ตรวจแต่ละหน้า: loading spinner + empty state + error state
+
+เมื่อเสร็จแต่ละกลุ่ม: `git commit + git push`
 
 ---
 
