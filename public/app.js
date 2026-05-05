@@ -31,6 +31,7 @@ const S = {
   dragSourceListId: null,
   reviewExpanded: new Set(),   // Set<sessionId> — which sessions are expanded
   reviewSelected: new Map(),   // Map<sessionId, Set<taskId>> — bulk selection
+  overdueToastShown: false,    // P8-1: show overdue alert only once per session
 };
 
 const COLORS = ["#6366f1","#d29034","#519839","#b04632","#89609e","#cd5a91","#00aecc","#4bbf6b","#e44","#f90"];
@@ -2663,6 +2664,7 @@ async function refreshCurrentView() {
   else if (S.mode === "okr")      await showOKRPage();
   else if (S.mode === "focus")    await showWeeklyFocusPage();
   else if (S.mode === "settings") showSettingsPage();
+  updateOverdueAlerts(); // P8-1: update tab title + session overdue alert
 }
 
 function confirmDelete() {
@@ -3017,6 +3019,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 let _tt;
+// ── P8-1: Overdue alert & tab title ──────────────────────────────────────────
+function updateOverdueAlerts() {
+  const now = new Date();
+  const cards = getAllowedCards();
+  if (!cards.length) return;
+  const overdueCount = cards.filter(c => c.due && new Date(c.due) < now && !c.dueComplete).length;
+  // Update tab title
+  document.title = overdueCount > 0 ? `(${overdueCount}) Trisilar Task Hub` : "Trisilar Task Hub";
+  // Show once-per-session alert when overdue > 3
+  if (overdueCount > 3 && !S.overdueToastShown) {
+    S.overdueToastShown = true;
+    showOverdueAlert(overdueCount);
+  }
+}
+
+function showOverdueAlert(count) {
+  const el = $("overdue-alert");
+  el.innerHTML = `
+    <span class="overdue-alert-icon">⚠️</span>
+    <div class="overdue-alert-body">
+      <div class="overdue-alert-title">${count} tasks overdue</div>
+      <div class="overdue-alert-msg">มี tasks ที่เกินกำหนดเกิน 3 วัน</div>
+    </div>
+    <button class="overdue-alert-close" onclick="dismissOverdueAlert()" title="ปิด">✕</button>
+  `;
+  el.classList.remove("hidden");
+  // click away (outside the alert) also dismisses
+  setTimeout(() => document.addEventListener("click", _overdueClickAway), 120);
+}
+
+function _overdueClickAway(e) {
+  if (!$("overdue-alert").contains(e.target)) dismissOverdueAlert();
+}
+
+function dismissOverdueAlert() {
+  $("overdue-alert").classList.add("hidden");
+  document.removeEventListener("click", _overdueClickAway);
+}
+
 function toast(msg, isError = false) {
   const el = $("toast");
   el.textContent = msg;
@@ -3127,7 +3168,7 @@ async function renderCalendar() {
   try {
     const [gcalEvents, trelloData] = await Promise.all([
       CAL.status?.connected
-        ? api.get(`/api/calendar/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`)
+        ? api.get(`/api/calendar/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`).catch(() => [])
         : Promise.resolve([]),
       CAL.selectedBoardIds.length
         ? api.post("/api/boards/cards", { boardIds: CAL.selectedBoardIds })
