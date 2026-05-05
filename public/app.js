@@ -2019,13 +2019,28 @@ function renderAllTasks(cards) {
   window._allCards = cards;
   const now = new Date();
   let filter = "all";
+  let labelFilter = "";   // P7-2: "" = all labels
+  let ownerFilter = "";   // P7-2: "" = all owners (member id)
+  let groupBy = "none";   // P7-2: "none" | "label" | "member"
+
+  // Collect unique labels and members from ALL cards for selectors
+  const allLabels = [];
+  const allMembers = [];
+  const seenLabels = new Set(), seenMembers = new Set();
+  cards.forEach(c => {
+    (c.labels || []).forEach(l => { if (l.name && !seenLabels.has(l.name)) { seenLabels.add(l.name); allLabels.push(l); } });
+    (c.members || []).forEach(m => { if (m.id && !seenMembers.has(m.id)) { seenMembers.add(m.id); allMembers.push(m); } });
+  });
 
   function getFiltered() {
-    if (filter === "overdue") return cards.filter(c => c.due && new Date(c.due) < now && !c.dueComplete);
-    if (filter === "today")   return cards.filter(c => c.due && !c.dueComplete && new Date(c.due).toDateString() === now.toDateString());
-    if (filter === "nodue")   return cards.filter(c => !c.due);
-    if (filter === "done")    return cards.filter(c => c.dueComplete);
-    return cards;
+    let result = cards;
+    if (filter === "overdue") result = result.filter(c => c.due && new Date(c.due) < now && !c.dueComplete);
+    else if (filter === "today") result = result.filter(c => c.due && !c.dueComplete && new Date(c.due).toDateString() === now.toDateString());
+    else if (filter === "nodue")  result = result.filter(c => !c.due);
+    else if (filter === "done")   result = result.filter(c => c.dueComplete);
+    if (labelFilter) result = result.filter(c => (c.labels || []).some(l => l.name === labelFilter));
+    if (ownerFilter) result = result.filter(c => (c.members || []).some(m => m.id === ownerFilter));
+    return result;
   }
 
   function counts() {
@@ -2038,8 +2053,78 @@ function renderAllTasks(cards) {
     };
   }
 
+  function buildCardRow(card) {
+    const labelChips = (card.labels || []).filter(l => l.name).map(l =>
+      `<span class="task-label-chip" style="background:${labelColor(l.color)}">${esc(l.name)}</span>`
+    ).join("");
+    const memberText = (card.members || []).map(m => esc(m.fullName || m.username || m.id)).join(", ");
+    return `
+      <div class="task-row" data-card-id="${card.id}">
+        <div class="task-title">
+          ${esc(card.name)}
+          ${labelChips ? `<div class="task-label-chips">${labelChips}</div>` : ""}
+        </div>
+        <div class="task-board">${esc(card.boardName)}</div>
+        <div class="task-list">${esc(card.listName)}</div>
+        <div class="task-owner">${memberText || '<span style="color:#bbb">—</span>'}</div>
+        <div>${card.due ? buildDueBadge(card.due, card.dueComplete) : '<span style="color:#bbb">—</span>'}</div>
+        <div>${card.dueComplete ? '<span class="due-badge due-complete">Done</span>' : '<span style="color:#aaa;font-size:12px">Active</span>'}</div>
+      </div>`;
+  }
+
+  function buildGroupedRows(rows) {
+    if (groupBy === "label") {
+      if (!rows.length) return '<div class="no-results">No tasks match this filter</div>';
+      const groups = new Map();
+      rows.forEach(c => {
+        const lbls = (c.labels || []).filter(l => l.name);
+        if (!lbls.length) {
+          if (!groups.has("__none__")) groups.set("__none__", []);
+          groups.get("__none__").push(c);
+        } else {
+          lbls.forEach(l => {
+            if (!groups.has(l.name)) groups.set(l.name, []);
+            groups.get(l.name).push(c);
+          });
+        }
+      });
+      return [...groups.entries()].map(([name, grpCards]) => `
+        <div class="task-group-header">${name === "__none__" ? "No Label" : esc(name)} <span class="task-group-count">${grpCards.length}</span></div>
+        ${grpCards.map(buildCardRow).join("")}
+      `).join("");
+    }
+    if (groupBy === "member") {
+      if (!rows.length) return '<div class="no-results">No tasks match this filter</div>';
+      const groups = new Map();
+      rows.forEach(c => {
+        const members = c.members || [];
+        if (!members.length) {
+          if (!groups.has("__unassigned__")) groups.set("__unassigned__", []);
+          groups.get("__unassigned__").push(c);
+        } else {
+          members.forEach(m => {
+            const key = m.id;
+            if (!groups.has(key)) groups.set(key, { label: m.fullName || m.username || m.id, cards: [] });
+            groups.get(key).cards.push(c);
+          });
+        }
+      });
+      return [...groups.entries()].map(([key, val]) => {
+        const label = key === "__unassigned__" ? "Unassigned" : (typeof val === "object" && val.label ? val.label : key);
+        const grpCards = key === "__unassigned__" ? val : val.cards;
+        return `
+          <div class="task-group-header">${esc(label)} <span class="task-group-count">${grpCards.length}</span></div>
+          ${grpCards.map(buildCardRow).join("")}
+        `;
+      }).join("");
+    }
+    return rows.length ? rows.map(buildCardRow).join("") : '<div class="no-results">No tasks match this filter</div>';
+  }
+
   function render() {
     const c = counts(), rows = getFiltered();
+    const labelOpts = allLabels.map(l => `<option value="${esc(l.name)}"${labelFilter===l.name?" selected":""}>${esc(l.name)}</option>`).join("");
+    const ownerOpts = allMembers.map(m => `<option value="${esc(m.id)}"${ownerFilter===m.id?" selected":""}>${esc(m.fullName||m.username||m.id)}</option>`).join("");
     content.innerHTML = `
       <div class="all-tasks-content">
         <div class="filters">
@@ -2047,25 +2132,37 @@ function renderAllTasks(cards) {
             .map(([f,label]) => `<button class="filter-chip${filter===f?" active":""}" data-f="${f}">${label} (${c[f]})</button>`)
             .join("")}
         </div>
+        <div class="filters filters-row2">
+          ${allLabels.length ? `
+            <select class="at-select" id="at-label-sel">
+              <option value="">All Labels</option>${labelOpts}
+            </select>` : ""}
+          ${allMembers.length ? `
+            <select class="at-select" id="at-owner-sel">
+              <option value="">All Owners</option>${ownerOpts}
+            </select>` : ""}
+          <select class="at-select" id="at-group-sel">
+            <option value="none"${groupBy==="none"?" selected":""}>No Grouping</option>
+            ${allLabels.length ? `<option value="label"${groupBy==="label"?" selected":""}>Group by Label</option>` : ""}
+            ${allMembers.length ? `<option value="member"${groupBy==="member"?" selected":""}>Group by Owner</option>` : ""}
+          </select>
+        </div>
         <div class="task-table">
-          <div class="task-table-head"><div>TASK</div><div>BOARD</div><div>LIST</div><div>DUE</div><div>STATUS</div></div>
-          <div id="task-rows">
-            ${rows.length ? rows.map(card => `
-              <div class="task-row" data-card-id="${card.id}">
-                <div class="task-title">${esc(card.name)}</div>
-                <div class="task-board">${esc(card.boardName)}</div>
-                <div class="task-list">${esc(card.listName)}</div>
-                <div>${card.due ? buildDueBadge(card.due, card.dueComplete) : '<span style="color:#bbb">—</span>'}</div>
-                <div>${card.dueComplete ? '<span class="due-badge due-complete">Done</span>' : '<span style="color:#aaa;font-size:12px">Active</span>'}</div>
-              </div>
-            `).join("") : '<div class="no-results">No tasks match this filter</div>'}
-          </div>
+          <div class="task-table-head"><div>TASK</div><div>BOARD</div><div>LIST</div><div>OWNER</div><div>DUE</div><div>STATUS</div></div>
+          <div id="task-rows">${buildGroupedRows(rows)}</div>
         </div>
       </div>`;
 
     content.querySelectorAll(".filter-chip").forEach(btn => {
       btn.onclick = () => { filter = btn.dataset.f; render(); };
     });
+    const labelSel = $("at-label-sel");
+    if (labelSel) labelSel.onchange = () => { labelFilter = labelSel.value; render(); };
+    const ownerSel = $("at-owner-sel");
+    if (ownerSel) ownerSel.onchange = () => { ownerFilter = ownerSel.value; render(); };
+    const groupSel = $("at-group-sel");
+    if (groupSel) groupSel.onchange = () => { groupBy = groupSel.value; render(); };
+
     const taskRows = content.querySelector("#task-rows");
     taskRows?.addEventListener("click", e => {
       const row = e.target.closest(".task-row");
@@ -2075,6 +2172,16 @@ function renderAllTasks(cards) {
     });
   }
   render();
+}
+
+// Map Trello label color name → CSS hex
+function labelColor(color) {
+  const MAP = {
+    green: "#61bd4f", yellow: "#f2d600", orange: "#ff9f1a", red: "#eb5a46",
+    purple: "#c377e0", blue: "#0079bf", sky: "#00c2e0", lime: "#51e898",
+    pink: "#ff78cb", black: "#344563",
+  };
+  return MAP[color] || "#b3bac5";
 }
 
 // ── Card Modal ────────────────────────────────────────────────────────────────

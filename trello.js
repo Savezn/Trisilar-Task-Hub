@@ -46,8 +46,8 @@ async function createList(boardId, name) {
 // ── Cards ────────────────────────────────────────────────────────────────────
 
 async function getCards(listId) {
-  // P7-1: added idMembers, labels, checkItems (for progress), customFieldItems
-  return trelloRequest("GET", `/lists/${listId}/cards?fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList,idMembers,labels&checklists=all&checklist_fields=id,name,pos&checkItems=all&checkItem_fields=id,name,state&customFieldItems=true`);
+  // P7-1+P7-2: labels, member objects (for name display), checkItems (progress), customFieldItems
+  return trelloRequest("GET", `/lists/${listId}/cards?fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList,idMembers,labels&members=true&member_fields=id,username,fullName&checklists=all&checklist_fields=id,name,pos&checkItems=all&checkItem_fields=id,name,state&customFieldItems=true`);
 }
 
 async function getCard(cardId) {
@@ -122,6 +122,12 @@ async function getBoardMembers(boardId) {
   return trelloRequest("GET", `/boards/${boardId}/members?fields=id,fullName,username`);
 }
 
+// ── Custom Fields (P7-1 B5) ───────────────────────────────────────────────────
+
+async function getBoardCustomFields(boardId) {
+  return trelloRequest("GET", `/boards/${boardId}/customFields`);
+}
+
 // ── Comments ──────────────────────────────────────────────────────────────────
 
 async function addComment(cardId, text) {
@@ -139,6 +145,6 @@ module.exports = {
   getCards, getCard, createCard, updateCard, moveCard, deleteCard,
   getCardChecklists, addChecklist, addCheckItem, updateCheckItem, deleteCheckItem, deleteChecklist,
   getLabels, addLabelToCard,
-  getBoardMembers,
+  getBoardMembers, getBoardCustomFields,
   addComment, getComments,
 };

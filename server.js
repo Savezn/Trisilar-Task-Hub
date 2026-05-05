@@ -59,7 +59,8 @@ function friendlyError(e) {
 }
 
 // ── P7-1: Normalize raw Trello card → consistent shape for all-cards / boards/cards ──
-function normalizeCard(card) {
+// cfNames: Map<idCustomField, fieldName> — built per-board to resolve human-readable keys (B5)
+function normalizeCard(card, cfNames = new Map()) {
   // Checklist progress from embedded checkItems
   let clDone = 0, clTotal = 0;
   (card.checklists || []).forEach(cl => {
@@ -69,12 +70,12 @@ function normalizeCard(card) {
     });
   });
 
-  // Custom fields keyed by idCustomField (name resolution requires extra board API call)
+  // Custom fields keyed by name (fallback to idCustomField if name not resolved)
   const customFields = {};
   (card.customFieldItems || []).forEach(cf => {
     const val = cf.value || {};
-    customFields[cf.idCustomField] =
-      val.text ?? val.number ?? val.date ?? val.checked ?? null;
+    const key = cfNames.get(cf.idCustomField) || cf.idCustomField;
+    customFields[key] = val.text ?? val.number ?? val.date ?? val.checked ?? null;
   });
 
   return {
@@ -88,10 +89,25 @@ function normalizeCard(card) {
     url:               card.url || "",
     idList:            card.idList,
     labels:            (card.labels || []).map(l => ({ id: l.id, name: l.name || "", color: l.color || "" })),
-    members:           card.idMembers || [],
+    members:           (card.members || []).map(m => ({ id: m.id, username: m.username || "", fullName: m.fullName || m.username || "" })),
     checklistProgress: { done: clDone, total: clTotal },
     customFields,
   };
+}
+
+// Build cfNames Map for a board — per-request cache (Map passed in by caller)
+async function buildCfNames(boardId, cfCache) {
+  if (cfCache.has(boardId)) return cfCache.get(boardId);
+  try {
+    const fields = await trello.getBoardCustomFields(boardId);
+    const map = new Map((fields || []).map(f => [f.id, f.name]));
+    cfCache.set(boardId, map);
+    return map;
+  } catch {
+    // Board has no custom fields or API unsupported — return empty map (safe fallback)
+    cfCache.set(boardId, new Map());
+    return new Map();
+  }
 }
 
 function updateEnvKey(key, value) {
@@ -269,13 +285,17 @@ app.get("/api/all-cards", async (req, res) => {
   try {
     const boards = await trello.getBoards();
     const result = [];
+    const cfCache = new Map(); // per-request custom field name cache
 
     await Promise.all(boards.map(async (board) => {
-      const lists = await trello.getLists(board.id);
+      const [lists, cfNames] = await Promise.all([
+        trello.getLists(board.id),
+        buildCfNames(board.id, cfCache),
+      ]);
       await Promise.all(lists.map(async (list) => {
         const cards = await trello.getCards(list.id);
         cards.forEach((card) => result.push({
-          ...normalizeCard(card),
+          ...normalizeCard(card, cfNames),
           listName: list.name,
           boardName: board.name,
           boardId: board.id,
@@ -304,12 +324,16 @@ app.post("/api/boards/cards", async (req, res) => {
     const boards = await trello.getBoards();
     const boardMap = Object.fromEntries(boards.map(b => [b.id, b.name]));
     const result = [];
+    const cfCache = new Map(); // per-request custom field name cache
     await Promise.all(boardIds.map(async (boardId) => {
-      const lists = await trello.getLists(boardId);
+      const [lists, cfNames] = await Promise.all([
+        trello.getLists(boardId),
+        buildCfNames(boardId, cfCache),
+      ]);
       await Promise.all(lists.map(async (list) => {
         const cards = await trello.getCards(list.id);
         cards.forEach(card => result.push({
-          ...normalizeCard(card),
+          ...normalizeCard(card, cfNames),
           listName: list.name,
           boardId,
           boardName: boardMap[boardId] || boardId,
