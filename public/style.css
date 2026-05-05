@@ -2332,6 +2332,7 @@ a { text-decoration: none; }
 }
 .today-date-picker:hover { border-color: var(--primary); }
 .today-date-picker::-webkit-calendar-picker-indicator { filter: invert(.6); cursor: pointer; }
+.at-export-btn { margin-left: auto; flex-shrink: 0; font-size: 12px; }
 
 /* ════════════════════════════════════════════════════════════
    BOARDS MONITOR

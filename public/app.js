@@ -2169,6 +2169,7 @@ function renderAllTasks(cards) {
 
   function render() {
     const c = counts(), rows = getFiltered();
+    window._filteredCards = rows; // P8-3: expose for CSV export
     // M6: label/owner as pill chips (toggle); group-by stays as <select>
     const labelChipHtml = allLabels.length
       ? allLabels.map(l =>
@@ -2186,6 +2187,7 @@ function renderAllTasks(cards) {
           ${[["all","All"],["overdue","Overdue"],["today","Due Today"],["nodue","No Due"],["done","Done"]]
             .map(([f,label]) => `<button class="filter-chip${filter===f?" active":""}" data-f="${f}">${label} (${c[f]})</button>`)
             .join("")}
+          <button class="btn btn-ghost btn-xs at-export-btn" id="at-export-btn" title="Export filtered tasks as CSV">⬇ Export CSV</button>
         </div>
         ${labelChipHtml || ownerChipHtml ? `
         <div class="filters filters-row2">
@@ -2217,6 +2219,9 @@ function renderAllTasks(cards) {
     const groupSel = $("at-group-sel");
     if (groupSel) groupSel.onchange = () => { groupBy = groupSel.value; render(); };
 
+    const exportBtn = $("at-export-btn");
+    if (exportBtn) exportBtn.onclick = exportTasksCSV;
+
     const taskRows = content.querySelector("#task-rows");
     taskRows?.addEventListener("click", e => {
       if (e.target.closest(".task-title")) return; // single-click on title reserved for dblclick rename
@@ -2236,6 +2241,38 @@ function renderAllTasks(cards) {
     });
   }
   render();
+}
+
+// ── P8-3: Export CSV ──────────────────────────────────────────────────────────
+function exportTasksCSV() {
+  const rows = window._filteredCards || [];
+  if (!rows.length) { toast("No tasks to export", true); return; }
+
+  function csvCell(val) {
+    const s = String(val ?? "");
+    return (s.includes(",") || s.includes('"') || s.includes("\n"))
+      ? `"${s.replace(/"/g, '""')}"` : s;
+  }
+
+  const headers = ["Title", "Board", "List", "Owner", "Due Date", "Labels", "Status"];
+  const now = new Date();
+  const dataRows = rows.map(c => {
+    const owner   = (c.members || []).map(m => m.fullName || m.username || m.id).join("; ");
+    const dueDate = c.due ? new Date(c.due).toLocaleDateString("en-CA") : "";
+    const labels  = (c.labels  || []).filter(l => l.name).map(l => l.name).join("; ");
+    const status  = c.dueComplete ? "Done"
+                  : (c.due && new Date(c.due) < now) ? "Overdue" : "Active";
+    return [c.name, c.boardName, c.listName, owner, dueDate, labels, status].map(csvCell).join(",");
+  });
+
+  const csv      = [headers.join(","), ...dataRows].join("\n");
+  const filename = `trisilar-tasks-${new Date().toISOString().slice(0, 10)}.csv`;
+  const blob     = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+  const url      = URL.createObjectURL(blob);
+  const a        = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  toast(`Exported ${rows.length} tasks ✓`);
 }
 
 // ── P8-2: Inline rename helper ────────────────────────────────────────────────
