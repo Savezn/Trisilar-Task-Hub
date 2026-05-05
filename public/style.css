@@ -2304,6 +2304,35 @@ a { text-decoration: none; }
 }
 .overdue-alert-close:hover { color: #fff; }
 
+/* ── P8-2: Inline edit ─────────────────────────────────────────────────────── */
+.inline-edit-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--primary);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 1px 3px;
+  width: 100%;
+  max-width: 260px;
+  outline: none;
+  border-radius: 3px 3px 0 0;
+}
+.inline-edit-input:focus { background: rgba(99,102,241,.08); }
+.today-date-picker {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 11px;
+  padding: 2px 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  height: 24px;
+}
+.today-date-picker:hover { border-color: var(--primary); }
+.today-date-picker::-webkit-calendar-picker-indicator { filter: invert(.6); cursor: pointer; }
+
 /* ════════════════════════════════════════════════════════════
    BOARDS MONITOR
    ════════════════════════════════════════════════════════════ */

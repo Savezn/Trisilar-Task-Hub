@@ -405,20 +405,44 @@ function buildTodayRow(card, chipClass, chipLabel) {
     ? new Date(card.due).toLocaleDateString("en-US", { month:"short", day:"numeric" })
     : "";
 
+  const dueDateVal = card.due ? card.due.slice(0, 10) : "";
+  const isOverdue  = chipClass === "chip-overdue";
+
   row.innerHTML = `
     <span class="chip ${chipClass}" style="flex-shrink:0">${chipLabel}</span>
     <span class="today-task-name">${esc(card.name)}</span>
     <span class="today-task-board">${esc(card.boardName || "")}</span>
-    <span class="today-task-due">${dueText}</span>
+    ${isOverdue
+      ? `<input type="date" class="today-date-picker" value="${dueDateVal}" title="Reschedule">`
+      : `<span class="today-task-due">${dueText}</span>`}
     <div class="today-task-actions">
       <button class="btn btn-success btn-xs" title="Mark done" data-action="done">✓</button>
       <button class="btn btn-ghost btn-xs" title="Open card" data-action="open">↗</button>
     </div>
   `;
 
+  // Inline date picker — reschedule overdue card
+  const datePicker = row.querySelector(".today-date-picker");
+  if (datePicker) {
+    datePicker.addEventListener("click",  e => e.stopPropagation());
+    datePicker.addEventListener("change", async e => {
+      e.stopPropagation();
+      const val = e.target.value;
+      if (!val) return;
+      try {
+        await api.put(`/api/cards/${card.id}`, { due: new Date(val).toISOString() });
+        S.allCardsCache = null;
+        toast("Rescheduled ✓");
+        showTodayPage();
+      } catch (err) {
+        toast("Error: " + err.message, true);
+      }
+    });
+  }
+
   // Click row → open card
   row.addEventListener("click", e => {
-    if (e.target.closest(".today-task-actions")) return;
+    if (e.target.closest(".today-task-actions") || e.target.closest(".today-date-picker")) return;
     openEditAllTasks(card);
   });
 
@@ -2195,13 +2219,69 @@ function renderAllTasks(cards) {
 
     const taskRows = content.querySelector("#task-rows");
     taskRows?.addEventListener("click", e => {
+      if (e.target.closest(".task-title")?.querySelector(".inline-edit-input")) return; // editing
       const row = e.target.closest(".task-row");
       if (!row) return;
       const card = (window._allCards || []).find(c => c.id === row.dataset.cardId);
       if (card) openEditAllTasks(card);
     });
+    // P8-2: double-click on task title → inline rename
+    taskRows?.addEventListener("dblclick", e => {
+      const titleEl = e.target.closest(".task-title");
+      if (!titleEl) return;
+      const row = titleEl.closest(".task-row");
+      if (!row) return;
+      const card = (window._allCards || []).find(c => c.id === row.dataset.cardId);
+      if (card) startInlineRename(titleEl, card);
+    });
   }
   render();
+}
+
+// ── P8-2: Inline rename helper ────────────────────────────────────────────────
+function startInlineRename(titleEl, card) {
+  if (titleEl.querySelector(".inline-edit-input")) return; // already editing
+
+  // Preserve label chips HTML
+  const labelChipsEl  = titleEl.querySelector(".task-label-chips");
+  const labelChipsHTML = labelChipsEl ? labelChipsEl.outerHTML : "";
+
+  const input = document.createElement("input");
+  input.type      = "text";
+  input.className = "inline-edit-input";
+  input.value     = card.name;
+
+  titleEl.innerHTML = "";
+  titleEl.appendChild(input);
+  if (labelChipsHTML) titleEl.insertAdjacentHTML("beforeend", labelChipsHTML);
+  input.focus();
+  input.select();
+
+  let committed = false;
+
+  function restore() { titleEl.innerHTML = esc(card.name) + labelChipsHTML; }
+
+  async function commit() {
+    if (committed) return;
+    committed = true;
+    const newName = input.value.trim();
+    if (!newName || newName === card.name) { restore(); return; }
+    try {
+      await api.put(`/api/cards/${card.id}`, { name: newName });
+      S.allCardsCache = null;
+      toast("Renamed ✓");
+      await refreshCurrentView();
+    } catch (err) {
+      toast("Error: " + err.message, true);
+      restore();
+    }
+  }
+
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter")  { e.preventDefault(); commit(); }
+    if (e.key === "Escape") { committed = true; restore(); }
+  });
+  input.addEventListener("blur", () => { if (!committed) commit(); });
 }
 
 // Map Trello label color name → CSS hex
