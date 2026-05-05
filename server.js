@@ -36,6 +36,28 @@ function todayBangkok() {
   return new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
 }
 
+// ── P6-1: Friendly error mapper ───────────────────────────────────────────────
+// Logs full error to console, returns safe message to client
+function friendlyError(e) {
+  const msg = String(e?.message || e || "").toLowerCase();
+  console.error("[Server Error]", e?.message || e);
+  if (
+    msg.includes("invalid key") || msg.includes("invalid token") ||
+    msg.includes("unauthorized")  || msg.includes("401") ||
+    msg.includes("not authorized")
+  ) {
+    return "Trello connection failed. Check API key in .env";
+  }
+  if (
+    msg.includes("invalid_grant") || msg.includes("invalid grant") ||
+    msg.includes("token has been expired") || msg.includes("token expired") ||
+    msg.includes("invalid credentials")
+  ) {
+    return "Google Calendar session expired. Please reconnect.";
+  }
+  return "Internal server error";
+}
+
 function updateEnvKey(key, value) {
   const envPath = path.join(__dirname, ".env");
   let content = fs.readFileSync(envPath, "utf8");
@@ -66,7 +88,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/workspaces", async (req, res) => {
   try { res.json(await trello.getWorkspaces()); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Boards ────────────────────────────────────────────────────────────────────
@@ -82,19 +104,19 @@ app.get("/api/boards", async (req, res) => {
       ));
     }
     res.json(boards);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Lists ─────────────────────────────────────────────────────────────────────
 
 app.get("/api/boards/:id/lists", async (req, res) => {
   try { res.json(await trello.getLists(req.params.id)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.post("/api/boards/:id/lists", async (req, res) => {
   try { res.json(await trello.createList(req.params.id, req.body.name)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Card ↔ GCal event mapping ─────────────────────────────────────────────────
@@ -161,7 +183,7 @@ async function autoDeleteFromGCal(cardId) {
 
 app.get("/api/lists/:id/cards", async (req, res) => {
   try { res.json(await trello.getCards(req.params.id)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.post("/api/cards", async (req, res) => {
@@ -170,7 +192,7 @@ app.post("/api/cards", async (req, res) => {
     const card = await trello.createCard(listId, name, desc, due, start, dueReminder);
     res.json(card);
     if (syncCalendar) autoSyncToGCal(card.id, { name, desc, due, start });
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.put("/api/cards/:id", async (req, res) => {
@@ -189,12 +211,12 @@ app.put("/api/cards/:id", async (req, res) => {
         start: syncStart,
       });
     }
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.put("/api/cards/:id/move", async (req, res) => {
   try { res.json(await trello.moveCard(req.params.id, req.body.listId)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.delete("/api/cards/:id", async (req, res) => {
@@ -202,7 +224,7 @@ app.delete("/api/cards/:id", async (req, res) => {
     await trello.deleteCard(req.params.id);
     res.json({ ok: true });
     autoDeleteFromGCal(req.params.id); // fire-and-forget
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── All cards across all boards ───────────────────────────────────────────────
@@ -226,7 +248,7 @@ app.get("/api/all-cards", async (req, res) => {
     }));
 
     res.json(result);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── BU Config ─────────────────────────────────────────────────────────────────
@@ -235,7 +257,7 @@ app.get("/api/config", (req, res) => res.json(readConfig()));
 
 app.post("/api/config", (req, res) => {
   try { writeConfig(req.body); res.json({ ok: true }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Cards across specific boards (BU view) ────────────────────────────────────
@@ -259,7 +281,7 @@ app.post("/api/boards/cards", async (req, res) => {
       }));
     }));
     res.json(result);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Google Calendar OAuth ─────────────────────────────────────────────────────
@@ -286,9 +308,9 @@ app.get("/auth/callback", async (req, res) => {
     const auth = getOAuth2Client();
     const { tokens } = await auth.getToken(req.query.code);
     if (tokens.refresh_token) updateEnvKey("GOOGLE_REFRESH_TOKEN", tokens.refresh_token);
-    res.send(`<script>window.opener?.postMessage('cal_connected','*');window.close();</script><p>✓ Connected! You can close this window.</p>`);
+    res.send(`<script>window.opener?.postMessage('cal_connected','http://localhost:3000');window.close();</script><p>✓ Connected! You can close this window.</p>`);
   } catch (e) {
-    res.send(`<p style="color:red">Error: ${e.message}</p>`);
+    res.send(`<p style="color:red">Error: ${friendlyError(e)}</p>`);
   }
 });
 
@@ -319,7 +341,7 @@ app.get("/api/calendar/events", async (req, res) => {
       maxResults: 250,
     });
     res.json(r.data.items || []);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.post("/api/calendar/events", async (req, res) => {
@@ -338,7 +360,7 @@ app.post("/api/calendar/events", async (req, res) => {
     };
     const r = await cal.events.insert({ calendarId: CALENDAR_ID, resource: event });
     res.json(r.data);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.put("/api/calendar/events/:id", async (req, res) => {
@@ -357,7 +379,7 @@ app.put("/api/calendar/events/:id", async (req, res) => {
     };
     const r = await cal.events.update({ calendarId: CALENDAR_ID, eventId: req.params.id, resource: event });
     res.json(r.data);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.delete("/api/calendar/events/:id", async (req, res) => {
@@ -365,39 +387,39 @@ app.delete("/api/calendar/events/:id", async (req, res) => {
     const cal = getCalendarClient();
     await cal.events.delete({ calendarId: CALENDAR_ID, eventId: req.params.id });
     res.json({ ok: true });
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Checklists ────────────────────────────────────────────────────────────────
 
 app.get("/api/cards/:id/checklists", async (req, res) => {
   try { res.json(await trello.getCardChecklists(req.params.id)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.post("/api/cards/:id/checklists", async (req, res) => {
   try { res.json(await trello.addChecklist(req.params.id, req.body.name)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.post("/api/checklists/:id/checkitems", async (req, res) => {
   try { res.json(await trello.addCheckItem(req.params.id, req.body.name)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.put("/api/cards/:cardId/checklists/:clId/checkitems/:itemId", async (req, res) => {
   try { res.json(await trello.updateCheckItem(req.params.cardId, req.params.clId, req.params.itemId, req.body.state)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.delete("/api/checklists/:id/checkitems/:itemId", async (req, res) => {
   try { await trello.deleteCheckItem(req.params.id, req.params.itemId); res.json({ ok: true }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.delete("/api/checklists/:id", async (req, res) => {
   try { await trello.deleteChecklist(req.params.id); res.json({ ok: true }); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 
@@ -443,7 +465,7 @@ function notFound(e) {
 
 app.get("/api/reviews", (req, res) => {
   try { res.json(store.getAllSessions()); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.post("/api/task-diff", async (req, res) => {
@@ -452,7 +474,7 @@ app.post("/api/task-diff", async (req, res) => {
     if (!title)         return res.status(400).json({ error: "title is required" });
     if (!targetBoardId) return res.status(400).json({ error: "targetBoardId is required" });
     res.json(await diff.diffTask({ title, targetBoardId }));
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.post("/api/reviews", async (req, res) => {
@@ -468,7 +490,7 @@ app.post("/api/reviews", async (req, res) => {
       }));
     }
     res.json(store.createSession(data));
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.get("/api/reviews/:id", (req, res) => {
@@ -476,7 +498,7 @@ app.get("/api/reviews/:id", (req, res) => {
     const session = store.getSession(req.params.id);
     if (!session) return res.status(404).json({ error: "Session not found" });
     res.json(session);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.put("/api/reviews/:id/tasks/:taskId", (req, res) => {
@@ -510,7 +532,7 @@ app.post("/api/reviews/:id/approve-bulk", async (req, res) => {
       } catch (e) { return { taskId, ok: false, error: e.message }; }
     }));
     res.json(results);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.post("/api/reviews/:id/reject-bulk", (req, res) => {
@@ -521,7 +543,7 @@ app.post("/api/reviews/:id/reject-bulk", (req, res) => {
       catch (e) { return { taskId, ok: false, error: e.message }; }
     });
     res.json(results);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 app.delete("/api/reviews/:id", (req, res) => {
@@ -556,7 +578,7 @@ app.get("/api/google-tasks/today", async (req, res) => {
       !t.due || t.due.slice(0, 10) <= today
     );
     res.json(items);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // Create a new task due today
@@ -571,7 +593,7 @@ app.post("/api/google-tasks", async (req, res) => {
       resource: { title, due: today + "T00:00:00.000Z" },
     });
     res.json(r.data);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // Update a task: mark complete or update title
@@ -587,14 +609,14 @@ app.put("/api/google-tasks/:id", async (req, res) => {
       resource: patch,
     });
     res.json(r.data);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Labels ────────────────────────────────────────────────────────────────────
 
 app.get("/api/boards/:id/labels", async (req, res) => {
   try { res.json(await trello.getLabels(req.params.id)); }
-  catch (e) { res.status(500).json({ error: e.message }); }
+  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────
