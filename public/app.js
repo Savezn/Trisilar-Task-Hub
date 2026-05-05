@@ -2219,7 +2219,7 @@ function renderAllTasks(cards) {
 
     const taskRows = content.querySelector("#task-rows");
     taskRows?.addEventListener("click", e => {
-      if (e.target.closest(".task-title")?.querySelector(".inline-edit-input")) return; // editing
+      if (e.target.closest(".task-title")) return; // single-click on title reserved for dblclick rename
       const row = e.target.closest(".task-row");
       if (!row) return;
       const card = (window._allCards || []).find(c => c.id === row.dataset.cardId);
