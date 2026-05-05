@@ -40,6 +40,7 @@ Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุ
 | P8-1 — Notification & Alert System | ✅ Done | `d9ce8b1` |
 | B9 — dblclick fires modal before inline edit (click guard fix) | ✅ Done | `e8e4b75` |
 | P8-2 — Card Quick-Edit Inline | ✅ Done | `e8e4b75` |
+| P8-3 — Export CSV | ✅ Done | `8068e38` |
 
 ---
 
@@ -87,10 +88,10 @@ Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุ
 - Field: Title, Board, List, Owner, Due Date, Labels, Status
 
 **AC:**
-- [ ] "Export CSV" button ใน All Tasks header
-- [ ] CSV มี columns: Title, Board, List, Owner, Due Date, Labels, Status
-- [ ] Export เฉพาะ cards ที่กรองอยู่ (ตาม filter chips + group by ที่ active)
-- [ ] Filename: `trisilar-tasks-YYYY-MM-DD.csv`
+- [x] "Export CSV" button ใน All Tasks header
+- [x] CSV มี columns: Title, Board, List, Owner, Due Date, Labels, Status
+- [x] Export เฉพาะ cards ที่กรองอยู่ (ตาม filter chips + group by ที่ active)
+- [x] Filename: `trisilar-tasks-YYYY-MM-DD.csv`
 
 ---
 
@@ -134,6 +135,7 @@ Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุ
 |---|---|---|---|
 | 2026-05-05 | E2E Full MVP Test (P0–P7) | 🟡 2 Bugs | ทุก view โหลดได้ · Trello data ถูกต้อง · พบ B7 (health endpoint 404 — server ไม่ restart) + B8 (Calendar blank เมื่อ GCal fail) · GCal/GTasks "invalid_client" เป็น env credentials issue ไม่ใช่ code bug |
 | 2026-05-06 | P8-2 Card Quick-Edit Inline | 🟡 1 Bug → ✅ Fixed | AC 4/4 pass · พบ B9 (click fires before dblclick → modal blocks rename) · fixed `e8e4b75` · E3 cursor hint แก้ด้วย |
+| 2026-05-06 | P8-3 Export CSV | ✅ Clean | AC 4/4 pass · ไม่พบ bug · `8068e38` |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -148,26 +150,22 @@ Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุ
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**P8-1 ✅ · P8-2 ✅ — เริ่ม P8-3 ได้เลย**
+**P8-1 ✅ · P8-2 ✅ · P8-3 ✅ — เริ่ม P8-5 ต่อ (P8-4 defer)**
+
+> P8-4 Virtual Scroll — defer ตาม spec (`board count < 10` → ไม่จำเป็น, cards ปัจจุบัน ~102)
 
 ---
 
-### ⚪ P8-3 · Export / Report CSV
+### ⚪ P8-5 · OKR Board Setup Guide
 
-ดู Active Tasks § P8-3 สำหรับ AC ครบถ้วน
+ดู Active Tasks § P8-5 สำหรับ AC ครบถ้วน
 
 **จุดระวัง:**
-- Export เฉพาะ cards ที่ filter อยู่ในขณะนั้น — ต้องเข้าถึง filtered state ของ `renderAllTasks()`
-- วิธีที่ดีที่สุด: expose filtered cards ผ่าน `window._filteredCards` ใน `render()` ก่อน build rows
-- CSV generation ทำใน frontend (ไม่ต้องแก้ server) — ใช้ Blob + `<a download>`
-- Filename format: `trisilar-tasks-YYYY-MM-DD.csv` (ใช้ `new Date().toISOString().slice(0,10)`)
-- Columns ตาม AC: Title, Board, List, Owner, Due Date, Labels, Status
-
-**Grep เริ่มต้น:**
-```
-Grep("renderAllTasks", "public/app.js")     → หา function + render() inner function
-Grep("all-tasks-content\|task-table-head", "public/app.js") → หา header HTML ที่ต้องเพิ่ม button
-```
+- แก้เฉพาะ OKR empty state — ตรวจก่อนว่า empty state render ที่ไหน
+- `Grep("okr.*empty\|OKR.*empty\|no.*okr\|okr-empty", "public/app.js")` → หา empty state block
+- Accordion: ใช้ `<details>/<summary>` HTML native (ไม่ต้องเขียน JS toggle)
+- "Refresh" button → call `showOKRPage()` ใหม่
+- Link ไป Trello: `https://trello.com/b/new` สำหรับ create board
 
 เมื่อเสร็จ: `git commit + git push`
 
