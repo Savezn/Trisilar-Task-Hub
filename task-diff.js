@@ -28,29 +28,47 @@ function similarity(a, b) {
 
 const SIMILARITY_THRESHOLD = 0.80;
 
+// P6-6: list names that indicate completed work — skip as match candidates
+const DONE_LIST_PATTERN = /^(done|completed|archive|archived|finish|finished)/i;
+
 /**
  * Compare a candidate task title against existing Trello cards on a board.
  *
- * @param {{ title: string, targetBoardId?: string }} params
+ * @param {{ title: string, targetBoardId?: string, boardCardsCache?: Map }} params
+ *   boardCardsCache — optional Map<boardId, card[]> shared across a batch of diffTask calls;
+ *   prevents redundant getLists/getCards calls when multiple tasks share the same board (P6-4).
  * @returns {Promise<{ diffStatus, matchedCardId, confidence, matchReason }>}
  */
-async function diffTask({ title, targetBoardId }) {
+async function diffTask({ title, targetBoardId, boardCardsCache }) {
   if (!targetBoardId || !title) {
+    // P6-7: matchReason = "" for create_new
     return {
       diffStatus:    "create_new",
       matchedCardId: null,
       confidence:    1.0,
-      matchReason:   "No board or title — defaulting to create_new",
+      matchReason:   "",
     };
   }
 
   try {
-    const lists = await trello.getLists(targetBoardId);
-    const allCards = [];
-    await Promise.all(lists.map(async list => {
-      const cards = await trello.getCards(list.id);
-      cards.forEach(c => allCards.push(c));
-    }));
+    let allCards;
+
+    // P6-4: use cached cards if available, otherwise fetch and cache
+    if (boardCardsCache?.has(targetBoardId)) {
+      allCards = boardCardsCache.get(targetBoardId);
+    } else {
+      const lists = await trello.getLists(targetBoardId);
+      allCards = [];
+      await Promise.all(
+        lists
+          .filter(list => !DONE_LIST_PATTERN.test(list.name))  // P6-6: skip Done/Completed lists
+          .map(async list => {
+            const cards = await trello.getCards(list.id);
+            cards.forEach(c => allCards.push(c));
+          })
+      );
+      if (boardCardsCache) boardCardsCache.set(targetBoardId, allCards);
+    }
 
     const matches = allCards
       .map(card => ({ card, score: similarity(title, card.name) }))
@@ -58,11 +76,12 @@ async function diffTask({ title, targetBoardId }) {
       .sort((a, b) => b.score - a.score);
 
     if (matches.length === 0) {
+      // P6-7: matchReason = "" for create_new
       return {
         diffStatus:    "create_new",
         matchedCardId: null,
         confidence:    1.0,
-        matchReason:   "No similar cards found",
+        matchReason:   "",
       };
     }
 
@@ -86,11 +105,12 @@ async function diffTask({ title, targetBoardId }) {
     };
   } catch (e) {
     console.error("[task-diff]", e.message);
+    // P6-7: matchReason = "" for create_new
     return {
       diffStatus:    "create_new",
       matchedCardId: null,
       confidence:    1.0,
-      matchReason:   "Diff lookup failed — defaulting to create_new",
+      matchReason:   "",
     };
   }
 }

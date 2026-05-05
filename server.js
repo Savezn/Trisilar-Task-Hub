@@ -481,13 +481,18 @@ app.post("/api/reviews", async (req, res) => {
   try {
     const data = { ...req.body };
     if (Array.isArray(data.tasks) && data.tasks.length > 0) {
-      data.tasks = await Promise.all(data.tasks.map(async task => {
+      // P6-4: shared cache across all tasks in this session — getLists called once per board
+      const boardCardsCache = new Map();
+      const resolved = [];
+      for (const task of data.tasks) {
         if (task.targetBoardId) {
-          const result = await diff.diffTask({ title: task.title, targetBoardId: task.targetBoardId });
-          return { ...task, ...result };
+          const result = await diff.diffTask({ title: task.title, targetBoardId: task.targetBoardId, boardCardsCache });
+          resolved.push({ ...task, ...result });
+        } else {
+          resolved.push(task);
         }
-        return task;
-      }));
+      }
+      data.tasks = resolved;
     }
     res.json(store.createSession(data));
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }

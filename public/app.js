@@ -707,6 +707,11 @@ function buildProcessedTaskHTML(task) {
   const label     = approved ? "Approved" : "Rejected";
   const trelloTip = approved && task.trelloCardId
     ? `<span style="font-size:11px;color:var(--text-muted)">→ Trello card synced</span>` : "";
+  // P6-8: show matchReason as audit trail for update/duplicate tasks
+  const showReason = task.matchReason &&
+    (task.diffStatus === "update_existing" || task.diffStatus === "possible_duplicate");
+  const reasonTip = showReason
+    ? `<div style="font-size:10px;color:var(--text-faint);margin-top:1px">${esc(task.matchReason)}</div>` : "";
   return `
     <div style="display:flex;align-items:center;gap:10px;padding:2px 0">
       <span style="color:${color};font-weight:700;font-size:15px;flex-shrink:0">${icon}</span>
@@ -717,6 +722,7 @@ function buildProcessedTaskHTML(task) {
           ${task.owner ? `<span style="font-size:11px;color:var(--text-muted)">${esc(task.owner)}</span>` : ""}
           ${trelloTip}
         </div>
+        ${reasonTip}
       </div>
     </div>
   `;
