@@ -21,7 +21,7 @@
 | P7-1 Trello metadata ingestion | ✅ Done | c833189 |
 | P7-2 Portfolio filters | ✅ Done | 9d89034 |
 | P7-3 OKR Progress View | ✅ Done | 9d89034 |
-| P7-4 Board convention validator | ⬜ Not started | — |
+| P7-4 Board convention validator | ✅ Done | a84312e |
 | P7-5 Weekly Focus view | ⬜ Not started | — |
 
 ---
@@ -119,6 +119,7 @@
 | 2026-05-05 | QA Pass 1 (P7-1) | 🟡 1 Missing | P7-1 AC 4/5 ผ่าน — B5: customFields keyed by idCustomField ไม่ใช่ name |
 | 2026-05-05 | QA Pass 2 (B5 + P7-2) | 🟡 1 Missing | B5 ✅, P7-1 ✅ ครบ, P7-2 AC 3/4 — M6: Label/Owner ใช้ `<select>` แทน filter chip ตาม AC spec |
 | 2026-05-05 | QA Pass 3 (M6 + P7-3) | 🔴 1 Bug | M6 ✅, P7-3 ✅ ครบ 4/4 — B6: `renderDetail()` ไม่ `esc()` boardName/listName (`app.js:2281`) |
+| 2026-05-05 | QA Pass 4 (B6 + P7-4) | ✅ Clean | B6 ✅, P7-4 ✅ ครบ 3/3 AC — no bugs |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -127,34 +128,29 @@
 |---|---|---|---|
 | B5 | `customFields` keyed by `idCustomField` (hex string) แทน field name — AC ระบุ `{ [name]: value }` — ต้องการ `GET /boards/:id/customFields` per board เพื่อ resolve names | `server.js:76` | ✅ Fixed (c833189) |
 | M6 | P7-2 AC ระบุ "Filter chip 'Label'" และ "Filter chip 'Owner'" — implementation ใช้ `<select class="at-select">` dropdown แทน pill chip — ฟังก์ชันกรองถูกต้องแต่ UI ไม่ตรง spec | `app.js:2136–2143` | ✅ Fixed (9d89034) |
-| B6 | `renderDetail()` header ไม่ใช้ `esc()` กับ `krCard.boardName` และ `krCard.listName` — XSS risk ถ้า board/list name มี `<`, `>`, `&` | `app.js:2281` | ⬜ Pending |
+| B6 | `renderDetail()` header ไม่ใช้ `esc()` กับ `krCard.boardName` และ `krCard.listName` — XSS risk ถ้า board/list name มี `<`, `>`, `&` | `app.js:2281` | ✅ Fixed (a84312e) |
 
 ---
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**Dev: แก้ B6 ก่อน (one-liner) แล้วจึง implement P7-4**
+**Dev: implement P7-5 (task สุดท้ายของ Phase 7)**
 
-### B6 · เพิ่ม `esc()` ใน `renderDetail()` header
-**File:** `app.js:2281`
+### P7-5 · Weekly Focus View
+**Files:** `public/app.js`, `public/style.css`, `public/index.html`
 
-**วิธีแก้:**
-```js
-// บรรทัดนี้:
-${krCard.boardName} · ${krCard.listName}
-// แก้เป็น:
-${esc(krCard.boardName)} · ${esc(krCard.listName)}
-```
+- สร้าง view "Weekly Focus" ใน sidebar
+- แสดง tasks ของ owner ที่เลือก (filter by member) ใน 7 วันข้างหน้า
+- Pending review count badge ในหน้า
+- Empty state ถ้าไม่มี tasks assigned ใน 7 วัน
+- ดู AC ใน Active Tasks § P7-5 ด้านบน
 
-### P7-4 · Project Board Convention Validator (ทำหลัง B6 เสร็จ)
-**Files:** `server.js`, `public/app.js`
+**จุดระวัง:**
+- Owner selector ดึงจาก `S.allCardsCache` members (เหมือน P7-2)
+- Pending review count ดึงจาก `S.reviewSessions` หรือ `api.get("/api/review-sessions")`
+- ลบ `<span class="nav-badge-soon">` ออกจาก Planner nav ถ้ายังมีอยู่ (ไม่เกี่ยวกับ P7-5 แต่ cleanup ได้)
 
-- ตรวจ list names ของแต่ละ board ว่ามี "Done" / "Backlog" / "In Progress" ครบหรือไม่
-- แสดง ⚠ badge ใน Boards Monitor ถ้า board ไม่ครบ convention
-- API endpoint: `GET /api/boards/:id/health` → `{ ok: bool, missing: string[] }`
-- ดู AC ใน Active Tasks § P7-4 ด้านบน
-
-เมื่อเสร็จแต่ละกลุ่ม: `git commit + git push`
+เมื่อเสร็จ: `git commit + git push`
 
 ---
 
