@@ -480,9 +480,9 @@ function renderReviewPage(sessions) {
     empty.className = "empty-state";
     empty.innerHTML = `
       <div class="empty-icon">📋</div>
-      <h3>No review sessions</h3>
-      <p>Meeting tasks from AI summaries will appear here, or create one manually.</p>
-      <button class="btn btn-primary" style="margin-top:12px" onclick="openTranscriptModal()">+ New Session</button>
+      <h3>No review sessions yet</h3>
+      <p>Upload a meeting transcript to extract tasks automatically, or add a session manually.</p>
+      <button class="btn btn-primary" style="margin-top:12px" onclick="openTranscriptModal()">+ Upload Transcript</button>
     `;
     page.appendChild(empty);
     content.innerHTML = "";
@@ -2194,6 +2194,9 @@ async function refreshCurrentView() {
   else if (S.mode === "all")      await showAllTasks();
   else if (S.mode === "calendar") renderCalendar();
   else if (S.mode === "today")    await showTodayPage();
+  else if (S.mode === "review")   await showReviewPage();
+  else if (S.mode === "planner")  await showPlannerPage();
+  else if (S.mode === "settings") showSettingsPage();
 }
 
 function confirmDelete() {
@@ -2726,6 +2729,18 @@ async function renderCalendar() {
   gridWrap.className = "cal-grid-wrap";
   gridWrap.appendChild(buildCalGrid(y, m, CAL.events, CAL.trelloCards));
   view.appendChild(gridWrap);
+
+  // P6-2: empty state banner when no events for this month
+  const monthPrefix = `${y}-${String(m + 1).padStart(2, "0")}`;
+  const hasTrelloThisMonth = CAL.trelloCards.some(c => c.due?.startsWith(monthPrefix));
+  if (!CAL.events.length && !hasTrelloThisMonth) {
+    const calEmpty = document.createElement("div");
+    calEmpty.className = "cal-empty-notice";
+    calEmpty.innerHTML = CAL.status?.connected
+      ? "No events or Trello deadlines this month"
+      : `No Trello deadlines this month · <a href="#" onclick="openCalSetup();return false" style="color:var(--primary)">Connect Google Calendar</a> to see more`;
+    view.appendChild(calEmpty);
+  }
 
   content.appendChild(view);
 
