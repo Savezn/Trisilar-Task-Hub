@@ -1,0 +1,21 @@
+{
+  "name": "trisilar-task-hub",
+  "version": "1.0.0",
+  "description": "Trisilar Task Hub — unified Trello & Google Calendar dashboard",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.91.1",
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "googleapis": "^171.4.0",
+    "node-fetch": "^3.3.2"
+  }
+}

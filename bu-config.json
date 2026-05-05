@@ -1,0 +1,26 @@
+{
+  "groups": [
+    {
+      "id": "g_1777538860784",
+      "name": "Trisilar",
+      "color": "#0079bf",
+      "boardIds": [
+        "69f2dcd3fba37f1ace3d761f",
+        "689b22757c5fa164ea7bb318"
+      ]
+    }
+  ],
+  "hiddenBoards": [
+    "6874f91a8dc24bb29be7610d",
+    "69eb27f6d56874b65477dcd1",
+    "65274138b5cc3be5f5c4f107",
+    "6528ac1ee7d36907c2f9f16e",
+    "6613d0b89b9870a5499f18bf",
+    "6527362cd42cdcc187466a89",
+    "688b39f24a6f95071cc47b76",
+    "65273f2647ff59ebef735235"
+  ],
+  "allowedWorkspaceIds": [
+    "69f2cfe7f63a58a6772a6cd0"
+  ]
+}

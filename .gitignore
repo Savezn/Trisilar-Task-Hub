@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment variables — NEVER commit
+.env
+.env.*
+!.env.example
+
+# Runtime data files (generated at startup)
+review-sessions.json
+card-events.json
+
+# Claude Code session data
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

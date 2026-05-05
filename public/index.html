@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trisilar Task Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">⬡</div>
+      <h1>Trisilar<span>Task Hub</span></h1>
+    </div>
+
+    <!-- Top Nav -->
+    <nav class="sidebar-nav">
+      <a class="nav-item" data-page="today" onclick="navigateTo('today')">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Today</span>
+      </a>
+      <a class="nav-item" data-page="review" onclick="navigateTo('review')">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">Review Queue</span>
+        <span class="nav-badge" id="review-badge" style="display:none">0</span>
+      </a>
+      <a class="nav-item" data-page="all" onclick="navigateTo('all')">
+        <span class="nav-icon">✅</span>
+        <span class="nav-label">Tasks</span>
+      </a>
+      <a class="nav-item" data-page="boards" onclick="navigateTo('boards')">
+        <span class="nav-icon">⊞</span>
+        <span class="nav-label">Boards</span>
+      </a>
+      <a class="nav-item" data-page="calendar" onclick="navigateTo('calendar')">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">Calendar</span>
+      </a>
+      <a class="nav-item" data-page="planner" onclick="navigateTo('planner')">
+        <span class="nav-icon">📝</span>
+        <span class="nav-label">Planner</span>
+        <span class="nav-badge-soon">Soon</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Boards section (shown in boards mode) -->
+    <div id="sidebar-boards-section" class="sidebar-scroll" style="display:none">
+      <!-- BU Groups -->
+      <div class="sidebar-section-label">
+        <span>BUSINESS UNITS</span>
+        <button id="manage-btn" class="icon-btn" title="Manage Groups" onclick="navigateTo('settings')">⚙</button>
+      </div>
+      <ul id="groups-list" class="groups-list"></ul>
+
+      <!-- All Boards (ungrouped + all) -->
+      <div class="sidebar-section-label" style="margin-top:8px">
+        <span>BOARDS</span>
+        <button id="refresh-btn" class="icon-btn" title="Refresh">↻</button>
+      </div>
+      <ul id="boards-list" class="boards-list">
+        <li class="sidebar-loading">Loading...</li>
+      </ul>
+
+      <!-- Hidden toggle -->
+      <div id="hidden-section" class="hidden-section" style="display:none">
+        <button id="toggle-hidden-btn" class="toggle-hidden-btn">👁 Show hidden boards (<span id="hidden-count">0</span>)</button>
+        <ul id="hidden-boards-list" class="boards-list hidden-boards" style="display:none"></ul>
+      </div>
+    </div>
+
+    <!-- Sidebar footer -->
+    <div class="sidebar-footer">
+      <a class="nav-item" data-page="settings" onclick="navigateTo('settings')">
+        <span class="nav-icon">⚙</span>
+        <span class="nav-label">Settings</span>
+      </a>
+      <div class="sidebar-status" id="sidebar-status">
+        <div class="status-dot dot-green"></div>
+        <span class="status-label">Trello connected</span>
+      </div>
+      <div class="sidebar-status" id="sidebar-gcal-status" style="display:none">
+        <div class="status-dot dot-green"></div>
+        <span class="status-label">GCal connected</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h2 id="board-title">Today</h2>
+        <span id="board-subtitle" class="board-subtitle"></span>
+      </div>
+      <div class="topbar-actions">
+        <button id="topbar-refresh-btn" class="btn btn-icon" title="Refresh" onclick="topbarRefresh()">↻</button>
+        <button id="add-list-btn" class="btn btn-primary hidden">+ Add List</button>
+      </div>
+    </header>
+
+    <div id="board-content" class="board-content">
+      <div class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h3>Loading...</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Manage Groups Modal ─────────────────────────────────────────────────── -->
+<div id="manage-modal" class="modal-overlay hidden">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>⚙ Manage Groups &amp; Visibility</h3>
+      <button class="modal-close" onclick="closeManage()">✕</button>
+    </div>
+    <div class="modal-body manage-body" style="flex-direction:column;gap:0">
+
+      <!-- Tabs -->
+      <div class="manage-tabs">
+        <button class="manage-tab active" data-tab="groups" onclick="switchManageTab('groups')">Business Units</button>
+        <button class="manage-tab" data-tab="visibility" onclick="switchManageTab('visibility')">Board Visibility</button>
+        <button class="manage-tab" data-tab="workspaces" onclick="switchManageTab('workspaces')">🏢 Workspaces</button>
+      </div>
+
+      <!-- Tab: Groups + Visibility (side by side) -->
+      <div id="tab-groups" class="manage-tab-panel" style="display:flex;gap:16px;flex:1;overflow:hidden">
+        <div class="manage-col">
+          <div class="manage-col-header">
+            <span>Business Unit Groups</span>
+            <button class="btn btn-primary btn-sm" onclick="addGroup()">+ New Group</button>
+          </div>
+          <div id="groups-editor" class="groups-editor"></div>
+        </div>
+        <div class="manage-col">
+          <div class="manage-col-header"><span>Board Visibility</span></div>
+          <div id="visibility-editor" class="visibility-editor"></div>
+        </div>
+      </div>
+
+      <!-- Tab: Workspaces -->
+      <div id="tab-workspaces" class="manage-tab-panel" style="display:none;flex:1;overflow:auto">
+        <div class="manage-col" style="max-width:100%;width:100%">
+          <div class="manage-col-header">
+            <span>อนุญาต Workspace ที่จะแสดงใน Dashboard</span>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px">เลือกเฉพาะ Workspace ที่ต้องการ — board จาก workspace ที่ไม่ได้เลือกจะไม่ถูกดึงมาแสดง (ถ้าไม่เลือกเลย = แสดงทั้งหมด)</p>
+          <div id="workspaces-editor" class="workspaces-editor">
+            <div class="loading-box"><span class="spinner"></span> Loading workspaces...</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <div></div>
+      <div class="footer-right">
+        <button class="btn btn-ghost" onclick="closeManage()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveConfig()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Card Modal ─────────────────────────────────────────────────────────── -->
+<div id="card-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">New Card</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Title <span class="required">*</span></label>
+        <input type="text" id="card-name" class="form-input" placeholder="Card title...">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="card-desc" class="form-textarea" rows="3" placeholder="Add description..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="datetime-local" id="card-start" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Due Date</label>
+          <input type="datetime-local" id="card-due" class="form-input">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Reminder</label>
+        <select id="card-reminder" class="form-select">
+          <option value="-1">No reminder</option>
+          <option value="0">At due time</option>
+          <option value="5">5 minutes before</option>
+          <option value="15">15 minutes before</option>
+          <option value="30">30 minutes before</option>
+          <option value="60">1 hour before</option>
+          <option value="120">2 hours before</option>
+          <option value="1440">1 day before</option>
+          <option value="2880">2 days before</option>
+        </select>
+      </div>
+      <!-- Checklists (only shown when editing existing card) -->
+      <div class="form-group" id="checklist-section" style="display:none">
+        <div class="checklist-section-header">
+          <label>☑ Checklists</label>
+          <button class="btn btn-ghost btn-sm" onclick="promptAddChecklist()">+ Add Checklist</button>
+        </div>
+        <div id="checklists-container"></div>
+      </div>
+
+      <div class="form-group" id="list-select-group">
+        <label>List</label>
+        <select id="card-list" class="form-select"></select>
+      </div>
+
+      <!-- GCal sync toggle -->
+      <div class="form-group" id="gcal-sync-group" style="display:none">
+        <label class="checkbox-label">
+          <input type="checkbox" id="gcal-sync-check" checked>
+          <span>📅 สร้าง / อัปเดต event ใน Google Calendar อัตโนมัติ</span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="delete-card-btn" class="btn btn-danger hidden" onclick="confirmDelete()">🗑 Delete</button>
+      <div class="footer-right">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button id="save-btn" class="btn btn-primary" onclick="saveCard()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Confirm Delete ──────────────────────────────────────────────────────── -->
+<div id="confirm-modal" class="modal-overlay hidden">
+  <div class="modal modal-sm">
+    <div class="modal-header"><h3>Delete Card?</h3></div>
+    <div class="modal-body"><p>Are you sure? This cannot be undone.</p></div>
+    <div class="modal-footer">
+      <div></div>
+      <div class="footer-right">
+        <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
+        <button class="btn btn-danger" onclick="doDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Calendar Setup Modal ──────────────────────────────────────────────── -->
+<div id="cal-setup-modal" class="modal-overlay hidden">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h3>📅 Connect Google Calendar</h3>
+      <button class="modal-close" onclick="closeCalSetup()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="setup-steps">
+        <div class="setup-step">
+          <span class="step-num">1</span>
+          <div>
+            <strong>เปิด Google Cloud Console</strong>
+            <p>ไปที่ <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → APIs &amp; Services → Credentials</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <span class="step-num">2</span>
+          <div>
+            <strong>Enable Google Calendar API</strong>
+            <p>APIs &amp; Services → Library → ค้นหา "Google Calendar API" → Enable</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <span class="step-num">3</span>
+          <div>
+            <strong>Create OAuth 2.0 Credentials</strong>
+            <p>Credentials → Create Credentials → OAuth 2.0 Client ID → Web application<br>
+            Authorized redirect URI: <code class="code-inline">http://localhost:3000/auth/callback</code></p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <span class="step-num">4</span>
+          <div><strong>กรอก Client ID &amp; Client Secret</strong></div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:16px">
+        <label>Client ID <span class="required">*</span></label>
+        <input type="text" id="setup-client-id" class="form-input" placeholder="xxxx.apps.googleusercontent.com">
+      </div>
+      <div class="form-group">
+        <label>Client Secret <span class="required">*</span></label>
+        <input type="password" id="setup-client-secret" class="form-input" placeholder="GOCSPX-...">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div></div>
+      <div class="footer-right">
+        <button class="btn btn-ghost" onclick="closeCalSetup()">Cancel</button>
+        <button class="btn btn-primary" onclick="startGoogleAuth()">Connect →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Calendar Event Modal ──────────────────────────────────────────────── -->
+<div id="cal-event-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="cal-modal-title">New Event</h3>
+      <button class="modal-close" onclick="closeCalModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Title <span class="required">*</span></label>
+        <input type="text" id="cal-title" class="form-input" placeholder="Event title...">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date &amp; Time</label>
+          <input type="datetime-local" id="cal-start" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>End Date &amp; Time <span class="label-hint">(Due)</span></label>
+          <input type="datetime-local" id="cal-end" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="cal-allday"> All Day Event
+        </label>
+      </div>
+
+      <div class="form-row" id="cal-allday-dates" style="display:none">
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date" id="cal-start-date" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" id="cal-end-date" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Reminder</label>
+        <select id="cal-reminder" class="form-select">
+          <option value="">No reminder</option>
+          <option value="0">At time of event</option>
+          <option value="10">10 minutes before</option>
+          <option value="30" selected>30 minutes before</option>
+          <option value="60">1 hour before</option>
+          <option value="1440">1 day before</option>
+          <option value="2880">2 days before</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="cal-desc" class="form-textarea" rows="2" placeholder="Details..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="cal-delete-btn" class="btn btn-danger hidden" onclick="deleteCalEvent()">🗑 Delete</button>
+      <div class="footer-right">
+        <button class="btn btn-ghost" onclick="closeCalModal()">Cancel</button>
+        <button id="cal-save-btn" class="btn btn-primary" onclick="saveCalEvent()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Transcript Upload Modal (Review Queue) ──────────────────────────────── -->
+<div id="transcript-modal" class="modal-overlay hidden">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h3>📋 New Review Session</h3>
+      <button class="modal-close" onclick="closeTranscriptModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Meeting Title <span class="required">*</span></label>
+        <input type="text" id="transcript-title" class="form-input" placeholder="e.g. Weekly Marketing Sync · 4 May 2026">
+      </div>
+      <div class="form-group">
+        <label>Meeting Transcript / Notes <span style="color:var(--text-muted);font-weight:400">(optional)</span></label>
+        <textarea id="transcript-text" class="form-textarea" rows="7"
+          placeholder="Paste meeting transcript or notes here...&#10;&#10;AI extraction coming in a future phase — 3 placeholder tasks will be created for manual review."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div></div>
+      <div class="footer-right">
+        <button class="btn btn-ghost" onclick="closeTranscriptModal()">Cancel</button>
+        <button id="transcript-submit-btn" class="btn btn-primary" onclick="submitTranscript()">Create Session</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
