@@ -2,7 +2,7 @@
 **Role:** Project Manager Reference Document  
 **Purpose:** Track Claude Code sessions against a structured build sequence  
 **Based on:** MVP_PRD.md  
-**Last updated:** 2026-05-04 (Phase 3 complete — QA clean · Phase 4 ← current)
+**Last updated:** 2026-05-05 (Phase 4 complete · Phase 5 ← current · ใช้ CURRENT_SPRINT.md สำหรับ active work)
 
 ---
 
@@ -44,8 +44,8 @@ Phase 0 — Bug Fixes & Foundations          ✅ COMPLETE  (2026-05-04, QA clean
 Phase 1 — Review Queue: Data Layer         ✅ COMPLETE  (2026-05-04, QA fixes done)
 Phase 2 — Review Queue: UI & Actions       ✅ COMPLETE  (2026-05-04)
 Phase 3 — Task Diff Engine                 ✅ COMPLETE  (2026-05-04, QA clean)
-Phase 4 — Google Tasks Daily Planner       ⬜ TODO      [~1 session]   ← current
-Phase 5 — Today Dashboard: Enhanced        ⬜ TODO      [~1 session]
+Phase 4 — Google Tasks Daily Planner       ✅ COMPLETE  (2026-05-05)
+Phase 5 — Today Dashboard: Enhanced        ⬜ TODO      [~1 session]   ← current
 Phase 6 — Hardening & Polish               ⬜ TODO      [~1 session]
 ```
 
@@ -813,8 +813,8 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P3** | QA Pass 2 | ✅ Clean | 2026-05-04 | พบ 🔴×1 matchHint layout → แก้แล้วใน P3-5; 🟡×1 + 🔵×1 defer ไป P6-7, P6-8 |
 | **P3** | **P3-5** Fix matchHint layout (flex → block) | ✅ Done | 2026-05-04 | app.js: ย้าย matchHint ออกนอก .review-task-badges → render ใต้ badges |
 | **P3** | QA Pass 3 | ✅ Clean | 2026-05-04 | ไม่มีข้อบกพร่องใหม่ — Phase 3 QA ผ่านสมบูรณ์ |
-| **P4** | **P4-1** Google Tasks OAuth | ⬜ Todo | — | **← Dev ทำต่อไป** |
-| **P4** | **P4-2** Planner UI | ⬜ Todo | — | |
+| **P4** | **P4-1** Google Tasks OAuth | ✅ Done | 2026-05-05 | server.js: getTasksClient, todayBangkok, 4 endpoints, Tasks scope added to OAuth |
+| **P4** | **P4-2** Planner UI | ✅ Done | 2026-05-05 | app.js: showPlannerPage async, GTasks + Trello sections, quick-add, complete task |
 | **P5** | **P5-1** Wire review count | ⬜ Todo | — | |
 | **P5** | **P5-2** Calendar conflicts | ⬜ Todo | — | |
 | **P5** | **P5-3** Quick add → Trello | ⬜ Todo | — | |
