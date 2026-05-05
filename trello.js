@@ -46,7 +46,8 @@ async function createList(boardId, name) {
 // ── Cards ────────────────────────────────────────────────────────────────────
 
 async function getCards(listId) {
-  return trelloRequest("GET", `/lists/${listId}/cards?fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList&checklists=all&checklist_fields=id,name,pos`);
+  // P7-1: added idMembers, labels, checkItems (for progress), customFieldItems
+  return trelloRequest("GET", `/lists/${listId}/cards?fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList,idMembers,labels&checklists=all&checklist_fields=id,name,pos&checkItems=all&checkItem_fields=id,name,state&customFieldItems=true`);
 }
 
 async function getCard(cardId) {

@@ -58,6 +58,42 @@ function friendlyError(e) {
   return "Internal server error";
 }
 
+// ── P7-1: Normalize raw Trello card → consistent shape for all-cards / boards/cards ──
+function normalizeCard(card) {
+  // Checklist progress from embedded checkItems
+  let clDone = 0, clTotal = 0;
+  (card.checklists || []).forEach(cl => {
+    (cl.checkItems || []).forEach(ci => {
+      clTotal++;
+      if (ci.state === "complete") clDone++;
+    });
+  });
+
+  // Custom fields keyed by idCustomField (name resolution requires extra board API call)
+  const customFields = {};
+  (card.customFieldItems || []).forEach(cf => {
+    const val = cf.value || {};
+    customFields[cf.idCustomField] =
+      val.text ?? val.number ?? val.date ?? val.checked ?? null;
+  });
+
+  return {
+    id:                card.id,
+    name:              card.name,
+    desc:              card.desc || "",
+    due:               card.due   || null,
+    dueComplete:       card.dueComplete || false,
+    start:             card.start  || null,
+    dueReminder:       card.dueReminder ?? -1,
+    url:               card.url || "",
+    idList:            card.idList,
+    labels:            (card.labels || []).map(l => ({ id: l.id, name: l.name || "", color: l.color || "" })),
+    members:           card.idMembers || [],
+    checklistProgress: { done: clDone, total: clTotal },
+    customFields,
+  };
+}
+
 function updateEnvKey(key, value) {
   const envPath = path.join(__dirname, ".env");
   let content = fs.readFileSync(envPath, "utf8");
@@ -239,7 +275,7 @@ app.get("/api/all-cards", async (req, res) => {
       await Promise.all(lists.map(async (list) => {
         const cards = await trello.getCards(list.id);
         cards.forEach((card) => result.push({
-          ...card,
+          ...normalizeCard(card),
           listName: list.name,
           boardName: board.name,
           boardId: board.id,
@@ -273,7 +309,7 @@ app.post("/api/boards/cards", async (req, res) => {
       await Promise.all(lists.map(async (list) => {
         const cards = await trello.getCards(list.id);
         cards.forEach(card => result.push({
-          ...card,
+          ...normalizeCard(card),
           listName: list.name,
           boardId,
           boardName: boardMap[boardId] || boardId,
