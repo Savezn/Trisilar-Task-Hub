@@ -19,8 +19,8 @@
 | Task | Status | Commit |
 |---|---|---|
 | P7-1 Trello metadata ingestion | ✅ Done | c833189 |
-| P7-2 Portfolio filters | 🔧 Partial (M6) | c833189 |
-| P7-3 OKR Progress View | ⬜ Not started | — |
+| P7-2 Portfolio filters | ✅ Done | 9d89034 |
+| P7-3 OKR Progress View | ✅ Done | 9d89034 |
 | P7-4 Board convention validator | ⬜ Not started | — |
 | P7-5 Weekly Focus view | ⬜ Not started | — |
 
@@ -118,6 +118,7 @@
 |---|---|---|---|
 | 2026-05-05 | QA Pass 1 (P7-1) | 🟡 1 Missing | P7-1 AC 4/5 ผ่าน — B5: customFields keyed by idCustomField ไม่ใช่ name |
 | 2026-05-05 | QA Pass 2 (B5 + P7-2) | 🟡 1 Missing | B5 ✅, P7-1 ✅ ครบ, P7-2 AC 3/4 — M6: Label/Owner ใช้ `<select>` แทน filter chip ตาม AC spec |
+| 2026-05-05 | QA Pass 3 (M6 + P7-3) | 🔴 1 Bug | M6 ✅, P7-3 ✅ ครบ 4/4 — B6: `renderDetail()` ไม่ `esc()` boardName/listName (`app.js:2281`) |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -125,35 +126,33 @@
 | ID | Bug | File:Line | Status |
 |---|---|---|---|
 | B5 | `customFields` keyed by `idCustomField` (hex string) แทน field name — AC ระบุ `{ [name]: value }` — ต้องการ `GET /boards/:id/customFields` per board เพื่อ resolve names | `server.js:76` | ✅ Fixed (c833189) |
-| M6 | P7-2 AC ระบุ "Filter chip 'Label'" และ "Filter chip 'Owner'" — implementation ใช้ `<select class="at-select">` dropdown แทน pill chip — ฟังก์ชันกรองถูกต้องแต่ UI ไม่ตรง spec | `app.js:2136–2143` | ⬜ Pending |
+| M6 | P7-2 AC ระบุ "Filter chip 'Label'" และ "Filter chip 'Owner'" — implementation ใช้ `<select class="at-select">` dropdown แทน pill chip — ฟังก์ชันกรองถูกต้องแต่ UI ไม่ตรง spec | `app.js:2136–2143` | ✅ Fixed (9d89034) |
+| B6 | `renderDetail()` header ไม่ใช้ `esc()` กับ `krCard.boardName` และ `krCard.listName` — XSS risk ถ้า board/list name มี `<`, `>`, `&` | `app.js:2281` | ⬜ Pending |
 
 ---
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**Dev: แก้ M6 ก่อน แล้วจึง implement P7-3**
+**Dev: แก้ B6 ก่อน (one-liner) แล้วจึง implement P7-4**
 
-### M6 · เปลี่ยน Label/Owner filter จาก `<select>` → pill chips
-**File:** `public/app.js:2136–2143`, `public/style.css`
+### B6 · เพิ่ม `esc()` ใน `renderDetail()` header
+**File:** `app.js:2281`
 
 **วิธีแก้:**
-- แทนที่ `<select id="at-label-sel">` ด้วย chip set — render 1 chip ต่อ 1 label name
-- แทนที่ `<select id="at-owner-sel">` ด้วย chip set — render 1 chip ต่อ 1 member
-- Chip active state เมื่อ selected (class `active`), คลิกซ้ำ = deselect (toggle)
-- ยัง keep `<select id="at-group-sel">` ไว้ได้ (Group by เป็น selector ตาม spec)
+```js
+// บรรทัดนี้:
+${krCard.boardName} · ${krCard.listName}
+// แก้เป็น:
+${esc(krCard.boardName)} · ${esc(krCard.listName)}
+```
 
-**จุดระวัง:**
-- ถ้า labels/members มีจำนวนมาก chips อาจล้น — ใช้ `flex-wrap` (มีใน `.filters` อยู่แล้ว)
-- Filter state (`labelFilter`, `ownerFilter`) ยังเป็น string เดิม — แค่เปลี่ยน UI ที่ set ค่า
-- อย่า break existing `filter` state (All/Overdue/Today/No Due/Done chips)
+### P7-4 · Project Board Convention Validator (ทำหลัง B6 เสร็จ)
+**Files:** `server.js`, `public/app.js`
 
-### P7-3 · OKR Progress View (ทำหลัง M6 เสร็จ)
-**Files:** `public/app.js`, `public/style.css`, `public/index.html`
-
-- สร้าง view ใหม่ "OKR" ใน sidebar
-- ดึง cards จาก board ที่ชื่อหรือ label match "OKR" / "Objective"
-- แสดง Objectives/KRs + progress % จาก card/checklist completion
-- ดู AC ใน Active Tasks § P7-3 ด้านบน
+- ตรวจ list names ของแต่ละ board ว่ามี "Done" / "Backlog" / "In Progress" ครบหรือไม่
+- แสดง ⚠ badge ใน Boards Monitor ถ้า board ไม่ครบ convention
+- API endpoint: `GET /api/boards/:id/health` → `{ ok: bool, missing: string[] }`
+- ดู AC ใน Active Tasks § P7-4 ด้านบน
 
 เมื่อเสร็จแต่ละกลุ่ม: `git commit + git push`
 
