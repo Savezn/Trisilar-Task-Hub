@@ -452,7 +452,7 @@ async function pushTaskToTrello(sessionId, task) {
     return { ok: true, cardId: card.id };
   } catch (e) {
     console.error("[Trello push]", task.id, e.message);
-    return { ok: false, error: e.message };
+    return { ok: false, error: friendlyError(e) };
   }
 }
 
@@ -529,7 +529,7 @@ app.post("/api/reviews/:id/approve-bulk", async (req, res) => {
         const result  = await pushTaskToTrello(req.params.id, task);
         const updated = store.getSession(req.params.id)?.tasks.find(t => t.id === taskId) || task;
         return { taskId, ok: true, trelloCardId: updated.trelloCardId, trello: result };
-      } catch (e) { return { taskId, ok: false, error: e.message }; }
+      } catch (e) { return { taskId, ok: false, error: friendlyError(e) }; }
     }));
     res.json(results);
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }

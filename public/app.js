@@ -2585,6 +2585,7 @@ document.addEventListener("keydown", e => {
 });
 
 window.addEventListener("message", e => {
+  if (e.origin !== "http://localhost:3000") return;
   if (e.data === "cal_connected") {
     CAL.status = { connected: true };
     const gcalEl = $("sidebar-gcal-status");
