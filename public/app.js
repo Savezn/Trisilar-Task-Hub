@@ -262,7 +262,7 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
     reviewSec.appendChild(empty);
   } else {
     const diffLabels  = { create_new: "New", update_existing: "Update", possible_duplicate: "Duplicate" };
-    const diffClasses = { create_new: "chip-done", update_existing: "chip-warning", possible_duplicate: "chip-danger" };
+    const diffClasses = { create_new: "chip-done", update_existing: "chip-update", possible_duplicate: "chip-duplicate" };
     pendingTasks.forEach(task => {
       const row = document.createElement("div");
       row.className = "today-task-row";
@@ -292,16 +292,16 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
         <span class="today-section-count">${calEvents.length}</span>
       </div>
     `;
-    calEvents.forEach(event => {
+    calEvents.forEach(evt => {
       const fmt = dt => new Date(dt).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
-      const timeStr = event.start?.dateTime
-        ? `${fmt(event.start.dateTime)} – ${fmt(event.end?.dateTime || event.start.dateTime)}`
+      const timeStr = evt.start?.dateTime
+        ? `${fmt(evt.start.dateTime)} – ${fmt(evt.end?.dateTime || evt.start.dateTime)}`
         : "All day";
       const row = document.createElement("div");
       row.className = "today-task-row";
       row.innerHTML = `
         <span class="today-cal-time">${esc(timeStr)}</span>
-        <span class="today-task-name">${esc(event.summary || "(no title)")}</span>
+        <span class="today-task-name">${esc(evt.summary || "(no title)")}</span>
         <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();navigateTo('calendar')" title="Open Calendar">Open ↗</button>
       `;
       calSec.appendChild(row);
