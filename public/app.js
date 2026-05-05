@@ -1839,13 +1839,19 @@ async function showBoardsMonitor() {
 
   try {
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
-    renderBoardsMonitor(getAllowedCards());
+    // P7-4: fetch health for all visible boards (parallel, failures silently skipped)
+    const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
+    const healthResults = await Promise.all(
+      visibleBoards.map(b => api.get(`/api/boards/${b.id}/health`).catch(() => ({ ok: true, missing: [] })))
+    );
+    const healthMap = new Map(visibleBoards.map((b, i) => [b.id, healthResults[i]]));
+    renderBoardsMonitor(getAllowedCards(), healthMap);
   } catch (e) {
     content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
   }
 }
 
-function renderBoardsMonitor(allCards) {
+function renderBoardsMonitor(allCards, healthMap = new Map()) {
   const content = $("board-content");
   const now = new Date();
   const todayStr = now.toDateString();
@@ -1872,7 +1878,10 @@ function renderBoardsMonitor(allCards) {
       byList[c.listName]++;
     });
 
-    return { board, color: COLORS[i % COLORS.length], cards, active, overdue, dueToday, done, completionPct, byList };
+    // P7-4: health from pre-fetched map
+    const health = healthMap.get(board.id) || { ok: true, missing: [] };
+
+    return { board, color: COLORS[i % COLORS.length], cards, active, overdue, dueToday, done, completionPct, byList, health };
   });
 
   const page = document.createElement("div");
@@ -1904,7 +1913,7 @@ function renderBoardsMonitor(allCards) {
 
   function renderGrid() {
     grid.innerHTML = "";
-    sortedStats().forEach(({ board, color, cards, overdue, dueToday, done, completionPct, byList }) => {
+    sortedStats().forEach(({ board, color, cards, overdue, dueToday, done, completionPct, byList, health }) => {
       const card = document.createElement("div");
       card.className = "board-monitor-card";
 
@@ -1918,13 +1927,18 @@ function renderBoardsMonitor(allCards) {
       const overdueClass = overdue.length > 0 ? " has-issues" : "";
       const todayClass   = dueToday.length > 0 ? " has-issues" : "";
 
+      // P7-4: convention badge
+      const conventionBadge = !health.ok
+        ? `<span class="bm-convention-badge" title="Missing lists: ${health.missing.join(', ')}">⚠ Convention</span>`
+        : "";
+
       card.innerHTML = `
         <div class="bm-banner" style="background:${color}"></div>
         <div class="bm-body">
           <div class="bm-card-header">
             <div class="bm-board-icon" style="background:${color}">${initials}</div>
             <div class="bm-card-meta">
-              <div class="bm-card-title">${esc(board.name)}</div>
+              <div class="bm-card-title">${esc(board.name)}${conventionBadge}</div>
               <div class="bm-card-sub">${cards.length} cards total</div>
             </div>
             <button class="btn btn-ghost btn-sm bm-open-btn">Open ↗</button>
@@ -1964,6 +1978,9 @@ function renderBoardsMonitor(allCards) {
 
           ${overdue.length > 0 ? `
           <div class="bm-alert">⚠ ${overdue.length} card${overdue.length > 1 ? "s" : ""} past due date</div>
+          ` : ""}
+          ${!health.ok ? `
+          <div class="bm-alert bm-alert-convention">⚠ Missing lists: ${health.missing.map(s => esc(s)).join(", ")}</div>
           ` : ""}
         </div>
       `;
@@ -2278,7 +2295,7 @@ function renderOKRPage(allCards, boards) {
         <div class="okr-detail-header">
           <div class="okr-detail-title">${esc(krCard.name)}</div>
           <div class="okr-detail-meta">
-            ${krCard.boardName} · ${krCard.listName}
+            ${esc(krCard.boardName)} · ${esc(krCard.listName)}
             ${krCard.due ? ` · Due ${new Date(krCard.due).toLocaleDateString()}` : ""}
           </div>
         </div>

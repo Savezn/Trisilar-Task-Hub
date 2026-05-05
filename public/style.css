@@ -2466,6 +2466,25 @@ a { text-decoration: none; }
   color: var(--danger);
   font-weight: 500;
 }
+/* P7-4: convention warning variant (amber) */
+.bm-alert-convention {
+  background: #fffbeb;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+.bm-convention-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  vertical-align: middle;
+  cursor: default;
+}
 
 /* ════════════════════════════════════════════════════════════
    SCROLLBAR POLISH

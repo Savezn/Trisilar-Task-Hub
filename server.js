@@ -171,6 +171,18 @@ app.post("/api/boards/:id/lists", async (req, res) => {
   catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
+// P7-4: Board convention health check
+const REQUIRED_LISTS = ["Backlog", "In Progress", "Done"];
+
+app.get("/api/boards/:id/health", async (req, res) => {
+  try {
+    const lists = await trello.getLists(req.params.id);
+    const names = lists.map(l => l.name.trim());
+    const missing = REQUIRED_LISTS.filter(r => !names.some(n => n.toLowerCase() === r.toLowerCase()));
+    res.json({ ok: missing.length === 0, missing });
+  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+});
+
 // ── Card ↔ GCal event mapping ─────────────────────────────────────────────────
 
 const CARD_EVENTS_FILE = path.join(__dirname, "card-events.json");
