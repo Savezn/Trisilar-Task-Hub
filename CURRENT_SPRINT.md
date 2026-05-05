@@ -18,9 +18,9 @@
 
 | Task | Status | Commit |
 |---|---|---|
-| P5-1 Wire review count | ⬜ Not started | — |
-| P5-2 Calendar events section | ⬜ Not started | — |
-| P5-3 Quick add → Trello | ⬜ Not started | — |
+| P5-1 Wire review count | 🔧 Bug fix pending | ad7e23f |
+| P5-2 Calendar events section | 🔧 Bug fix pending | ad7e23f |
+| P5-3 Quick add → Trello | 🔧 Bug fix pending | ad7e23f |
 
 ---
 
@@ -85,29 +85,43 @@
 | Date | Round | Result | Notes |
 |---|---|---|---|
 | 2026-05-05 | QA Pass 1 (pre-impl) | ⚠ Not started | P5-1,2,3 ยังไม่มีโค้ด — 8 missing implementations พบ, 0 regression bugs |
+| 2026-05-05 | QA Pass 2 (post-impl) | 🔴 1 Bug | 11/11 AC ผ่าน, Bug B1 (chip class), Edge E1 (low) |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
 
-*ยังไม่มี — QA Pass 1 พบว่ายังไม่มีการ implement ใดๆ ใน Phase 5*
+| ID | Bug | File:Line | Status |
+|---|---|---|---|
+| B1 | `diffClasses` ใช้ `"chip-warning"` / `"chip-danger"` ซึ่งไม่มีใน CSS — diff badge Update/Duplicate ไม่มีสี | `app.js:265` | ⬜ Fix needed |
 
 ---
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**Dev: implement P5-1 → P5-2 → P5-3 ตามลำดับ (1 session)**
+**Dev: แก้ Bug B1 (บังคับ) + optionally E1**
 
-ลำดับที่แนะนำ:
-1. **P5-1 ก่อน** — เพราะไม่ต้องการ async ใหม่, แค่เพิ่ม `api.get("/api/reviews")` ใน `showTodayPage()` และแก้ stat card + section
-2. **P5-2 ต่อ** — เพิ่ม calendar section ใน `renderTodayPage()` โดยรับ events เป็น param
-3. **P5-3 สุดท้าย** — แทนที่ `handleQuickAdd()` ด้วย inline board/list selector
+### 🔴 B1 — แก้ chip class names (บังคับ)
+**File:** `public/app.js:265`
 
-**จุดที่ต้องระวัง (จาก QA):**
-- P5-1: `showTodayPage()` ต้อง async แล้ว (ตรวจสอบ — มีแล้ว ✓) เพิ่มแค่ `api.get("/api/reviews")` ข้างใน
-- P5-1: stat card `stat-review` ต้องมี `onclick` → `navigateTo("review")`  
-- P5-2: `renderTodayPage()` ต้องรับ `calEvents` เป็น param เพิ่ม — `showTodayPage()` fetch แล้วส่งเข้าไป
-- P5-3: อย่าล้าง `input.value` ก่อน user confirm — ล้างหลัง card ถูกสร้างสำเร็จเท่านั้น
-- P5-3: ต้อง `S.allCardsCache = null` หลัง create card แล้ว call `showTodayPage()`
+แก้บรรทัดนี้:
+```js
+// เดิม (ผิด)
+const diffClasses = { create_new: "chip-done", update_existing: "chip-warning", possible_duplicate: "chip-danger" };
+
+// ใหม่ (ถูก)
+const diffClasses = { create_new: "chip-done", update_existing: "chip-update", possible_duplicate: "chip-duplicate" };
+```
+
+### 🔵 E1 — rename loop variable (optional แต่แนะนำ)
+**File:** `public/app.js:295`
+
+แก้ `calEvents.forEach(event => {` → `calEvents.forEach(evt => {`
+แล้วแก้ทุกที่ใน callback: `event.start`, `event.end`, `event.summary` → `evt.start`, `evt.end`, `evt.summary`
+(บรรทัด 297–304 ประมาณ 5 occurrences)
+
+**จุดสำคัญ:** อย่าแตะ `onclick="event.stopPropagation()..."` ใน HTML string — `event` ตรงนั้นคือ DOM Event (ถูกต้องอยู่แล้ว)
+
+เมื่อเสร็จ: `git commit + git push`
 
 ---
 
