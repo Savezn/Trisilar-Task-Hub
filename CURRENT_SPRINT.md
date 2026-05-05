@@ -18,9 +18,9 @@
 
 | Task | Status | Commit |
 |---|---|---|
-| P5-1 Wire review count | ⬜ | — |
-| P5-2 Calendar conflicts | ⬜ | — |
-| P5-3 Quick add → Trello | ⬜ | — |
+| P5-1 Wire review count | ⬜ Not started | — |
+| P5-2 Calendar events section | ⬜ Not started | — |
+| P5-3 Quick add → Trello | ⬜ Not started | — |
 
 ---
 
@@ -79,10 +79,35 @@
 
 ---
 
-## Bug Fixes This Sprint
-*(PM เพิ่มที่นี่เมื่อ QA พบ bug)*
+## QA Log
+*(PM บันทึกผล QA แต่ละรอบ)*
 
-*ยังไม่มี*
+| Date | Round | Result | Notes |
+|---|---|---|---|
+| 2026-05-05 | QA Pass 1 (pre-impl) | ⚠ Not started | P5-1,2,3 ยังไม่มีโค้ด — 8 missing implementations พบ, 0 regression bugs |
+
+## Bug Fixes This Sprint
+*(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
+
+*ยังไม่มี — QA Pass 1 พบว่ายังไม่มีการ implement ใดๆ ใน Phase 5*
+
+---
+
+## ⚡ Next Action — Dev ต้องทำ
+
+**Dev: implement P5-1 → P5-2 → P5-3 ตามลำดับ (1 session)**
+
+ลำดับที่แนะนำ:
+1. **P5-1 ก่อน** — เพราะไม่ต้องการ async ใหม่, แค่เพิ่ม `api.get("/api/reviews")` ใน `showTodayPage()` และแก้ stat card + section
+2. **P5-2 ต่อ** — เพิ่ม calendar section ใน `renderTodayPage()` โดยรับ events เป็น param
+3. **P5-3 สุดท้าย** — แทนที่ `handleQuickAdd()` ด้วย inline board/list selector
+
+**จุดที่ต้องระวัง (จาก QA):**
+- P5-1: `showTodayPage()` ต้อง async แล้ว (ตรวจสอบ — มีแล้ว ✓) เพิ่มแค่ `api.get("/api/reviews")` ข้างใน
+- P5-1: stat card `stat-review` ต้องมี `onclick` → `navigateTo("review")`  
+- P5-2: `renderTodayPage()` ต้องรับ `calEvents` เป็น param เพิ่ม — `showTodayPage()` fetch แล้วส่งเข้าไป
+- P5-3: อย่าล้าง `input.value` ก่อน user confirm — ล้างหลัง card ถูกสร้างสำเร็จเท่านั้น
+- P5-3: ต้อง `S.allCardsCache = null` หลัง create card แล้ว call `showTodayPage()`
 
 ---
 
