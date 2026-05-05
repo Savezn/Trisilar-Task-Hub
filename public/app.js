@@ -862,7 +862,7 @@ async function submitTranscript() {
 }
 
 // ── Planner Page ──────────────────────────────────────────────────────────────
-function showPlannerPage() {
+async function showPlannerPage() {
   S.mode = "planner";
   S.currentBoardId = null;
   S.currentGroupId = null;
@@ -870,16 +870,177 @@ function showPlannerPage() {
   $("board-subtitle").textContent = "";
   $("add-list-btn").classList.add("hidden");
 
+  const dateStr = new Date().toLocaleDateString("th-TH", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+  });
+
   $("board-content").innerHTML = `
-    <div class="placeholder-page">
-      <div class="placeholder-card">
-        <div class="placeholder-icon">📝</div>
-        <div class="placeholder-title">Daily Planner — Coming Soon</div>
-        <div class="placeholder-desc">Will show Google Tasks + Trello due today and tomorrow, side by side in a time-blocked view.</div>
-        <span class="chip chip-soon" style="margin-top:8px">Coming Soon</span>
+    <div class="planner-wrap">
+      <div class="planner-date">${dateStr}</div>
+
+      <div class="planner-section">
+        <div class="planner-section-title">📝 Google Tasks — วันนี้</div>
+        <div id="planner-gtasks-body"><div class="planner-loading">กำลังโหลด…</div></div>
+      </div>
+
+      <div class="planner-section">
+        <div class="planner-section-title">📋 Trello — Due Today &amp; Tomorrow</div>
+        <div id="planner-trello-body"><div class="planner-loading">กำลังโหลด…</div></div>
       </div>
     </div>
   `;
+
+  await Promise.all([loadPlannerGTasks(), loadPlannerTrello()]);
+}
+
+async function loadPlannerGTasks() {
+  const body = $("planner-gtasks-body");
+  if (!body) return;
+  try {
+    const status = await api.get("/api/google-tasks/status");
+    if (!status.connected) {
+      body.innerHTML = `
+        <div class="planner-connect-state">
+          <p>เชื่อมต่อ Google Tasks เพื่อดู to-do list ประจำวัน</p>
+          <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Google →</button>
+        </div>`;
+      return;
+    }
+    const tasks = await api.get("/api/google-tasks/today");
+    renderPlannerGTasks(tasks);
+  } catch (e) {
+    body.innerHTML = `<div class="planner-error">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+function renderPlannerGTasks(tasks) {
+  const body = $("planner-gtasks-body");
+  if (!body) return;
+
+  let listHtml = "";
+  if (tasks.length === 0) {
+    listHtml = `<div class="planner-empty">ไม่มี task วันนี้ 🎉</div>`;
+  } else {
+    listHtml = `<div class="planner-task-list">` +
+      tasks.map(t => `
+        <div class="planner-task-row" data-task-id="${esc(t.id)}">
+          <input type="checkbox" class="planner-checkbox"
+            onchange="plannerCompleteTask('${esc(t.id)}',this)">
+          <span class="planner-task-title">${esc(t.title)}</span>
+        </div>`).join("") +
+    `</div>`;
+  }
+
+  body.innerHTML = listHtml + `
+    <div class="planner-add-row">
+      <input type="text" id="planner-add-input" class="planner-add-input"
+        placeholder="+ เพิ่ม task สำหรับวันนี้..."
+        onkeydown="if(event.key==='Enter')plannerAddTask()">
+      <button class="btn btn-sm planner-add-btn" onclick="plannerAddTask()">Add</button>
+    </div>`;
+}
+
+async function plannerCompleteTask(taskId, checkbox) {
+  checkbox.disabled = true;
+  try {
+    await api.put(`/api/google-tasks/${taskId}`, { complete: true });
+    const row = checkbox.closest(".planner-task-row");
+    if (row) {
+      row.style.opacity = "0.35";
+      setTimeout(() => {
+        row.remove();
+        const list = $("planner-gtasks-body")?.querySelector(".planner-task-list");
+        if (list && !list.querySelector(".planner-task-row")) {
+          list.innerHTML = `<div class="planner-empty">ไม่มี task วันนี้ 🎉</div>`;
+        }
+      }, 350);
+    }
+  } catch (e) {
+    checkbox.checked = false;
+    checkbox.disabled = false;
+    toast("ไม่สามารถ update task: " + e.message, true);
+  }
+}
+
+async function plannerAddTask() {
+  const input = $("planner-add-input");
+  if (!input) return;
+  const title = input.value.trim();
+  if (!title) return;
+
+  input.disabled = true;
+  try {
+    const task = await api.post("/api/google-tasks", { title });
+    input.value = "";
+
+    // Append to list (or re-render if no list yet)
+    const list = $("planner-gtasks-body")?.querySelector(".planner-task-list");
+    if (list) {
+      list.querySelector(".planner-empty")?.remove();
+      const row = document.createElement("div");
+      row.className = "planner-task-row";
+      row.dataset.taskId = task.id;
+      row.innerHTML = `
+        <input type="checkbox" class="planner-checkbox"
+          onchange="plannerCompleteTask('${esc(task.id)}',this)">
+        <span class="planner-task-title">${esc(task.title)}</span>`;
+      list.appendChild(row);
+    } else {
+      await loadPlannerGTasks();
+    }
+    toast("เพิ่ม task แล้ว ✓");
+  } catch (e) {
+    toast("Error: " + e.message, true);
+  } finally {
+    input.disabled = false;
+    input?.focus();
+  }
+}
+
+async function loadPlannerTrello() {
+  const body = $("planner-trello-body");
+  if (!body) return;
+
+  if (!S.allCardsCache) {
+    try {
+      S.allCardsCache = await api.get("/api/all-cards");
+    } catch (e) {
+      body.innerHTML = `<div class="planner-error">ไม่สามารถโหลด Trello cards ได้</div>`;
+      return;
+    }
+  }
+
+  const cards = getAllowedCards();
+  const now = new Date();
+  const todayStart    = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrowStart = new Date(todayStart); tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+  const dayAfterStart = new Date(tomorrowStart); dayAfterStart.setDate(dayAfterStart.getDate() + 1);
+
+  const todayCards    = cards.filter(c => c.due && new Date(c.due) >= todayStart    && new Date(c.due) < tomorrowStart);
+  const tomorrowCards = cards.filter(c => c.due && new Date(c.due) >= tomorrowStart && new Date(c.due) < dayAfterStart);
+
+  if (!todayCards.length && !tomorrowCards.length) {
+    body.innerHTML = `<div class="planner-empty">ไม่มี Trello card ที่ due วันนี้หรือพรุ่งนี้ 🎉</div>`;
+    return;
+  }
+
+  const cardRow = (c, label, cls) => `
+    <div class="planner-trello-row">
+      <span class="chip ${cls}" style="font-size:10px;flex-shrink:0">${label}</span>
+      <span class="planner-trello-title">${esc(c.name)}</span>
+      <span class="planner-trello-meta">${esc(c.boardName)} · ${esc(c.listName)}</span>
+    </div>`;
+
+  let html = "";
+  if (todayCards.length) {
+    html += `<div class="planner-sub-label">วันนี้</div>`;
+    html += todayCards.map(c => cardRow(c, "วันนี้", "chip-danger")).join("");
+  }
+  if (tomorrowCards.length) {
+    html += `<div class="planner-sub-label">พรุ่งนี้</div>`;
+    html += tomorrowCards.map(c => cardRow(c, "พรุ่งนี้", "chip-warning")).join("");
+  }
+  body.innerHTML = html;
 }
 
 // ── Settings Page ─────────────────────────────────────────────────────────────
@@ -927,10 +1088,13 @@ function showSettingsPage() {
         <span class="integration-icon">✅</span>
         <div class="integration-info">
           <div class="integration-name">Google Tasks</div>
-          <div class="integration-desc">Not available yet</div>
+          <div class="integration-desc">${calConnected ? "OAuth connected (shared with Calendar)" : "Not connected"}</div>
         </div>
-        <div class="integration-status-dot dot-gray"></div>
-        <span class="chip chip-soon">Coming Soon</span>
+        <div class="integration-status-dot ${calConnected ? "dot-green" : "dot-gray"}"></div>
+        ${calConnected
+          ? '<span class="chip chip-done">Connected</span>'
+          : '<button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect</button>'
+        }
       </div>
     </div>
   `;

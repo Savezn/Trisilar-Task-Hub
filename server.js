@@ -25,6 +25,17 @@ function getCalendarClient() {
   return google.calendar({ version: "v3", auth });
 }
 
+function getTasksClient() {
+  const auth = getOAuth2Client();
+  auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+  return google.tasks({ version: "v1", auth });
+}
+
+// Returns today's date string (YYYY-MM-DD) in Asia/Bangkok (UTC+7)
+function todayBangkok() {
+  return new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
+}
+
 function updateEnvKey(key, value) {
   const envPath = path.join(__dirname, ".env");
   let content = fs.readFileSync(envPath, "utf8");
@@ -262,7 +273,10 @@ app.post("/auth/google", (req, res) => {
   const url = auth.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
-    scope: ["https://www.googleapis.com/auth/calendar"],
+    scope: [
+      "https://www.googleapis.com/auth/calendar",
+      "https://www.googleapis.com/auth/tasks",
+    ],
   });
   res.json({ url });
 });
@@ -513,6 +527,67 @@ app.post("/api/reviews/:id/reject-bulk", (req, res) => {
 app.delete("/api/reviews/:id", (req, res) => {
   try { res.json(store.dismissSession(req.params.id)); }
   catch (e) { res.status(notFound(e)).json({ error: e.message }); }
+});
+
+// ── Google Tasks ──────────────────────────────────────────────────────────────
+
+app.get("/api/google-tasks/status", (req, res) => {
+  res.json({
+    connected: !!(
+      process.env.GOOGLE_CLIENT_ID &&
+      process.env.GOOGLE_CLIENT_SECRET &&
+      process.env.GOOGLE_REFRESH_TOKEN
+    ),
+  });
+});
+
+// Returns incomplete tasks due today or overdue (Bangkok timezone)
+app.get("/api/google-tasks/today", async (req, res) => {
+  try {
+    const tasks = getTasksClient();
+    const today = todayBangkok();
+    const r = await tasks.tasks.list({
+      tasklist: "@default",
+      showCompleted: false,
+      maxResults: 100,
+    });
+    // Include tasks with no due date OR due date <= today (overdue + today)
+    const items = (r.data.items || []).filter(t =>
+      !t.due || t.due.slice(0, 10) <= today
+    );
+    res.json(items);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Create a new task due today
+app.post("/api/google-tasks", async (req, res) => {
+  try {
+    const { title } = req.body;
+    if (!title) return res.status(400).json({ error: "title is required" });
+    const tasks = getTasksClient();
+    const today = todayBangkok();
+    const r = await tasks.tasks.insert({
+      tasklist: "@default",
+      resource: { title, due: today + "T00:00:00.000Z" },
+    });
+    res.json(r.data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Update a task: mark complete or update title
+app.put("/api/google-tasks/:id", async (req, res) => {
+  try {
+    const tasks = getTasksClient();
+    const patch = {};
+    if (req.body.complete) patch.status = "completed";
+    if (req.body.title)    patch.title  = req.body.title;
+    const r = await tasks.tasks.patch({
+      tasklist: "@default",
+      task: req.params.id,
+      resource: patch,
+    });
+    res.json(r.data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // ── Labels ────────────────────────────────────────────────────────────────────

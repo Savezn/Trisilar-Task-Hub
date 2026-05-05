@@ -1270,6 +1270,105 @@ a { text-decoration: none; }
 .placeholder-desc  { font-size: 13px; color: var(--text-muted); max-width: 360px; line-height: 1.65; }
 
 /* ════════════════════════════════════════════════════════════
+   PLANNER PAGE
+   ════════════════════════════════════════════════════════════ */
+.planner-wrap {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.planner-date {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+.planner-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.planner-section-title {
+  padding: 11px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--list-bg);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.planner-loading,
+.planner-empty,
+.planner-error  { padding: 18px 16px; font-size: 13px; color: var(--text-muted); }
+.planner-error  { color: var(--danger); }
+.planner-connect-state {
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.planner-connect-state p { margin: 0; font-size: 13px; color: var(--text-muted); }
+.planner-task-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s, opacity 0.35s;
+}
+.planner-task-row:last-child { border-bottom: none; }
+.planner-task-row:hover { background: var(--bg); }
+.planner-checkbox { width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+.planner-task-title { flex: 1; font-size: 13px; color: var(--text); }
+.planner-add-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-top: 1px solid var(--border);
+}
+.planner-add-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--text);
+}
+.planner-add-input::placeholder { color: var(--text-faint); }
+.planner-add-btn { opacity: 0; transition: opacity 0.15s; }
+.planner-add-row:focus-within .planner-add-btn { opacity: 1; }
+.planner-sub-label {
+  padding: 8px 16px 2px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.planner-trello-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.planner-trello-row:last-child { border-bottom: none; }
+.planner-trello-title {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.planner-trello-meta { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+
+/* ════════════════════════════════════════════════════════════
    CALENDAR VIEW
    ════════════════════════════════════════════════════════════ */
 .calendar-view { display: flex; flex-direction: column; height: 100%; }
