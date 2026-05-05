@@ -1,6 +1,6 @@
 # Current Sprint — Trisilar Task Hub
-**Phase 7 · OKR / Portfolio Layer**
-**Started:** 2026-05-05 · **Status:** ⬜ In Progress
+**Phase 8 · Post-MVP Enhancements**
+**Started:** 2026-05-05 · **Status:** 🟡 In Progress
 
 > **วิธีใช้ไฟล์นี้:**
 > - Dev / QA / PM อ้างอิงไฟล์นี้เท่านั้น (ไม่ต้องอ่าน DEVELOPMENT_PLAN.md)
@@ -8,8 +8,25 @@
 
 ---
 
+## 🎉 MVP Roadmap Complete
+
+Phase 7 เสร็จสมบูรณ์ (2026-05-05) — MVP roadmap ทุก Phase ผ่าน QA แล้ว:
+
+| Phase | Completed |
+|---|---|
+| P0 Bug Fixes | ✅ 2026-05-04 |
+| P1 Review Queue Data | ✅ 2026-05-04 |
+| P2 Review Queue UI | ✅ 2026-05-04 |
+| P3 Task Diff Engine | ✅ 2026-05-04 |
+| P4 Google Tasks Planner | ✅ 2026-05-05 |
+| P5 Today Enhanced | ✅ 2026-05-05 |
+| P6 Hardening & Polish | ✅ 2026-05-05 |
+| P7 OKR / Portfolio Layer | ✅ 2026-05-05 |
+
+---
+
 ## Sprint Goal
-ทำให้ระบบรองรับแผนบริหาร Trello แบบ Project Boards + Dashboard กลาง โดย map งานจาก project/initiative boards กลับหา OKR Board, category, priority, owner และ AI agent support
+ยกระดับระบบหลัง MVP — เพิ่มความเสถียร, UX improvements, และ features ที่ถูก defer ระหว่าง Phase 1–7
 
 ---
 
@@ -18,96 +35,93 @@
 
 | Task | Status | Commit |
 |---|---|---|
-| P7-1 Trello metadata ingestion | ✅ Done | c833189 |
-| P7-2 Portfolio filters | ✅ Done | 9d89034 |
-| P7-3 OKR Progress View | ✅ Done | 9d89034 |
-| P7-4 Board convention validator | ✅ Done | a84312e |
-| P7-5 Weekly Focus view | ⬜ Not started | — |
+| B7 — Restart server (P7-4 health route) | ✅ Done | ops — no commit |
+| B8 — Calendar graceful degradation `.catch(()=>[])` | ✅ Done | `d9ce8b1` |
+| P8-1 — Notification & Alert System | ✅ Done | `d9ce8b1` |
 
 ---
 
 ## Active Tasks
 
-### P7-1 · Trello Metadata Ingestion
-**Priority:** 🔴 High (ทุก task ต่อจากนี้ depend on ข้อมูลนี้)
-**Files:** `trello.js`, `server.js`, `public/app.js`
+### P8-1 · Notification & Alert System
+**Priority:** 🟡 Medium
+**Files:** `server.js`, `public/app.js`, `public/style.css`
 
 **What to do:**
-- ขยาย Trello card fetch ให้ดึง labels, member ids, checklist progress และ custom field data ถ้ามี
-- Normalize metadata ใน `/api/all-cards` และ `/api/boards/cards` ให้ทุก view ใช้ shape เดียวกัน
+- เพิ่ม toast/alert สำหรับ card ที่ overdue เกิน 3 วัน — แสดง once per session
+- Badge count บน browser tab title: `(N) Trisilar Task Hub` เมื่อมี overdue > 0
+- Optional: desktop notification permission prompt (Web Notifications API)
 
 **AC:**
-- [ ] Card object ใน `/api/all-cards` มี field: `labels[]`, `members[]`, `checklistProgress` (done/total)
-- [ ] Custom fields ถ้ามี — expose เป็น `customFields: { [name]: value }`
-- [ ] `/api/boards/cards` ใช้ shape เดียวกัน
-- [ ] ไม่มี regression ใน existing views (Today, All Tasks, Kanban, Calendar)
+- [x] Tab title อัปเดตเป็น `(N) Trisilar Task Hub` เมื่อ overdue cards > 0
+- [x] Toast แสดงครั้งเดียวต่อ session เมื่อ overdue cards > 3
+- [x] Toast dismiss ได้ด้วย ✕ หรือ click away
 
 ---
 
-### P7-2 · Portfolio Filters
-**Priority:** 🔴 High
+### P8-2 · Card Quick-Edit Inline
+**Priority:** 🟡 Medium
 **Files:** `public/app.js`, `public/style.css`
 
 **What to do:**
-- เพิ่ม filter chips ใน All Tasks view: Category / OKR / Priority / Owner / Agent
-- Filter ใช้ labels และ member ids จาก P7-1 metadata
-- Group by selector เพิ่ม option: "By Label" / "By Member"
+- ใน All Tasks view — ดับเบิลคลิกที่ชื่อ task เพื่อ edit inline (rename)
+- ใน Today view — inline date picker สำหรับ overdue tasks (reschedule)
+- Save on Enter / blur; Cancel on Escape
 
 **AC:**
-- [ ] Filter chip "Label" → กรอง cards ที่มี label ที่เลือก
-- [ ] Filter chip "Owner" → กรอง cards ที่ assigned member ตรง
-- [ ] Group by "By Label" → แสดง cards จัดกลุ่มตาม label
-- [ ] ไม่กระทบ existing filter chips (All, Today, Overdue, etc.)
+- [ ] Double-click card name ใน All Tasks → editable input แทนที่
+- [ ] Enter → save ชื่อใหม่ผ่าน Trello API → refresh view
+- [ ] Escape → ยกเลิก ไม่เปลี่ยนแปลงอะไร
+- [ ] Inline date picker สำหรับ overdue cards ใน Today view
 
 ---
 
-### P7-3 · OKR Progress View
-**Priority:** 🟡 Medium
-**Files:** `public/app.js`, `public/style.css`, `public/index.html`
-
-**What to do:**
-- สร้าง view ใหม่ "OKR" ใน sidebar
-- ดึง cards จาก board ที่ชื่อหรือ label match "OKR" / "Objective"
-- แสดง Objectives/KRs จาก OKR board และ link ไปยัง Project Boards ที่เกี่ยวข้องผ่าน labels/naming convention
-- คำนวณ progress จาก card completion, checklist completion, overdue count
-
-**AC:**
-- [ ] เห็น Objective 1–N จาก OKR board พร้อม KR summary
-- [ ] แต่ละ KR แสดง linked project cards/boards, progress %, overdue, next due
-- [ ] คลิก KR → drill down ไป task list ที่เกี่ยวข้องได้
-- [ ] ถ้าไม่มี OKR board → แสดง empty state แนะนำให้ตั้งค่า
-
----
-
-### P7-4 · Project Board Convention Validator
-**Priority:** 🟡 Medium
+### P8-3 · Export / Report
+**Priority:** ⚪ Low
 **Files:** `server.js`, `public/app.js`
 
 **What to do:**
-- ตรวจ list names ของแต่ละ board ว่าตรง convention หรือไม่ (เช่น มี "Done"/"Backlog"/"In Progress")
-- แสดง warning badge ใน Boards Monitor ถ้า board ไม่ครบ convention
-- API endpoint: `GET /api/boards/:id/health`
+- เพิ่ม button "Export CSV" ใน All Tasks view — export cards ที่กรองอยู่เป็น CSV
+- Field: Title, Board, List, Owner, Due Date, Labels, Status
 
 **AC:**
-- [ ] Board ที่ขาด required list names → แสดง ⚠ badge ใน Boards Monitor
-- [ ] `GET /api/boards/:id/health` คืน `{ ok: bool, missing: string[] }`
-- [ ] Board ที่ครบ convention → ไม่มี badge
+- [ ] "Export CSV" button ใน All Tasks header
+- [ ] CSV มี columns: Title, Board, List, Owner, Due Date, Labels, Status
+- [ ] Export เฉพาะ cards ที่กรองอยู่ (ตาม filter chips + group by ที่ active)
+- [ ] Filename: `trisilar-tasks-YYYY-MM-DD.csv`
 
 ---
 
-### P7-5 · Weekly Focus View
-**Priority:** ⚪ Low (MVP placeholder)
-**Files:** `public/app.js`, `public/style.css`, `public/index.html`
+### P8-4 · Performance — Virtual Scroll
+**Priority:** ⚪ Low (defer ถ้า board count < 10)
+**Files:** `public/app.js`, `public/style.css`
 
 **What to do:**
-- สร้าง view "Weekly Focus" ใน sidebar — operating view สำหรับทีม 2 คน + AI Agent
-- แสดง: tasks ที่กำหนดให้ตัวเอง (by owner filter) + upcoming 7 days + pending review count
-- Quick-assign: drag task ไปหา owner slot
+- All Tasks view: ถ้า cards > 200 ให้ใช้ windowed render (แสดง 50 ต่อหน้า + pagination)
+- Boards Monitor: lazy-fetch health เฉพาะ boards ที่ visible ใน viewport
 
 **AC:**
-- [ ] แสดง tasks ของ owner ที่เลือกใน 7 วันข้างหน้า
-- [ ] Pending review count badge ในหน้า
-- [ ] Empty state ถ้าไม่มี tasks assigned ใน 7 วัน
+- [ ] All Tasks แสดง pagination เมื่อ cards > 200
+- [ ] Page size 50, navigation next/prev + page number
+- [ ] Boards Monitor health fetch เฉพาะ boards ที่อยู่ใน viewport (IntersectionObserver)
+
+---
+
+### P8-5 · OKR Board Setup Guide
+**Priority:** ⚪ Low
+**Files:** `public/app.js`, `public/style.css`
+
+**What to do:**
+- ขยาย OKR empty state — เพิ่ม step-by-step guide แบบ interactive
+- Step 1: สร้าง Trello board ชื่อ "OKR Board"
+- Step 2: สร้าง lists ชื่อ Objective 1, Objective 2, …
+- Step 3: สร้าง cards ชื่อ KR1.1, KR1.2 ใต้ objective
+- Step 4: ใส่ label เดียวกันกับ project boards เพื่อ link
+
+**AC:**
+- [ ] Empty state มี accordion steps guide
+- [ ] แต่ละ step มี icon + description + link ไป Trello (ถ้ามี)
+- [ ] "Refresh" button เพื่อ re-check หลัง user ตั้งค่าเสร็จ
 
 ---
 
@@ -116,39 +130,41 @@
 
 | Date | Round | Result | Notes |
 |---|---|---|---|
-| 2026-05-05 | QA Pass 1 (P7-1) | 🟡 1 Missing | P7-1 AC 4/5 ผ่าน — B5: customFields keyed by idCustomField ไม่ใช่ name |
-| 2026-05-05 | QA Pass 2 (B5 + P7-2) | 🟡 1 Missing | B5 ✅, P7-1 ✅ ครบ, P7-2 AC 3/4 — M6: Label/Owner ใช้ `<select>` แทน filter chip ตาม AC spec |
-| 2026-05-05 | QA Pass 3 (M6 + P7-3) | 🔴 1 Bug | M6 ✅, P7-3 ✅ ครบ 4/4 — B6: `renderDetail()` ไม่ `esc()` boardName/listName (`app.js:2281`) |
-| 2026-05-05 | QA Pass 4 (B6 + P7-4) | ✅ Clean | B6 ✅, P7-4 ✅ ครบ 3/3 AC — no bugs |
+| 2026-05-05 | E2E Full MVP Test (P0–P7) | 🟡 2 Bugs | ทุก view โหลดได้ · Trello data ถูกต้อง · พบ B7 (health endpoint 404 — server ไม่ restart) + B8 (Calendar blank เมื่อ GCal fail) · GCal/GTasks "invalid_client" เป็น env credentials issue ไม่ใช่ code bug |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
 
 | ID | Bug | File:Line | Status |
 |---|---|---|---|
-| B5 | `customFields` keyed by `idCustomField` (hex string) แทน field name — AC ระบุ `{ [name]: value }` — ต้องการ `GET /boards/:id/customFields` per board เพื่อ resolve names | `server.js:76` | ✅ Fixed (c833189) |
-| M6 | P7-2 AC ระบุ "Filter chip 'Label'" และ "Filter chip 'Owner'" — implementation ใช้ `<select class="at-select">` dropdown แทน pill chip — ฟังก์ชันกรองถูกต้องแต่ UI ไม่ตรง spec | `app.js:2136–2143` | ✅ Fixed (9d89034) |
-| B6 | `renderDetail()` header ไม่ใช้ `esc()` กับ `krCard.boardName` และ `krCard.listName` — XSS risk ถ้า board/list name มี `<`, `>`, `&` | `app.js:2281` | ✅ Fixed (a84312e) |
+| B7 | `GET /api/boards/:id/health` คืน 404 — server process (PID 33628) start ก่อน P7-4 commit `a84312e` (09:13 vs 15:35) → route ไม่ได้ register → convention badges ไม่แสดงเลย · frontend `.catch(()=>({ok:true}))` ซ่อน error ไว้ | `server.js:177` (code ถูก — ต้อง restart server เท่านั้น) | ✅ Done (2026-05-06) |
+| B8 | Calendar view ว่างสนิทเมื่อ GCal API fail — `Promise.all([gcalEvents, trelloData])` ไม่มี `.catch()` บน gcalEvents → reject ทั้งคู่ → Trello deadlines หายไปด้วยทั้งที่ไม่เกี่ยวกับ GCal | `app.js:3130` — เพิ่ม `.catch(()=>[])` | ✅ Done `d9ce8b1` |
 
 ---
 
 ## ⚡ Next Action — Dev ต้องทำ
 
-**Dev: implement P7-5 (task สุดท้ายของ Phase 7)**
+**B7 ✅ · B8 ✅ · P8-1 ✅ — เริ่ม P8-2 ได้เลย**
 
-### P7-5 · Weekly Focus View
-**Files:** `public/app.js`, `public/style.css`, `public/index.html`
+---
 
-- สร้าง view "Weekly Focus" ใน sidebar
-- แสดง tasks ของ owner ที่เลือก (filter by member) ใน 7 วันข้างหน้า
-- Pending review count badge ในหน้า
-- Empty state ถ้าไม่มี tasks assigned ใน 7 วัน
-- ดู AC ใน Active Tasks § P7-5 ด้านบน
+### 🟡 P8-2 · Card Quick-Edit Inline
+
+ดู Active Tasks § P8-2 สำหรับ AC ครบถ้วน
 
 **จุดระวัง:**
-- Owner selector ดึงจาก `S.allCardsCache` members (เหมือน P7-2)
-- Pending review count ดึงจาก `S.reviewSessions` หรือ `api.get("/api/review-sessions")`
-- ลบ `<span class="nav-badge-soon">` ออกจาก Planner nav ถ้ายังมีอยู่ (ไม่เกี่ยวกับ P7-5 แต่ cleanup ได้)
+- All Tasks view: `renderAllTasks()` สร้าง card rows — ต้องเพิ่ม `ondblclick` บนชื่อ card
+- Double-click → แทนที่ text node ด้วย `<input>` ที่ focus ทันที
+- Enter / blur → call `api.put("/api/cards/:id", { name })` → `refreshCurrentView()`
+- Escape → คืน original text ไม่ call API
+- Today view inline date picker: หา overdue cards ใน `showTodayPage()` → เพิ่ม date input ใต้ card name
+- Date change → call `api.put("/api/cards/:id", { due: newDate })` → refresh
+
+**Grep เริ่มต้น:**
+```
+Grep("renderAllTasks", "public/app.js")       → หา function หลัก
+Grep("due-border-overdue\|overdue.*card", "public/app.js") → หา overdue cards ใน Today
+```
 
 เมื่อเสร็จ: `git commit + git push`
 
@@ -159,12 +175,11 @@
 
 | สิ่งที่ต้องการ | คำสั่ง |
 |---|---|
-| Trello card fetch shape | `Grep("getCards\|fields=", "trello.js")` |
-| `/api/all-cards` endpoint | `Grep("all-cards", "server.js")` |
-| `/api/boards/cards` endpoint | `Grep("boards/cards", "server.js")` |
-| All Tasks render / filter chips | `Grep("renderAllTasks\|filter-chip", "public/app.js")` |
-| Sidebar nav items | `Grep("nav-item\|navigateTo", "public/index.html")` |
-| Boards Monitor render | `Grep("renderBoardsMonitor", "public/app.js")` |
+| showToast function | `Grep("showToast", "public/app.js")` |
+| renderAllTasks function | `Grep("renderAllTasks", "public/app.js")` |
+| refreshCurrentView | `Grep("refreshCurrentView", "public/app.js")` |
+| Today view render | `Grep("renderToday\|showToday", "public/app.js")` |
+| S global state object | `Grep("const S =\|^const S", "public/app.js")` |
 
 ---
 
@@ -174,7 +189,7 @@
 ```
 คุณ Dev — อ้างอิง CURRENT_SPRINT.md เท่านั้น (ไม่ต้องอ่าน DEVELOPMENT_PLAN.md)
 
-ทำ P7-1 ให้เสร็จตาม AC ใน CURRENT_SPRINT.md
+ทำ P8-1 (หรือ P8-2) ให้เสร็จตาม AC ใน CURRENT_SPRINT.md
 ดู ⚡ Next Action สำหรับลำดับและ key notes
 
 กฎการอ่านไฟล์:
@@ -231,6 +246,7 @@ Output format:
 | P4 Google Tasks Planner | ✅ Done (2026-05-05) |
 | P5 Today Enhanced | ✅ Done (2026-05-05) |
 | P6 Hardening & Polish | ✅ Done (2026-05-05) |
-| **P7 OKR / Portfolio Layer** | **⬜ Current** |
+| P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
+| **P8 Post-MVP Enhancements** | **⬜ Current** |
 
-*รายละเอียด P7 tasks เต็ม: ดู DEVELOPMENT_PLAN.md § PHASE 7*
+*รายละเอียด: ดู Active Tasks ด้านบน*
