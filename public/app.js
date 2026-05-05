@@ -2359,11 +2359,44 @@ function renderOKRPage(allCards, boards) {
 
   if (!okrBoards.length) {
     content.innerHTML = `
-      <div class="empty-state">
+      <div class="empty-state okr-setup-guide">
         <div class="empty-icon">🎯</div>
-        <h3>No OKR board found</h3>
-        <p>Create a Trello board with "OKR" or "Objective" in the name, then add cards for each Objective and Key Result.</p>
-        <p style="margin-top:8px;font-size:12px;color:var(--text-faint)">Convention: List names = Objective labels (e.g. "Q2 Growth"). Card names = KR descriptions.</p>
+        <h3>ยังไม่มี OKR Board</h3>
+        <p>ทำตาม 4 ขั้นตอนนี้เพื่อเริ่มใช้ OKR ใน Trisilar Task Hub</p>
+        <div class="okr-guide-steps">
+
+          <details class="okr-guide-step" open>
+            <summary><span class="okr-step-num">1</span>สร้าง Trello Board ชื่อ "OKR Board"</summary>
+            <div class="okr-step-body">
+              <p>สร้าง board ใหม่ใน Trello ตั้งชื่อให้มีคำว่า <code>OKR</code> หรือ <code>Objective</code> เพื่อให้ระบบตรวจพบอัตโนมัติ</p>
+              <a href="https://trello.com" target="_blank" rel="noopener" class="okr-guide-link">เปิด Trello ↗</a>
+            </div>
+          </details>
+
+          <details class="okr-guide-step">
+            <summary><span class="okr-step-num">2</span>สร้าง Lists สำหรับแต่ละ Objective</summary>
+            <div class="okr-step-body">
+              <p>ใน OKR Board สร้าง lists ตั้งชื่อเป็นชื่อ Objective เช่น <code>Objective 1 — เพิ่มรายได้</code>, <code>Objective 2 — ลด cost</code> แต่ละ list แทน 1 Objective</p>
+            </div>
+          </details>
+
+          <details class="okr-guide-step">
+            <summary><span class="okr-step-num">3</span>สร้าง Cards สำหรับ Key Results</summary>
+            <div class="okr-step-body">
+              <p>ใต้แต่ละ Objective list สร้าง cards ชื่อ <code>KR1.1</code>, <code>KR1.2</code> พร้อมกำหนด due date และเพิ่ม checklist เพื่อ track progress</p>
+            </div>
+          </details>
+
+          <details class="okr-guide-step">
+            <summary><span class="okr-step-num">4</span>Link กับ Project Boards ด้วย Labels</summary>
+            <div class="okr-step-body">
+              <p>ใส่ label ชื่อเดียวกันกับ project boards บน KR cards เพื่อให้ Trisilar เชื่อม KR กับ tasks ที่เกี่ยวข้อง</p>
+              <a href="https://trello.com" target="_blank" rel="noopener" class="okr-guide-link">ไปที่ Trello ↗</a>
+            </div>
+          </details>
+
+        </div>
+        <button class="btn btn-primary btn-sm okr-refresh-btn" onclick="showOKRPage()">↻ Refresh — ตรวจสอบอีกครั้ง</button>
       </div>`;
     return;
   }
