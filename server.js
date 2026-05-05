@@ -55,6 +55,12 @@ function friendlyError(e) {
   ) {
     return "Google Calendar session expired. Please reconnect.";
   }
+  if (msg.includes("invalid_client") || msg.includes("invalid client")) {
+    return "Google Calendar not connected. Check credentials in .env";
+  }
+  if (msg.includes("429") || msg.includes("rate limit") || msg.includes("api_token_limit")) {
+    return "Trello rate limit reached. Wait a moment and refresh.";
+  }
   return "Internal server error";
 }
 
