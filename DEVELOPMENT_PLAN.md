@@ -2,7 +2,7 @@
 **Role:** Project Manager Reference Document  
 **Purpose:** Track Claude Code sessions against a structured build sequence  
 **Based on:** MVP_PRD.md  
-**Last updated:** 2026-05-05 (Phase 6 complete · Phase 7 ← current · ใช้ CURRENT_SPRINT.md สำหรับ active work)
+**Last updated:** 2026-05-06 (Phase 8 complete · P8-4 Virtual Scroll deferred (cards < 200 threshold) · ใช้ CURRENT_SPRINT.md สำหรับ active work)
 
 ---
 
@@ -47,7 +47,8 @@ Phase 3 — Task Diff Engine                 ✅ COMPLETE  (2026-05-04, QA clean
 Phase 4 — Google Tasks Daily Planner       ✅ COMPLETE  (2026-05-05)
 Phase 5 — Today Dashboard: Enhanced        ✅ COMPLETE  (2026-05-05)
 Phase 6 — Hardening & Polish               ✅ COMPLETE  (2026-05-05)
-Phase 7 — OKR / Portfolio Layer            ⬜ TODO      [~1-2 sessions] ← current
+Phase 7 — OKR / Portfolio Layer            ✅ COMPLETE  (2026-05-05)
+Phase 8 — Post-MVP Enhancements            ✅ COMPLETE  (2026-05-06, P8-4 deferred per spec)
 ```
 
 **Critical path:** Phase 0 → 1 → 2 → 3 (ต้องทำตามลำดับ)  
@@ -909,11 +910,16 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P6** | **P6-6** Task diff skip Done/Completed lists | ✅ Done | 2026-05-05 | DONE_LIST_PATTERN regex; filter before card fetch |
 | **P6** | **P6-7** matchReason cleanup for create_new | ✅ Done | 2026-05-05 | All 3 create_new return paths: matchReason: "" |
 | **P6** | **P6-8** Processed task matchReason display | ✅ Done | 2026-05-05 | buildProcessedTaskHTML: reasonTip muted text for update/duplicate |
-| **P7** | **P7-1** Trello metadata ingestion | ⬜ Todo | — | labels, members, checklist progress, custom fields |
-| **P7** | **P7-2** Portfolio filters | ⬜ Todo | — | category / OKR / priority / owner / agent filters |
-| **P7** | **P7-3** OKR Progress View | ⬜ Todo | — | map OKR Board to linked Project Boards |
-| **P7** | **P7-4** Project Board convention validator | ⬜ Todo | — | list names + required metadata hygiene |
-| **P7** | **P7-5** Weekly Focus view | ⬜ Todo | — | operating view for 2-person + AI Agent team |
+| **P7** | **P7-1** Trello metadata ingestion | ✅ Done | 2026-05-05 | labels, members, checklistProgress, customFields by name — commit c833189 |
+| **P7** | **P7-2** Portfolio filters | ✅ Done | 2026-05-05 | label/owner pill chips, group-by label/member — commit 9d89034 |
+| **P7** | **P7-3** OKR Progress View | ✅ Done | 2026-05-05 | OKR board detection, KR rows with progress/overdue, drill-down — commit 9d89034 |
+| **P7** | **P7-4** Project Board convention validator | ✅ Done | 2026-05-05 | /api/boards/:id/health, ⚠ badge in Boards Monitor — commit a84312e |
+| **P7** | **P7-5** Weekly Focus view | ✅ Done | 2026-05-05 | weekly task view by owner, pending badge, empty state — commit 38ffef2 |
+| **P8** | **P8-1** Notification & Alert System | ✅ Done | 2026-05-06 | tab title (N) + once-per-session overdue alert banner, dismiss ✕/click-away — commit d9ce8b1 |
+| **P8** | **P8-2** Card Quick-Edit Inline | ✅ Done | 2026-05-06 | dblclick rename All Tasks + inline date picker overdue Today, B9 fix — commit e8e4b75 |
+| **P8** | **P8-3** Export / Report CSV | ✅ Done | 2026-05-06 | Export CSV button filtered tasks, 7 columns, BOM UTF-8, filename YYYY-MM-DD — commit 8068e38 |
+| **P8** | **P8-4** Performance Virtual Scroll | ➡ Deferred | — | cards ~102 < 200 threshold, defer until scale requires it |
+| **P8** | **P8-5** OKR Board Setup Guide | ✅ Done | 2026-05-06 | 4-step accordion guide, native details/summary, Refresh button — commit 1c0fa33 |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · ⏸ Blocked · ➡ Deferred
 
