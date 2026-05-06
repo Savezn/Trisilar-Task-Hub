@@ -246,7 +246,7 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
       .forEach(([dateKey, dateCards]) => {
         const label = document.createElement("div");
         label.className = "today-date-group";
-        label.textContent = new Date(dateKey).toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
+        label.textContent = formatThaiDateTime(dateKey, false);
         upcomingSec.appendChild(label);
         dateCards.forEach(card => upcomingSec.appendChild(buildTodayRow(card, "chip-upcoming", "Upcoming")));
       });
@@ -546,8 +546,7 @@ function buildSessionCard(session) {
   const allProcessed  = session.tasks.length > 0 && pendingTasks.length === 0;
   const expanded      = S.reviewExpanded.has(session.id);
 
-  const dateStr = new Date(session.createdAt).toLocaleDateString("th-TH",
-    { day: "numeric", month: "short", year: "numeric" });
+  const dateStr = formatThaiDateTime(session.createdAt, false);
 
   const card = document.createElement("div");
   card.className = "review-session-card";
@@ -1038,9 +1037,7 @@ async function showPlannerPage() {
   $("board-subtitle").textContent = "";
   $("add-list-btn").classList.add("hidden");
 
-  const dateStr = new Date().toLocaleDateString("th-TH", {
-    weekday: "long", year: "numeric", month: "long", day: "numeric",
-  });
+  const dateStr = formatThaiDateTime(new Date().toISOString(), false);
 
   $("board-content").innerHTML = `
     <div class="planner-wrap">
@@ -1877,7 +1874,7 @@ function buildDueBadge(due, complete) {
   if (complete)      { cls = "due-complete"; prefix = "✓ "; }
   else if (diff < 0) { cls = "due-overdue"; }
   else if (diff < 172800000) cls = "due-soon";
-  return `<span class="due-badge ${cls}">${prefix}${d.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>`;
+  return `<span class="due-badge ${cls}">${prefix}${formatThaiDateTime(due)}</span>`;
 }
 
 // ── Drag & Drop ───────────────────────────────────────────────────────────────
@@ -2781,7 +2778,7 @@ function renderOKRPage(allCards, boards) {
           <div class="okr-detail-title">${esc(krCard.name)}</div>
           <div class="okr-detail-meta">
             ${esc(krCard.boardName)} · ${esc(krCard.listName)}
-            ${krCard.due ? ` · Due ${new Date(krCard.due).toLocaleDateString()}` : ""}
+            ${krCard.due ? ` · Due ${formatThaiDateTime(krCard.due, false)}` : ""}
           </div>
         </div>
         <div class="okr-detail-stats">
