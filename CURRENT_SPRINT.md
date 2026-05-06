@@ -45,8 +45,12 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B17 — approve review task invalidate cache | ✅ QA Pass | `c6a09fd` |
 | P9-4 — Boards Monitor Label Filter | ✅ QA Pass | `7926b80` |
 | P9-5 — Tasks View: Group by Type (OKR / Project) | ✅ QA Pass | `b328c8f` |
+| B19 — Cold start Trello rate limit (batch fetch) | ✅ QA Pass | `5b35bc2`, `632fab4` |
+| B20 — Due date UTC+7 + dd/mm/yyyy format | ✅ QA Pass | `d8114bd` |
+| B21 — All Tasks sorting logic wired to render | ✅ QA Pass | `e79ff3b` |
 | P10-1 — Boards Monitor: Dynamic Team Grouping (Label-based) | ✅ QA Pass | `2a4c426` |
-| P10-2 — Team Monitor: Unified Board View (Kanban) | ✅ QA Pass | `pending` |
+| P10-2 — Team Monitor: Unified Board View (Kanban) | ✅ QA Pass | `4625180`, `314d176` |
+| B22 — Team Monitor Board view: dynamic columns | ✅ QA Pass | `5384ab8` |
 
 ---
 
@@ -107,9 +111,9 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 - Filter กระทบ cards ภายใน column (ไม่ hide column ทั้งหมด)
 
 **AC:**
-- [ ] Multi-select label filter แสดงที่ header
-- [ ] ทุก Teams แสดงผลเริ่มต้น, toggle hide/show per label group
-- [ ] Filter state persist ตลอด session (ไม่ reset เมื่อ refresh view)
+- [x] Multi-select label filter แสดงที่ header
+- [x] ทุก Teams แสดงผลเริ่มต้น, toggle hide/show per label group
+- [x] Filter state persist ตลอด session (ไม่ reset เมื่อ refresh view)
 
 ---
 
@@ -143,6 +147,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R2 | ✅ Pass | B16, B17 pass; B18 found & fixed ใน P9-4 session |
 | 2026-05-06 | R3 | ✅ Pass | P9-4 (Boards Monitor Label Filter) pass ทุกข้อ |
 | 2026-05-06 | R4 | ✅ Pass | P9-5 (Tasks Group by Type) pass ทุก 6 AC |
+| 2026-05-06 | R5 | ✅ Pass | Phase 10 (B19/B20/B21/P10-1/P10-2) pass — B22 found (P10-2 hardcoded columns) |
+| 2026-05-06 | R6 | ✅ Pass | B22 (Team Monitor dynamic columns) pass ทุก 3 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -158,103 +164,48 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B16 | topbarRefresh ไม่ bypass server TTL | `server.js`,`app.js` | ✅ Fixed `c6a09fd` |
 | B17 | approve task ไม่ invalidate cache | `server.js:556` | ✅ Fixed `c6a09fd` |
 | B18 | bm-label-filter-note แสดง "0 cards" บน boards ไม่มี label นั้น | `app.js:2088` | ✅ Fixed `7926b80` |
-| B19 | Cold start rate limit — ⚠ Trello rate limit ทุกครั้งที่ server restart | `server.js` | ⬜ Pending |
+| B19 | Cold start rate limit — ⚠ Trello rate limit ทุกครั้งที่ server restart | `server.js`, `trello.js` | ✅ Fixed `5b35bc2`,`632fab4` |
 | B20 | Due date display: UTC+7 and dd/mm/yyyy format | `app.js` | ✅ Fixed `d8114bd` |
 | B21 | All Tasks sorting logic not called in render | `app.js` | ✅ Fixed `e79ff3b` |
+| B22 | Team Monitor Board view: hardcoded columns — cards ใน lists อื่นหายไป | `app.js:2118` | ✅ Fixed `5384ab8` |
 
 
 ---
 
-## ⚡ Next Action — Dev ต้องทำ
+## 🟢 Sprint Stable — ไม่มี task ค้างอยู่
+
+ทุก bug และ feature ใน Phase 9 / Phase 10 ผ่าน QA แล้ว ไม่มี active task ที่ต้องทำในตอนนี้
 
 ---
 
-### 1. B19 — Cold Start Trello Rate Limit 🔴 (แก้ก่อน V0.1 เริ่ม)
+### ⚡ Next Action — เริ่ม Version 0.1
 
-**Root cause (PM verified):**
-เมื่อ server restart → cache ว่างเปล่า → `/api/all-cards` fan-out หลายสิบ Trello API calls พร้อมกันทันที
-→ Trello 429 rate limit ก่อนที่ cache จะมีโอกาส populate
-→ error response ไม่ถูก cache → refresh ครั้งต่อไปก็ error ซ้ำ (loop ไม่หาย)
+**Role:** Dev  
+**Task:** V0.1-Ph1 — Foundation Scripts & Smoke Test  
+**Reference:** [VERSION_0.1_PLAN.md](./VERSION_0.1_PLAN.md) → Phase V0.1-Ph1
 
-**Root cause เพิ่มเติม (cache stampede):**
-ถ้า client ส่ง request หลายตัวพร้อมกันก่อน cache populate → แต่ละ request fan-out ไปยัง Trello ซ้ำซ้อน
-
-**Fix ใน `server.js` — 2 ส่วน:**
-
-**ส่วนที่ 1 — Request coalescing (กัน stampede):**
-
-เพิ่ม in-flight map ข้าง `_cache`:
-```js
-const _inFlight = {};
+**Copy-paste prompt สำหรับ session ถัดไป:**
 ```
+คุณ Dev — อ่าน VERSION_0.1_PLAN.md และ ARCHITECTURE_ANALYSIS.md ก่อน
 
-ใน `/api/all-cards` route แทรกหลัง cacheGet check:
-```js
-const hit = cacheGet("all-cards");
-if (hit) return res.json(hit);
+Task: V0.1-Ph1 — Foundation Scripts & Smoke Test
 
-// coalesce: ถ้า fan-out กำลังรันอยู่ → รอผลเดียวกัน
-if (_inFlight["all-cards"]) {
-  try {
-    const data = await _inFlight["all-cards"];
-    return res.json(data);
-  } catch (e) {
-    return res.status(503).json({ error: trelloError(e) });
-  }
-}
+Step 1 — อัปเดต package.json scripts:
+  "start": "node server.js"
+  "dev": "node server.js"
+  "smoke": "node scripts/smoke-test.js"
 
-// เริ่ม fan-out ครั้งเดียว
-let resolve, reject;
-_inFlight["all-cards"] = new Promise((res, rej) => { resolve = res; reject = rej; });
+Step 2 — สร้าง scripts/smoke-test.js:
+  ตรวจสอบ endpoints: GET /, GET /api/config, GET /api/calendar/status, GET /api/reviews
+  Print PASS/FAIL ต่อแต่ละ endpoint
+  Exit code 1 ถ้ามี endpoint ใด fail
 
-try {
-  // ... existing fan-out logic ...
-  cacheSet("all-cards", result, 60_000);
-  resolve(result);
-  res.json(result);
-} catch (e) {
-  reject(e);
-  res.status(503).json({ error: trelloError(e) });
-} finally {
-  delete _inFlight["all-cards"];
-}
-```
+AC:
+  npm start รัน server ได้
+  npm run smoke รันได้และ print PASS/FAIL ต่อแต่ละ endpoint
+  ถ้า endpoint ใด fail → exit code 1
 
-**ส่วนที่ 2 — Warm cache on startup:**
-
-หลัง server listen เพิ่ม:
-```js
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  // warm cache silently — ไม่ block startup
-  setTimeout(() => {
-    fetch(`http://localhost:${PORT}/api/all-cards`)
-      .then(() => console.log("[cache] warmed all-cards"))
-      .catch(() => {}); // ถ้า Trello fail → ไม่ crash server
-  }, 500);
-});
-```
-
-> ⚠️ Grep หา `server.listen` หรือ `app.listen` ก่อน: `Grep("\.listen\(PORT", "server.js")`
-
-**AC:**
-- [ ] เปิดแอปทันทีหลัง server start → ไม่แสดง rate limit error
-- [ ] refresh ซ้ำภายใน 60s → ไม่ error (ใช้ cache)
-- [ ] ถ้า Trello ช้าจริง → แสดง loading state ไม่ใช่ error
-
----
-
-**หลัง B19 เสร็จ → เริ่ม Version 0.1**
-ดู `VERSION_0.1_PLAN.md` สำหรับแผน phases ทั้งหมด
-เริ่มที่ **V0.1-Ph1** (Foundation Scripts & Smoke Test)
-
----
-
-**Commit B19:**
-```
-git add server.js
-git commit -m "Phase 9 — B19: fix cold start rate limit (coalesce + warm cache)"
-git push
+Commit: "V0.1-Ph1: add npm scripts and smoke test"
 ```
 
 ---
