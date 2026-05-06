@@ -6,6 +6,14 @@ const { google } = require("googleapis");
 const trello = require("./trello");
 const store  = require("./review-store");
 const diff   = require("./task-diff");
+
+// ── Models & Utils ───────────────────────────────────────────────────────────
+const { normalizeCard, buildCfNames } = require("./src/models/trello.model");
+const { cacheGet, cacheSet, cacheInvalidate } = require("./src/utils/cache");
+const { friendlyError } = require("./src/utils/errors");
+const { todayBangkok } = require("./src/utils/date");
+
+// ── Routes ───────────────────────────────────────────────────────────────────
 const makeConfigRoutes  = require("./src/routes/config.routes");
 const makeReviewRoutes   = require("./src/routes/review.routes");
 const makeCalendarRoutes      = require("./src/routes/calendar.routes");
@@ -34,104 +42,6 @@ function getTasksClient() {
   const auth = getOAuth2Client();
   auth.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
   return google.tasks({ version: "v1", auth });
-}
-
-// Returns today's date string (YYYY-MM-DD) in Asia/Bangkok (UTC+7)
-function todayBangkok() {
-  return new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
-}
-
-// ── In-memory cache (prevents Trello rate-limit on rapid nav switching) ───────
-const _cache = {};
-function cacheGet(key) {
-  const e = _cache[key];
-  return e && Date.now() < e.exp ? e.data : null;
-}
-function cacheSet(key, data, ttlMs) {
-  _cache[key] = { data, exp: Date.now() + ttlMs };
-}
-function cacheInvalidate(prefix) {
-  Object.keys(_cache).filter(k => k.startsWith(prefix)).forEach(k => delete _cache[k]);
-}
-
-// ── P6-1: Friendly error mapper ───────────────────────────────────────────────
-// Logs full error to console, returns safe message to client
-function friendlyError(e) {
-  const msg = String(e?.message || e || "").toLowerCase();
-  console.error("[Server Error Detail]", e); // Log full error object for debugging
-  if (
-    msg.includes("invalid key") || msg.includes("invalid token") ||
-    msg.includes("unauthorized")  || msg.includes("401") ||
-    msg.includes("not authorized")
-  ) {
-    return "Trello connection failed. Check API key in .env";
-  }
-  if (
-    msg.includes("invalid_grant") || msg.includes("invalid grant") ||
-    msg.includes("token has been expired") || msg.includes("token expired") ||
-    msg.includes("invalid credentials")
-  ) {
-    return "Google Calendar session expired. Please reconnect.";
-  }
-  if (msg.includes("invalid_client") || msg.includes("invalid client")) {
-    return "Google Calendar not connected. Check credentials in .env";
-  }
-  if (msg.includes("429") || msg.includes("rate limit") || msg.includes("api_token_limit")) {
-    return "Trello rate limit reached. Wait a moment and refresh.";
-  }
-  return "Internal server error";
-}
-
-// ── P7-1: Normalize raw Trello card → consistent shape for all-cards / boards/cards ──
-// cfNames: Map<idCustomField, fieldName> — built per-board to resolve human-readable keys (B5)
-function normalizeCard(card, cfNames = new Map()) {
-  // Checklist progress from embedded checkItems
-  let clDone = 0, clTotal = 0;
-  (card.checklists || []).forEach(cl => {
-    (cl.checkItems || []).forEach(ci => {
-      clTotal++;
-      if (ci.state === "complete") clDone++;
-    });
-  });
-
-  // Custom fields keyed by name (fallback to idCustomField if name not resolved)
-  const customFields = {};
-  (card.customFieldItems || []).forEach(cf => {
-    const val = cf.value || {};
-    const key = cfNames.get(cf.idCustomField) || cf.idCustomField;
-    customFields[key] = val.text ?? val.number ?? val.date ?? val.checked ?? null;
-  });
-
-  return {
-    id:                card.id,
-    name:              card.name,
-    desc:              card.desc || "",
-    due:               card.due   || null,
-    dueComplete:       card.dueComplete || false,
-    start:             card.start  || null,
-    dueReminder:       card.dueReminder ?? -1,
-    url:               card.url || "",
-    idList:            card.idList,
-    labels:            (card.labels || []).map(l => ({ id: l.id, name: l.name || "", color: l.color || "" })),
-    members:           (card.members || []).map(m => ({ id: m.id, username: m.username || "", fullName: m.fullName || m.username || "" })),
-    checklistProgress: { done: clDone, total: clTotal },
-    customFields,
-  };
-}
-
-// Build cfNames Map for a board — per-request cache (Map passed in by caller)
-async function buildCfNames(boardId, cfCache) {
-  if (cfCache.has(boardId)) return cfCache.get(boardId);
-  try {
-    const fields = await trello.getBoardCustomFields(boardId);
-    const map = new Map((fields || []).map(f => [f.id, f.name]));
-    cfCache.set(boardId, map);
-    return map;
-  } catch {
-    // Board has no custom fields or API unsupported — return empty map (safe fallback)
-    cfCache.set(boardId, new Map());
-    return new Map();
-  }
 }
 
 function updateEnvKey(key, value) {
@@ -221,7 +131,21 @@ app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
 app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate, autoSyncToGCal }));
 app.use(makeCalendarRoutes({ getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, friendlyError }));
 app.use("/api", makeGoogleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }));
-app.use("/api", makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cacheSet, cacheInvalidate, friendlyError, autoSyncToGCal, readConfig }));
+
+// Wrap buildCfNames to inject trello dependency automatically for routes
+const buildCfNamesInjected = (boardId, cfCache) => buildCfNames(boardId, cfCache, trello);
+
+app.use("/api", makeTrelloRoutes({ 
+  trello, 
+  normalizeCard, 
+  buildCfNames: buildCfNamesInjected, 
+  cacheGet, 
+  cacheSet, 
+  cacheInvalidate, 
+  friendlyError, 
+  autoSyncToGCal, 
+  readConfig 
+}));
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 
