@@ -62,6 +62,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph4 Ph4-1 — Server core hardening | ✅ QA Pass | `f6b5ab6` |
 | V0.1-Ph4 Ph4-2 — Frontend Core Split (api/state/router/utils) | ✅ QA Pass | `50ffc72` |
 | V0.1-Ph5 Ph5-1 — Extract Today page module | ✅ QA Pass | `296b48a` |
+| V0.1-Ph5 Ph5-2 — Extract Review Queue page module | ✅ QA Pass | `fe450ed` |
 
 ---
 
@@ -89,8 +90,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph4-1 | Server core hardening | ✅ Done `f6b5ab6` |
 | Ph4-2 | Frontend Core Split (api/state/router/utils) | ✅ Done `50ffc72` |
 | Ph5-1 | Extract Today page module | ✅ Done `296b48a` |
-| Ph5-2 | Extract Review Queue page | ⬜ Next |
-| Ph5-3 | Extract All Tasks page | ⬜ Queued |
+| Ph5-2 | Extract Review Queue page | ✅ Done `fe450ed` |
+| Ph5-3 | Extract All Tasks page | ⬜ Next |
 | Ph5-4 | Extract Boards/Kanban page | ⬜ Queued |
 | Ph5-5 | Extract Calendar page | ⬜ Queued |
 | Ph5-6 | Extract OKR page | ⬜ Queued |
@@ -121,6 +122,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R16 | ✅ Pass | B23 (missing autoDeleteFromGCal import in server.js) pass ทุก 2 AC |
 | 2026-05-07 | R17 | ✅ Pass | V0.1-Ph4 Ph4-2 (Frontend Core Split) pass ทุก 4 AC |
 | 2026-05-07 | R18 | ✅ Pass | V0.1-Ph5 Ph5-1 (Extract Today page module) pass ทุก 5 AC |
+| 2026-05-07 | R19 | ✅ Pass | V0.1-Ph5 Ph5-2 (Extract Review Queue page module) pass ทุก 5 AC |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -157,66 +159,66 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph5 Ph5-2 · Extract Review Queue Page Module 🔴
+### V0.1-Ph5 Ph5-3 · Extract All Tasks Page Module 🔴
 
 **Context:**  
-Ph5-1 (Today page) เสร็จแล้ว — `public/js/pages/today.js` พร้อมใช้งาน  
-Ph5-2: แยก Review Queue page ออกจาก `app.js` ไปยัง `public/js/pages/review.js`
+Ph5-2 (Review Queue page) เสร็จแล้ว — `public/js/pages/review.js` พร้อมใช้งาน  
+Ph5-3: แยก All Tasks page ออกจาก `app.js` ไปยัง `public/js/pages/all-tasks.js`
 
 **Target:**
 ```
-public/js/pages/review.js   ← showReviewPage() + helper functions ของ Review Queue
+public/js/pages/all-tasks.js   ← showAllTasks() + renderAllTasks() + All Tasks helpers
 ```
 
 **What to do:**
-1. Grep `public/app.js` หา `// ── Review Queue Page` → note line number
-2. Read รอบ block นั้น เพื่อ identify ว่า functions ไหนใช้เฉพาะ Review page (ไม่ถูกเรียกจาก page อื่น)
-3. Extract `showReviewPage()` และ Review-specific helpers → `public/js/pages/review.js`
-4. เพิ่ม `<script src="js/pages/review.js"></script>` ใน `index.html` หลัง `today.js` ก่อน `app.js`
-5. ลบ definitions ที่ย้ายออกจาก `app.js`
+1. Grep `public/app.js` หา `// ── All Tasks` → note line number
+2. Read block นั้น identify functions เฉพาะ All Tasks (ไม่ถูกเรียกจาก page อื่น)
+3. สร้าง `public/js/pages/all-tasks.js` ← copy ฟังก์ชัน All Tasks ทั้งหมด
+4. เพิ่ม `<script src="js/pages/all-tasks.js"></script>` ใน `index.html` หลัง `review.js` ก่อน `app.js`
+5. ลบ block นั้นออกจาก `app.js` (ใช้ Python splice)
 6. Smoke test 4 endpoints PASS
 
 **Rules:**
-- ย้ายเฉพาะ Review Queue functions — ไม่แตะ page อื่น
-- ถ้า function ถูกใช้โดย page อื่นด้วย → คงไว้ใน `app.js`
+- ย้ายเฉพาะ All Tasks functions — ไม่แตะ page อื่น
+- ถ้า function ใช้ร่วมกับ page อื่น → คงไว้ใน `app.js`
 - ไม่ใช้ bundler — plain `<script>` tag เท่านั้น
-- ใช้ Python เพื่อ splice block ออกจาก app.js (หลีกเลี่ยง encoding issue จาก PowerShell)
+- ใช้ Python splice เพื่อหลีกเลี่ยง encoding issue จาก PowerShell
 
 **AC:**
-- [ ] `public/js/pages/review.js` มี `showReviewPage` และ Review-only helpers
-- [ ] `public/app.js` ไม่มี `showReviewPage` แล้ว
-- [ ] `index.html` โหลด `review.js` ถูก order (today → review → app)
+- [ ] `public/js/pages/all-tasks.js` มี `showAllTasks` และ All Tasks helpers
+- [ ] `public/app.js` ไม่มี `showAllTasks` / `renderAllTasks` แล้ว
+- [ ] `index.html` โหลด `all-tasks.js` ถูก order (review → all-tasks → app)
 - [ ] Smoke test 4/4 PASS
 
 **Commit:**
 ```
-git add public/js/pages/review.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-2: extract Review Queue page module from app.js"
+git add public/js/pages/all-tasks.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-3: extract All Tasks page module from app.js"
 git push
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
-คุณ Dev — Task: V0.1-Ph5 Ph5-2 — Extract Review Queue page
+คุณ Dev — Task: V0.1-Ph5 Ph5-3 — Extract All Tasks page
 
-Context: Ph5-1 เสร็จแล้ว (today.js แยกออกมาแล้ว) ตอนนี้แยก Review Queue page
+Context: Ph5-2 เสร็จแล้ว (review.js แยกออกมาแล้ว) ตอนนี้แยก All Tasks page
 
 Steps:
-1. Grep public/app.js หา "// ── Review Queue Page" → note line
-2. Read block นั้น identify scope + helper functions เฉพาะ Review
-3. สร้าง public/js/pages/review.js ← copy showReviewPage + Review-only helpers
-4. เพิ่ม <script src="js/pages/review.js"> ใน index.html หลัง today.js ก่อน app.js
+1. Grep public/app.js หา "// ── All Tasks" → note line
+2. Read block นั้น identify scope + helper functions เฉพาะ All Tasks
+3. สร้าง public/js/pages/all-tasks.js ← copy showAllTasks + renderAllTasks + All Tasks helpers
+4. เพิ่ม <script src="js/pages/all-tasks.js"> ใน index.html หลัง review.js ก่อน app.js
 5. ลบ block นั้นออกจาก app.js (ใช้ Python splice เพื่อหลีกเลี่ยง encoding issue)
 6. Smoke test: GET / /api/boards /api/reviews /api/all-cards → ทุก endpoint 200
 
 Rules:
-- ย้ายเฉพาะ Review functions
-- ถ้า function ใช้ร่วมกับ page อื่น → คงไว้ใน app.js
+- ย้ายเฉพาะ All Tasks functions
+- ถ้า function ใช้ร่วมกับ page อื่น (เช่น exportTasksCSV ถ้า header เรียก) → ตรวจก่อน
 - ไม่ใช้ bundler
 
 Commit:
-git add public/js/pages/review.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-2: extract Review Queue page module from app.js"
+git add public/js/pages/all-tasks.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-3: extract All Tasks page module from app.js"
 git push
 ```
 
@@ -232,6 +234,7 @@ git push
 | `S` global state / `COLORS` | `public/js/state.js` | อ่านทั้งไฟล์ (ok) |
 | `navigateTo` | `public/js/router.js` | อ่านทั้งไฟล์ (ok) |
 | Today page (showTodayPage, buildTodayRow) | `public/js/pages/today.js` | อ่านทั้งไฟล์ (ok) |
+| Review Queue page (showReviewPage, buildSessionCard, updateReviewBadge) | `public/js/pages/review.js` | อ่านทั้งไฟล์ (ok) |
 | `renderAllTasks` / All Tasks page | `public/app.js` | `Grep("renderAllTasks", "public/app.js")` |
 | `refreshCurrentView` | `public/app.js` | `Grep("refreshCurrentView", "public/app.js")` |
 | OKR page render | `public/app.js` | `Grep("renderOKRPage", "public/app.js")` |
@@ -254,4 +257,4 @@ git push
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
-| **V0.1 Modularization** | **🔄 In Progress (Ph5-2 next)** |
+| **V0.1 Modularization** | **🔄 In Progress (Ph5-3 next)** |
