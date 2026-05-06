@@ -32,6 +32,7 @@ const S = {
   reviewExpanded: new Set(),   // Set<sessionId> — which sessions are expanded
   reviewSelected: new Map(),   // Map<sessionId, Set<taskId>> — bulk selection
   overdueToastShown: false,    // P8-1: show overdue alert only once per session
+  bmHiddenLabels: new Set(),   // P9-4: label names hidden in Boards Monitor (persists in session)
 };
 
 const COLORS = ["#6366f1","#d29034","#519839","#b04632","#89609e","#cd5a91","#00aecc","#4bbf6b","#e44","#f90"];
@@ -1879,6 +1880,16 @@ async function showBoardsMonitor() {
   }
 }
 
+// P9-4: map Trello label color name → hex for label dots
+function labelColorHex(color) {
+  const MAP = {
+    green:"#61bd4f", yellow:"#f2d600", orange:"#ff9f1a", red:"#eb5a46",
+    purple:"#c377e0", blue:"#0079bf", sky:"#00c2e0", lime:"#51e898",
+    pink:"#ff78cb", black:"#344563"
+  };
+  return MAP[color] || color || "#94a3b8";
+}
+
 function renderBoardsMonitor(allCards, healthMap = new Map()) {
   const content = $("board-content");
   const now = new Date();
@@ -1912,6 +1923,25 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
     return { board, color: COLORS[i % COLORS.length], cards, active, overdue, dueToday, done, completionPct, byList, health };
   });
 
+  // P9-4: collect all unique labels from visible cards
+  const allLabelMap = new Map(); // name → color
+  allCards.forEach(c => {
+    (c.labels || []).forEach(l => {
+      if (l.name && !allLabelMap.has(l.name)) allLabelMap.set(l.name, l.color || "");
+    });
+  });
+  const allLabels = [...allLabelMap.entries()]; // [[name, color], ...]
+
+  // P9-4: helper — filter a board's cards by hidden labels
+  function visibleCards(boardCards) {
+    if (!S.bmHiddenLabels.size) return boardCards;
+    return boardCards.filter(c => {
+      const names = (c.labels || []).map(l => l.name).filter(Boolean);
+      if (!names.length) return true; // no-label cards always shown
+      return names.some(n => !S.bmHiddenLabels.has(n));
+    });
+  }
+
   const page = document.createElement("div");
   page.className = "boards-monitor-page";
 
@@ -1925,6 +1955,40 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
     <button class="filter-chip" data-sort="total">Most Cards</button>
   `;
   page.appendChild(toolbar);
+
+  // P9-4: label filter row (only render if there are labels)
+  const labelBar = document.createElement("div");
+  labelBar.className = "bm-label-bar";
+  if (allLabels.length) {
+    function renderLabelBar() {
+      labelBar.innerHTML = `
+        <span class="bm-label-bar-title">Labels</span>
+        ${allLabels.map(([name, color]) => {
+          const hidden = S.bmHiddenLabels.has(name);
+          const dot = color ? `<span class="bm-label-dot" style="background:${labelColorHex(color)}"></span>` : "";
+          return `<button class="bm-label-chip${hidden ? " bm-label-hidden" : ""}" data-label="${esc(name)}">${dot}${esc(name)}</button>`;
+        }).join("")}
+        ${S.bmHiddenLabels.size ? `<button class="bm-label-clear">Show all</button>` : ""}
+      `;
+      labelBar.querySelectorAll(".bm-label-chip").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const n = btn.dataset.label;
+          if (S.bmHiddenLabels.has(n)) S.bmHiddenLabels.delete(n);
+          else S.bmHiddenLabels.add(n);
+          renderLabelBar();
+          renderGrid();
+        });
+      });
+      const clearBtn = labelBar.querySelector(".bm-label-clear");
+      if (clearBtn) clearBtn.addEventListener("click", () => {
+        S.bmHiddenLabels.clear();
+        renderLabelBar();
+        renderGrid();
+      });
+    }
+    renderLabelBar();
+  }
+  page.appendChild(labelBar);
 
   const grid = document.createElement("div");
   grid.className = "boards-monitor-grid";
@@ -1941,7 +2005,18 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
 
   function renderGrid() {
     grid.innerHTML = "";
-    sortedStats().forEach(({ board, color, cards, overdue, dueToday, done, completionPct, byList, health }) => {
+    sortedStats().forEach(({ board, color, health }) => {
+      // P9-4: apply label filter before computing stats
+      const rawCards = allCards.filter(c => c.boardId === board.id);
+      const cards    = visibleCards(rawCards);
+      const active   = cards.filter(c => !c.dueComplete);
+      const overdue  = active.filter(c => c.due && new Date(c.due) < now);
+      const dueToday = active.filter(c => c.due && new Date(c.due).toDateString() === todayStr && new Date(c.due) >= now);
+      const done     = cards.filter(c => c.dueComplete);
+      const completionPct = cards.length ? Math.round((done.length / cards.length) * 100) : 0;
+      const byList = {};
+      cards.forEach(c => { byList[c.listName] = (byList[c.listName] || 0) + 1; });
+
       const card = document.createElement("div");
       card.className = "board-monitor-card";
 
@@ -2009,6 +2084,9 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
           ` : ""}
           ${!health.ok ? `
           <div class="bm-alert bm-alert-convention">⚠ Missing lists: ${health.missing.map(s => esc(s)).join(", ")}</div>
+          ` : ""}
+          ${S.bmHiddenLabels.size ? `
+          <div class="bm-label-filter-note">⚗ Filtered · ${rawCards.length - cards.length} card${rawCards.length - cards.length !== 1 ? "s" : ""} hidden by label</div>
           ` : ""}
         </div>
       `;

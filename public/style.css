@@ -2602,6 +2602,74 @@ a { text-decoration: none; }
   cursor: default;
 }
 
+/* ── P9-4: Boards Monitor Label Filter ──────────────────────────────────────── */
+.bm-label-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+  min-height: 0;
+}
+.bm-label-bar:empty { display: none; }
+.bm-label-bar-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+.bm-label-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px 3px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.bm-label-chip:hover { border-color: var(--primary); color: var(--primary); }
+.bm-label-chip.bm-label-hidden {
+  opacity: 0.38;
+  text-decoration: line-through;
+  background: var(--list-bg);
+}
+.bm-label-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.bm-label-clear {
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px dashed var(--border);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.bm-label-clear:hover { color: var(--danger); border-color: var(--danger); }
+.bm-label-filter-note {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text-faint);
+  background: var(--list-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+}
+
 /* ════════════════════════════════════════════════════════════
    WEEKLY FOCUS VIEW (P7-5)
    ════════════════════════════════════════════════════════════ */
