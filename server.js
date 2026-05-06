@@ -16,8 +16,9 @@ const {
   getOAuth2Client, 
   getCalendarClient, 
   getTasksClient, 
-  autoSyncToGCal, 
-  updateEnvKey 
+  autoSyncToGCal,
+  autoDeleteFromGCal,
+  updateEnvKey
 } = require("./src/utils/google");
 
 // ── Routes ───────────────────────────────────────────────────────────────────
