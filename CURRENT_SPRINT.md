@@ -108,44 +108,29 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### P9-4 · Boards Monitor: Label Filter
-**Priority:** 🟡 Medium (feature request)
-**Files:** `public/app.js`, `public/style.css`
+### V0.1 Modularization Progress
+**Priority:** 🔴 High (in progress)
+**Goal:** แยก monolith `server.js` + `app.js` → module files โดยไม่ break functionality
 
-**Spec (confirmed):**
-- Trello card labels (multi-select)
-- แสดงทุก Team แต่มี Hide/Show per team (accordion style)
-
-**What to do:**
-- เพิ่ม label filter multi-select ที่ header ของ Boards Monitor
-- แต่ละ label group มี toggle hide/show (คล้าย label group ใน All Tasks)
-- Filter กระทบ cards ภายใน column (ไม่ hide column ทั้งหมด)
-
-**AC:**
-- [x] Multi-select label filter แสดงที่ header
-- [x] ทุก Teams แสดงผลเริ่มต้น, toggle hide/show per label group
-- [x] Filter state persist ตลอด session (ไม่ reset เมื่อ refresh view)
-
----
-
-### P9-5 · Tasks View: แยก OKR/Planning จาก Project Tasks
-**Priority:** 🟡 Medium (feature request)
-**Files:** `public/app.js`, `public/style.css`
-
-**Spec (PM decision):**
-- แยกโดย source board (board name) ไม่ใช่แค่ label
-- Group "OKR & Planning" = cards จาก OKR Board + Inspiration Board
-- Group "Projects" = cards จาก Project boards อื่นๆ
-- Label ไตรมาส (เช่น "Q3 2026") ใช้เป็น sub-filter เสริมได้
-
-**What to do:**
-- เพิ่ม Group By option: "Type (OKR / Project)"
-- OKR/Inspiration boards ระบุได้จาก board name หรือ config
-
-**AC:**
-- [x] Group by Type แสดง 2 sections: "OKR & Planning" และ "Projects"
-- [x] แต่ละ section collapsible
-- [x] OKR board source ระบุได้จาก board name ที่ settings หรือ hardcode config
+| Phase | Task | Status |
+|---|---|---|
+| Ph1 | Foundation Scripts & Smoke Test | ✅ Done `5c7ad14` |
+| Ph2-1 | Extract config routes | ✅ Done `ac699f1` |
+| Ph2-2 | Extract review routes | ✅ Done `bdfbadb` |
+| Ph2-3 | Extract calendar routes | ✅ Done `0f14d6f` |
+| Ph2-4 | Extract google-tasks routes | ✅ Done `6a6e2ac` |
+| Ph2-5 | Extract trello routes | ✅ Done `25a31b7` |
+| Ph3-1 | Extract core helpers & models | ✅ Done `e3320d5` |
+| Ph3-2 | Extract google helpers | ✅ Done `d06d388` |
+| Ph4-1 | Server core hardening | ✅ Done `f6b5ab6` |
+| Ph4-2 | Frontend Core Split (api/state/router/utils) | ✅ Done `50ffc72` |
+| Ph5-1 | Extract Today page module | ✅ Done `296b48a` |
+| Ph5-2 | Extract Review Queue page | ⬜ Next |
+| Ph5-3 | Extract All Tasks page | ⬜ Queued |
+| Ph5-4 | Extract Boards/Kanban page | ⬜ Queued |
+| Ph5-5 | Extract Calendar page | ⬜ Queued |
+| Ph5-6 | Extract OKR page | ⬜ Queued |
+| Ph5-7 | Extract Settings page | ⬜ Queued |
 
 ---
 
@@ -267,16 +252,19 @@ git push
 ## Key File Map
 *(ช่วย Dev ใช้ Grep + offset/limit แทนการอ่านทั้งไฟล์)*
 
-| สิ่งที่ต้องการ | คำสั่ง |
-|---|---|
-| showToast / toast function | `Grep("^function toast", "public/app.js")` |
-| renderAllTasks function | `Grep("^function renderAllTasks", "public/app.js")` |
-| refreshCurrentView | `Grep("^async function refreshCurrentView", "public/app.js")` |
-| Today view render | `Grep("^function renderTodayPage", "public/app.js")` |
-| S global state object | `Grep("^const S =", "public/app.js")` |
-| OKR page render | `Grep("^function renderOKRPage", "public/app.js")` |
-| exportTasksCSV | `Grep("^function exportTasksCSV", "public/app.js")` |
-| startInlineRename | `Grep("^function startInlineRename", "public/app.js")` |
+| สิ่งที่ต้องการ | ไฟล์ | คำสั่ง |
+|---|---|---|
+| `toast` / `esc` / format helpers | `public/js/utils.js` | อ่านทั้งไฟล์ (ok) |
+| `api` object | `public/js/api.js` | อ่านทั้งไฟล์ (ok) |
+| `S` global state / `COLORS` | `public/js/state.js` | อ่านทั้งไฟล์ (ok) |
+| `navigateTo` | `public/js/router.js` | อ่านทั้งไฟล์ (ok) |
+| Today page (showTodayPage, buildTodayRow) | `public/js/pages/today.js` | อ่านทั้งไฟล์ (ok) |
+| `renderAllTasks` / All Tasks page | `public/app.js` | `Grep("renderAllTasks", "public/app.js")` |
+| `refreshCurrentView` | `public/app.js` | `Grep("refreshCurrentView", "public/app.js")` |
+| OKR page render | `public/app.js` | `Grep("renderOKRPage", "public/app.js")` |
+| `exportTasksCSV` | `public/app.js` | `Grep("exportTasksCSV", "public/app.js")` |
+| `openEditAllTasks` (shared modal) | `public/app.js` | `Grep("openEditAllTasks", "public/app.js")` |
+| `getAllowedCards` | `public/app.js` | `Grep("getAllowedCards", "public/app.js")` |
 
 ---
 
@@ -292,4 +280,5 @@ git push
 | P6 Hardening & Polish | ✅ Done (2026-05-05) |
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
-| **P9 Maintenance & Iteration** | **⬜ Current** |
+| **P9 Maintenance & Iteration** | **⬜ Ongoing** |
+| **V0.1 Modularization** | **🔄 In Progress (Ph5-2 next)** |
