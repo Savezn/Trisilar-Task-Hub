@@ -978,9 +978,7 @@ async function updateReviewBadge() {
   const count = sessions.reduce((n, s) => n + s.tasks.filter(t => t.status === "pending").length, 0);
   const badge = $("review-badge");
   if (badge) { badge.textContent = count; badge.style.display = count > 0 ? "" : "none"; }
-  // P7-5: also update Weekly Focus sidebar badge
-  const focusBadge = $("focus-pending-badge");
-  if (focusBadge) { focusBadge.textContent = count || ""; focusBadge.style.display = count ? "" : "none"; }
+  // focus-pending-badge is updated only when Weekly Focus page is opened (showWeeklyFocusPage)
 }
 
 // ── Review: transcript upload modal (P2-4) ────────────────────────────────────
@@ -1252,15 +1250,17 @@ function showSettingsPage() {
         }
       </div>
       <div class="integration-row">
-        <span class="integration-icon">✅</span>
+        <span class="integration-icon">${calConnected ? "📋" : "📋"}</span>
         <div class="integration-info">
           <div class="integration-name">Google Tasks</div>
-          <div class="integration-desc">${calConnected ? "OAuth connected (shared with Calendar)" : "Not connected"}</div>
+          <div class="integration-desc">${calConnected
+            ? "Shared with Google Calendar — connect Calendar to enable"
+            : "Requires Google Calendar connection"}</div>
         </div>
         <div class="integration-status-dot ${calConnected ? "dot-green" : "dot-gray"}"></div>
         ${calConnected
-          ? '<span class="chip chip-done">Connected</span>'
-          : '<button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect</button>'
+          ? '<span class="chip" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">Shared with Calendar</span>'
+          : '<button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Calendar</button>'
         }
       </div>
     </div>
