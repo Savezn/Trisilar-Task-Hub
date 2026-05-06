@@ -2085,7 +2085,7 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
           ${!health.ok ? `
           <div class="bm-alert bm-alert-convention">⚠ Missing lists: ${health.missing.map(s => esc(s)).join(", ")}</div>
           ` : ""}
-          ${S.bmHiddenLabels.size ? `
+          ${S.bmHiddenLabels.size && rawCards.length > cards.length ? `
           <div class="bm-label-filter-note">⚗ Filtered · ${rawCards.length - cards.length} card${rawCards.length - cards.length !== 1 ? "s" : ""} hidden by label</div>
           ` : ""}
         </div>
