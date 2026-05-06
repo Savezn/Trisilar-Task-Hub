@@ -10,6 +10,7 @@ const makeConfigRoutes  = require("./src/routes/config.routes");
 const makeReviewRoutes   = require("./src/routes/review.routes");
 const makeCalendarRoutes      = require("./src/routes/calendar.routes");
 const makeGoogleTasksRoutes   = require("./src/routes/google-tasks.routes");
+const makeTrelloRoutes        = require("./src/routes/trello.routes");
 
 // ── Google Calendar helpers ───────────────────────────────────────────────────
 const getCalendarId = () => process.env.GOOGLE_CALENDAR_ID || "";
@@ -155,69 +156,6 @@ function writeConfig(data) {
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(data, null, 2));
 }
 
-const app = express();
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
-app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate, autoSyncToGCal }));
-app.use(makeCalendarRoutes({ getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, friendlyError }));
-app.use("/api", makeGoogleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }));
-
-// ── Workspaces ────────────────────────────────────────────────────────────────
-
-app.get("/api/workspaces", async (req, res) => {
-  try { res.json(await trello.getWorkspaces()); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-// ── Boards ────────────────────────────────────────────────────────────────────
-
-app.get("/api/boards", async (req, res) => {
-  try {
-    const boards = await trello.getBoards();
-    const config = readConfig();
-    // If allowedWorkspaceIds is set, filter boards by workspace
-    if (config.allowedWorkspaceIds && config.allowedWorkspaceIds.length > 0) {
-      return res.json(boards.filter(b =>
-        !b.idOrganization || config.allowedWorkspaceIds.includes(b.idOrganization)
-      ));
-    }
-    res.json(boards);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-// ── Lists ─────────────────────────────────────────────────────────────────────
-
-app.get("/api/boards/:id/lists", async (req, res) => {
-  try { res.json(await trello.getLists(req.params.id)); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.post("/api/boards/:id/lists", async (req, res) => {
-  try { res.json(await trello.createList(req.params.id, req.body.name)); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-// P7-4: Board convention health check
-const REQUIRED_LISTS = ["Backlog", "In Progress", "Done"];
-
-app.get("/api/boards/:id/health", async (req, res) => {
-  try {
-    const hKey = `health:${req.params.id}`;
-    const hit = cacheGet(hKey);
-    if (hit) return res.json(hit);
-
-    const lists = await trello.getLists(req.params.id);
-    const names = lists.map(l => l.name.trim());
-    const missing = REQUIRED_LISTS.filter(r => !names.some(n => n.toLowerCase() === r.toLowerCase()));
-    const result = { ok: missing.length === 0, missing };
-    cacheSet(hKey, result, 5 * 60_000); // 5 min TTL (lists rarely change)
-    res.json(result);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-// ── Card ↔ GCal event mapping ─────────────────────────────────────────────────
-
 const CARD_EVENTS_FILE = path.join(__dirname, "card-events.json");
 function readCardEvents() {
   try { return JSON.parse(fs.readFileSync(CARD_EVENTS_FILE, "utf8")); }
@@ -276,171 +214,14 @@ async function autoDeleteFromGCal(cardId) {
   }
 }
 
-// ── Cards ─────────────────────────────────────────────────────────────────────
-
-app.get("/api/lists/:id/cards", async (req, res) => {
-  try { res.json(await trello.getCards(req.params.id)); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.post("/api/cards", async (req, res) => {
-  try {
-    const { listId, name, desc, due, start, dueReminder, syncCalendar } = req.body;
-    const card = await trello.createCard(listId, name, desc, due, start, dueReminder);
-    cacheInvalidate("all-cards");
-    res.json(card);
-    if (syncCalendar) autoSyncToGCal(card.id, { name, desc, due, start });
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.put("/api/cards/:id", async (req, res) => {
-  try {
-    const { syncCalendar, ...trelloFields } = req.body;
-    const card = await trello.updateCard(req.params.id, trelloFields);
-    cacheInvalidate("all-cards");
-    res.json(card);
-    if (syncCalendar) {
-      // Use explicit null check so clearing a due date doesn't fall back to old value
-      const syncDue   = "due"   in req.body ? req.body.due   : card.due;
-      const syncStart = "start" in req.body ? req.body.start : card.start;
-      autoSyncToGCal(req.params.id, {
-        name:  req.body.name || card.name,
-        desc:  req.body.desc || card.desc,
-        due:   syncDue,
-        start: syncStart,
-      });
-    }
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.put("/api/cards/:id/move", async (req, res) => {
-  try {
-    const card = await trello.moveCard(req.params.id, req.body.listId);
-    cacheInvalidate("all-cards");
-    res.json(card);
-  }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.delete("/api/cards/:id", async (req, res) => {
-  try {
-    await trello.deleteCard(req.params.id);
-    cacheInvalidate("all-cards");
-    res.json({ ok: true });
-    autoDeleteFromGCal(req.params.id); // fire-and-forget
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-// ── All cards across all boards ───────────────────────────────────────────────
-
-app.get("/api/all-cards", async (req, res) => {
-  try {
-    const hit = cacheGet("all-cards");
-    if (hit) return res.json(hit);
-
-    // B5: Fetch EVERYTHING in batch (1 request for boards/lists/cf + 1 per board for cards)
-    const boards = await trello.getBoardsFull();
-    const result = [];
-    const cfCache = new Map();
-
-    await Promise.all(boards.map(async (board) => {
-      // Use preloaded cf data from full boards fetch
-      const cfNames = await buildCfNames(board.id, cfCache, board.customFields);
-      const listMap = Object.fromEntries((board.lists || []).map(l => [l.id, l.name]));
-      
-      // Fetch cards per board (NOT per list) - much more efficient
-      const cards = await trello.getBoardCards(board.id);
-      cards.forEach((card) => result.push({
-        ...normalizeCard(card, cfNames),
-        listName: listMap[card.idList] || "Unknown",
-        boardName: board.name,
-        boardId: board.id,
-      }));
-    }));
-
-    cacheSet("all-cards", result, 300_000); // 5 min TTL
-    res.json(result);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-// ── Cache control (B16: topbar manual refresh bypasses TTL) ──────────────────
-app.post("/api/cache/clear", (req, res) => {
-  cacheInvalidate("all-cards");
-  res.json({ ok: true });
-});
-
-// ── Cards across specific boards (BU view) ────────────────────────────────────
-
-app.post("/api/boards/cards", async (req, res) => {
-  try {
-    const { boardIds } = req.body;
-    const cacheKey = `boards-cards:${boardIds.join(",")}`;
-    const hit = cacheGet(cacheKey);
-    if (hit) return res.json(hit);
-
-    const boards = await trello.getBoardsFull();
-    const filteredBoards = boards.filter(b => boardIds.includes(b.id));
-    const result = [];
-    const cfCache = new Map();
-
-    await Promise.all(filteredBoards.map(async (board) => {
-      const cfNames = await buildCfNames(board.id, cfCache, board.customFields);
-      const listMap = Object.fromEntries((board.lists || []).map(l => [l.id, l.name]));
-      
-      const cards = await trello.getBoardCards(board.id);
-      cards.forEach(card => result.push({
-        ...normalizeCard(card, cfNames),
-        listName: listMap[card.idList] || "Unknown",
-        boardId: board.id,
-        boardName: board.name,
-      }));
-    }));
-    cacheSet(cacheKey, result, 300_000); // 5 min TTL
-    res.json(result);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-// ── Checklists ────────────────────────────────────────────────────────────────
-
-app.get("/api/cards/:id/checklists", async (req, res) => {
-  try { res.json(await trello.getCardChecklists(req.params.id)); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.post("/api/cards/:id/checklists", async (req, res) => {
-  try { res.json(await trello.addChecklist(req.params.id, req.body.name)); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.post("/api/checklists/:id/checkitems", async (req, res) => {
-  try { res.json(await trello.addCheckItem(req.params.id, req.body.name)); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.put("/api/cards/:cardId/checklists/:clId/checkitems/:itemId", async (req, res) => {
-  try { res.json(await trello.updateCheckItem(req.params.cardId, req.params.clId, req.params.itemId, req.body.state)); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.delete("/api/checklists/:id/checkitems/:itemId", async (req, res) => {
-  try { await trello.deleteCheckItem(req.params.id, req.params.itemId); res.json({ ok: true }); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.delete("/api/checklists/:id", async (req, res) => {
-  try { await trello.deleteChecklist(req.params.id); res.json({ ok: true }); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-
-// ── Review Queue ──────────────────────────────────────────────────────────────
-
-// ── Labels ────────────────────────────────────────────────────────────────────
-
-app.get("/api/boards/:id/labels", async (req, res) => {
-  try { res.json(await trello.getLabels(req.params.id)); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
+const app = express();
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
+app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate, autoSyncToGCal }));
+app.use(makeCalendarRoutes({ getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, friendlyError }));
+app.use("/api", makeGoogleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }));
+app.use("/api", makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cacheSet, cacheInvalidate, friendlyError, autoSyncToGCal, readConfig }));
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 
