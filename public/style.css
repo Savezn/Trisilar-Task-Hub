@@ -373,7 +373,7 @@ a { text-decoration: none; }
 /* Board content wrapper */
 .board-content {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
@@ -2413,12 +2413,6 @@ a { text-decoration: none; }
 }
 .boards-monitor-toolbar .filter-chip { font-size: 12px; }
 
-.boards-monitor-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-
 /* ── Card ── */
 .board-monitor-card {
   background: var(--surface);
@@ -2868,6 +2862,22 @@ a { text-decoration: none; }
 .team-del-btn:hover { color: var(--danger); }
 
 /* Team Monitor Board Layout */
+.boards-monitor-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 60px;
+}
+.boards-monitor-toolbar, .bm-label-bar {
+  flex-shrink: 0;
+  width: 100%;
+}
+.boards-monitor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
 .bm-grid-board-mode {
   display: flex !important;
   flex-direction: column;

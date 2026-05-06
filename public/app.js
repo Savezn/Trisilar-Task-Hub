@@ -1323,6 +1323,7 @@ function showSettingsPage() {
 
   // Render visibility editor inline
   renderSettingsVisibility();
+  renderSettingsTeams();
   renderSettingsGroups();
   loadSettingsWorkspaces();
 
@@ -2038,6 +2039,13 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
     };
   });
 
+  toolbar.querySelectorAll("[data-layout]").forEach(btn => {
+    btn.onclick = () => {
+      S.bmTeamLayout = btn.dataset.layout;
+      renderBoardsMonitor(allCards, healthMap);
+    };
+  });
+
   // P9-4: label filter row (only render if there are labels)
   const labelBar = document.createElement("div");
   labelBar.className = "bm-label-bar";
@@ -2136,10 +2144,15 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
           grid.appendChild(teamSection);
 
           teamSection.querySelectorAll(".bm-mini-card").forEach(el => {
-            el.onclick = () => {
-              const c = cards.find(x => x.id === el.dataset.id);
-              if (c) openCardModal(c);
-            };
+            el.addEventListener("click", (e) => {
+              e.stopPropagation();
+              const cardId = el.dataset.id;
+              // Find the card in the full cards list to ensure we have all metadata
+              const card = allCards.find(c => c.id === cardId);
+              if (card) {
+                openEditAllTasks(card);
+              }
+            });
           });
         });
         return;
