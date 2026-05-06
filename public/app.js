@@ -1,46 +1,3 @@
-// ── API ───────────────────────────────────────────────────────────────────────
-const api = {
-  async req(method, url, body) {
-    const opts = { method, headers: { "Content-Type": "application/json" } };
-    if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Request failed");
-    return data;
-  },
-  get:  (url)        => api.req("GET",    url),
-  post: (url, body)  => api.req("POST",   url, body),
-  put:  (url, body)  => api.req("PUT",    url, body),
-  del:  (url)        => api.req("DELETE", url),
-};
-
-// ── State ─────────────────────────────────────────────────────────────────────
-const S = {
-  boards: [],
-  config: { groups: [], hiddenBoards: [], allowedWorkspaceIds: [] },
-  draftConfig: null,
-  currentBoardId: null,
-  currentGroupId: null,
-  currentLists: [],
-  mode: "today",   // "today" | "review" | "all" | "board" | "group" | "calendar" | "planner" | "okr" | "focus" | "settings"
-  focusOwner: "",  // P7-5: selected owner id in Weekly Focus (persists across re-renders)
-  allCardsCache: null,
-  editing: null,
-  pendingDeleteId: null,
-  dragCardId: null,
-  dragSourceListId: null,
-  reviewExpanded: new Set(),   // Set<sessionId> — which sessions are expanded
-  reviewSelected: new Map(),   // Map<sessionId, Set<taskId>> — bulk selection
-  overdueToastShown: false,    // P8-1: show overdue alert only once per session
-  bmHiddenLabels: new Set(),   // P9-4: label names hidden in Boards Monitor (persists in session)
-  bmGroupBy: "boards",        // P10-1: grouping mode in Boards Monitor ('boards' | 'teams')
-  bmTeamLayout: "stats",       // P10-2: layout mode in Team Monitor ('stats' | 'board')
-  atSortField: "due",          // P10-4: sort field for All Tasks table
-  atSortOrder: "asc",          // P10-4: sort order ('asc' | 'desc')
-};
-
-const COLORS = ["#6366f1","#d29034","#519839","#b04632","#89609e","#cd5a91","#00aecc","#4bbf6b","#e44","#f90"];
-
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
   const [boards, config, calStatus] = await Promise.all([
@@ -62,34 +19,6 @@ async function init() {
   renderSidebar();
   navigateTo("today");
   updateReviewBadge().catch(() => {});
-}
-
-// ── Navigation ────────────────────────────────────────────────────────────────
-function navigateTo(page) {
-  // Update active nav items
-  document.querySelectorAll(".nav-item").forEach(el => {
-    el.classList.toggle("active", el.dataset.page === page);
-  });
-
-  // Show/hide boards section in sidebar
-  const boardsSection = $("sidebar-boards-section");
-  const showBoards = page === "board" || page === "group";
-  if (boardsSection) boardsSection.style.display = showBoards ? "" : "none";
-
-  switch (page) {
-    case "today":    showTodayPage();       break;
-    case "review":   showReviewPage();      break;
-    case "all":      showAllTasks();        break;
-    case "boards":   showBoardsMonitor();   break;
-    case "calendar": showCalendar();        break;
-    case "planner":  showPlannerPage();     break;
-    case "okr":      showOKRPage();         break;
-    case "focus":    showWeeklyFocusPage(); break;
-    case "settings": showSettingsPage();    break;
-    default:
-      // board / group navigation handled by selectBoard / selectGroup
-      break;
-  }
 }
 
 // ── Card filter helper ────────────────────────────────────────────────────────
@@ -3571,8 +3500,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
-let _tt;
 // ── P8-1: Overdue alert & tab title ──────────────────────────────────────────
 function updateOverdueAlerts() {
   const now = new Date();
@@ -3610,70 +3537,6 @@ function _overdueClickAway(e) {
 function dismissOverdueAlert() {
   $("overdue-alert").classList.add("hidden");
   document.removeEventListener("click", _overdueClickAway);
-}
-
-function toast(msg, isError = false) {
-  const el = $("toast");
-  el.textContent = msg;
-  el.style.background = isError ? "#b91c1c" : "#1e293b";
-  el.classList.add("show");
-  clearTimeout(_tt);
-  _tt = setTimeout(() => el.classList.remove("show"), 3000);
-}
-
-// ── Utils ─────────────────────────────────────────────────────────────────────
-function $(id) { return document.getElementById(id); }
-// B20: Format date/time to dd/mm/yyyy HH:mm in Thai Time (UTC+7)
-function formatThaiDateTime(isoString, includeTime = true) {
-  if (!isoString) return "";
-  const d = new Date(isoString);
-  // Manual offset for BKK (+7)
-  const bkk = new Date(d.getTime() + (7 * 60 * 60 * 1000));
-  
-  const dd = String(bkk.getUTCDate()).padStart(2, '0');
-  const mm = String(bkk.getUTCMonth() + 1).padStart(2, '0');
-  const yyyy = bkk.getUTCFullYear();
-  const HH = String(bkk.getUTCHours()).padStart(2, '0');
-  const MM = String(bkk.getUTCMinutes()).padStart(2, '0');
-  
-  let res = `${dd}/${mm}/${yyyy}`;
-  if (includeTime) res += ` ${HH}:${MM}`;
-  return res;
-}
-
-// B20: Helper to format ISO string for <input type="datetime-local"> in BKK time
-function formatISOForInput(isoString) {
-  if (!isoString) return "";
-  const d = new Date(isoString);
-  const bkk = new Date(d.getTime() + (7 * 60 * 60 * 1000));
-  
-  const yyyy = bkk.getUTCFullYear();
-  const mm = String(bkk.getUTCMonth() + 1).padStart(2, '0');
-  const dd = String(bkk.getUTCDate()).padStart(2, '0');
-  const HH = String(bkk.getUTCHours()).padStart(2, '0');
-  const MM = String(bkk.getUTCMinutes()).padStart(2, '0');
-  
-  return `${yyyy}-${mm}-${dd}T${HH}:${MM}`;
-}
-
-// B20: Helper to parse datetime-local input value as BKK time and return UTC ISO string
-function parseInputToUTC(val) {
-  if (!val) return null;
-  // val is "YYYY-MM-DDTHH:mm"
-  // Split into parts to avoid browser timezone interference
-  const [datePart, timePart] = val.split('T');
-  const [y, m, d] = datePart.split('-');
-  const [hh, mm] = timePart.split(':');
-  
-  // Create a string that Date can parse as UTC, then adjust by 7 hours
-  const utcEquivalent = new Date(Date.UTC(y, m - 1, d, hh, mm));
-  return new Date(utcEquivalent.getTime() - (7 * 60 * 60 * 1000)).toISOString();
-}
-
-function esc(s) {
-  return String(s ?? "")
-    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
 // ── Event listeners ───────────────────────────────────────────────────────────
