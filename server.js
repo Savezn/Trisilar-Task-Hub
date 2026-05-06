@@ -355,6 +355,12 @@ app.get("/api/all-cards", async (req, res) => {
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
+// ── Cache control (B16: topbar manual refresh bypasses TTL) ──────────────────
+app.post("/api/cache/clear", (req, res) => {
+  cacheInvalidate("all-cards");
+  res.json({ ok: true });
+});
+
 // ── BU Config ─────────────────────────────────────────────────────────────────
 
 app.get("/api/config", (req, res) => res.json(readConfig()));
@@ -553,6 +559,7 @@ async function pushTaskToTrello(sessionId, task) {
         null, null
       );
     }
+    cacheInvalidate("all-cards"); // card created/updated via review approve
     store.setTaskTrelloCardId(sessionId, task.id, card.id);
     if (task.syncCalendar && task.deadline) {
       autoSyncToGCal(card.id, { name: task.title, desc: task.description, due: task.deadline, start: null });

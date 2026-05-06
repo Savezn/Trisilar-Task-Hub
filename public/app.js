@@ -3148,6 +3148,7 @@ async function saveConfig() {
 // ── Topbar Refresh ────────────────────────────────────────────────────────────
 async function topbarRefresh() {
   S.allCardsCache = null;
+  await api.post("/api/cache/clear").catch(() => {}); // B16: bypass server TTL on manual refresh
   const [boards] = await Promise.all([api.get("/api/boards").catch(() => S.boards)]);
   S.boards = boards;
   renderSidebar();
