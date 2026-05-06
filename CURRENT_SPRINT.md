@@ -51,6 +51,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | P10-1 — Boards Monitor: Dynamic Team Grouping (Label-based) | ✅ QA Pass | `2a4c426` |
 | P10-2 — Team Monitor: Unified Board View (Kanban) | ✅ QA Pass | `4625180`, `314d176` |
 | B22 — Team Monitor Board view: dynamic columns | ✅ QA Pass | `5384ab8` |
+| V0.1-Ph1 — Foundation Scripts & Smoke Test | ✅ QA Pass | `5c7ad14` |
 
 ---
 
@@ -149,6 +150,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R4 | ✅ Pass | P9-5 (Tasks Group by Type) pass ทุก 6 AC |
 | 2026-05-06 | R5 | ✅ Pass | Phase 10 (B19/B20/B21/P10-1/P10-2) pass — B22 found (P10-2 hardcoded columns) |
 | 2026-05-06 | R6 | ✅ Pass | B22 (Team Monitor dynamic columns) pass ทุก 3 AC |
+| 2026-05-06 | R7 | ✅ Pass | V0.1-Ph1 (Foundation Scripts & Smoke Test) pass ทุก 3 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -172,40 +174,68 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-## 🟢 Sprint Stable — ไม่มี task ค้างอยู่
-
-ทุก bug และ feature ใน Phase 9 / Phase 10 ผ่าน QA แล้ว ไม่มี active task ที่ต้องทำในตอนนี้
+## ⚡ Next Action — Dev ต้องทำ
 
 ---
 
-### ⚡ Next Action — เริ่ม Version 0.1
+### V0.1-Ph2 · Ph2-1 — Extract config routes 🔴
 
-**Role:** Dev  
-**Task:** V0.1-Ph1 — Foundation Scripts & Smoke Test  
-**Reference:** [VERSION_0.1_PLAN.md](./VERSION_0.1_PLAN.md) → Phase V0.1-Ph1
+**Context:**  
+V0.1-Ph1 เสร็จแล้ว ✅ — ต่อไปคือ Ph2: Backend Route Split  
+ทำทีละ route file ตามลำดับใน [VERSION_0.1_PLAN.md](./VERSION_0.1_PLAN.md): config → review → calendar → google-tasks → trello
 
-**Copy-paste prompt สำหรับ session ถัดไป:**
+**What to do:**
+
+แยก config endpoints ออกจาก `server.js` ไปยัง `src/routes/config.routes.js`
+
+**Endpoints ที่ต้องย้าย** (`server.js` lines 366–380 approx):
+- `GET /api/config` — `res.json(readConfig())`
+- `POST /api/config` — `writeConfig(req.body)` + workspace/board visibility sub-handlers ถ้ามี
+
+**Rules:**
+- ไม่เปลี่ยน URL หรือ response shape
+- `readConfig` / `writeConfig` helper ยังอยู่ใน `server.js` (ย้ายใน Ph3)
+- `src/routes/config.routes.js` export `express.Router()`
+- `server.js` import แล้ว `app.use("/api", configRoutes)`
+- หลัง split: `node server.js` ต้องรันได้ + `npm run smoke` ต้องผ่าน
+
+**AC:**
+- [ ] `GET /api/config` และ `POST /api/config` ยังทำงานได้ (URL/shape เหมือนเดิม)
+- [ ] `server.js` บรรทัดที่เป็น config routes ถูกลบออก (ย้ายแล้ว)
+- [ ] `npm run smoke` pass หลัง split
+
+**Commit:**
 ```
-คุณ Dev — อ่าน VERSION_0.1_PLAN.md และ ARCHITECTURE_ANALYSIS.md ก่อน
+git add server.js src/routes/config.routes.js
+git commit -m "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
+```
 
-Task: V0.1-Ph1 — Foundation Scripts & Smoke Test
+**Copy-paste prompt สำหรับ Dev session:**
+```
+คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph2 ก่อน
 
-Step 1 — อัปเดต package.json scripts:
-  "start": "node server.js"
-  "dev": "node server.js"
-  "smoke": "node scripts/smoke-test.js"
+Task: V0.1-Ph2 Ph2-1 — แยก config routes ออกจาก server.js
 
-Step 2 — สร้าง scripts/smoke-test.js:
-  ตรวจสอบ endpoints: GET /, GET /api/config, GET /api/calendar/status, GET /api/reviews
-  Print PASS/FAIL ต่อแต่ละ endpoint
-  Exit code 1 ถ้ามี endpoint ใด fail
+1. Grep หา config route handlers ใน server.js:
+   Grep("api/config", "server.js") → note line numbers
 
-AC:
-  npm start รัน server ได้
-  npm run smoke รันได้และ print PASS/FAIL ต่อแต่ละ endpoint
-  ถ้า endpoint ใด fail → exit code 1
+2. สร้าง src/routes/config.routes.js:
+   - express.Router()
+   - ย้าย GET /api/config และ POST /api/config (และ sub-routes ถ้ามี)
+   - require readConfig/writeConfig จาก path สัมพัทธ์ไปยัง server.js (ชั่วคราว)
 
-Commit: "V0.1-Ph1: add npm scripts and smoke test"
+3. อัปเดต server.js:
+   - require config.routes.js
+   - app.use("/api", configRoutes)
+   - ลบ handler เดิมออก
+
+4. ตรวจ: node server.js ไม่ crash + npm run smoke pass
+
+Rules:
+- ไม่เปลี่ยน URL หรือ response shape
+- ไม่ย้าย cache helpers หรือ readConfig/writeConfig ออกจาก server.js ยัง
+
+Commit: "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
 ```
 
 ---
