@@ -35,6 +35,8 @@ const S = {
   bmHiddenLabels: new Set(),   // P9-4: label names hidden in Boards Monitor (persists in session)
   bmGroupBy: "boards",        // P10-1: grouping mode in Boards Monitor ('boards' | 'teams')
   bmTeamLayout: "stats",       // P10-2: layout mode in Team Monitor ('stats' | 'board')
+  atSortField: "due",          // P10-4: sort field for All Tasks table
+  atSortOrder: "asc",          // P10-4: sort order ('asc' | 'desc')
 };
 
 const COLORS = ["#6366f1","#d29034","#519839","#b04632","#89609e","#cd5a91","#00aecc","#4bbf6b","#e44","#f90"];
@@ -2394,6 +2396,34 @@ function renderAllTasks(cards) {
     return result;
   }
 
+  function getSorted(rows) {
+    const field = S.atSortField || "due";
+    const order = S.atSortOrder || "asc";
+    const sorted = [...rows].sort((a, b) => {
+      let valA, valB;
+      if (field === "name") { valA = a.name.toLowerCase(); valB = b.name.toLowerCase(); }
+      else if (field === "board") { valA = a.boardName.toLowerCase(); valB = b.boardName.toLowerCase(); }
+      else if (field === "list")  { valA = a.listName.toLowerCase(); valB = b.listName.toLowerCase(); }
+      else if (field === "owner") { 
+        valA = (a.members || []).map(m => m.fullName || m.username || m.id).join(", ").toLowerCase();
+        valB = (b.members || []).map(m => m.fullName || m.username || m.id).join(", ").toLowerCase();
+      }
+      else if (field === "due") {
+        valA = a.due ? new Date(a.due).getTime() : Infinity;
+        valB = b.due ? new Date(b.due).getTime() : Infinity;
+      }
+      else if (field === "status") {
+        valA = a.dueComplete ? 2 : (a.due && new Date(a.due) < now ? 0 : 1);
+        valB = b.dueComplete ? 2 : (b.due && new Date(b.due) < now ? 0 : 1);
+      }
+      
+      if (valA < valB) return order === "asc" ? -1 : 1;
+      if (valA > valB) return order === "asc" ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }
+
   function counts() {
     return {
       all:     cards.length,
@@ -2530,10 +2560,30 @@ function renderAllTasks(cards) {
           </select>
         </div>
         <div class="task-table">
-          <div class="task-table-head"><div>TASK</div><div>BOARD</div><div>LIST</div><div>OWNER</div><div>DUE</div><div>STATUS</div></div>
+          <div class="task-table-head">
+            <div class="sortable-header" data-sort="name">TASK ${S.atSortField === "name" ? (S.atSortOrder === "asc" ? "▴" : "▾") : ""}</div>
+            <div class="sortable-header" data-sort="board">BOARD ${S.atSortField === "board" ? (S.atSortOrder === "asc" ? "▴" : "▾") : ""}</div>
+            <div class="sortable-header" data-sort="list">LIST ${S.atSortField === "list" ? (S.atSortOrder === "asc" ? "▴" : "▾") : ""}</div>
+            <div class="sortable-header" data-sort="owner">OWNER ${S.atSortField === "owner" ? (S.atSortOrder === "asc" ? "▴" : "▾") : ""}</div>
+            <div class="sortable-header" data-sort="due">DUE ${S.atSortField === "due" ? (S.atSortOrder === "asc" ? "▴" : "▾") : ""}</div>
+            <div class="sortable-header" data-sort="status">STATUS ${S.atSortField === "status" ? (S.atSortOrder === "asc" ? "▴" : "▾") : ""}</div>
+          </div>
           <div id="task-rows">${buildGroupedRows(rows)}</div>
         </div>
       </div>`;
+
+    content.querySelectorAll(".sortable-header").forEach(hdr => {
+      hdr.onclick = () => {
+        const field = hdr.dataset.sort;
+        if (S.atSortField === field) {
+          S.atSortOrder = S.atSortOrder === "asc" ? "desc" : "asc";
+        } else {
+          S.atSortField = field;
+          S.atSortOrder = "asc";
+        }
+        render();
+      };
+    });
 
     content.querySelectorAll(".filter-chip[data-f]").forEach(btn => {
       btn.onclick = () => { filter = btn.dataset.f; render(); };
