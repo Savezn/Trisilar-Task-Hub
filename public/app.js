@@ -3555,18 +3555,27 @@ function $(id) { return document.getElementById(id); }
 function formatThaiDateTime(isoString, includeTime = true) {
   if (!isoString) return "";
   const d = new Date(isoString);
-  const options = {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    timeZone: "Asia/Bangkok"
-  };
+  
+  // Use Intl.DateTimeFormat with formatToParts for 100% control
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Bangkok'
+  });
+  
+  const parts = formatter.formatToParts(d);
+  const p = {};
+  parts.forEach(part => { p[part.type] = part.value; });
+  
+  let res = `${p.day}/${p.month}/${p.year}`;
   if (includeTime) {
-    options.hour = "2-digit";
-    options.minute = "2-digit";
-    options.hour12 = false; // 24hr format
+    res += ` ${p.hour}:${p.minute}`;
   }
-  return d.toLocaleString("en-GB", options).replace(",", "");
+  return res;
 }
 
 // B20: Helper to format ISO string for <input type="datetime-local"> in BKK time
