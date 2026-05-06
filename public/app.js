@@ -3552,26 +3552,17 @@ function $(id) { return document.getElementById(id); }
 function formatThaiDateTime(isoString, includeTime = true) {
   if (!isoString) return "";
   const d = new Date(isoString);
+  // Manual offset for BKK (+7)
+  const bkk = new Date(d.getTime() + (7 * 60 * 60 * 1000));
   
-  // Use Intl.DateTimeFormat with formatToParts for 100% control
-  const formatter = new Intl.DateTimeFormat('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone: 'Asia/Bangkok'
-  });
+  const dd = String(bkk.getUTCDate()).padStart(2, '0');
+  const mm = String(bkk.getUTCMonth() + 1).padStart(2, '0');
+  const yyyy = bkk.getUTCFullYear();
+  const HH = String(bkk.getUTCHours()).padStart(2, '0');
+  const MM = String(bkk.getUTCMinutes()).padStart(2, '0');
   
-  const parts = formatter.formatToParts(d);
-  const p = {};
-  parts.forEach(part => { p[part.type] = part.value; });
-  
-  let res = `${p.day}/${p.month}/${p.year}`;
-  if (includeTime) {
-    res += ` ${p.hour}:${p.minute}`;
-  }
+  let res = `${dd}/${mm}/${yyyy}`;
+  if (includeTime) res += ` ${HH}:${MM}`;
   return res;
 }
 
@@ -3579,21 +3570,15 @@ function formatThaiDateTime(isoString, includeTime = true) {
 function formatISOForInput(isoString) {
   if (!isoString) return "";
   const d = new Date(isoString);
+  const bkk = new Date(d.getTime() + (7 * 60 * 60 * 1000));
   
-  // Use Intl.DateTimeFormat to get BKK parts
-  const formatter = new Intl.DateTimeFormat('en-GB', {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit',
-    hour12: false,
-    timeZone: 'Asia/Bangkok'
-  });
+  const yyyy = bkk.getUTCFullYear();
+  const mm = String(bkk.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(bkk.getUTCDate()).padStart(2, '0');
+  const HH = String(bkk.getUTCHours()).padStart(2, '0');
+  const MM = String(bkk.getUTCMinutes()).padStart(2, '0');
   
-  const parts = formatter.formatToParts(d);
-  const p = {};
-  parts.forEach(part => { p[part.type] = part.value; });
-  
-  // Return YYYY-MM-DDTHH:mm
-  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
+  return `${yyyy}-${mm}-${dd}T${HH}:${MM}`;
 }
 
 // B20: Helper to parse datetime-local input value as BKK time and return UTC ISO string
