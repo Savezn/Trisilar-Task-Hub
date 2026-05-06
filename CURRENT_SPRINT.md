@@ -61,6 +61,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph3 Ph3-2 — Extract google helpers | ✅ QA Pass | `d06d388` |
 | V0.1-Ph4 Ph4-1 — Server core hardening | ✅ QA Pass | `f6b5ab6` |
 | V0.1-Ph4 Ph4-2 — Frontend Core Split (api/state/router/utils) | ✅ QA Pass | `50ffc72` |
+| V0.1-Ph5 Ph5-1 — Extract Today page module | ✅ QA Pass | `296b48a` |
 
 ---
 
@@ -170,6 +171,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R15 | ✅ Pass | V0.1-Ph4 Ph4-1 (server hardening) pass — Bug B23 found (autoDelete missing) |
 | 2026-05-06 | R16 | ✅ Pass | B23 (missing autoDeleteFromGCal import in server.js) pass ทุก 2 AC |
 | 2026-05-07 | R17 | ✅ Pass | V0.1-Ph4 Ph4-2 (Frontend Core Split) pass ทุก 4 AC |
+| 2026-05-07 | R18 | ✅ Pass | V0.1-Ph5 Ph5-1 (Extract Today page module) pass ทุก 5 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -197,67 +199,66 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph5 Ph5-1 · Extract Today Page Module 🔴
+### V0.1-Ph5 Ph5-2 · Extract Review Queue Page Module 🔴
 
 **Context:**  
-Ph4-2 (Frontend Core Split) เสร็จแล้ว — `api`, `S`, `navigateTo`, utils ทั้งหมดเป็น global จากไฟล์ใน `public/js/` แล้ว  
-ถึงเวลาเริ่ม Ph5: แยก page renderers ออกจาก `app.js` ทีละ page เริ่มจาก **Today page** ซึ่งเป็น page หลัก
+Ph5-1 (Today page) เสร็จแล้ว — `public/js/pages/today.js` พร้อมใช้งาน  
+Ph5-2: แยก Review Queue page ออกจาก `app.js` ไปยัง `public/js/pages/review.js`
 
 **Target:**
 ```
-public/js/pages/today.js   ← showTodayPage() + helper functions ของ Today
+public/js/pages/review.js   ← showReviewPage() + helper functions ของ Review Queue
 ```
 
 **What to do:**
-1. Grep `public/app.js` หา `function showTodayPage` → note line number
-2. Read รอบ function นั้น ±20 บรรทัด เพื่อ identify scope และ helper functions ที่ใช้เฉพาะ Today
-3. Extract `showTodayPage()` และ Today-specific helpers ออกไปที่ `public/js/pages/today.js`
-4. เพิ่ม `<script src="js/pages/today.js"></script>` ใน `index.html` ก่อน `app.js`
+1. Grep `public/app.js` หา `// ── Review Queue Page` → note line number
+2. Read รอบ block นั้น เพื่อ identify ว่า functions ไหนใช้เฉพาะ Review page (ไม่ถูกเรียกจาก page อื่น)
+3. Extract `showReviewPage()` และ Review-specific helpers → `public/js/pages/review.js`
+4. เพิ่ม `<script src="js/pages/review.js"></script>` ใน `index.html` หลัง `today.js` ก่อน `app.js`
 5. ลบ definitions ที่ย้ายออกจาก `app.js`
-6. Browser check: Today page โหลด, stats render, mark done, open Trello ทำงานได้
+6. Smoke test 4 endpoints PASS
 
 **Rules:**
-- ย้ายเฉพาะ Today page functions — ไม่แตะ page อื่น
-- ถ้า function ถูกใช้โดย page อื่นด้วย → อย่าย้าย ให้คงไว้ใน `app.js`
+- ย้ายเฉพาะ Review Queue functions — ไม่แตะ page อื่น
+- ถ้า function ถูกใช้โดย page อื่นด้วย → คงไว้ใน `app.js`
 - ไม่ใช้ bundler — plain `<script>` tag เท่านั้น
+- ใช้ Python เพื่อ splice block ออกจาก app.js (หลีกเลี่ยง encoding issue จาก PowerShell)
 
 **AC:**
-- [ ] `public/js/pages/today.js` มี `showTodayPage` และ Today-only helpers
-- [ ] Today page โหลดได้ แสดง Overdue / Due Today / Upcoming / Pending Review
-- [ ] ไม่มี console errors ใหม่
-- [ ] `npm run smoke` pass
+- [ ] `public/js/pages/review.js` มี `showReviewPage` และ Review-only helpers
+- [ ] `public/app.js` ไม่มี `showReviewPage` แล้ว
+- [ ] `index.html` โหลด `review.js` ถูก order (today → review → app)
+- [ ] Smoke test 4/4 PASS
 
 **Commit:**
 ```
-git add public/js/pages/today.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-1: extract Today page module from app.js"
+git add public/js/pages/review.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-2: extract Review Queue page module from app.js"
 git push
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
-คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph5 ก่อน
+คุณ Dev — Task: V0.1-Ph5 Ph5-2 — Extract Review Queue page
 
-Task: V0.1-Ph5 Ph5-1 — Extract Today page
-Target: public/js/pages/today.js
+Context: Ph5-1 เสร็จแล้ว (today.js แยกออกมาแล้ว) ตอนนี้แยก Review Queue page
 
 Steps:
-1. Grep public/app.js หา "function showTodayPage" → note line
-2. Read รอบ function ±20 บรรทัด identify scope
-3. Extract showTodayPage + Today-only helpers → public/js/pages/today.js
-4. เพิ่ม <script src="js/pages/today.js"> ใน index.html ก่อน app.js
-5. ลบ definitions ออกจาก app.js
-6. Browser check: Today page โหลด, stats, mark done ทำงาน
-7. npm run smoke pass
+1. Grep public/app.js หา "// ── Review Queue Page" → note line
+2. Read block นั้น identify scope + helper functions เฉพาะ Review
+3. สร้าง public/js/pages/review.js ← copy showReviewPage + Review-only helpers
+4. เพิ่ม <script src="js/pages/review.js"> ใน index.html หลัง today.js ก่อน app.js
+5. ลบ block นั้นออกจาก app.js (ใช้ Python splice เพื่อหลีกเลี่ยง encoding issue)
+6. Smoke test: GET / /api/boards /api/reviews /api/all-cards → ทุก endpoint 200
 
 Rules:
-- ย้ายเฉพาะ Today functions
+- ย้ายเฉพาะ Review functions
 - ถ้า function ใช้ร่วมกับ page อื่น → คงไว้ใน app.js
 - ไม่ใช้ bundler
 
 Commit:
-git add public/js/pages/today.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-1: extract Today page module from app.js"
+git add public/js/pages/review.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-2: extract Review Queue page module from app.js"
 git push
 ```
 
