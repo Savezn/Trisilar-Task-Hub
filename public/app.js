@@ -626,7 +626,7 @@ function buildTaskCard(session, task) {
   const confClass  = confPct >= 80 ? "conf-high" : confPct >= 50 ? "conf-mid" : "conf-low";
   const matchHint  = task.diffStatus !== "create_new" && task.matchReason
     ? `<div class="review-match-reason">${esc(task.matchReason)}</div>` : "";
-  const deadline   = task.deadline ? task.deadline.slice(0, 16) : "";
+  const deadline   = formatThaiDateTime(task.deadline);
 
   const boardOptions = [
     `<option value="">-- Board --</option>`,
@@ -3578,19 +3578,36 @@ function formatThaiDateTime(isoString, includeTime = true) {
 // B20: Helper to format ISO string for <input type="datetime-local"> in BKK time
 function formatISOForInput(isoString) {
   if (!isoString) return "";
-  // Offset BKK time (+7) manually for the input field to show correct local time
   const d = new Date(isoString);
-  const bkkDate = new Date(d.getTime() + (7 * 60 * 60 * 1000));
-  return bkkDate.toISOString().slice(0, 16);
+  
+  // Use Intl.DateTimeFormat to get BKK parts
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Bangkok'
+  });
+  
+  const parts = formatter.formatToParts(d);
+  const p = {};
+  parts.forEach(part => { p[part.type] = part.value; });
+  
+  // Return YYYY-MM-DDTHH:mm
+  return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
 }
 
 // B20: Helper to parse datetime-local input value as BKK time and return UTC ISO string
 function parseInputToUTC(val) {
   if (!val) return null;
   // val is "YYYY-MM-DDTHH:mm"
-  const d = new Date(val + ":00Z"); // Treat input as UTC temporarily to strip browser offset
-  // Now subtract 7 hours to get real UTC
-  return new Date(d.getTime() - (7 * 60 * 60 * 1000)).toISOString();
+  // Split into parts to avoid browser timezone interference
+  const [datePart, timePart] = val.split('T');
+  const [y, m, d] = datePart.split('-');
+  const [hh, mm] = timePart.split(':');
+  
+  // Create a string that Date can parse as UTC, then adjust by 7 hours
+  const utcEquivalent = new Date(Date.UTC(y, m - 1, d, hh, mm));
+  return new Date(utcEquivalent.getTime() - (7 * 60 * 60 * 1000)).toISOString();
 }
 
 function esc(s) {
