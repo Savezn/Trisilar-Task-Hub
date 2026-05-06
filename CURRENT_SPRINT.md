@@ -59,7 +59,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph2 Ph2-5 — Extract trello routes | ✅ QA Pass | `25a31b7` |
 | V0.1-Ph3 Ph3-1 — Extract core helpers and models | ✅ QA Pass | `e3320d5` |
 | V0.1-Ph3 Ph3-2 — Extract google helpers | ✅ QA Pass | `d06d388` |
-
+| V0.1-Ph4 Ph4-1 — Server core hardening | ✅ QA Pass | `f6b5ab6` |
 
 ---
 
@@ -166,7 +166,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R12 | ✅ Pass | V0.1-Ph2 Ph2-5 (trello routes extraction) pass ทุก 3 AC |
 | 2026-05-06 | R13 | ✅ Pass | V0.1-Ph3 Ph3-1 (core helpers extraction) pass ทุก 3 AC |
 | 2026-05-06 | R14 | ✅ Pass | V0.1-Ph3 Ph3-2 (google helpers extraction) pass ทุก 3 AC |
-
+| 2026-05-06 | R15 | ✅ Pass | V0.1-Ph4 Ph4-1 (server hardening) pass — Bug B23 found (autoDelete missing) |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -186,7 +186,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B20 | Due date display: UTC+7 and dd/mm/yyyy format | `app.js` | ✅ Fixed `d8114bd` |
 | B21 | All Tasks sorting logic not called in render | `app.js` | ✅ Fixed `e79ff3b` |
 | B22 | Team Monitor Board view: hardcoded columns — cards ใน lists อื่นหายไป | `app.js:2118` | ✅ Fixed `5384ab8` |
-
+| B23 | GCal autoDelete missing after trello routes extraction | `src/routes/trello.routes.js` | ⬜ Pending |
 
 ---
 
@@ -194,62 +194,44 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph4 · Server Core Hardening 🔴
+### B23 · Restore GCal autoDelete functionality 🔴
 
 **Context:**  
-Phase 3 (Helper Extraction) เสร็จสมบูรณ์แล้ว ✅  
-Phase 4: ย้าย Logic ส่วนที่เหลือ (Config management, remaining utilities) ออกจาก `server.js` เพื่อให้ `server.js` เหลือเพียง ~50 บรรทัดสำหรับการ Boot ระบบ
-
-**Task Ph4-1: Extract Config & Clean up Server**
-ย้าย functions ต่อไปนี้ไปยังไฟล์ใหม่:
-
-1. **`src/utils/config.js`**:
-   - `CONFIG_FILE`, `DEFAULT_CONFIG`
-   - `readConfig`, `writeConfig`
-
-2. **Clean up `server.js`**:
-   - ลบ imports และ logic ที่ไม่ได้ใช้
-   - จัดกลุ่ม middleware และ routing ให้เป็นระเบียบ
-   - เป้าหมาย: `server.js` < 60 lines
+QA พบว่าฟังก์ชัน `autoDeleteFromGCal` หลุดหายไปจากระบบหลังจากแยก Trello routes (Ph2-5) 
+ต้องนำกลับมาเชื่อมต่อเพื่อให้การลบ Trello card ลบ Event ใน Calendar ด้วย
 
 **What to do:**
-- สร้างไฟล์ `src/utils/config.js`
-- Export `readConfig` และ `writeConfig`
-- อัปเดต `server.js` และ route factories ที่ใช้ config (`config.routes`, `trello.routes`) ให้นำเข้าจากไฟล์ใหม่
-- ตรวจสอบความถูกต้องของการย้าย dependencies
+1. อัปเดต `src/routes/trello.routes.js`:
+   - เพิ่ม `autoDeleteFromGCal` ใน factory parameters
+   - เรียกใช้ `await autoDeleteFromGCal(req.params.id)` ภายใน `router.delete("/cards/:id", ...)` ก่อนส่ง response
+2. อัปเดต `server.js`:
+   - ส่ง `autoDeleteFromGCal` (จาก `src/utils/google.js`) ให้กับ `makeTrelloRoutes` factory
 
 **AC:**
-- [ ] แอปยังอ่านและเขียน config ได้ปกติ (ลองเปลี่ยน settings)
-- [ ] `server.js` มีขนาดกะทัดรัด (ประมาณ 50-60 บรรทัด)
+- [ ] เมื่อลบ Card ใน Trello ผ่าน API, `autoDeleteFromGCal` ถูกเรียกใช้
 - [ ] `npm run smoke` pass
 
 **Commit:**
 ```
-git add .
-git commit -m "V0.1-Ph4: extract config management and harden server.js"
+git add server.js src/routes/trello.routes.js
+git commit -m "Fix: Restore GCal autoDelete functionality in Trello routes (B23)"
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
-คุณ Dev — เริ่ม Phase 4: Server Core Hardening
+คุณ Dev — แก้ Bug B23 (GCal autoDelete หายไป)
 
-1. สร้าง src/utils/config.js:
-   - ย้าย CONFIG_FILE, DEFAULT_CONFIG
-   - ย้าย readConfig, writeConfig
-   - Export ทั้งสองฟังก์ชัน
+1. เปิด src/routes/trello.routes.js:
+   - รับ autoDeleteFromGCal เพิ่มใน factory parameters
+   - เรียกใช้ await autoDeleteFromGCal(req.params.id) ใน handler router.delete("/cards/:id")
 
-2. อัปเดต server.js:
-   - require { readConfig, writeConfig } จาก src/utils/config.js
-   - ลบ handler/variable definitions เดิม
-   - จัดระเบียบการ import และ app.use ให้อ่านง่าย
-   - ตรวจสอบว่า dependencies ทุกตัวถูกส่งให้ route factories ครบถ้วน
+2. เปิด server.js:
+   - ตรวจสอบการ import autoDeleteFromGCal จาก src/utils/google.js
+   - ส่ง autoDeleteFromGCal เข้าไปใน makeTrelloRoutes factory
 
-3. อัปเดต src/routes/config.routes.js และ trello.routes.js:
-   - ตรวจสอบการใช้งาน factory parameters (ไม่น่าต้องเปลี่ยนถ้าชื่อเดิม)
+3. ตรวจ: npm run smoke pass
 
-4. ตรวจ: node server.js ไม่ crash + npm run smoke pass
-
-Commit: "V0.1-Ph4: extract config management and harden server.js"
+Commit: "Fix: Restore GCal autoDelete functionality in Trello routes (B23)"
 ```
 
 ---

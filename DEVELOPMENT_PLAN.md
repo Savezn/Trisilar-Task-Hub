@@ -931,9 +931,19 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **V0.1-P1** | Scripts & Smoke | ✅ Done | 2026-05-06 | Foundation for modularization — commit 5c7ad14 |
 | **V0.1-P2** | Route Extraction | ✅ Done | 2026-05-06 | 5 modular route files extracted from server.js — commit 25a31b7 |
 | **V0.1-P3** | Helper Extraction | ✅ Done | 2026-05-06 | Moving logic (cache, errors, models, google) to src/utils and src/models — commit d06d388 |
-| **V0.1-P4** | Server Hardening | 🔄 In Progress | 2026-05-06 | Final cleanup of server.js and modularizing config management |
+| **V0.1-P4** | Server Hardening | ✅ Done | 2026-05-06 | Final cleanup of server.js (~52 lines) and config modularization — commit f6b5ab6 |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · 🛑 Blocked · ➡ Deferred
+
+---
+
+## 🏆 Milestone: Version 0.1 Modular Architecture Complete
+
+Version 0.1 has successfully transformed the monolithic `server.js` into a maintainable, modular structure:
+- **Routes:** 5 dedicated files in `src/routes/`
+- **Models:** Trello data logic in `src/models/`
+- **Utils:** Centralized logic for cache, errors, date, google, and config in `src/utils/`
+- **Server:** Hardened `server.js` acting as a clean entry point.
 
 ---
 
