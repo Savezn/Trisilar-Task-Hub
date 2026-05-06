@@ -6,7 +6,8 @@ const { google } = require("googleapis");
 const trello = require("./trello");
 const store  = require("./review-store");
 const diff   = require("./task-diff");
-const makeConfigRoutes = require("./src/routes/config.routes");
+const makeConfigRoutes  = require("./src/routes/config.routes");
+const makeReviewRoutes  = require("./src/routes/review.routes");
 
 // ── Google Calendar helpers ───────────────────────────────────────────────────
 const getCalendarId = () => process.env.GOOGLE_CALENDAR_ID || "";
@@ -156,6 +157,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
+app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate, autoSyncToGCal }));
 
 // ── Workspaces ────────────────────────────────────────────────────────────────
 
@@ -540,138 +542,6 @@ app.delete("/api/checklists/:id", async (req, res) => {
 
 
 // ── Review Queue ──────────────────────────────────────────────────────────────
-
-// Helper: push an approved task to Trello (and optionally GCal)
-async function pushTaskToTrello(sessionId, task) {
-  if (!task.targetListId) return { skipped: true, reason: "No targetListId" };
-  try {
-    let card;
-    if (task.diffStatus === "update_existing" && task.matchedCardId) {
-      card = await trello.updateCard(task.matchedCardId, {
-        name: task.title,
-        desc: task.description,
-        due:  task.deadline || null,
-      });
-    } else {
-      card = await trello.createCard(
-        task.targetListId,
-        task.title,
-        task.description,
-        task.deadline || null,
-        null, null
-      );
-    }
-    cacheInvalidate("all-cards"); // card created/updated via review approve
-    store.setTaskTrelloCardId(sessionId, task.id, card.id);
-    if (task.syncCalendar && task.deadline) {
-      autoSyncToGCal(card.id, { name: task.title, desc: task.description, due: task.deadline, start: null });
-    }
-    return { ok: true, cardId: card.id };
-  } catch (e) {
-    console.error("[Trello push]", task.id, e.message);
-    return { ok: false, error: friendlyError(e) };
-  }
-}
-
-function notFound(e) {
-  if (e.message.toLowerCase().includes("not found")) return 404;
-  if (e.message.includes("already approved") || e.message.includes("already processed") ||
-      e.message.includes("Cannot edit")       || e.message.includes("unprocessed tasks")) return 409;
-  return 500;
-}
-
-app.get("/api/reviews", (req, res) => {
-  try { res.json(store.getAllSessions()); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.post("/api/task-diff", async (req, res) => {
-  try {
-    const { title, targetBoardId } = req.body;
-    if (!title)         return res.status(400).json({ error: "title is required" });
-    if (!targetBoardId) return res.status(400).json({ error: "targetBoardId is required" });
-    res.json(await diff.diffTask({ title, targetBoardId }));
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.post("/api/reviews", async (req, res) => {
-  try {
-    const data = { ...req.body };
-    if (Array.isArray(data.tasks) && data.tasks.length > 0) {
-      // P6-4: shared cache across all tasks in this session — getLists called once per board
-      const boardCardsCache = new Map();
-      const resolved = [];
-      for (const task of data.tasks) {
-        if (task.targetBoardId) {
-          const result = await diff.diffTask({ title: task.title, targetBoardId: task.targetBoardId, boardCardsCache });
-          resolved.push({ ...task, ...result });
-        } else {
-          resolved.push(task);
-        }
-      }
-      data.tasks = resolved;
-    }
-    res.json(store.createSession(data));
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.get("/api/reviews/:id", (req, res) => {
-  try {
-    const session = store.getSession(req.params.id);
-    if (!session) return res.status(404).json({ error: "Session not found" });
-    res.json(session);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.put("/api/reviews/:id/tasks/:taskId", (req, res) => {
-  try { res.json(store.updateTask(req.params.id, req.params.taskId, req.body)); }
-  catch (e) { res.status(notFound(e)).json({ error: e.message }); }
-});
-
-app.post("/api/reviews/:id/tasks/:taskId/approve", async (req, res) => {
-  try {
-    const task    = store.approveTask(req.params.id, req.params.taskId);
-    const result  = await pushTaskToTrello(req.params.id, task);
-    const updated = store.getSession(req.params.id)?.tasks.find(t => t.id === req.params.taskId) || task;
-    res.json({ ...updated, trello: result });
-  } catch (e) { res.status(notFound(e)).json({ error: e.message }); }
-});
-
-app.post("/api/reviews/:id/tasks/:taskId/reject", (req, res) => {
-  try { res.json(store.rejectTask(req.params.id, req.params.taskId)); }
-  catch (e) { res.status(notFound(e)).json({ error: e.message }); }
-});
-
-app.post("/api/reviews/:id/approve-bulk", async (req, res) => {
-  try {
-    const { taskIds = [] } = req.body;
-    const results = await Promise.all(taskIds.map(async taskId => {
-      try {
-        const task    = store.approveTask(req.params.id, taskId);
-        const result  = await pushTaskToTrello(req.params.id, task);
-        const updated = store.getSession(req.params.id)?.tasks.find(t => t.id === taskId) || task;
-        return { taskId, ok: true, trelloCardId: updated.trelloCardId, trello: result };
-      } catch (e) { return { taskId, ok: false, error: friendlyError(e) }; }
-    }));
-    res.json(results);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.post("/api/reviews/:id/reject-bulk", (req, res) => {
-  try {
-    const { taskIds = [] } = req.body;
-    const results = taskIds.map(taskId => {
-      try { return { taskId, ok: true, task: store.rejectTask(req.params.id, taskId) }; }
-      catch (e) { return { taskId, ok: false, error: e.message }; }
-    });
-    res.json(results);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.delete("/api/reviews/:id", (req, res) => {
-  try { res.json(store.dismissSession(req.params.id)); }
-  catch (e) { res.status(notFound(e)).json({ error: e.message }); }
-});
 
 // ── Google Tasks ──────────────────────────────────────────────────────────────
 
