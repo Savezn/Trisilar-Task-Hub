@@ -54,6 +54,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph1 — Foundation Scripts & Smoke Test | ✅ QA Pass | `5c7ad14` |
 | V0.1-Ph2 Ph2-1 — Extract config routes | ✅ QA Pass | `ac699f1` |
 | V0.1-Ph2 Ph2-2 — Extract review routes | ✅ QA Pass | `bdfbadb` |
+| V0.1-Ph2 Ph2-3 — Extract calendar routes | ✅ QA Pass | `0f14d6f` |
 
 ---
 
@@ -155,6 +156,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R7 | ✅ Pass | V0.1-Ph1 (Foundation Scripts & Smoke Test) pass ทุก 3 AC |
 | 2026-05-06 | R8 | ✅ Pass | V0.1-Ph2 Ph2-1 (config routes extraction) pass ทุก 3 AC |
 | 2026-05-06 | R9 | ✅ Pass | V0.1-Ph2 Ph2-2 (review routes extraction) pass ทุก 3 AC |
+| 2026-05-06 | R10 | ✅ Pass | V0.1-Ph2 Ph2-3 (calendar routes extraction) pass ทุก 3 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -182,70 +184,63 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph2 · Ph2-3 — Extract calendar routes 🔴
+### V0.1-Ph2 · Ph2-4 — Extract google-tasks routes 🔴
 
 **Context:**  
-Ph2-2 (review routes) เสร็จแล้ว ✅  
-Ph2-3: ย้าย Google Calendar + OAuth endpoints ออกจาก `server.js` → `src/routes/calendar.routes.js`
+Ph2-3 (calendar routes) เสร็จแล้ว ✅  
+Ph2-4: ย้าย Google Tasks endpoints ออกจาก `server.js` → `src/routes/google-tasks.routes.js`
 
-**Endpoints ที่ต้องย้าย** (server.js ~lines 401–520):
+**Endpoints ที่ต้องย้าย** (server.js ~lines 436–495):
 | Method | URL | Notes |
 |---|---|---|
-| POST | `/auth/google` | OAuth setup |
-| GET | `/auth/callback` | OAuth callback |
-| GET | `/api/calendar/status` | connection check |
-| GET | `/api/calendar/events` | list events |
-| POST | `/api/calendar/events` | create event |
-| PUT | `/api/calendar/events/:id` | update event |
-| DELETE | `/api/calendar/events/:id` | delete event |
+| GET | `/api/google-tasks/status` | connection check |
+| GET | `/api/google-tasks/today` | tasks due today/overdue |
+| POST | `/api/google-tasks` | create task |
+| PUT | `/api/google-tasks/:id` | update/complete task |
 
 **Dependencies ที่ต้องส่งผ่าน factory:**
-- `getCalendarClient` — Google Calendar API client
-- `getCalendarId` — returns calendar ID from env
-- `getOAuth2Client` — OAuth2 client factory
-- `updateEnvKey` — write env variable to .env (ใช้ใน `/auth/google`)
-- `readCardEvents` / `writeCardEvents` — card→event mapping (ใช้ใน delete)
+- `getTasksClient` — Google Tasks API client
+- `todayBangkok` — returns today YYYY-MM-DD in UTC+7
 - `friendlyError`
 
 **Rules:**
-- `/auth/google` และ `/auth/callback` เป็น OAuth routes — mount ที่ root (`app.use("/", calendarRoutes)`) ไม่ใช่ `/api`  
-  หรือ mount ทั้ง block ด้วย `app.use(calendarRoutes)` แล้ว router define paths เต็ม (`/auth/google`, `/api/calendar/...`)
+- ใช้ factory pattern เหมือน routes ก่อนหน้า
+- mount ด้วย `app.use("/api", makeGoogleTasksRoutes({...}))`
+- router paths ไม่มี `/api` นำหน้า
 - ไม่เปลี่ยน URL หรือ response shape
-- helpers (`getCalendarClient`, `autoSyncToGCal` ฯลฯ) ยังอยู่ใน `server.js` ชั่วคราว (ย้ายใน Ph3)
+- helpers ยังอยู่ใน `server.js` (ย้ายใน Ph3)
 - หลัง split: `node server.js` รันได้ + `npm run smoke` pass
 
 **AC:**
-- [ ] ทุก 7 endpoints ยังทำงานได้ (URL/shape เหมือนเดิม)
-- [ ] `server.js` ไม่มี calendar + auth handlers เหลืออยู่
+- [ ] ทุก 4 endpoints ยังทำงานได้ (URL/shape เหมือนเดิม)
+- [ ] `server.js` ไม่มี google-tasks handlers เหลืออยู่
 - [ ] `npm run smoke` pass หลัง split
 
 **Commit:**
 ```
-git add server.js src/routes/calendar.routes.js
-git commit -m "V0.1-Ph2: extract calendar routes to src/routes/calendar.routes.js"
+git add server.js src/routes/google-tasks.routes.js
+git commit -m "V0.1-Ph2: extract google-tasks routes to src/routes/google-tasks.routes.js"
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
 คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph2 ก่อน
 
-Task: V0.1-Ph2 Ph2-3 — แยก calendar + OAuth routes ออกจาก server.js
+Task: V0.1-Ph2 Ph2-4 — แยก google-tasks routes ออกจาก server.js
 
-1. Grep หา calendar/auth route handlers ใน server.js:
-   Grep("auth/google|auth/callback|api/calendar", "server.js") → note line range
+1. Grep หา google-tasks route handlers ใน server.js:
+   Grep("api/google-tasks", "server.js") → note line range
 
 2. อ่าน section นั้นด้วย Read(offset, limit) เพื่อดู handlers และ dependencies ทั้งหมด
 
-3. สร้าง src/routes/calendar.routes.js:
-   - factory function รับ { getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, readCardEvents, writeCardEvents, friendlyError }
-   - ย้าย handlers ทั้ง 7 ตัวเข้า router
-   - /auth/google และ /auth/callback ใช้ path เต็ม (ไม่มี prefix)
-   - /api/calendar/* ใช้ path เต็ม (ไม่มี prefix)
-   - mount ใน server.js ด้วย app.use(makeCalendarRoutes({ ... })) (ไม่มี prefix)
+3. สร้าง src/routes/google-tasks.routes.js:
+   - factory function รับ { getTasksClient, todayBangkok, friendlyError }
+   - ย้าย handlers ทั้ง 4 ตัวเข้า router
+   - router paths ไม่มี /api นำหน้า (mount ด้วย app.use("/api", ...))
 
 4. อัปเดต server.js:
-   - require calendar.routes.js
-   - app.use(makeCalendarRoutes({ ... }))
+   - require google-tasks.routes.js
+   - app.use("/api", makeGoogleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }))
    - ลบ handlers เดิมออก
 
 5. ตรวจ: node server.js ไม่ crash + npm run smoke pass
@@ -254,7 +249,7 @@ Rules:
 - ไม่เปลี่ยน URL หรือ response shape
 - ไม่ย้าย helper functions ออกจาก server.js ยัง (ย้ายใน Ph3)
 
-Commit: "V0.1-Ph2: extract calendar routes to src/routes/calendar.routes.js"
+Commit: "V0.1-Ph2: extract google-tasks routes to src/routes/google-tasks.routes.js"
 ```
 
 ---
