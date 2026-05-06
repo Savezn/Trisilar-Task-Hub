@@ -2045,6 +2045,17 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
     };
   });
 
+  toolbar.querySelectorAll("[data-sort]").forEach(btn => {
+    btn.onclick = () => {
+      const controls = $("bm-sort-controls");
+      if (!controls) return;
+      controls.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentSort = btn.dataset.sort;
+      renderGrid();
+    };
+  });
+
   // P9-4: label filter row (only render if there are labels)
   const labelBar = document.createElement("div");
   labelBar.className = "bm-label-bar";
@@ -2401,9 +2412,18 @@ function renderAllTasks(cards) {
     const order = S.atSortOrder || "asc";
     const sorted = [...rows].sort((a, b) => {
       let valA, valB;
-      if (field === "name") { valA = a.name.toLowerCase(); valB = b.name.toLowerCase(); }
-      else if (field === "board") { valA = a.boardName.toLowerCase(); valB = b.boardName.toLowerCase(); }
-      else if (field === "list")  { valA = a.listName.toLowerCase(); valB = b.listName.toLowerCase(); }
+      if (field === "name") { 
+        valA = (a.name || "").toLowerCase(); 
+        valB = (b.name || "").toLowerCase(); 
+      }
+      else if (field === "board") { 
+        valA = (a.boardName || "").toLowerCase(); 
+        valB = (b.boardName || "").toLowerCase(); 
+      }
+      else if (field === "list")  { 
+        valA = (a.listName || "").toLowerCase(); 
+        valB = (b.listName || "").toLowerCase(); 
+      }
       else if (field === "owner") { 
         valA = (a.members || []).map(m => m.fullName || m.username || m.id).join(", ").toLowerCase();
         valB = (b.members || []).map(m => m.fullName || m.username || m.id).join(", ").toLowerCase();
@@ -2526,7 +2546,8 @@ function renderAllTasks(cards) {
   }
 
   function render() {
-    const c = counts(), rows = getFiltered();
+    const c = counts(), filtered = getFiltered();
+    const rows = getSorted(filtered);
     window._filteredCards = rows; // P8-3: expose for CSV export
     // M6: label/owner as pill chips (toggle); group-by stays as <select>
     const labelChipHtml = allLabels.length
