@@ -405,7 +405,7 @@ function buildTodayRow(card, chipClass, chipLabel) {
   row.className = "today-task-row";
 
   const dueText = card.due
-    ? new Date(card.due).toLocaleDateString("en-US", { month:"short", day:"numeric" })
+    ? formatThaiDate(card.due)
     : "";
 
   const dueDateVal = card.due ? card.due.slice(0, 10) : "";
@@ -1795,7 +1795,7 @@ function buildCard(card, listId, boardId, lists) {
   }
 
   let meta = "";
-  if (card.start) meta += `<span class="start-badge">▶ ${new Date(card.start).toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span>`;
+  if (card.start) meta += `<span class="start-badge">▶ ${formatThaiDate(card.start)}</span>`;
   if (card.due)   meta += buildDueBadge(card.due, card.dueComplete);
   if (card.dueReminder != null && card.dueReminder !== -1) meta += `<span class="reminder-icon" title="Reminder set">🔔</span>`;
   if (card.desc)  meta += `<span class="desc-icon">≡</span>`;
@@ -2589,7 +2589,7 @@ function exportTasksCSV() {
   const now = new Date();
   const dataRows = rows.map(c => {
     const owner   = (c.members || []).map(m => m.fullName || m.username || m.id).join("; ");
-    const dueDate = c.due ? new Date(c.due).toLocaleDateString("en-CA") : "";
+    const dueDate = c.due ? formatThaiDate(c.due) : "";
     const labels  = (c.labels  || []).filter(l => l.name).map(l => l.name).join("; ");
     const status  = c.dueComplete ? "Done"
                   : (c.due && new Date(c.due) < now) ? "Overdue" : "Active";
@@ -2832,7 +2832,7 @@ function renderOKRPage(allCards, boards) {
             <div class="okr-kr-meta">
               ${linked.length ? `<span class="okr-meta-tag">${linked.length} task${linked.length !== 1 ? "s" : ""}</span>` : ""}
               ${overdueCount ? `<span class="okr-meta-tag okr-meta-overdue">⚠ ${overdueCount} overdue</span>` : ""}
-              ${nextDue ? `<span class="okr-meta-tag">Next: ${new Date(nextDue.due).toLocaleDateString()}</span>` : ""}
+              ${nextDue ? `<span class="okr-meta-tag">Next: ${formatThaiDate(nextDue.due)}</span>` : ""}
               ${!linked.length ? `<span class="okr-meta-tag" style="color:var(--text-faint)">No linked tasks</span>` : ""}
             </div>
           </div>`;
@@ -2944,7 +2944,7 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
     if (d.toDateString() === today.toDateString()) return "Today";
     if (d.toDateString() === tomorrow.toDateString()) return "Tomorrow";
-    return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    return formatThaiDate(d.toISOString());
   }
 
   function render() {
@@ -3551,6 +3551,18 @@ function toast(msg, isError = false) {
 
 // ── Utils ─────────────────────────────────────────────────────────────────────
 function $(id) { return document.getElementById(id); }
+// B20: Format date to dd/mm/yyyy in Thai Time (UTC+7)
+function formatThaiDate(isoString) {
+  if (!isoString) return "";
+  const d = new Date(isoString);
+  return d.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "Asia/Bangkok"
+  });
+}
+
 function esc(s) {
   return String(s ?? "")
     .replace(/&/g,"&amp;").replace(/</g,"&lt;")

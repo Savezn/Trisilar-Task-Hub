@@ -158,25 +158,102 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B16 | topbarRefresh ไม่ bypass server TTL | `server.js`,`app.js` | ✅ Fixed `c6a09fd` |
 | B17 | approve task ไม่ invalidate cache | `server.js:556` | ✅ Fixed `c6a09fd` |
 | B18 | bm-label-filter-note แสดง "0 cards" บน boards ไม่มี label นั้น | `app.js:2088` | ✅ Fixed `7926b80` |
+| B19 | Cold start rate limit — ⚠ Trello rate limit ทุกครั้งที่ server restart | `server.js` | ⬜ Pending |
+| B20 | Due date display: UTC+7 and dd/mm/yyyy format | `app.js` | ✅ Fixed `pending` |
 
 ---
 
-## ⚡ Next Action
+## ⚡ Next Action — Dev ต้องทำ
 
 ---
 
-### 🟢 Sprint Stable — ไม่มี task ใหม่ที่ pending
+### 1. B19 — Cold Start Trello Rate Limit 🔴 (แก้ก่อน V0.1 เริ่ม)
 
-Features ที่วางแผนไว้ทุกข้อเสร็จแล้ว (P9-4 ✅, P9-5 ✅)
-Bugs ที่รายงานทุกข้อแก้ไขและผ่าน QA แล้ว (B10–B18 ✅)
+**Root cause (PM verified):**
+เมื่อ server restart → cache ว่างเปล่า → `/api/all-cards` fan-out หลายสิบ Trello API calls พร้อมกันทันที
+→ Trello 429 rate limit ก่อนที่ cache จะมีโอกาส populate
+→ error response ไม่ถูก cache → refresh ครั้งต่อไปก็ error ซ้ำ (loop ไม่หาย)
 
-**Task ที่ยัง defer อยู่ (รอ trigger):**
-- **P9-2 · Virtual Scroll** — defer จนกว่า cards จะเกิน 200 (ปัจจุบันไม่ถึง threshold)
-- **P9-3 · UX Polish** — รอ feedback / screenshot จาก user
+**Root cause เพิ่มเติม (cache stampede):**
+ถ้า client ส่ง request หลายตัวพร้อมกันก่อน cache populate → แต่ละ request fan-out ไปยัง Trello ซ้ำซ้อน
 
-**สิ่งที่ต้องทำต่อไปสำหรับทีม:**
-- ใช้งานจริงและสังเกต bugs ใหม่ → report เข้า P9-1
-- ถ้ามี feature request ใหม่ → PM เปิด session ใหม่และเขียน brief
+**Fix ใน `server.js` — 2 ส่วน:**
+
+**ส่วนที่ 1 — Request coalescing (กัน stampede):**
+
+เพิ่ม in-flight map ข้าง `_cache`:
+```js
+const _inFlight = {};
+```
+
+ใน `/api/all-cards` route แทรกหลัง cacheGet check:
+```js
+const hit = cacheGet("all-cards");
+if (hit) return res.json(hit);
+
+// coalesce: ถ้า fan-out กำลังรันอยู่ → รอผลเดียวกัน
+if (_inFlight["all-cards"]) {
+  try {
+    const data = await _inFlight["all-cards"];
+    return res.json(data);
+  } catch (e) {
+    return res.status(503).json({ error: trelloError(e) });
+  }
+}
+
+// เริ่ม fan-out ครั้งเดียว
+let resolve, reject;
+_inFlight["all-cards"] = new Promise((res, rej) => { resolve = res; reject = rej; });
+
+try {
+  // ... existing fan-out logic ...
+  cacheSet("all-cards", result, 60_000);
+  resolve(result);
+  res.json(result);
+} catch (e) {
+  reject(e);
+  res.status(503).json({ error: trelloError(e) });
+} finally {
+  delete _inFlight["all-cards"];
+}
+```
+
+**ส่วนที่ 2 — Warm cache on startup:**
+
+หลัง server listen เพิ่ม:
+```js
+server.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+  // warm cache silently — ไม่ block startup
+  setTimeout(() => {
+    fetch(`http://localhost:${PORT}/api/all-cards`)
+      .then(() => console.log("[cache] warmed all-cards"))
+      .catch(() => {}); // ถ้า Trello fail → ไม่ crash server
+  }, 500);
+});
+```
+
+> ⚠️ Grep หา `server.listen` หรือ `app.listen` ก่อน: `Grep("\.listen\(PORT", "server.js")`
+
+**AC:**
+- [ ] เปิดแอปทันทีหลัง server start → ไม่แสดง rate limit error
+- [ ] refresh ซ้ำภายใน 60s → ไม่ error (ใช้ cache)
+- [ ] ถ้า Trello ช้าจริง → แสดง loading state ไม่ใช่ error
+
+---
+
+**หลัง B19 เสร็จ → เริ่ม Version 0.1**
+ดู `VERSION_0.1_PLAN.md` สำหรับแผน phases ทั้งหมด
+เริ่มที่ **V0.1-Ph1** (Foundation Scripts & Smoke Test)
+
+---
+
+**Commit B19:**
+```
+git add server.js
+git commit -m "Phase 9 — B19: fix cold start rate limit (coalesce + warm cache)"
+git push
+```
 
 ---
 
