@@ -405,7 +405,7 @@ function buildTodayRow(card, chipClass, chipLabel) {
   row.className = "today-task-row";
 
   const dueText = card.due
-    ? formatThaiDate(card.due)
+    ? formatThaiDateTime(card.due)
     : "";
 
   const dueDateVal = card.due ? card.due.slice(0, 10) : "";
@@ -1795,7 +1795,7 @@ function buildCard(card, listId, boardId, lists) {
   }
 
   let meta = "";
-  if (card.start) meta += `<span class="start-badge">▶ ${formatThaiDate(card.start)}</span>`;
+  if (card.start) meta += `<span class="start-badge">▶ ${formatThaiDateTime(card.start)}</span>`;
   if (card.due)   meta += buildDueBadge(card.due, card.dueComplete);
   if (card.dueReminder != null && card.dueReminder !== -1) meta += `<span class="reminder-icon" title="Reminder set">🔔</span>`;
   if (card.desc)  meta += `<span class="desc-icon">≡</span>`;
@@ -2589,7 +2589,7 @@ function exportTasksCSV() {
   const now = new Date();
   const dataRows = rows.map(c => {
     const owner   = (c.members || []).map(m => m.fullName || m.username || m.id).join("; ");
-    const dueDate = c.due ? formatThaiDate(c.due) : "";
+    const dueDate = c.due ? formatThaiDateTime(c.due) : "";
     const labels  = (c.labels  || []).filter(l => l.name).map(l => l.name).join("; ");
     const status  = c.dueComplete ? "Done"
                   : (c.due && new Date(c.due) < now) ? "Overdue" : "Active";
@@ -2832,7 +2832,7 @@ function renderOKRPage(allCards, boards) {
             <div class="okr-kr-meta">
               ${linked.length ? `<span class="okr-meta-tag">${linked.length} task${linked.length !== 1 ? "s" : ""}</span>` : ""}
               ${overdueCount ? `<span class="okr-meta-tag okr-meta-overdue">⚠ ${overdueCount} overdue</span>` : ""}
-              ${nextDue ? `<span class="okr-meta-tag">Next: ${formatThaiDate(nextDue.due)}</span>` : ""}
+              ${nextDue ? `<span class="okr-meta-tag">Next: ${formatThaiDateTime(nextDue.due)}</span>` : ""}
               ${!linked.length ? `<span class="okr-meta-tag" style="color:var(--text-faint)">No linked tasks</span>` : ""}
             </div>
           </div>`;
@@ -2944,7 +2944,7 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
     if (d.toDateString() === today.toDateString()) return "Today";
     if (d.toDateString() === tomorrow.toDateString()) return "Tomorrow";
-    return formatThaiDate(d.toISOString());
+    return formatThaiDateTime(d.toISOString());
   }
 
   function render() {
@@ -3045,8 +3045,8 @@ function openEdit(card, listId, boardId, lists) {
   $("modal-title").textContent = "Edit Card";
   $("card-name").value = card.name;
   $("card-desc").value = card.desc || "";
-  $("card-start").value = card.start ? card.start.slice(0, 16) : "";
-  $("card-due").value   = card.due   ? card.due.slice(0, 16)   : "";
+  $("card-start").value = formatISOForInput(card.start);
+  $("card-due").value   = formatISOForInput(card.due);
   $("card-reminder").value = card.dueReminder != null ? String(card.dueReminder) : "-1";
   $("delete-card-btn").classList.remove("hidden");
   populateListSelect(listId, lists || S.currentLists);
@@ -3063,8 +3063,8 @@ function openEditAllTasks(card) {
   $("modal-title").textContent = "Edit Card";
   $("card-name").value = card.name;
   $("card-desc").value = card.desc || "";
-  $("card-start").value = card.start ? card.start.slice(0, 16) : "";
-  $("card-due").value   = card.due   ? card.due.slice(0, 16)   : "";
+  $("card-start").value = formatISOForInput(card.start);
+  $("card-due").value   = formatISOForInput(card.due);
   $("card-reminder").value = card.dueReminder != null ? String(card.dueReminder) : "-1";
   $("delete-card-btn").classList.remove("hidden");
   $("list-select-group").classList.add("hidden");
@@ -3098,7 +3098,7 @@ async function saveCard() {
 
   const desc = $("card-desc").value.trim();
   const dueInput = $("card-due").value;
-  const due = dueInput ? new Date(dueInput).toISOString() : null;
+  const due = parseInputToUTC(dueInput);
   const listVisible = !$("list-select-group").classList.contains("hidden");
   const targetListId = listVisible ? $("card-list").value : S.editing.listId;
 
@@ -3106,7 +3106,7 @@ async function saveCard() {
   btn.textContent = "Saving..."; btn.disabled = true;
 
   const startInput = $("card-start").value;
-  const start = startInput ? new Date(startInput).toISOString() : null;
+  const start = parseInputToUTC(startInput);
   const reminderVal = parseInt($("card-reminder").value ?? "-1");
   const syncCalendar = CAL.status?.connected && $("gcal-sync-check")?.checked === true;
 
@@ -3551,16 +3551,40 @@ function toast(msg, isError = false) {
 
 // ── Utils ─────────────────────────────────────────────────────────────────────
 function $(id) { return document.getElementById(id); }
-// B20: Format date to dd/mm/yyyy in Thai Time (UTC+7)
-function formatThaiDate(isoString) {
+// B20: Format date/time to dd/mm/yyyy HH:mm in Thai Time (UTC+7)
+function formatThaiDateTime(isoString, includeTime = true) {
   if (!isoString) return "";
   const d = new Date(isoString);
-  return d.toLocaleDateString("en-GB", {
+  const options = {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
     timeZone: "Asia/Bangkok"
-  });
+  };
+  if (includeTime) {
+    options.hour = "2-digit";
+    options.minute = "2-digit";
+    options.hour12 = false; // 24hr format
+  }
+  return d.toLocaleString("en-GB", options).replace(",", "");
+}
+
+// B20: Helper to format ISO string for <input type="datetime-local"> in BKK time
+function formatISOForInput(isoString) {
+  if (!isoString) return "";
+  // Offset BKK time (+7) manually for the input field to show correct local time
+  const d = new Date(isoString);
+  const bkkDate = new Date(d.getTime() + (7 * 60 * 60 * 1000));
+  return bkkDate.toISOString().slice(0, 16);
+}
+
+// B20: Helper to parse datetime-local input value as BKK time and return UTC ISO string
+function parseInputToUTC(val) {
+  if (!val) return null;
+  // val is "YYYY-MM-DDTHH:mm"
+  const d = new Date(val + ":00Z"); // Treat input as UTC temporarily to strip browser offset
+  // Now subtract 7 hours to get real UTC
+  return new Date(d.getTime() - (7 * 60 * 60 * 1000)).toISOString();
 }
 
 function esc(s) {
