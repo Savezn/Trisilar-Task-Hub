@@ -160,7 +160,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B18 | bm-label-filter-note แสดง "0 cards" บน boards ไม่มี label นั้น | `app.js:2088` | ✅ Fixed `7926b80` |
 | B19 | Cold start rate limit — ⚠ Trello rate limit ทุกครั้งที่ server restart | `server.js` | ⬜ Pending |
 | B20 | Due date display: UTC+7 and dd/mm/yyyy format | `app.js` | ✅ Fixed `d8114bd` |
-| B21 | All Tasks sorting logic not called in render | `app.js` | ✅ Fixed `pending` |
+| B21 | All Tasks sorting logic not called in render | `app.js` | ✅ Fixed `e79ff3b` |
 
 
 ---

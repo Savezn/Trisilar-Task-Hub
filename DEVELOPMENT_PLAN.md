@@ -923,7 +923,10 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P9** | **P9-4** Monitor Label Filter | ✅ Done | 2026-05-06 | Label Chips Filter in Boards Monitor — commit 7926b80 |
 | **P9** | **P9-5** Tasks Group by Type | ✅ Done | 2026-05-06 | OKR vs Projects grouping — commit b328c8f |
 | **P10** | **P10-1** Dynamic Team Grouping | ✅ Done | 2026-05-06 | Aggregate stats by team labels managed via Settings — commit 2a4c426 |
-| **P10** | **P10-2** Team Monitor: Unified Board View | ✅ Done | 2026-05-06 | Kanban layout (Backlog/Progress/Done) for teams in Monitor — Resolved by Gemini |
+| **P10** | **P10-2** Team Monitor: Board View | ✅ Done | 2026-05-06 | Kanban layout (Backlog/Progress/Done) for teams — commit 4625180 |
+| **P10** | **P10-3** Task Detail Integration | ✅ Done | 2026-05-06 | Click cards in Monitor to open Edit Modal — commit 4625180 |
+| **P10** | **P10-4** Interactive Table Sorting | ✅ Done | 2026-05-06 | Click headers in All Tasks to sort — commit e79ff3b |
+| **B20** | **Bug** Thai Localization | ✅ Done | 2026-05-06 | Standardized dd/mm/yyyy 24hr UTC+7 across all views — commit a7088fb |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · 🛑 Blocked · ➡ Deferred
 
