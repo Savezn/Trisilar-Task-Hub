@@ -2115,12 +2115,16 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
 
       if (S.bmTeamLayout === "board") {
         grid.classList.add("bm-grid-board-mode");
-        const columns = ["Backlog", "In Progress", "Done"];
-        
+
         teams.forEach((teamName, i) => {
           const rawCards = allCards.filter(c => (c.labels || []).some(l => l.name === teamName));
           const cards = visibleCards(rawCards);
           const color = COLORS[i % COLORS.length];
+
+          // B22: derive columns from actual list names of this team's cards
+          const columnSet = new Set();
+          cards.forEach(c => { if (c.listName) columnSet.add(c.listName); });
+          const columns = [...columnSet];
 
           const teamSection = document.createElement("div");
           teamSection.className = "bm-team-section";
@@ -2129,9 +2133,10 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
               <span class="bm-team-name">${esc(teamName)}</span>
               <span class="bm-team-count">${cards.length} cards</span>
             </div>
+            ${!columns.length ? '<div class="bm-col-empty" style="padding:12px 16px">No cards in this team</div>' : `
             <div class="bm-team-columns">
               ${columns.map(col => {
-                const colCards = cards.filter(c => c.listName.toLowerCase() === col.toLowerCase());
+                const colCards = cards.filter(c => c.listName === col);
                 return `
                   <div class="bm-team-col">
                     <div class="bm-col-header">
@@ -2144,12 +2149,11 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
                           <div class="bm-mini-meta">${esc(c.boardName)}</div>
                         </div>
                       `).join("")}
-                      ${!colCards.length ? '<div class="bm-col-empty">No tasks</div>' : ""}
                     </div>
                   </div>
                 `;
               }).join("")}
-            </div>
+            </div>`}
           `;
           grid.appendChild(teamSection);
 
