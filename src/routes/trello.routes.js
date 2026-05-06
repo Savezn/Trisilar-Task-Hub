@@ -2,9 +2,9 @@ const express = require("express");
 
 /**
  * Factory for Trello routes
- * @param {object} deps - { trello, normalizeCard, buildCfNames, cacheGet, cacheSet, cacheInvalidate, friendlyError, autoSyncToGCal, readConfig }
+ * @param {object} deps - { trello, normalizeCard, buildCfNames, cacheGet, cacheSet, cacheInvalidate, friendlyError, autoSyncToGCal, autoDeleteFromGCal, readConfig }
  */
-function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cacheSet, cacheInvalidate, friendlyError, autoSyncToGCal, readConfig }) {
+function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cacheSet, cacheInvalidate, friendlyError, autoSyncToGCal, autoDeleteFromGCal, readConfig }) {
   const router = express.Router();
 
   // ── Workspaces ────────────────────────────────────────────────────────────────
@@ -110,8 +110,7 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       await trello.deleteCard(req.params.id);
       cacheInvalidate("all-cards");
       res.json({ ok: true });
-      // autoDeleteFromGCal is fire-and-forget in server.js but not passed here. 
-      // Handled in server.js for now to avoid too many factory dependencies.
+      await autoDeleteFromGCal(req.params.id);
     } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
   });
 

@@ -51,6 +51,7 @@ app.use("/api", makeTrelloRoutes({
   cacheInvalidate, 
   friendlyError, 
   autoSyncToGCal, 
+  autoDeleteFromGCal,
   readConfig 
 }));
 
