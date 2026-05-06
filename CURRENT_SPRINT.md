@@ -58,6 +58,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph2 Ph2-4 — Extract google-tasks routes | ✅ QA Pass | `6a6e2ac` |
 | V0.1-Ph2 Ph2-5 — Extract trello routes | ✅ QA Pass | `25a31b7` |
 | V0.1-Ph3 Ph3-1 — Extract core helpers and models | ✅ QA Pass | `e3320d5` |
+| V0.1-Ph3 Ph3-2 — Extract google helpers | ✅ QA Pass | `d06d388` |
 
 
 ---
@@ -164,6 +165,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R11 | ✅ Pass | V0.1-Ph2 Ph2-4 (google-tasks routes extraction) pass ทุก 3 AC |
 | 2026-05-06 | R12 | ✅ Pass | V0.1-Ph2 Ph2-5 (trello routes extraction) pass ทุก 3 AC |
 | 2026-05-06 | R13 | ✅ Pass | V0.1-Ph3 Ph3-1 (core helpers extraction) pass ทุก 3 AC |
+| 2026-05-06 | R14 | ✅ Pass | V0.1-Ph3 Ph3-2 (google helpers extraction) pass ทุก 3 AC |
 
 
 ## Bug Fixes This Sprint
@@ -192,68 +194,62 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph3 · Ph3-2 — Extract Google Helpers 🔴
+### V0.1-Ph4 · Server Core Hardening 🔴
 
 **Context:**  
-Ph3-1 (Core Helpers) เสร็จสมบูรณ์แล้ว ✅  
-Ph3-2: ย้าย Google Calendar และ Google Tasks helpers (OAuth, Clients, Sync logic) ออกจาก `server.js` → `src/utils/google.js`
+Phase 3 (Helper Extraction) เสร็จสมบูรณ์แล้ว ✅  
+Phase 4: ย้าย Logic ส่วนที่เหลือ (Config management, remaining utilities) ออกจาก `server.js` เพื่อให้ `server.js` เหลือเพียง ~50 บรรทัดสำหรับการ Boot ระบบ
 
-**Task Ph3-2: Extract Google Utilities**
-ย้าย functions และ variables ต่อไปนี้ไปยัง `src/utils/google.js`:
+**Task Ph4-1: Extract Config & Clean up Server**
+ย้าย functions ต่อไปนี้ไปยังไฟล์ใหม่:
 
-1. **Functions:**
-   - `getCalendarId`
-   - `getOAuth2Client`
-   - `getCalendarClient`
-   - `getTasksClient`
-   - `autoSyncToGCal`
-   - `autoDeleteFromGCal`
-   - `readCardEvents`, `writeCardEvents`
-   - `updateEnvKey`
+1. **`src/utils/config.js`**:
+   - `CONFIG_FILE`, `DEFAULT_CONFIG`
+   - `readConfig`, `writeConfig`
 
-2. **Variables/Constants:**
-   - `REDIRECT_URI`
-   - `CARD_EVENTS_FILE`
+2. **Clean up `server.js`**:
+   - ลบ imports และ logic ที่ไม่ได้ใช้
+   - จัดกลุ่ม middleware และ routing ให้เป็นระเบียบ
+   - เป้าหมาย: `server.js` < 60 lines
 
 **What to do:**
-- สร้างไฟล์ `src/utils/google.js`
-- Export functions โดยใช้ module.exports (ระวัง dependencies: googleapis, fs, path)
-- อัปเดต `server.js` ให้นำเข้า helpers จาก `src/utils/google.js`
-- อัปเดตการส่ง dependencies ให้ route factories ใน `server.js`
+- สร้างไฟล์ `src/utils/config.js`
+- Export `readConfig` และ `writeConfig`
+- อัปเดต `server.js` และ route factories ที่ใช้ config (`config.routes`, `trello.routes`) ให้นำเข้าจากไฟล์ใหม่
+- ตรวจสอบความถูกต้องของการย้าย dependencies
 
 **AC:**
-- [ ] Google Calendar และ Tasks ยังทำงานได้ปกติ (Auth, Sync, Status)
-- [ ] `server.js` ไม่มี definitions ของ Google helpers เหล่านี้เหลืออยู่
+- [ ] แอปยังอ่านและเขียน config ได้ปกติ (ลองเปลี่ยน settings)
+- [ ] `server.js` มีขนาดกะทัดรัด (ประมาณ 50-60 บรรทัด)
 - [ ] `npm run smoke` pass
 
 **Commit:**
 ```
 git add .
-git commit -m "V0.1-Ph3: extract Google helpers from server.js to src/utils/google.js"
+git commit -m "V0.1-Ph4: extract config management and harden server.js"
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
-คุณ Dev — ทำงานต่อใน Phase 3: Ph3-2 (แยก Google Helpers)
+คุณ Dev — เริ่ม Phase 4: Server Core Hardening
 
-1. สร้าง src/utils/google.js:
-   - ย้าย constants: REDIRECT_URI, CARD_EVENTS_FILE
-   - ย้าย internal helpers: readCardEvents, writeCardEvents
-   - ย้าย public helpers: getCalendarId, getOAuth2Client, getCalendarClient, getTasksClient, autoSyncToGCal, autoDeleteFromGCal, updateEnvKey
-   - มั่นใจว่า import/require modules ที่จำเป็นครบ (googleapis, fs, path)
+1. สร้าง src/utils/config.js:
+   - ย้าย CONFIG_FILE, DEFAULT_CONFIG
+   - ย้าย readConfig, writeConfig
+   - Export ทั้งสองฟังก์ชัน
 
 2. อัปเดต server.js:
-   - require helpers ใหม่จาก src/utils/google.js
-   - ลบ handler/helper definitions เดิมที่ย้ายไปแล้ว
-   - อัปเดตการส่ง dependencies ให้ route factories:
-     - makeCalendarRoutes
-     - makeGoogleTasksRoutes
-     - makeReviewRoutes (ต้องการ autoSyncToGCal)
-     - makeTrelloRoutes (ต้องการ autoSyncToGCal)
+   - require { readConfig, writeConfig } จาก src/utils/config.js
+   - ลบ handler/variable definitions เดิม
+   - จัดระเบียบการ import และ app.use ให้อ่านง่าย
+   - ตรวจสอบว่า dependencies ทุกตัวถูกส่งให้ route factories ครบถ้วน
 
-3. ตรวจ: node server.js ไม่ crash + หน้า Calendar/Tasks ในแอปยังเชื่อมต่อได้ + npm run smoke pass
+3. อัปเดต src/routes/config.routes.js และ trello.routes.js:
+   - ตรวจสอบการใช้งาน factory parameters (ไม่น่าต้องเปลี่ยนถ้าชื่อเดิม)
 
-Commit: "V0.1-Ph3: extract Google helpers from server.js to src/utils/google.js"
+4. ตรวจ: node server.js ไม่ crash + npm run smoke pass
+
+Commit: "V0.1-Ph4: extract config management and harden server.js"
 ```
 
 ---

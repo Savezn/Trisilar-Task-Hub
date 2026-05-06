@@ -930,7 +930,8 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **STB** | **Stability** Trello API Overhaul | ✅ Done | 2026-05-06 | Implemented Batch Fetching to reduce API calls by 90% — commit 632fab4 |
 | **V0.1-P1** | Scripts & Smoke | ✅ Done | 2026-05-06 | Foundation for modularization — commit 5c7ad14 |
 | **V0.1-P2** | Route Extraction | ✅ Done | 2026-05-06 | 5 modular route files extracted from server.js — commit 25a31b7 |
-| **V0.1-P3** | Helper Extraction | 🔄 In Progress | 2026-05-06 | Moving logic (cache, errors, models, google) to src/utils and src/models |
+| **V0.1-P3** | Helper Extraction | ✅ Done | 2026-05-06 | Moving logic (cache, errors, models, google) to src/utils and src/models — commit d06d388 |
+| **V0.1-P4** | Server Hardening | 🔄 In Progress | 2026-05-06 | Final cleanup of server.js and modularizing config management |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · 🛑 Blocked · ➡ Deferred
 
