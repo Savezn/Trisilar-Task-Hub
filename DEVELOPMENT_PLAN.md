@@ -927,6 +927,7 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P10** | **P10-3** Task Detail Integration | ✅ Done | 2026-05-06 | Click cards in Monitor to open Edit Modal — commit 4625180 |
 | **P10** | **P10-4** Interactive Table Sorting | ✅ Done | 2026-05-06 | Click headers in All Tasks to sort — commit e79ff3b |
 | **B20** | **Bug** Thai Localization | ✅ Done | 2026-05-06 | Standardized dd/mm/yyyy 24hr UTC+7 across all views — commit a7088fb |
+| **STB** | **Stability** Trello API Overhaul | ✅ Done | 2026-05-06 | Implemented Batch Fetching to reduce API calls by 90% — commit 632fab4 |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · 🛑 Blocked · ➡ Deferred
 
