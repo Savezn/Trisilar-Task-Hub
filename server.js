@@ -6,6 +6,7 @@ const { google } = require("googleapis");
 const trello = require("./trello");
 const store  = require("./review-store");
 const diff   = require("./task-diff");
+const makeConfigRoutes = require("./src/routes/config.routes");
 
 // ── Google Calendar helpers ───────────────────────────────────────────────────
 const getCalendarId = () => process.env.GOOGLE_CALENDAR_ID || "";
@@ -154,6 +155,7 @@ function writeConfig(data) {
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
 
 // ── Workspaces ────────────────────────────────────────────────────────────────
 
@@ -359,15 +361,6 @@ app.get("/api/all-cards", async (req, res) => {
 app.post("/api/cache/clear", (req, res) => {
   cacheInvalidate("all-cards");
   res.json({ ok: true });
-});
-
-// ── BU Config ─────────────────────────────────────────────────────────────────
-
-app.get("/api/config", (req, res) => res.json(readConfig()));
-
-app.post("/api/config", (req, res) => {
-  try { writeConfig(req.body); res.json({ ok: true }); }
-  catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
 // ── Cards across specific boards (BU view) ────────────────────────────────────
