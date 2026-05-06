@@ -928,6 +928,8 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P10** | **P10-4** Interactive Table Sorting | ✅ Done | 2026-05-06 | Click headers in All Tasks to sort — commit e79ff3b |
 | **B20** | **Bug** Thai Localization | ✅ Done | 2026-05-06 | Standardized dd/mm/yyyy 24hr UTC+7 across all views — commit a7088fb |
 | **STB** | **Stability** Trello API Overhaul | ✅ Done | 2026-05-06 | Implemented Batch Fetching to reduce API calls by 90% — commit 632fab4 |
+| **V0.1-P1** | Scripts & Smoke | ✅ Done | 2026-05-06 | Foundation for modularization — commit 5c7ad14 |
+| **V0.1-P2** | Route Extraction | ✅ Done | 2026-05-06 | 5 modular route files extracted from server.js — commit 25a31b7 |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · 🛑 Blocked · ➡ Deferred
 

@@ -56,6 +56,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph2 Ph2-2 — Extract review routes | ✅ QA Pass | `bdfbadb` |
 | V0.1-Ph2 Ph2-3 — Extract calendar routes | ✅ QA Pass | `0f14d6f` |
 | V0.1-Ph2 Ph2-4 — Extract google-tasks routes | ✅ QA Pass | `6a6e2ac` |
+| V0.1-Ph2 Ph2-5 — Extract trello routes | ✅ QA Pass | `25a31b7` |
 
 ---
 
@@ -159,6 +160,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R9 | ✅ Pass | V0.1-Ph2 Ph2-2 (review routes extraction) pass ทุก 3 AC |
 | 2026-05-06 | R10 | ✅ Pass | V0.1-Ph2 Ph2-3 (calendar routes extraction) pass ทุก 3 AC |
 | 2026-05-06 | R11 | ✅ Pass | V0.1-Ph2 Ph2-4 (google-tasks routes extraction) pass ทุก 3 AC |
+| 2026-05-06 | R12 | ✅ Pass | V0.1-Ph2 Ph2-5 (trello routes extraction) pass ทุก 3 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -186,89 +188,66 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph2 · Ph2-5 — Extract trello routes 🔴
+### V0.1-Ph3 · Ph3-1 — Extract Core Helpers & Models 🔴
 
 **Context:**  
-Ph2-4 (google-tasks routes) เสร็จแล้ว ✅  
-Ph2-5: ย้าย Trello endpoints ออกจาก `server.js` → `src/routes/trello.routes.js`  
-นี่คือไฟล์ route สุดท้ายและใหญ่ที่สุดใน Phase 2
+Phase 2 (Route Extraction) เสร็จสมบูรณ์แล้ว ✅  
+Phase 3: ย้าย helper functions และ logic ตระกูลต่างๆ ออกจาก `server.js` เพื่อให้ `server.js` เหลือเพียง core configuration และ routing เท่านั้น
 
-**Endpoints ที่ต้องย้าย** (server.js ~lines 235–435):
-| Method | URL | Notes |
-|---|---|---|
-| GET | `/api/boards` | |
-| GET | `/api/boards/:id/lists` | |
-| GET | `/api/lists/:id/cards` | |
-| GET | `/api/all-cards` | (มี caching) |
-| POST | `/api/boards/cards` | (มี caching) |
-| GET | `/api/cards/:id` | |
-| POST | `/api/cards` | |
-| PUT | `/api/cards/:id` | |
-| DELETE | `/api/cards/:id` | |
-| PUT | `/api/cards/:id/move` | |
-| GET | `/api/boards/:id/health` | |
-| GET | `/api/boards/:id/members` | |
-| GET | `/api/boards/:id/customFields` | |
-| GET | `/api/boards/:id/labels` | |
-| GET | `/api/cards/:id/checklists` | |
-| POST | `/api/cards/:id/checklists` | |
-| POST | `/api/checklists/:id/checkItems` | |
-| PUT | `/api/cards/:id/checkItem/:itemId` | |
-| DELETE | `/api/checklists/:id/checkItems/:itemId` | |
-| DELETE | `/api/checklists/:id` | |
-| GET | `/api/cards/:id/comments` | |
-| POST | `/api/cards/:id/comments` | |
+**Task Ph3-1: Extract Core Helpers & Models**
+ย้าย functions ต่อไปนี้ไปยังไฟล์ใหม่:
 
-**Dependencies ที่ต้องส่งผ่าน factory:**
-- `trello` (trello.js integration)
-- `normalizeCard`
-- `buildCfNames`
-- `cacheGet`, `cacheSet`
-- `friendlyError`
-- `autoSyncToGCal` (สำหรับ create/update card)
+1. **`src/utils/cache.js`**:
+   - `_cache`, `cacheGet`, `cacheSet`, `cacheInvalidate`
 
-**Rules:**
-- ใช้ factory pattern เหมือน routes ก่อนหน้า
-- router paths ไม่มี `/api` นำหน้า
-- ห้ามเปลี่ยน URL หรือ response shape
-- helpers ยังอยู่ใน `server.js` (ย้ายใน Ph3)
-- หลัง split: `node server.js` รันได้ + `npm run smoke` pass
+2. **`src/utils/errors.js`**:
+   - `friendlyError`
+
+3. **`src/models/trello.model.js`**:
+   - `normalizeCard`, `buildCfNames`
+
+4. **`src/utils/date.js`**:
+   - `todayBangkok`
+
+**What to do:**
+- สร้าง directories: `src/utils`, `src/models`
+- สร้างไฟล์และ export functions (ใช้ module.exports)
+- อัปเดต `server.js` และ route files (`src/routes/*.js`) ให้นำเข้า helpers จากไฟล์ใหม่
+- ลบ code เดิมใน `server.js`
 
 **AC:**
-- [ ] ทุก 22 endpoints ยังทำงานได้ (URL/shape เหมือนเดิม)
-- [ ] `server.js` ไม่มี trello handlers เหลืออยู่
-- [ ] `npm run smoke` pass หลัง split
+- [ ] Helpers ทุกตัวทำงานได้ปกติหลังย้าย
+- [ ] `server.js` ไม่มี definitions ของ helpers เหล่านี้เหลืออยู่
+- [ ] `npm run smoke` pass
 
 **Commit:**
 ```
-git add server.js src/routes/trello.routes.js
-git commit -m "V0.1-Ph2: extract trello routes to src/routes/trello.routes.js"
+git add .
+git commit -m "V0.1-Ph3: extract core helpers and models from server.js"
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
-คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph2 ก่อน
+คุณ Dev — เริ่ม Phase 3: Helper Extraction
 
-Task: V0.1-Ph2 Ph2-5 — แยก trello routes ออกจาก server.js (ไฟล์สุดท้ายและใหญ่สุด)
+1. สร้าง directories: src/utils และ src/models
 
-1. ค้นหา trello route handlers ใน server.js โดยใช้ Grep:
-   Grep("api/(boards|lists|cards|all-cards|checklists)", "server.js")
+2. สร้าง src/utils/cache.js — ย้าย _cache, cacheGet, cacheSet, cacheInvalidate ออกมา
+3. สร้าง src/utils/errors.js — ย้าย friendlyError ออกมา
+4. สร้าง src/models/trello.model.js — ย้าย normalizeCard, buildCfNames ออกมา
+5. สร้าง src/utils/date.js — ย้าย todayBangkok ออกมา
 
-2. อ่าน section นั้นด้วย Read(offset, limit) เพื่อดู handlers และ dependencies ทั้งหมด (~200 lines)
+6. อัปเดต server.js:
+   - นำเข้า helpers ใหม่
+   - ลบ handler definitions เดิม
+   - อัปเดตการส่ง dependencies ให้ route factories (ถ้าชื่อเปลี่ยน)
 
-3. สร้าง src/routes/trello.routes.js:
-   - factory function รับ { trello, normalizeCard, buildCfNames, cacheGet, cacheSet, friendlyError, autoSyncToGCal }
-   - ย้าย handlers ทั้งหมด (ประมาณ 22 endpoints) เข้า router
-   - router paths ไม่มี /api นำหน้า
+7. อัปเดต src/routes/*.js ทุกไฟล์:
+   - ตรวจสอบว่าต้องการ import helpers อะไรโดยตรงหรือไม่ (ถ้า factory ไม่ได้ส่งมา)
 
-4. อัปเดต server.js:
-   - require trello.routes.js
-   - app.use("/api", makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cacheSet, friendlyError, autoSyncToGCal }))
-   - ลบ handlers เดิมออก
+8. ตรวจ: node server.js ไม่ crash + npm run smoke pass
 
-5. ตรวจ: node server.js ไม่ crash + npm run smoke pass
-
-Commit: "V0.1-Ph2: extract trello routes to src/routes/trello.routes.js"
+Commit: "V0.1-Ph3: extract core helpers and models from server.js"
 ```
 
 ---
