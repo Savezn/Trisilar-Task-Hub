@@ -379,23 +379,21 @@ app.post("/api/boards/cards", async (req, res) => {
     const hit = cacheGet(cacheKey);
     if (hit) return res.json(hit);
 
-    const boards = await trello.getBoards();
-    const boardMap = Object.fromEntries(boards.map(b => [b.id, b.name]));
+    const boards = await trello.getBoardsFull();
+    const filteredBoards = boards.filter(b => boardIds.includes(b.id));
     const result = [];
-    const cfCache = new Map(); // per-request custom field name cache
-    await Promise.all(boardIds.map(async (boardId) => {
-      const [lists, cfNames] = await Promise.all([
-        trello.getLists(boardId),
-        buildCfNames(boardId, cfCache),
-      ]);
-      await Promise.all(lists.map(async (list) => {
-        const cards = await trello.getCards(list.id);
-        cards.forEach(card => result.push({
-          ...normalizeCard(card, cfNames),
-          listName: list.name,
-          boardId,
-          boardName: boardMap[boardId] || boardId,
-        }));
+    const cfCache = new Map();
+
+    await Promise.all(filteredBoards.map(async (board) => {
+      const cfNames = await buildCfNames(board.id, cfCache, board.customFields);
+      const listMap = Object.fromEntries((board.lists || []).map(l => [l.id, l.name]));
+      
+      const cards = await trello.getBoardCards(board.id);
+      cards.forEach(card => result.push({
+        ...normalizeCard(card, cfNames),
+        listName: listMap[card.idList] || "Unknown",
+        boardId: board.id,
+        boardName: board.name,
       }));
     }));
     cacheSet(cacheKey, result, 60_000); // 60 s TTL

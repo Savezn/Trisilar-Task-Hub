@@ -140,9 +140,9 @@ async function getComments(cardId) {
 
 module.exports = {
   getWorkspaces,
-  getBoards, getBoard,
+  getBoards, getBoardsFull, getBoard,
   getLists, createList,
-  getCards, getCard, createCard, updateCard, moveCard, deleteCard,
+  getCards, getBoardCards, getCard, createCard, updateCard, moveCard, deleteCard,
   getCardChecklists, addChecklist, addCheckItem, updateCheckItem, deleteCheckItem, deleteChecklist,
   getLabels, addLabelToCard,
   getBoardMembers, getBoardCustomFields,
