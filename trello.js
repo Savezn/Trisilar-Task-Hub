@@ -1,8 +1,10 @@
 const BASE_URL = "https://api.trello.com/1";
-const AUTH = `key=${process.env.TRELLO_API_KEY}&token=${process.env.TRELLO_TOKEN}`;
 
 async function trelloRequest(method, path, body = null) {
-  const url = `${BASE_URL}${path}${path.includes("?") ? "&" : "?"}${AUTH}`;
+  // B5: Move AUTH inside function to ensure process.env is loaded (fixes 401: invalid key)
+  const authQuery = `key=${process.env.TRELLO_API_KEY}&token=${process.env.TRELLO_TOKEN}`;
+  const url = `${BASE_URL}${path}${path.includes("?") ? "&" : "?"}${authQuery}`;
+  
   const options = {
     method,
     headers: { "Content-Type": "application/json" },
@@ -10,9 +12,11 @@ async function trelloRequest(method, path, body = null) {
   if (body) options.body = JSON.stringify(body);
 
   const res = await fetch(url, options);
-
+  
   if (!res.ok) {
     const text = await res.text();
+    // P6-1: Log full details for debugging
+    console.error(`[Trello API Error] ${res.status} ${method} ${path}: ${text}`);
     throw new Error(`Trello API error ${res.status}: ${text}`);
   }
   return res.json();

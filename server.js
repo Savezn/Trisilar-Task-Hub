@@ -8,7 +8,7 @@ const store  = require("./review-store");
 const diff   = require("./task-diff");
 
 // ── Google Calendar helpers ───────────────────────────────────────────────────
-const CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "";
+const getCalendarId = () => process.env.GOOGLE_CALENDAR_ID || "";
 const REDIRECT_URI = "http://localhost:3000/auth/callback";
 
 function getOAuth2Client() {
@@ -53,7 +53,7 @@ function cacheInvalidate(prefix) {
 // Logs full error to console, returns safe message to client
 function friendlyError(e) {
   const msg = String(e?.message || e || "").toLowerCase();
-  console.error("[Server Error]", e?.message || e);
+  console.error("[Server Error Detail]", e); // Log full error object for debugging
   if (
     msg.includes("invalid key") || msg.includes("invalid token") ||
     msg.includes("unauthorized")  || msg.includes("401") ||
@@ -238,14 +238,14 @@ async function autoSyncToGCal(cardId, { name, desc, due, start }) {
     let result;
     if (cardEvents[cardId]) {
       try {
-        result = await cal.events.update({ calendarId: CALENDAR_ID, eventId: cardEvents[cardId], resource: event });
+        result = await cal.events.update({ calendarId: getCalendarId(), eventId: cardEvents[cardId], resource: event });
       } catch {
-        result = await cal.events.insert({ calendarId: CALENDAR_ID, resource: event });
+        result = await cal.events.insert({ calendarId: getCalendarId(), resource: event });
         cardEvents[cardId] = result.data.id;
         writeCardEvents(cardEvents);
       }
     } else {
-      result = await cal.events.insert({ calendarId: CALENDAR_ID, resource: event });
+      result = await cal.events.insert({ calendarId: getCalendarId(), resource: event });
       cardEvents[cardId] = result.data.id;
       writeCardEvents(cardEvents);
     }
@@ -260,7 +260,7 @@ async function autoDeleteFromGCal(cardId) {
     const cardEvents = readCardEvents();
     if (!cardEvents[cardId]) return;
     const cal = getCalendarClient();
-    await cal.events.delete({ calendarId: CALENDAR_ID, eventId: cardEvents[cardId] });
+    await cal.events.delete({ calendarId: getCalendarId(), eventId: cardEvents[cardId] });
     delete cardEvents[cardId];
     writeCardEvents(cardEvents);
   } catch (e) {
@@ -330,27 +330,27 @@ app.get("/api/all-cards", async (req, res) => {
     const hit = cacheGet("all-cards");
     if (hit) return res.json(hit);
 
-    const boards = await trello.getBoards();
+    // B5: Fetch EVERYTHING in batch (1 request for boards/lists/cf + 1 per board for cards)
+    const boards = await trello.getBoardsFull();
     const result = [];
-    const cfCache = new Map(); // per-request custom field name cache
+    const cfCache = new Map();
 
     await Promise.all(boards.map(async (board) => {
-      const [lists, cfNames] = await Promise.all([
-        trello.getLists(board.id),
-        buildCfNames(board.id, cfCache),
-      ]);
-      await Promise.all(lists.map(async (list) => {
-        const cards = await trello.getCards(list.id);
-        cards.forEach((card) => result.push({
-          ...normalizeCard(card, cfNames),
-          listName: list.name,
-          boardName: board.name,
-          boardId: board.id,
-        }));
+      // Use preloaded cf data from full boards fetch
+      const cfNames = await buildCfNames(board.id, cfCache, board.customFields);
+      const listMap = Object.fromEntries((board.lists || []).map(l => [l.id, l.name]));
+      
+      // Fetch cards per board (NOT per list) - much more efficient
+      const cards = await trello.getBoardCards(board.id);
+      cards.forEach((card) => result.push({
+        ...normalizeCard(card, cfNames),
+        listName: listMap[card.idList] || "Unknown",
+        boardName: board.name,
+        boardId: board.id,
       }));
     }));
 
-    cacheSet("all-cards", result, 60_000); // 60 s TTL
+    cacheSet("all-cards", result, 300_000); // 5 min TTL
     res.json(result);
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
@@ -396,7 +396,7 @@ app.post("/api/boards/cards", async (req, res) => {
         boardName: board.name,
       }));
     }));
-    cacheSet(cacheKey, result, 60_000); // 60 s TTL
+    cacheSet(cacheKey, result, 300_000); // 5 min TTL
     res.json(result);
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
@@ -438,7 +438,7 @@ app.get("/api/calendar/status", (req, res) => {
     hasClientId:      !!process.env.GOOGLE_CLIENT_ID,
     hasClientSecret:  !!process.env.GOOGLE_CLIENT_SECRET,
     hasRefreshToken:  !!process.env.GOOGLE_REFRESH_TOKEN,
-    calendarId:       CALENDAR_ID,
+    calendarId:       getCalendarId(),
     connected: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REFRESH_TOKEN),
   });
 });
@@ -447,10 +447,13 @@ app.get("/api/calendar/status", (req, res) => {
 
 app.get("/api/calendar/events", async (req, res) => {
   try {
+    if (!process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID === "test") {
+      return res.json([]);
+    }
     const cal = getCalendarClient();
     const { start, end } = req.query;
     const r = await cal.events.list({
-      calendarId: CALENDAR_ID,
+      calendarId: getCalendarId(),
       timeMin: start || new Date().toISOString(),
       timeMax: end,
       singleEvents: true,
@@ -458,7 +461,10 @@ app.get("/api/calendar/events", async (req, res) => {
       maxResults: 250,
     });
     res.json(r.data.items || []);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+  } catch (e) {
+    console.error("[GCal List Error]", e.message);
+    res.json([]); // Return empty array instead of 500 to keep UI stable
+  }
 });
 
 app.post("/api/calendar/events", async (req, res) => {
@@ -475,7 +481,7 @@ app.post("/api/calendar/events", async (req, res) => {
         overrides: reminderMinutes != null ? [{ method: "popup", minutes: parseInt(reminderMinutes) }] : [],
       },
     };
-    const r = await cal.events.insert({ calendarId: CALENDAR_ID, resource: event });
+    const r = await cal.events.insert({ calendarId: getCalendarId(), resource: event });
     res.json(r.data);
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
@@ -494,7 +500,7 @@ app.put("/api/calendar/events/:id", async (req, res) => {
         overrides: reminderMinutes != null ? [{ method: "popup", minutes: parseInt(reminderMinutes) }] : [],
       },
     };
-    const r = await cal.events.update({ calendarId: CALENDAR_ID, eventId: req.params.id, resource: event });
+    const r = await cal.events.update({ calendarId: getCalendarId(), eventId: req.params.id, resource: event });
     res.json(r.data);
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
@@ -502,7 +508,7 @@ app.put("/api/calendar/events/:id", async (req, res) => {
 app.delete("/api/calendar/events/:id", async (req, res) => {
   try {
     const cal = getCalendarClient();
-    await cal.events.delete({ calendarId: CALENDAR_ID, eventId: req.params.id });
+    await cal.events.delete({ calendarId: getCalendarId(), eventId: req.params.id });
     res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
