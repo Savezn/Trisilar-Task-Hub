@@ -1870,9 +1870,11 @@ async function showBoardsMonitor() {
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
     // P7-4: fetch health for all visible boards (parallel, failures silently skipped)
     const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
-    const healthResults = await Promise.all(
-      visibleBoards.map(b => api.get(`/api/boards/${b.id}/health`).catch(() => ({ ok: true, missing: [] })))
-    );
+    const healthResults = [];
+    for (const b of visibleBoards) {
+      healthResults.push(await api.get(`/api/boards/${b.id}/health`).catch(() => ({ ok: true, missing: [] })));
+      await new Promise(r => setTimeout(r, 100)); // 100ms delay between requests
+    }
     const healthMap = new Map(visibleBoards.map((b, i) => [b.id, healthResults[i]]));
     renderBoardsMonitor(getAllowedCards(), healthMap);
   } catch (e) {

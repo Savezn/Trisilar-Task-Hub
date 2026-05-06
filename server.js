@@ -375,6 +375,10 @@ app.post("/api/config", (req, res) => {
 app.post("/api/boards/cards", async (req, res) => {
   try {
     const { boardIds } = req.body;
+    const cacheKey = `boards-cards:${boardIds.join(",")}`;
+    const hit = cacheGet(cacheKey);
+    if (hit) return res.json(hit);
+
     const boards = await trello.getBoards();
     const boardMap = Object.fromEntries(boards.map(b => [b.id, b.name]));
     const result = [];
@@ -394,6 +398,7 @@ app.post("/api/boards/cards", async (req, res) => {
         }));
       }));
     }));
+    cacheSet(cacheKey, result, 60_000); // 60 s TTL
     res.json(result);
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
