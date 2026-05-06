@@ -53,6 +53,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B22 — Team Monitor Board view: dynamic columns | ✅ QA Pass | `5384ab8` |
 | V0.1-Ph1 — Foundation Scripts & Smoke Test | ✅ QA Pass | `5c7ad14` |
 | V0.1-Ph2 Ph2-1 — Extract config routes | ✅ QA Pass | `ac699f1` |
+| V0.1-Ph2 Ph2-2 — Extract review routes | ✅ QA Pass | `bdfbadb` |
 
 ---
 
@@ -153,6 +154,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R6 | ✅ Pass | B22 (Team Monitor dynamic columns) pass ทุก 3 AC |
 | 2026-05-06 | R7 | ✅ Pass | V0.1-Ph1 (Foundation Scripts & Smoke Test) pass ทุก 3 AC |
 | 2026-05-06 | R8 | ✅ Pass | V0.1-Ph2 Ph2-1 (config routes extraction) pass ทุก 3 AC |
+| 2026-05-06 | R9 | ✅ Pass | V0.1-Ph2 Ph2-2 (review routes extraction) pass ทุก 3 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -180,78 +182,79 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph2 · Ph2-2 — Extract review routes 🔴
+### V0.1-Ph2 · Ph2-3 — Extract calendar routes 🔴
 
 **Context:**  
-Ph2-1 (config routes) เสร็จแล้ว ✅  
-Ph2-2: ย้าย review + task-diff endpoints ออกจาก `server.js` → `src/routes/review.routes.js`
+Ph2-2 (review routes) เสร็จแล้ว ✅  
+Ph2-3: ย้าย Google Calendar + OAuth endpoints ออกจาก `server.js` → `src/routes/calendar.routes.js`
 
-**Endpoints ที่ต้องย้าย** (server.js ~lines 583–672):
-| Method | URL |
-|---|---|
-| GET | `/api/reviews` |
-| POST | `/api/task-diff` |
-| POST | `/api/reviews` |
-| GET | `/api/reviews/:id` |
-| PUT | `/api/reviews/:id/tasks/:taskId` |
-| POST | `/api/reviews/:id/tasks/:taskId/approve` |
-| POST | `/api/reviews/:id/tasks/:taskId/reject` |
-| POST | `/api/reviews/:id/approve-bulk` |
-| POST | `/api/reviews/:id/reject-bulk` |
-| DELETE | `/api/reviews/:id` |
+**Endpoints ที่ต้องย้าย** (server.js ~lines 401–520):
+| Method | URL | Notes |
+|---|---|---|
+| POST | `/auth/google` | OAuth setup |
+| GET | `/auth/callback` | OAuth callback |
+| GET | `/api/calendar/status` | connection check |
+| GET | `/api/calendar/events` | list events |
+| POST | `/api/calendar/events` | create event |
+| PUT | `/api/calendar/events/:id` | update event |
+| DELETE | `/api/calendar/events/:id` | delete event |
 
 **Dependencies ที่ต้องส่งผ่าน factory:**
-- `store` (review-store) — ใช้แทบทุก handler
-- `diff` (task-diff) — ใช้ใน POST /api/task-diff
-- `trello` — ใช้ใน approve handlers
-- `friendlyError` — ใช้ใน error paths
-- `cacheInvalidate` — ใช้ใน approve handler (invalidate "all-cards")
+- `getCalendarClient` — Google Calendar API client
+- `getCalendarId` — returns calendar ID from env
+- `getOAuth2Client` — OAuth2 client factory
+- `updateEnvKey` — write env variable to .env (ใช้ใน `/auth/google`)
+- `readCardEvents` / `writeCardEvents` — card→event mapping (ใช้ใน delete)
+- `friendlyError`
 
 **Rules:**
+- `/auth/google` และ `/auth/callback` เป็น OAuth routes — mount ที่ root (`app.use("/", calendarRoutes)`) ไม่ใช่ `/api`  
+  หรือ mount ทั้ง block ด้วย `app.use(calendarRoutes)` แล้ว router define paths เต็ม (`/auth/google`, `/api/calendar/...`)
 - ไม่เปลี่ยน URL หรือ response shape
-- ใช้ factory pattern เหมือน config.routes.js: `module.exports = function reviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate }) { ... }`
-- `server.js` mount ด้วย `app.use("/api", makeReviewRoutes({ ... }))`
+- helpers (`getCalendarClient`, `autoSyncToGCal` ฯลฯ) ยังอยู่ใน `server.js` ชั่วคราว (ย้ายใน Ph3)
 - หลัง split: `node server.js` รันได้ + `npm run smoke` pass
 
 **AC:**
-- [ ] ทุก 10 endpoints ยังทำงานได้ (URL/shape เหมือนเดิม)
-- [ ] `server.js` ไม่มี review/task-diff handlers เหลืออยู่
+- [ ] ทุก 7 endpoints ยังทำงานได้ (URL/shape เหมือนเดิม)
+- [ ] `server.js` ไม่มี calendar + auth handlers เหลืออยู่
 - [ ] `npm run smoke` pass หลัง split
 
 **Commit:**
 ```
-git add server.js src/routes/review.routes.js
-git commit -m "V0.1-Ph2: extract review routes to src/routes/review.routes.js"
+git add server.js src/routes/calendar.routes.js
+git commit -m "V0.1-Ph2: extract calendar routes to src/routes/calendar.routes.js"
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
 คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph2 ก่อน
 
-Task: V0.1-Ph2 Ph2-2 — แยก review + task-diff routes ออกจาก server.js
+Task: V0.1-Ph2 Ph2-3 — แยก calendar + OAuth routes ออกจาก server.js
 
-1. Grep หา review/task-diff route handlers ใน server.js:
-   Grep("api/reviews|api/task-diff", "server.js") → note line range
+1. Grep หา calendar/auth route handlers ใน server.js:
+   Grep("auth/google|auth/callback|api/calendar", "server.js") → note line range
 
-2. อ่าน section นั้นด้วย Read(offset, limit) เพื่อดู handlers ทั้งหมด
+2. อ่าน section นั้นด้วย Read(offset, limit) เพื่อดู handlers และ dependencies ทั้งหมด
 
-3. สร้าง src/routes/review.routes.js:
-   - factory function รับ { store, diff, trello, friendlyError, cacheInvalidate }
-   - ย้าย handlers ทั้ง 10 ตัวเข้า router
-   - router prefix คือ "/api" → router paths ไม่มี /api นำหน้า
+3. สร้าง src/routes/calendar.routes.js:
+   - factory function รับ { getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, readCardEvents, writeCardEvents, friendlyError }
+   - ย้าย handlers ทั้ง 7 ตัวเข้า router
+   - /auth/google และ /auth/callback ใช้ path เต็ม (ไม่มี prefix)
+   - /api/calendar/* ใช้ path เต็ม (ไม่มี prefix)
+   - mount ใน server.js ด้วย app.use(makeCalendarRoutes({ ... })) (ไม่มี prefix)
 
 4. อัปเดต server.js:
-   - require review.routes.js
-   - app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate }))
+   - require calendar.routes.js
+   - app.use(makeCalendarRoutes({ ... }))
    - ลบ handlers เดิมออก
 
 5. ตรวจ: node server.js ไม่ crash + npm run smoke pass
 
 Rules:
 - ไม่เปลี่ยน URL หรือ response shape
-- ไม่ย้าย store/diff/trello/cache ออกจาก server.js ยัง (ย้ายใน Ph3)
+- ไม่ย้าย helper functions ออกจาก server.js ยัง (ย้ายใน Ph3)
 
-Commit: "V0.1-Ph2: extract review routes to src/routes/review.routes.js"
+Commit: "V0.1-Ph2: extract calendar routes to src/routes/calendar.routes.js"
 ```
 
 ---
