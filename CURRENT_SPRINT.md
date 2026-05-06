@@ -55,6 +55,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph2 Ph2-1 — Extract config routes | ✅ QA Pass | `ac699f1` |
 | V0.1-Ph2 Ph2-2 — Extract review routes | ✅ QA Pass | `bdfbadb` |
 | V0.1-Ph2 Ph2-3 — Extract calendar routes | ✅ QA Pass | `0f14d6f` |
+| V0.1-Ph2 Ph2-4 — Extract google-tasks routes | ✅ QA Pass | `6a6e2ac` |
 
 ---
 
@@ -157,6 +158,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R8 | ✅ Pass | V0.1-Ph2 Ph2-1 (config routes extraction) pass ทุก 3 AC |
 | 2026-05-06 | R9 | ✅ Pass | V0.1-Ph2 Ph2-2 (review routes extraction) pass ทุก 3 AC |
 | 2026-05-06 | R10 | ✅ Pass | V0.1-Ph2 Ph2-3 (calendar routes extraction) pass ทุก 3 AC |
+| 2026-05-06 | R11 | ✅ Pass | V0.1-Ph2 Ph2-4 (google-tasks routes extraction) pass ทุก 3 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -184,72 +186,89 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph2 · Ph2-4 — Extract google-tasks routes 🔴
+### V0.1-Ph2 · Ph2-5 — Extract trello routes 🔴
 
 **Context:**  
-Ph2-3 (calendar routes) เสร็จแล้ว ✅  
-Ph2-4: ย้าย Google Tasks endpoints ออกจาก `server.js` → `src/routes/google-tasks.routes.js`
+Ph2-4 (google-tasks routes) เสร็จแล้ว ✅  
+Ph2-5: ย้าย Trello endpoints ออกจาก `server.js` → `src/routes/trello.routes.js`  
+นี่คือไฟล์ route สุดท้ายและใหญ่ที่สุดใน Phase 2
 
-**Endpoints ที่ต้องย้าย** (server.js ~lines 436–495):
+**Endpoints ที่ต้องย้าย** (server.js ~lines 235–435):
 | Method | URL | Notes |
 |---|---|---|
-| GET | `/api/google-tasks/status` | connection check |
-| GET | `/api/google-tasks/today` | tasks due today/overdue |
-| POST | `/api/google-tasks` | create task |
-| PUT | `/api/google-tasks/:id` | update/complete task |
+| GET | `/api/boards` | |
+| GET | `/api/boards/:id/lists` | |
+| GET | `/api/lists/:id/cards` | |
+| GET | `/api/all-cards` | (มี caching) |
+| POST | `/api/boards/cards` | (มี caching) |
+| GET | `/api/cards/:id` | |
+| POST | `/api/cards` | |
+| PUT | `/api/cards/:id` | |
+| DELETE | `/api/cards/:id` | |
+| PUT | `/api/cards/:id/move` | |
+| GET | `/api/boards/:id/health` | |
+| GET | `/api/boards/:id/members` | |
+| GET | `/api/boards/:id/customFields` | |
+| GET | `/api/boards/:id/labels` | |
+| GET | `/api/cards/:id/checklists` | |
+| POST | `/api/cards/:id/checklists` | |
+| POST | `/api/checklists/:id/checkItems` | |
+| PUT | `/api/cards/:id/checkItem/:itemId` | |
+| DELETE | `/api/checklists/:id/checkItems/:itemId` | |
+| DELETE | `/api/checklists/:id` | |
+| GET | `/api/cards/:id/comments` | |
+| POST | `/api/cards/:id/comments` | |
 
 **Dependencies ที่ต้องส่งผ่าน factory:**
-- `getTasksClient` — Google Tasks API client
-- `todayBangkok` — returns today YYYY-MM-DD in UTC+7
+- `trello` (trello.js integration)
+- `normalizeCard`
+- `buildCfNames`
+- `cacheGet`, `cacheSet`
 - `friendlyError`
+- `autoSyncToGCal` (สำหรับ create/update card)
 
 **Rules:**
 - ใช้ factory pattern เหมือน routes ก่อนหน้า
-- mount ด้วย `app.use("/api", makeGoogleTasksRoutes({...}))`
 - router paths ไม่มี `/api` นำหน้า
-- ไม่เปลี่ยน URL หรือ response shape
+- ห้ามเปลี่ยน URL หรือ response shape
 - helpers ยังอยู่ใน `server.js` (ย้ายใน Ph3)
 - หลัง split: `node server.js` รันได้ + `npm run smoke` pass
 
 **AC:**
-- [ ] ทุก 4 endpoints ยังทำงานได้ (URL/shape เหมือนเดิม)
-- [ ] `server.js` ไม่มี google-tasks handlers เหลืออยู่
+- [ ] ทุก 22 endpoints ยังทำงานได้ (URL/shape เหมือนเดิม)
+- [ ] `server.js` ไม่มี trello handlers เหลืออยู่
 - [ ] `npm run smoke` pass หลัง split
 
 **Commit:**
 ```
-git add server.js src/routes/google-tasks.routes.js
-git commit -m "V0.1-Ph2: extract google-tasks routes to src/routes/google-tasks.routes.js"
+git add server.js src/routes/trello.routes.js
+git commit -m "V0.1-Ph2: extract trello routes to src/routes/trello.routes.js"
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
 คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph2 ก่อน
 
-Task: V0.1-Ph2 Ph2-4 — แยก google-tasks routes ออกจาก server.js
+Task: V0.1-Ph2 Ph2-5 — แยก trello routes ออกจาก server.js (ไฟล์สุดท้ายและใหญ่สุด)
 
-1. Grep หา google-tasks route handlers ใน server.js:
-   Grep("api/google-tasks", "server.js") → note line range
+1. ค้นหา trello route handlers ใน server.js โดยใช้ Grep:
+   Grep("api/(boards|lists|cards|all-cards|checklists)", "server.js")
 
-2. อ่าน section นั้นด้วย Read(offset, limit) เพื่อดู handlers และ dependencies ทั้งหมด
+2. อ่าน section นั้นด้วย Read(offset, limit) เพื่อดู handlers และ dependencies ทั้งหมด (~200 lines)
 
-3. สร้าง src/routes/google-tasks.routes.js:
-   - factory function รับ { getTasksClient, todayBangkok, friendlyError }
-   - ย้าย handlers ทั้ง 4 ตัวเข้า router
-   - router paths ไม่มี /api นำหน้า (mount ด้วย app.use("/api", ...))
+3. สร้าง src/routes/trello.routes.js:
+   - factory function รับ { trello, normalizeCard, buildCfNames, cacheGet, cacheSet, friendlyError, autoSyncToGCal }
+   - ย้าย handlers ทั้งหมด (ประมาณ 22 endpoints) เข้า router
+   - router paths ไม่มี /api นำหน้า
 
 4. อัปเดต server.js:
-   - require google-tasks.routes.js
-   - app.use("/api", makeGoogleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }))
+   - require trello.routes.js
+   - app.use("/api", makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cacheSet, friendlyError, autoSyncToGCal }))
    - ลบ handlers เดิมออก
 
 5. ตรวจ: node server.js ไม่ crash + npm run smoke pass
 
-Rules:
-- ไม่เปลี่ยน URL หรือ response shape
-- ไม่ย้าย helper functions ออกจาก server.js ยัง (ย้ายใน Ph3)
-
-Commit: "V0.1-Ph2: extract google-tasks routes to src/routes/google-tasks.routes.js"
+Commit: "V0.1-Ph2: extract trello routes to src/routes/trello.routes.js"
 ```
 
 ---
