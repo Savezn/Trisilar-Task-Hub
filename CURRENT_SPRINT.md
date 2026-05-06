@@ -63,6 +63,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph4 Ph4-2 — Frontend Core Split (api/state/router/utils) | ✅ QA Pass | `50ffc72` |
 | V0.1-Ph5 Ph5-1 — Extract Today page module | ✅ QA Pass | `296b48a` |
 | V0.1-Ph5 Ph5-2 — Extract Review Queue page module | ✅ QA Pass | `fe450ed` |
+| V0.1-Ph5 Ph5-3 — Extract All Tasks page module | ✅ QA Pass | `9c8c7bd` |
 
 ---
 
@@ -91,8 +92,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph4-2 | Frontend Core Split (api/state/router/utils) | ✅ Done `50ffc72` |
 | Ph5-1 | Extract Today page module | ✅ Done `296b48a` |
 | Ph5-2 | Extract Review Queue page | ✅ Done `fe450ed` |
-| Ph5-3 | Extract All Tasks page | ⬜ Next |
-| Ph5-4 | Extract Boards/Kanban page | ⬜ Queued |
+| Ph5-3 | Extract All Tasks page | ✅ Done `9c8c7bd` |
+| Ph5-4 | Extract Boards/Kanban page | ⬜ Next |
 | Ph5-5 | Extract Calendar page | ⬜ Queued |
 | Ph5-6 | Extract OKR page | ⬜ Queued |
 | Ph5-7 | Extract Settings page | ⬜ Queued |
@@ -123,6 +124,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R17 | ✅ Pass | V0.1-Ph4 Ph4-2 (Frontend Core Split) pass ทุก 4 AC |
 | 2026-05-07 | R18 | ✅ Pass | V0.1-Ph5 Ph5-1 (Extract Today page module) pass ทุก 5 AC |
 | 2026-05-07 | R19 | ✅ Pass | V0.1-Ph5 Ph5-2 (Extract Review Queue page module) pass ทุก 5 AC |
+| 2026-05-07 | R20 | ✅ Pass | V0.1-Ph5 Ph5-3 (Extract All Tasks page module) pass ทุก 5 AC |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -159,66 +161,68 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph5 Ph5-3 · Extract All Tasks Page Module 🔴
+### V0.1-Ph5 Ph5-4 · Extract Boards/Kanban Page Module 🔴
 
 **Context:**  
-Ph5-2 (Review Queue page) เสร็จแล้ว — `public/js/pages/review.js` พร้อมใช้งาน  
-Ph5-3: แยก All Tasks page ออกจาก `app.js` ไปยัง `public/js/pages/all-tasks.js`
+Ph5-3 (All Tasks page) เสร็จแล้ว — `public/js/pages/all-tasks.js` พร้อมใช้งาน  
+Ph5-4: แยก Boards Monitor + Kanban page ออกจาก `app.js` ไปยัง `public/js/pages/boards.js`
 
 **Target:**
 ```
-public/js/pages/all-tasks.js   ← showAllTasks() + renderAllTasks() + All Tasks helpers
+public/js/pages/boards.js   ← showBoardsMonitor() + Kanban/Boards helpers
 ```
 
 **What to do:**
-1. Grep `public/app.js` หา `// ── All Tasks` → note line number
-2. Read block นั้น identify functions เฉพาะ All Tasks (ไม่ถูกเรียกจาก page อื่น)
-3. สร้าง `public/js/pages/all-tasks.js` ← copy ฟังก์ชัน All Tasks ทั้งหมด
-4. เพิ่ม `<script src="js/pages/all-tasks.js"></script>` ใน `index.html` หลัง `review.js` ก่อน `app.js`
-5. ลบ block นั้นออกจาก `app.js` (ใช้ Python splice)
-6. Smoke test 4 endpoints PASS
+1. Grep `public/app.js` หา `// ── Boards Monitor` หรือ `showBoardsMonitor` → note line number
+2. Read block นั้น identify functions เฉพาะ Boards page
+3. ตรวจ cross-page calls: ถ้า function ถูกเรียกจาก page อื่น → คงไว้ใน `app.js`
+4. สร้าง `public/js/pages/boards.js` ← copy functions ที่เป็น Boards-only
+5. เพิ่ม `<script src="js/pages/boards.js"></script>` ใน `index.html` หลัง `all-tasks.js` ก่อน `app.js`
+6. ลบ block นั้นออกจาก `app.js` (ใช้ Python splice)
+7. Smoke test 4 endpoints PASS
 
 **Rules:**
-- ย้ายเฉพาะ All Tasks functions — ไม่แตะ page อื่น
+- ย้ายเฉพาะ Boards/Monitor functions — ไม่แตะ page อื่น
 - ถ้า function ใช้ร่วมกับ page อื่น → คงไว้ใน `app.js`
 - ไม่ใช้ bundler — plain `<script>` tag เท่านั้น
-- ใช้ Python splice เพื่อหลีกเลี่ยง encoding issue จาก PowerShell
+- ใช้ Python splice เพื่อหลีกเลี่ยง encoding issue
 
 **AC:**
-- [ ] `public/js/pages/all-tasks.js` มี `showAllTasks` และ All Tasks helpers
-- [ ] `public/app.js` ไม่มี `showAllTasks` / `renderAllTasks` แล้ว
-- [ ] `index.html` โหลด `all-tasks.js` ถูก order (review → all-tasks → app)
+- [ ] `public/js/pages/boards.js` มี `showBoardsMonitor` และ Boards-only helpers
+- [ ] `public/app.js` ไม่มี `showBoardsMonitor` แล้ว
+- [ ] `index.html` โหลด `boards.js` ถูก order (all-tasks → boards → app)
 - [ ] Smoke test 4/4 PASS
 
 **Commit:**
 ```
-git add public/js/pages/all-tasks.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-3: extract All Tasks page module from app.js"
+git add public/js/pages/boards.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-4: extract Boards/Kanban page module from app.js"
 git push
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
-คุณ Dev — Task: V0.1-Ph5 Ph5-3 — Extract All Tasks page
+คุณ Dev — Task: V0.1-Ph5 Ph5-4 — Extract Boards/Kanban page
 
-Context: Ph5-2 เสร็จแล้ว (review.js แยกออกมาแล้ว) ตอนนี้แยก All Tasks page
+Context: Ph5-3 เสร็จแล้ว (all-tasks.js แยกออกมาแล้ว) ตอนนี้แยก Boards Monitor + Kanban page
 
 Steps:
-1. Grep public/app.js หา "// ── All Tasks" → note line
-2. Read block นั้น identify scope + helper functions เฉพาะ All Tasks
-3. สร้าง public/js/pages/all-tasks.js ← copy showAllTasks + renderAllTasks + All Tasks helpers
-4. เพิ่ม <script src="js/pages/all-tasks.js"> ใน index.html หลัง review.js ก่อน app.js
-5. ลบ block นั้นออกจาก app.js (ใช้ Python splice เพื่อหลีกเลี่ยง encoding issue)
-6. Smoke test: GET / /api/boards /api/reviews /api/all-cards → ทุก endpoint 200
+1. Grep public/app.js หา "showBoardsMonitor" → note line ของ block
+2. Read block นั้น identify scope + helper functions เฉพาะ Boards/Monitor
+3. ตรวจ cross-page calls ทุก function ก่อนย้าย
+4. สร้าง public/js/pages/boards.js ← copy Boards-only functions
+5. เพิ่ม <script src="js/pages/boards.js"> ใน index.html หลัง all-tasks.js ก่อน app.js
+6. ลบ block ออกจาก app.js (ใช้ Python splice)
+7. Smoke test: GET / /api/boards /api/reviews /api/all-cards → ทุก endpoint 200
 
 Rules:
-- ย้ายเฉพาะ All Tasks functions
-- ถ้า function ใช้ร่วมกับ page อื่น (เช่น exportTasksCSV ถ้า header เรียก) → ตรวจก่อน
+- ย้ายเฉพาะ Boards/Monitor functions
+- ถ้า function ใช้ร่วมกับ page อื่น → คงไว้ใน app.js
 - ไม่ใช้ bundler
 
 Commit:
-git add public/js/pages/all-tasks.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-3: extract All Tasks page module from app.js"
+git add public/js/pages/boards.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-4: extract Boards/Kanban page module from app.js"
 git push
 ```
 
