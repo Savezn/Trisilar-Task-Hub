@@ -7,7 +7,8 @@ const trello = require("./trello");
 const store  = require("./review-store");
 const diff   = require("./task-diff");
 const makeConfigRoutes  = require("./src/routes/config.routes");
-const makeReviewRoutes  = require("./src/routes/review.routes");
+const makeReviewRoutes   = require("./src/routes/review.routes");
+const makeCalendarRoutes = require("./src/routes/calendar.routes");
 
 // ── Google Calendar helpers ───────────────────────────────────────────────────
 const getCalendarId = () => process.env.GOOGLE_CALENDAR_ID || "";
@@ -158,6 +159,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
 app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate, autoSyncToGCal }));
+app.use(makeCalendarRoutes({ getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, friendlyError }));
 
 // ── Workspaces ────────────────────────────────────────────────────────────────
 
@@ -393,118 +395,6 @@ app.post("/api/boards/cards", async (req, res) => {
     }));
     cacheSet(cacheKey, result, 300_000); // 5 min TTL
     res.json(result);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-// ── Google Calendar OAuth ─────────────────────────────────────────────────────
-
-app.post("/auth/google", (req, res) => {
-  const { clientId, clientSecret } = req.body;
-  if (!clientId || !clientSecret) return res.status(400).json({ error: "clientId and clientSecret are required" });
-  updateEnvKey("GOOGLE_CLIENT_ID", clientId);
-  updateEnvKey("GOOGLE_CLIENT_SECRET", clientSecret);
-  const auth = getOAuth2Client();
-  const url = auth.generateAuthUrl({
-    access_type: "offline",
-    prompt: "consent",
-    scope: [
-      "https://www.googleapis.com/auth/calendar",
-      "https://www.googleapis.com/auth/tasks",
-    ],
-  });
-  res.json({ url });
-});
-
-app.get("/auth/callback", async (req, res) => {
-  try {
-    const auth = getOAuth2Client();
-    const { tokens } = await auth.getToken(req.query.code);
-    if (tokens.refresh_token) updateEnvKey("GOOGLE_REFRESH_TOKEN", tokens.refresh_token);
-    res.send(`<script>window.opener?.postMessage('cal_connected','http://localhost:3000');window.close();</script><p>✓ Connected! You can close this window.</p>`);
-  } catch (e) {
-    res.send(`<p style="color:red">Error: ${friendlyError(e)}</p>`);
-  }
-});
-
-// ── Google Calendar status ─────────────────────────────────────────────────────
-
-app.get("/api/calendar/status", (req, res) => {
-  res.json({
-    hasClientId:      !!process.env.GOOGLE_CLIENT_ID,
-    hasClientSecret:  !!process.env.GOOGLE_CLIENT_SECRET,
-    hasRefreshToken:  !!process.env.GOOGLE_REFRESH_TOKEN,
-    calendarId:       getCalendarId(),
-    connected: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REFRESH_TOKEN),
-  });
-});
-
-// ── Google Calendar CRUD ──────────────────────────────────────────────────────
-
-app.get("/api/calendar/events", async (req, res) => {
-  try {
-    if (!process.env.GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID === "test") {
-      return res.json([]);
-    }
-    const cal = getCalendarClient();
-    const { start, end } = req.query;
-    const r = await cal.events.list({
-      calendarId: getCalendarId(),
-      timeMin: start || new Date().toISOString(),
-      timeMax: end,
-      singleEvents: true,
-      orderBy: "startTime",
-      maxResults: 250,
-    });
-    res.json(r.data.items || []);
-  } catch (e) {
-    console.error("[GCal List Error]", e.message);
-    res.json([]); // Return empty array instead of 500 to keep UI stable
-  }
-});
-
-app.post("/api/calendar/events", async (req, res) => {
-  try {
-    const cal = getCalendarClient();
-    const { summary, description, start, end, allDay, reminderMinutes } = req.body;
-    const event = {
-      summary,
-      description,
-      start: allDay ? { date: start } : { dateTime: start, timeZone: "Asia/Bangkok" },
-      end:   allDay ? { date: end }   : { dateTime: end,   timeZone: "Asia/Bangkok" },
-      reminders: {
-        useDefault: false,
-        overrides: reminderMinutes != null ? [{ method: "popup", minutes: parseInt(reminderMinutes) }] : [],
-      },
-    };
-    const r = await cal.events.insert({ calendarId: getCalendarId(), resource: event });
-    res.json(r.data);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.put("/api/calendar/events/:id", async (req, res) => {
-  try {
-    const cal = getCalendarClient();
-    const { summary, description, start, end, allDay, reminderMinutes } = req.body;
-    const event = {
-      summary,
-      description,
-      start: allDay ? { date: start } : { dateTime: start, timeZone: "Asia/Bangkok" },
-      end:   allDay ? { date: end }   : { dateTime: end,   timeZone: "Asia/Bangkok" },
-      reminders: {
-        useDefault: false,
-        overrides: reminderMinutes != null ? [{ method: "popup", minutes: parseInt(reminderMinutes) }] : [],
-      },
-    };
-    const r = await cal.events.update({ calendarId: getCalendarId(), eventId: req.params.id, resource: event });
-    res.json(r.data);
-  } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
-});
-
-app.delete("/api/calendar/events/:id", async (req, res) => {
-  try {
-    const cal = getCalendarClient();
-    await cal.events.delete({ calendarId: getCalendarId(), eventId: req.params.id });
-    res.json({ ok: true });
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
