@@ -52,6 +52,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | P10-2 — Team Monitor: Unified Board View (Kanban) | ✅ QA Pass | `4625180`, `314d176` |
 | B22 — Team Monitor Board view: dynamic columns | ✅ QA Pass | `5384ab8` |
 | V0.1-Ph1 — Foundation Scripts & Smoke Test | ✅ QA Pass | `5c7ad14` |
+| V0.1-Ph2 Ph2-1 — Extract config routes | ✅ QA Pass | `ac699f1` |
 
 ---
 
@@ -151,6 +152,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R5 | ✅ Pass | Phase 10 (B19/B20/B21/P10-1/P10-2) pass — B22 found (P10-2 hardcoded columns) |
 | 2026-05-06 | R6 | ✅ Pass | B22 (Team Monitor dynamic columns) pass ทุก 3 AC |
 | 2026-05-06 | R7 | ✅ Pass | V0.1-Ph1 (Foundation Scripts & Smoke Test) pass ทุก 3 AC |
+| 2026-05-06 | R8 | ✅ Pass | V0.1-Ph2 Ph2-1 (config routes extraction) pass ทุก 3 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -178,64 +180,78 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph2 · Ph2-1 — Extract config routes 🔴
+### V0.1-Ph2 · Ph2-2 — Extract review routes 🔴
 
 **Context:**  
-V0.1-Ph1 เสร็จแล้ว ✅ — ต่อไปคือ Ph2: Backend Route Split  
-ทำทีละ route file ตามลำดับใน [VERSION_0.1_PLAN.md](./VERSION_0.1_PLAN.md): config → review → calendar → google-tasks → trello
+Ph2-1 (config routes) เสร็จแล้ว ✅  
+Ph2-2: ย้าย review + task-diff endpoints ออกจาก `server.js` → `src/routes/review.routes.js`
 
-**What to do:**
+**Endpoints ที่ต้องย้าย** (server.js ~lines 583–672):
+| Method | URL |
+|---|---|
+| GET | `/api/reviews` |
+| POST | `/api/task-diff` |
+| POST | `/api/reviews` |
+| GET | `/api/reviews/:id` |
+| PUT | `/api/reviews/:id/tasks/:taskId` |
+| POST | `/api/reviews/:id/tasks/:taskId/approve` |
+| POST | `/api/reviews/:id/tasks/:taskId/reject` |
+| POST | `/api/reviews/:id/approve-bulk` |
+| POST | `/api/reviews/:id/reject-bulk` |
+| DELETE | `/api/reviews/:id` |
 
-แยก config endpoints ออกจาก `server.js` ไปยัง `src/routes/config.routes.js`
-
-**Endpoints ที่ต้องย้าย** (`server.js` lines 366–380 approx):
-- `GET /api/config` — `res.json(readConfig())`
-- `POST /api/config` — `writeConfig(req.body)` + workspace/board visibility sub-handlers ถ้ามี
+**Dependencies ที่ต้องส่งผ่าน factory:**
+- `store` (review-store) — ใช้แทบทุก handler
+- `diff` (task-diff) — ใช้ใน POST /api/task-diff
+- `trello` — ใช้ใน approve handlers
+- `friendlyError` — ใช้ใน error paths
+- `cacheInvalidate` — ใช้ใน approve handler (invalidate "all-cards")
 
 **Rules:**
 - ไม่เปลี่ยน URL หรือ response shape
-- `readConfig` / `writeConfig` helper ยังอยู่ใน `server.js` (ย้ายใน Ph3)
-- `src/routes/config.routes.js` export `express.Router()`
-- `server.js` import แล้ว `app.use("/api", configRoutes)`
-- หลัง split: `node server.js` ต้องรันได้ + `npm run smoke` ต้องผ่าน
+- ใช้ factory pattern เหมือน config.routes.js: `module.exports = function reviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate }) { ... }`
+- `server.js` mount ด้วย `app.use("/api", makeReviewRoutes({ ... }))`
+- หลัง split: `node server.js` รันได้ + `npm run smoke` pass
 
 **AC:**
-- [ ] `GET /api/config` และ `POST /api/config` ยังทำงานได้ (URL/shape เหมือนเดิม)
-- [ ] `server.js` บรรทัดที่เป็น config routes ถูกลบออก (ย้ายแล้ว)
+- [ ] ทุก 10 endpoints ยังทำงานได้ (URL/shape เหมือนเดิม)
+- [ ] `server.js` ไม่มี review/task-diff handlers เหลืออยู่
 - [ ] `npm run smoke` pass หลัง split
 
 **Commit:**
 ```
-git add server.js src/routes/config.routes.js
-git commit -m "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
+git add server.js src/routes/review.routes.js
+git commit -m "V0.1-Ph2: extract review routes to src/routes/review.routes.js"
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
 คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph2 ก่อน
 
-Task: V0.1-Ph2 Ph2-1 — แยก config routes ออกจาก server.js
+Task: V0.1-Ph2 Ph2-2 — แยก review + task-diff routes ออกจาก server.js
 
-1. Grep หา config route handlers ใน server.js:
-   Grep("api/config", "server.js") → note line numbers
+1. Grep หา review/task-diff route handlers ใน server.js:
+   Grep("api/reviews|api/task-diff", "server.js") → note line range
 
-2. สร้าง src/routes/config.routes.js:
-   - express.Router()
-   - ย้าย GET /api/config และ POST /api/config (และ sub-routes ถ้ามี)
-   - require readConfig/writeConfig จาก path สัมพัทธ์ไปยัง server.js (ชั่วคราว)
+2. อ่าน section นั้นด้วย Read(offset, limit) เพื่อดู handlers ทั้งหมด
 
-3. อัปเดต server.js:
-   - require config.routes.js
-   - app.use("/api", configRoutes)
-   - ลบ handler เดิมออก
+3. สร้าง src/routes/review.routes.js:
+   - factory function รับ { store, diff, trello, friendlyError, cacheInvalidate }
+   - ย้าย handlers ทั้ง 10 ตัวเข้า router
+   - router prefix คือ "/api" → router paths ไม่มี /api นำหน้า
 
-4. ตรวจ: node server.js ไม่ crash + npm run smoke pass
+4. อัปเดต server.js:
+   - require review.routes.js
+   - app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate }))
+   - ลบ handlers เดิมออก
+
+5. ตรวจ: node server.js ไม่ crash + npm run smoke pass
 
 Rules:
 - ไม่เปลี่ยน URL หรือ response shape
-- ไม่ย้าย cache helpers หรือ readConfig/writeConfig ออกจาก server.js ยัง
+- ไม่ย้าย store/diff/trello/cache ออกจาก server.js ยัง (ย้ายใน Ph3)
 
-Commit: "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
+Commit: "V0.1-Ph2: extract review routes to src/routes/review.routes.js"
 ```
 
 ---
