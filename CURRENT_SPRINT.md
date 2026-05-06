@@ -1,6 +1,6 @@
 # Current Sprint — Trisilar Task Hub
 **Phase 9 · Maintenance & Iteration**
-**Started:** 2026-05-06 · **Status:** ⬜ Planning
+**Started:** 2026-05-06 · **Status:** 🟢 Active
 
 > **วิธีใช้ไฟล์นี้:**
 > - Dev / QA / PM อ้างอิงไฟล์นี้เท่านั้น (ไม่ต้องอ่าน DEVELOPMENT_PLAN.md)
@@ -35,7 +35,17 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 | Task | Status | Commit |
 |---|---|---|
-| *(รอ Dev implement)* | — | — |
+| B10 — Tasks label group scroll | ✅ QA Pass | `ac48125` |
+| B11 — Pending Review badge ซ้ำ | ✅ QA Pass | `8c73b7d` |
+| B12 — OKR page clip (overview + detail) | ✅ QA Pass | `ac48125`, `f5b3773` |
+| B13 — Google Tasks "Connected" label | ✅ QA Pass | `f5b3773` |
+| B14 — Trello API cache (60s / 5min) | ✅ QA Pass | `5ab0f76` |
+| B15 — move card ไม่ invalidate cache | ✅ QA Pass | `f5b3773` |
+| B16 — topbarRefresh bypass server TTL | ✅ QA Pass | `c6a09fd` |
+| B17 — approve review task invalidate cache | ✅ QA Pass | `c6a09fd` |
+| P9-4 — Boards Monitor Label Filter | ✅ QA Pass | `7926b80` |
+| P9-5 — Tasks View: Group by Type (OKR / Project) | ✅ QA Pass | `b328c8f` |
+| P10-1 — Boards Monitor: Dynamic Team Grouping (Label-based) | ✅ QA Pass | `pending` |
 
 ---
 
@@ -78,7 +88,48 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 - เพิ่ม/ปรับ UX ตาม priority ที่ PM กำหนด
 
 **AC:**
-- [ ] (กำหนดเมื่อมี feedback)
+- [ ] OKR page UI — รอ screenshot / คำอธิบายจาก user (แปลกตรงไหน?)
+
+---
+
+### P9-4 · Boards Monitor: Label Filter
+**Priority:** 🟡 Medium (feature request)
+**Files:** `public/app.js`, `public/style.css`
+
+**Spec (confirmed):**
+- Trello card labels (multi-select)
+- แสดงทุก Team แต่มี Hide/Show per team (accordion style)
+
+**What to do:**
+- เพิ่ม label filter multi-select ที่ header ของ Boards Monitor
+- แต่ละ label group มี toggle hide/show (คล้าย label group ใน All Tasks)
+- Filter กระทบ cards ภายใน column (ไม่ hide column ทั้งหมด)
+
+**AC:**
+- [ ] Multi-select label filter แสดงที่ header
+- [ ] ทุก Teams แสดงผลเริ่มต้น, toggle hide/show per label group
+- [ ] Filter state persist ตลอด session (ไม่ reset เมื่อ refresh view)
+
+---
+
+### P9-5 · Tasks View: แยก OKR/Planning จาก Project Tasks
+**Priority:** 🟡 Medium (feature request)
+**Files:** `public/app.js`, `public/style.css`
+
+**Spec (PM decision):**
+- แยกโดย source board (board name) ไม่ใช่แค่ label
+- Group "OKR & Planning" = cards จาก OKR Board + Inspiration Board
+- Group "Projects" = cards จาก Project boards อื่นๆ
+- Label ไตรมาส (เช่น "Q3 2026") ใช้เป็น sub-filter เสริมได้
+
+**What to do:**
+- เพิ่ม Group By option: "Type (OKR / Project)"
+- OKR/Inspiration boards ระบุได้จาก board name หรือ config
+
+**AC:**
+- [x] Group by Type แสดง 2 sections: "OKR & Planning" และ "Projects"
+- [x] แต่ละ section collapsible
+- [x] OKR board source ระบุได้จาก board name ที่ settings หรือ hardcode config
 
 ---
 
@@ -87,22 +138,44 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 | Date | Round | Result | Notes |
 |---|---|---|---|
-| — | — | — | — |
+| 2026-05-06 | R1 | ✅ Pass | B10–B15 pass ทุกข้อ |
+| 2026-05-06 | R2 | ✅ Pass | B16, B17 pass; B18 found & fixed ใน P9-4 session |
+| 2026-05-06 | R3 | ✅ Pass | P9-4 (Boards Monitor Label Filter) pass ทุกข้อ |
+| 2026-05-06 | R4 | ✅ Pass | P9-5 (Tasks Group by Type) pass ทุก 6 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
 
 | ID | Bug | File:Line | Status |
 |---|---|---|---|
-| *(ยังไม่มี)* | — | — | — |
+| B10 | Tasks page: label group list ไม่ scroll ได้ | `style.css:1047` | ✅ Fixed `ac48125` |
+| B11 | Sidebar: Pending Review badge แสดงซ้ำ 2 nav items | `app.js:982` | ✅ Fixed `8c73b7d` |
+| B12 | OKR page: task container clip (overview + detail) | `style.css:1187,1303` | ✅ Fixed `ac48125`,`f5b3773` |
+| B13 | Google Tasks แสดง "Connected" แต่ API ไม่ทำงาน | `app.js:1257` | ✅ Fixed `f5b3773` |
+| B14 | Trello Rate Limit จาก nav switching | `server.js:40-50,326,349` | ✅ Fixed `5ab0f76` |
+| B15 | move card ไม่ invalidate cache | `server.js:308` | ✅ Fixed `f5b3773` |
+| B16 | topbarRefresh ไม่ bypass server TTL | `server.js`,`app.js` | ✅ Fixed `c6a09fd` |
+| B17 | approve task ไม่ invalidate cache | `server.js:556` | ✅ Fixed `c6a09fd` |
+| B18 | bm-label-filter-note แสดง "0 cards" บน boards ไม่มี label นั้น | `app.js:2088` | ✅ Fixed `7926b80` |
 
 ---
 
-## ⚡ Next Action — Dev ต้องทำ
+## ⚡ Next Action
 
-**Phase 8 ✅ เสร็จสมบูรณ์ — รอ bug report หรือ feature request จาก user**
+---
 
-ถ้ามี bug ใหม่ → PM log ใน "Bug Fixes This Sprint" แล้ว Dev แก้ตาม priority
+### 🟢 Sprint Stable — ไม่มี task ใหม่ที่ pending
+
+Features ที่วางแผนไว้ทุกข้อเสร็จแล้ว (P9-4 ✅, P9-5 ✅)
+Bugs ที่รายงานทุกข้อแก้ไขและผ่าน QA แล้ว (B10–B18 ✅)
+
+**Task ที่ยัง defer อยู่ (รอ trigger):**
+- **P9-2 · Virtual Scroll** — defer จนกว่า cards จะเกิน 200 (ปัจจุบันไม่ถึง threshold)
+- **P9-3 · UX Polish** — รอ feedback / screenshot จาก user
+
+**สิ่งที่ต้องทำต่อไปสำหรับทีม:**
+- ใช้งานจริงและสังเกต bugs ใหม่ → report เข้า P9-1
+- ถ้ามี feature request ใหม่ → PM เปิด session ใหม่และเขียน brief
 
 ---
 

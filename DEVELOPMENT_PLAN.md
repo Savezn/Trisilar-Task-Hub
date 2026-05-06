@@ -920,8 +920,11 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P8** | **P8-3** Export / Report CSV | ✅ Done | 2026-05-06 | Export CSV button filtered tasks, 7 columns, BOM UTF-8, filename YYYY-MM-DD — commit 8068e38 |
 | **P8** | **P8-4** Performance Virtual Scroll | ➡ Deferred | — | cards ~102 < 200 threshold, defer until scale requires it |
 | **P8** | **P8-5** OKR Board Setup Guide | ✅ Done | 2026-05-06 | 4-step accordion guide, native details/summary, Refresh button — commit 1c0fa33 |
+| **P9** | **P9-4** Monitor Label Filter | ✅ Done | 2026-05-06 | Label Chips Filter in Boards Monitor — commit 7926b80 |
+| **P9** | **P9-5** Tasks Group by Type | ✅ Done | 2026-05-06 | OKR vs Projects grouping — commit b328c8f |
+| **P10** | **P10-1** Dynamic Team Grouping | ✅ Done | 2026-05-06 | Aggregate stats by team labels managed via Settings — Resolved by Gemini |
 
-**Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · ⏸ Blocked · ➡ Deferred
+**Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · 🛑 Blocked · ➡ Deferred
 
 ---
 

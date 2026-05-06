@@ -2838,3 +2838,31 @@ a { text-decoration: none; }
     display: none;
   }
 }
+
+/* Monitor Team Management */
+.teams-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.team-manage-chip {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+}
+.team-del-btn {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.team-del-btn:hover { color: var(--danger); }

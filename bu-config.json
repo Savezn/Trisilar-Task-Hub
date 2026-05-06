@@ -6,7 +6,15 @@
       "color": "#0079bf",
       "boardIds": [
         "69f2dcd3fba37f1ace3d761f",
-        "689b22757c5fa164ea7bb318"
+        "689b22757c5fa164ea7bb318",
+        "69f9720b11df004c2d4961d4",
+        "69f9727063a4c00914e1433c",
+        "69f972fa2e763853e42fc5e6",
+        "69f973e1233718170e4c2ff4",
+        "69f9729e4745e588cd5b294b",
+        "69f972caf6f364b0698ddfc1",
+        "69f971d4d045cf46a149e9ae",
+        "69f972405b78288691858657"
       ]
     }
   ],
@@ -22,5 +30,6 @@
   ],
   "allowedWorkspaceIds": [
     "69f2cfe7f63a58a6772a6cd0"
-  ]
+  ],
+  "monitorTeams": ["Marketing", "Education", "Ops", "Revenue", "SaaS"]
 }

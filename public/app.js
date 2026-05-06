@@ -33,6 +33,7 @@ const S = {
   reviewSelected: new Map(),   // Map<sessionId, Set<taskId>> — bulk selection
   overdueToastShown: false,    // P8-1: show overdue alert only once per session
   bmHiddenLabels: new Set(),   // P9-4: label names hidden in Boards Monitor (persists in session)
+  bmGroupBy: "boards",        // P10-1: grouping mode in Boards Monitor ('boards' | 'teams')
 };
 
 const COLORS = ["#6366f1","#d29034","#519839","#b04632","#89609e","#cd5a91","#00aecc","#4bbf6b","#e44","#f90"];
@@ -1290,7 +1291,16 @@ function showSettingsPage() {
   `;
   page.appendChild(visSection);
 
-  // ── 4. BU Groups ──
+  // ── 4. Monitor Teams ──
+  const teamSection = document.createElement("div");
+  teamSection.className = "settings-section";
+  teamSection.innerHTML = `
+    <div class="settings-section-header">Monitor Teams (Labels)</div>
+    <div class="settings-section-body" id="settings-teams-body"></div>
+  `;
+  page.appendChild(teamSection);
+
+  // ── 5. BU Groups ──
   const groupSection = document.createElement("div");
   groupSection.className = "settings-section";
   groupSection.innerHTML = `
@@ -1374,6 +1384,54 @@ function renderSettingsVisibility() {
     };
     container.appendChild(row);
   });
+}
+
+function renderSettingsTeams() {
+  const container = $("settings-teams-body");
+  if (!container) return;
+  if (!S.draftConfig.monitorTeams) S.draftConfig.monitorTeams = [];
+
+  container.innerHTML = `
+    <p style="color:var(--text-muted);font-size:12px;margin-bottom:12px">Define labels that represent teams for the Monitor view. You can add or remove them as needed.</p>
+    <div class="teams-editor-wrap">
+      <div class="teams-chips-list">
+        ${S.draftConfig.monitorTeams.map((team, idx) => `
+          <span class="team-manage-chip">
+            ${esc(team)}
+            <button class="team-del-btn" data-idx="${idx}">×</button>
+          </span>
+        `).join("")}
+      </div>
+      <div class="team-add-row" style="margin-top:12px;display:flex;gap:8px">
+        <input type="text" id="new-team-input" class="form-control" style="flex:1" placeholder="Add new team label (e.g. Design)...">
+        <button class="btn btn-primary btn-sm" id="add-team-btn">Add Team</button>
+      </div>
+    </div>
+  `;
+
+  container.querySelectorAll(".team-del-btn").forEach(btn => {
+    btn.onclick = async () => {
+      const idx = parseInt(btn.dataset.idx);
+      S.draftConfig.monitorTeams.splice(idx, 1);
+      renderSettingsTeams();
+      await saveSettingsConfig();
+    };
+  });
+
+  const addFn = async () => {
+    const input = $("new-team-input");
+    const val = input.value.trim();
+    if (val && !S.draftConfig.monitorTeams.includes(val)) {
+      S.draftConfig.monitorTeams.push(val);
+      renderSettingsTeams();
+      await saveSettingsConfig();
+    }
+    input.value = "";
+    input.focus();
+  };
+
+  $("add-team-btn").onclick = addFn;
+  $("new-team-input").onkeydown = e => { if (e.key === "Enter") addFn(); };
 }
 
 function renderSettingsGroups() {
@@ -1947,16 +2005,30 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
   const page = document.createElement("div");
   page.className = "boards-monitor-page";
 
-  // Toolbar with sort
+  // Toolbar with sort and group-by
   const toolbar = document.createElement("div");
   toolbar.className = "boards-monitor-toolbar";
   toolbar.innerHTML = `
-    <span class="sort-label">Sort by</span>
-    <button class="filter-chip active" data-sort="name">Name</button>
-    <button class="filter-chip" data-sort="overdue">Most Overdue</button>
-    <button class="filter-chip" data-sort="total">Most Cards</button>
+    <div class="bm-toolbar-group">
+      <span class="sort-label">View</span>
+      <button class="filter-chip${S.bmGroupBy === "boards" ? " active" : ""}" data-view="boards">Boards</button>
+      <button class="filter-chip${S.bmGroupBy === "teams" ? " active" : ""}" data-view="teams">Teams</button>
+    </div>
+    <div class="bm-toolbar-group" id="bm-sort-controls" style="${S.bmGroupBy === "teams" ? "display:none" : ""}">
+      <span class="sort-label">Sort by</span>
+      <button class="filter-chip active" data-sort="name">Name</button>
+      <button class="filter-chip" data-sort="overdue">Most Overdue</button>
+      <button class="filter-chip" data-sort="total">Most Cards</button>
+    </div>
   `;
   page.appendChild(toolbar);
+
+  toolbar.querySelectorAll("[data-view]").forEach(btn => {
+    btn.onclick = () => {
+      S.bmGroupBy = btn.dataset.view;
+      renderBoardsMonitor(allCards, healthMap);
+    };
+  });
 
   // P9-4: label filter row (only render if there are labels)
   const labelBar = document.createElement("div");
@@ -2007,6 +2079,90 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
 
   function renderGrid() {
     grid.innerHTML = "";
+    
+    if (S.bmGroupBy === "teams") {
+      const teams = S.config.monitorTeams || [];
+      if (!teams.length) {
+        grid.innerHTML = '<div class="empty-state"><h3>No teams defined</h3><p>Configure teams in Settings to use this view.</p></div>';
+        return;
+      }
+
+      teams.forEach((teamName, i) => {
+        // Aggregated stats for this team (label) across all boards
+        const rawCards = allCards.filter(c => (c.labels || []).some(l => l.name === teamName));
+        const cards    = visibleCards(rawCards);
+        const active   = cards.filter(c => !c.dueComplete);
+        const overdue  = active.filter(c => c.due && new Date(c.due) < now);
+        const dueToday = active.filter(c => c.due && new Date(c.due).toDateString() === todayStr && new Date(c.due) >= now);
+        const done     = cards.filter(c => c.dueComplete);
+        const completionPct = cards.length ? Math.round((done.length / cards.length) * 100) : 0;
+        
+        const byBoard = {};
+        cards.forEach(c => { byBoard[c.boardName] = (byBoard[c.boardName] || 0) + 1; });
+        const topBoards = Object.entries(byBoard).sort((a,b) => b[1]-a[1]).slice(0, 5);
+
+        const color = COLORS[i % COLORS.length];
+        const card = document.createElement("div");
+        card.className = "board-monitor-card team-monitor-card";
+        
+        const healthClass = completionPct === 0 ? "zero" : overdue.length > 3 ? "crit" : overdue.length > 0 ? "warn" : "";
+        const overdueClass = overdue.length > 0 ? " has-issues" : "";
+        const todayClass   = dueToday.length > 0 ? " has-issues" : "";
+
+        card.innerHTML = `
+          <div class="bm-banner" style="background:${color}"></div>
+          <div class="bm-body">
+            <div class="bm-card-header">
+              <div class="bm-board-icon" style="background:${color}">${teamName[0].toUpperCase()}</div>
+              <div class="bm-card-meta">
+                <div class="bm-card-title">Team: ${esc(teamName)}</div>
+                <div class="bm-card-sub">Aggregated from ${Object.keys(byBoard).length} boards</div>
+              </div>
+            </div>
+
+            <div class="bm-stats-row">
+              <div class="bm-stat stat-total">
+                <div class="bm-stat-num">${cards.length}</div>
+                <div class="bm-stat-label">Total</div>
+              </div>
+              <div class="bm-stat stat-overdue${overdueClass}">
+                <div class="bm-stat-num">${overdue.length}</div>
+                <div class="bm-stat-label">Overdue</div>
+              </div>
+              <div class="bm-stat stat-today${todayClass}">
+                <div class="bm-stat-num">${dueToday.length}</div>
+                <div class="bm-stat-label">Due Today</div>
+              </div>
+            </div>
+
+            <div class="bm-health-bar-wrap">
+              <div class="bm-health-label">
+                <span>Team Progress</span>
+                <span class="bm-health-pct">${done.length} / ${cards.length}</span>
+              </div>
+              <div class="bm-health-track">
+                <div class="bm-health-fill ${healthClass}" style="width:${completionPct}%"></div>
+              </div>
+            </div>
+
+            ${topBoards.length ? `
+            <div class="bm-lists-row">
+              <div style="font-size:10px;color:var(--text-faint);margin-bottom:4px;width:100%">TOP BOARDS</div>
+              ${topBoards.map(([name, count]) => 
+                `<span class="bm-list-chip"><span class="bm-list-count">${count}</span> ${esc(name)}</span>`
+              ).join("")}
+            </div>` : ""}
+
+            ${overdue.length > 0 ? `
+            <div class="bm-alert">⚠ Team has ${overdue.length} overdue tasks</div>
+            ` : ""}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      return;
+    }
+
     sortedStats().forEach(({ board, color, health }) => {
       // P9-4: apply label filter before computing stats
       const rawCards = allCards.filter(c => c.boardId === board.id);
