@@ -60,6 +60,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph3 Ph3-1 — Extract core helpers and models | ✅ QA Pass | `e3320d5` |
 | V0.1-Ph3 Ph3-2 — Extract google helpers | ✅ QA Pass | `d06d388` |
 | V0.1-Ph4 Ph4-1 — Server core hardening | ✅ QA Pass | `f6b5ab6` |
+| V0.1-Ph4 Ph4-2 — Frontend Core Split (api/state/router/utils) | ✅ QA Pass | `50ffc72` |
 
 ---
 
@@ -168,6 +169,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R14 | ✅ Pass | V0.1-Ph3 Ph3-2 (google helpers extraction) pass ทุก 3 AC |
 | 2026-05-06 | R15 | ✅ Pass | V0.1-Ph4 Ph4-1 (server hardening) pass — Bug B23 found (autoDelete missing) |
 | 2026-05-06 | R16 | ✅ Pass | B23 (missing autoDeleteFromGCal import in server.js) pass ทุก 2 AC |
+| 2026-05-07 | R17 | ✅ Pass | V0.1-Ph4 Ph4-2 (Frontend Core Split) pass ทุก 4 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -195,77 +197,68 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph4 Ph4-2 · Frontend Core Split 🔴
+### V0.1-Ph5 Ph5-1 · Extract Today Page Module 🔴
 
 **Context:**  
-Backend modularization (Ph2 + Ph3) เสร็จแล้ว ถึงเวลาแยก `public/app.js` (>4000 บรรทัด) ออกเป็น foundation modules ก่อน ซึ่งจะเป็น dependency ของ page splits ทั้งหมดใน Ph5
+Ph4-2 (Frontend Core Split) เสร็จแล้ว — `api`, `S`, `navigateTo`, utils ทั้งหมดเป็น global จากไฟล์ใน `public/js/` แล้ว  
+ถึงเวลาเริ่ม Ph5: แยก page renderers ออกจาก `app.js` ทีละ page เริ่มจาก **Today page** ซึ่งเป็น page หลัก
 
-**Target structure:**
+**Target:**
 ```
-public/js/
-  api.js      ← api object: get/post/put/delete helpers + BASE_URL
-  state.js    ← S global state object + state update helpers
-  router.js   ← showPage(), nav click handlers, URL hash routing
-  utils.js    ← esc(), $(), debounce(), formatDate(), toast(), etc.
+public/js/pages/today.js   ← showTodayPage() + helper functions ของ Today
 ```
 
 **What to do:**
-1. Grep `public/app.js` หา patterns: `const api =`, `const S =`, `function showPage`, `function esc(`, `function debounce(`
-2. Extract แต่ละ module ออกเป็นไฟล์ใน `public/js/` — ไม่เปลี่ยน logic
-3. อัปเดต `public/index.html` — load ไฟล์ใหม่ **ก่อน** `app.js`:
-   ```html
-   <script src="/js/utils.js"></script>
-   <script src="/js/api.js"></script>
-   <script src="/js/state.js"></script>
-   <script src="/js/router.js"></script>
-   <script src="/app.js"></script>
-   ```
-4. ลบ definitions เดิมออกจาก `app.js` (ใช้ global จากไฟล์ใหม่แทน)
-5. Manual browser check: navigation, Today page, All Tasks, create/edit card
+1. Grep `public/app.js` หา `function showTodayPage` → note line number
+2. Read รอบ function นั้น ±20 บรรทัด เพื่อ identify scope และ helper functions ที่ใช้เฉพาะ Today
+3. Extract `showTodayPage()` และ Today-specific helpers ออกไปที่ `public/js/pages/today.js`
+4. เพิ่ม `<script src="js/pages/today.js"></script>` ใน `index.html` ก่อน `app.js`
+5. ลบ definitions ที่ย้ายออกจาก `app.js`
+6. Browser check: Today page โหลด, stats render, mark done, open Trello ทำงานได้
 
 **Rules:**
-- ไม่ย้าย page renderers ใด ๆ ใน session นี้ (ทำใน Ph5)
-- ไม่ใช้ bundler — plain `<script>` tags เท่านั้น
-- Commit ทีละไฟล์ที่ extract ออก
+- ย้ายเฉพาะ Today page functions — ไม่แตะ page อื่น
+- ถ้า function ถูกใช้โดย page อื่นด้วย → อย่าย้าย ให้คงไว้ใน `app.js`
+- ไม่ใช้ bundler — plain `<script>` tag เท่านั้น
 
 **AC:**
-- [ ] Navigation ทำงานได้ครบ (ไม่มี console error)
-- [ ] Today, All Tasks, Settings โหลดได้
-- [ ] Create/edit card ทำงานได้
+- [ ] `public/js/pages/today.js` มี `showTodayPage` และ Today-only helpers
+- [ ] Today page โหลดได้ แสดง Overdue / Due Today / Upcoming / Pending Review
+- [ ] ไม่มี console errors ใหม่
 - [ ] `npm run smoke` pass
 
-**Commit (ทำทีละ extract):**
+**Commit:**
 ```
-git add public/js/utils.js public/app.js public/index.html
-git commit -m "V0.1-Ph4 Ph4-2a: extract utils.js from app.js"
-
-git add public/js/api.js public/app.js
-git commit -m "V0.1-Ph4 Ph4-2b: extract api.js from app.js"
-
-git add public/js/state.js public/app.js
-git commit -m "V0.1-Ph4 Ph4-2c: extract state.js from app.js"
-
-git add public/js/router.js public/app.js
-git commit -m "V0.1-Ph4 Ph4-2d: extract router.js from app.js"
+git add public/js/pages/today.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-1: extract Today page module from app.js"
+git push
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
-คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph4 ก่อน
+คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph5 ก่อน
 
-Task: V0.1-Ph4 Ph4-2 — Frontend Core Split
-แยก foundation modules ออกจาก public/app.js:
-  public/js/api.js     ← api helpers
-  public/js/state.js   ← S state object
-  public/js/router.js  ← showPage + nav
-  public/js/utils.js   ← esc, $, debounce, formatDate, toast
+Task: V0.1-Ph5 Ph5-1 — Extract Today page
+Target: public/js/pages/today.js
+
+Steps:
+1. Grep public/app.js หา "function showTodayPage" → note line
+2. Read รอบ function ±20 บรรทัด identify scope
+3. Extract showTodayPage + Today-only helpers → public/js/pages/today.js
+4. เพิ่ม <script src="js/pages/today.js"> ใน index.html ก่อน app.js
+5. ลบ definitions ออกจาก app.js
+6. Browser check: Today page โหลด, stats, mark done ทำงาน
+7. npm run smoke pass
 
 Rules:
-- ไม่ย้าย page renderers
-- load ไฟล์ใหม่ใน index.html ก่อน app.js
+- ย้ายเฉพาะ Today functions
+- ถ้า function ใช้ร่วมกับ page อื่น → คงไว้ใน app.js
 - ไม่ใช้ bundler
-- Commit ทีละ extract (4 commits)
-- Manual browser check ก่อน commit สุดท้าย
+
+Commit:
+git add public/js/pages/today.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-1: extract Today page module from app.js"
+git push
 ```
 
 ---
