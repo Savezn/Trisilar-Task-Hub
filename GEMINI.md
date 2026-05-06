@@ -1,29 +1,44 @@
 # Project-Specific Mandates (GEMINI.md) - Trisilar Task Hub
 
-This file overrides or extends global mandates for the `trisilar-task-hub` project.
+This file defines the foundational rules for the `trisilar-task-hub` project, aligning with `CLAUDE.md`.
 
-## Workflow & Role Isolation
-- **Role Awareness:** Adhere to the role specified by the user at the start of the session (Dev, QA, PM).
-  - **Dev:** Implementation, bug fixes, and unit testing.
-  - **QA:** Code review, bug reporting, and verification.
-  - **PM:** Documentation updates (specifically `CURRENT_SPRINT.md` and `DEVELOPMENT_PLAN.md`).
-- **Confirmation:** If no role is explicitly stated, ask for clarification before taking action.
+## 1. Role Isolation (1 Role per Session)
+- **Handoff Chain:** Dev → QA → PM → Dev... Never skip a role.
+- **Role Awareness:** Adhere to the role specified by the user ("คุณ Dev", "คุณ QA", "คุณ PM").
+  - **Dev:** Write/edit code, verify, commit + push.
+  - **QA:** Read code, report bugs per AC (Evidence + Conclude PASS/FAIL).
+  - **PM:** Update `CURRENT_SPRINT.md` (Completed, QA Log, Next Action) and `DEVELOPMENT_PLAN.md` (Progress tracker).
+- **Confirmation:** If no role is explicitly stated, ask for clarification before proceeding.
 
-## Engineering Standards
-- **Language:** Stick to **CommonJS JavaScript** as established in the project. Do not introduce TypeScript unless a migration is explicitly requested.
-- **File Management:** 
-  - Use `grep_search` to locate specific functions or routes before reading.
-  - For large files (e.g., `server.js` or `public/app.js`), use `start_line` and `end_line` in `read_file` to target specific sections.
-- **Commit Strategy:** Follow the convention: `Phase X — [task ID] brief description`. Stage specific files only; avoid `git add .`.
+## 2. File Reading Rules (Grep First)
+**Never** read a full large file without checking size. Use targeted reads (±20 lines around target).
+- `public/app.js`: Max 80 lines.
+- `public/style.css`: Max 60 lines.
+- `server.js`, `CURRENT_SPRINT.md`, `review-store.js`, `task-diff.js`: Read in full (ok).
+- `DEVELOPMENT_PLAN.md`: Do not read unless PM syncing tracker.
 
-## File References
-- **Planning:** Refer to `CURRENT_SPRINT.md` for active tasks and `DEVELOPMENT_PLAN.md` for broader project goals.
-- **Core Logic:** 
-  - `server.js`: Main Express server and API routes.
-  - `trello.js`: Trello integration logic.
-  - `tools.js`: Utility functions.
-- **Frontend:** Located in the `public/` directory (e.g., `app.js`, `style.css`).
+## 3. Commit Convention
+- **Format:** `Phase X — [task ID] brief description` OR `V0.1-PhX: brief description` for Version 0.1 work.
+- **Content:** Describe **what changed and why**.
+- **Staging:** Stage specific files only (`git add <file>`). **Never** use `git add .`.
 
-## Specialized Instructions
-- **API Keys:** Ensure `.env` is never modified or exposed in logs. Use `dotenv` for environment variables.
-- **Review System:** Logic for task reviews is located in `review-store.js` and `review-sessions.json`.
+## 4. End-of-Session Structure
+Every session MUST end with a "Next session" block in this exact format:
+
+```
+**Next session:**
+
+**Role:** [Dev / QA / PM]
+**Task:** [task name]
+
+[self-contained copy-paste prompt starting with "คุณ Role"]
+```
+
+## 5. Engineering Standards
+- **Language:** Stick to **CommonJS JavaScript**. No TypeScript unless requested.
+- **API Keys:** Never modify or log `.env`. Use `dotenv`.
+- **Logic Location:**
+  - `server.js`: Express routes & core API.
+  - `trello.js`: Trello integration.
+  - `public/`: Frontend assets (`app.js`, `style.css`).
+  - `review-store.js`: Review session persistence.
