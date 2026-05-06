@@ -10,6 +10,7 @@ async function trelloRequest(method, path, body = null) {
   if (body) options.body = JSON.stringify(body);
 
   const res = await fetch(url, options);
+
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Trello API error ${res.status}: ${text}`);
@@ -29,6 +30,10 @@ async function getBoards() {
   return trelloRequest("GET", "/members/me/boards?fields=id,name,url,idOrganization&filter=open");
 }
 
+async function getBoardsFull() {
+  return trelloRequest("GET", "/members/me/boards?fields=id,name,url,idOrganization&filter=open&lists=all&list_fields=id,name,pos&customFields=true");
+}
+
 async function getBoard(boardId) {
   return trelloRequest("GET", `/boards/${boardId}?fields=id,name,url,desc`);
 }
@@ -46,8 +51,11 @@ async function createList(boardId, name) {
 // ── Cards ────────────────────────────────────────────────────────────────────
 
 async function getCards(listId) {
-  // P7-1+P7-2: labels, member objects (for name display), checkItems (progress), customFieldItems
   return trelloRequest("GET", `/lists/${listId}/cards?fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList,idMembers,labels&members=true&member_fields=id,username,fullName&checklists=all&checklist_fields=id,name,pos&checkItems=all&checkItem_fields=id,name,state&customFieldItems=true`);
+}
+
+async function getBoardCards(boardId) {
+  return trelloRequest("GET", `/boards/${boardId}/cards?fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList,idMembers,labels&members=true&member_fields=id,username,fullName&checklists=all&checklist_fields=id,name,pos&checkItems=all&checkItem_fields=id,name,state&customFieldItems=true`);
 }
 
 async function getCard(cardId) {
@@ -66,7 +74,6 @@ async function createCard(listId, name, desc = "", due = null, start = null, due
 async function updateCard(cardId, fields) {
   const params = new URLSearchParams();
   for (const [k, v] of Object.entries(fields)) {
-    // null means "clear this field" — send empty string to Trello
     params.append(k, v === null ? "" : v);
   }
   return trelloRequest("PUT", `/cards/${cardId}?${params}`);
