@@ -1254,7 +1254,7 @@ function showSettingsPage() {
         <div class="integration-info">
           <div class="integration-name">Google Tasks</div>
           <div class="integration-desc">${calConnected
-            ? "Shared with Google Calendar — connect Calendar to enable"
+            ? "Uses Google Calendar OAuth"
             : "Requires Google Calendar connection"}</div>
         </div>
         <div class="integration-status-dot ${calConnected ? "dot-green" : "dot-gray"}"></div>

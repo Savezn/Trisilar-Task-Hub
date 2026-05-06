@@ -306,7 +306,11 @@ app.put("/api/cards/:id", async (req, res) => {
 });
 
 app.put("/api/cards/:id/move", async (req, res) => {
-  try { res.json(await trello.moveCard(req.params.id, req.body.listId)); }
+  try {
+    const card = await trello.moveCard(req.params.id, req.body.listId);
+    cacheInvalidate("all-cards");
+    res.json(card);
+  }
   catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 

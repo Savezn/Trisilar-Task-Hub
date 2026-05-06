@@ -1191,6 +1191,7 @@ a { text-decoration: none; }
   padding: 4px 0;
   overflow-y: auto;
   flex: 1;
+  min-height: 0;
 }
 .okr-board-label {
   font-size: 11px;
