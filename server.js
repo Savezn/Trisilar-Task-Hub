@@ -36,6 +36,19 @@ function todayBangkok() {
   return new Date(Date.now() + 7 * 3600 * 1000).toISOString().slice(0, 10);
 }
 
+// ── In-memory cache (prevents Trello rate-limit on rapid nav switching) ───────
+const _cache = {};
+function cacheGet(key) {
+  const e = _cache[key];
+  return e && Date.now() < e.exp ? e.data : null;
+}
+function cacheSet(key, data, ttlMs) {
+  _cache[key] = { data, exp: Date.now() + ttlMs };
+}
+function cacheInvalidate(prefix) {
+  Object.keys(_cache).filter(k => k.startsWith(prefix)).forEach(k => delete _cache[k]);
+}
+
 // ── P6-1: Friendly error mapper ───────────────────────────────────────────────
 // Logs full error to console, returns safe message to client
 function friendlyError(e) {
@@ -182,10 +195,16 @@ const REQUIRED_LISTS = ["Backlog", "In Progress", "Done"];
 
 app.get("/api/boards/:id/health", async (req, res) => {
   try {
+    const hKey = `health:${req.params.id}`;
+    const hit = cacheGet(hKey);
+    if (hit) return res.json(hit);
+
     const lists = await trello.getLists(req.params.id);
     const names = lists.map(l => l.name.trim());
     const missing = REQUIRED_LISTS.filter(r => !names.some(n => n.toLowerCase() === r.toLowerCase()));
-    res.json({ ok: missing.length === 0, missing });
+    const result = { ok: missing.length === 0, missing };
+    cacheSet(hKey, result, 5 * 60_000); // 5 min TTL (lists rarely change)
+    res.json(result);
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
 
@@ -260,6 +279,7 @@ app.post("/api/cards", async (req, res) => {
   try {
     const { listId, name, desc, due, start, dueReminder, syncCalendar } = req.body;
     const card = await trello.createCard(listId, name, desc, due, start, dueReminder);
+    cacheInvalidate("all-cards");
     res.json(card);
     if (syncCalendar) autoSyncToGCal(card.id, { name, desc, due, start });
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
@@ -269,6 +289,7 @@ app.put("/api/cards/:id", async (req, res) => {
   try {
     const { syncCalendar, ...trelloFields } = req.body;
     const card = await trello.updateCard(req.params.id, trelloFields);
+    cacheInvalidate("all-cards");
     res.json(card);
     if (syncCalendar) {
       // Use explicit null check so clearing a due date doesn't fall back to old value
@@ -292,6 +313,7 @@ app.put("/api/cards/:id/move", async (req, res) => {
 app.delete("/api/cards/:id", async (req, res) => {
   try {
     await trello.deleteCard(req.params.id);
+    cacheInvalidate("all-cards");
     res.json({ ok: true });
     autoDeleteFromGCal(req.params.id); // fire-and-forget
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
@@ -301,6 +323,9 @@ app.delete("/api/cards/:id", async (req, res) => {
 
 app.get("/api/all-cards", async (req, res) => {
   try {
+    const hit = cacheGet("all-cards");
+    if (hit) return res.json(hit);
+
     const boards = await trello.getBoards();
     const result = [];
     const cfCache = new Map(); // per-request custom field name cache
@@ -321,6 +346,7 @@ app.get("/api/all-cards", async (req, res) => {
       }));
     }));
 
+    cacheSet("all-cards", result, 60_000); // 60 s TTL
     res.json(result);
   } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
 });
