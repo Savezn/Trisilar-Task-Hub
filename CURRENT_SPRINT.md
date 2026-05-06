@@ -67,44 +67,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ## Active Tasks
 
-### P9-1 · Bug Fixes from Real Usage
-**Priority:** 🔴 High (เมื่อมี bug จาก production)
-**Files:** ตามที่ bug ชี้
-
-**What to do:**
-- แก้ bug ที่พบจากการใช้งานจริง (user report หรือ self-discovered)
-- ทุก bug ต้องผ่าน QA ก่อน mark Done
-
-**AC:**
-- [ ] Bug ที่รายงานได้รับการแก้ไขและผ่าน QA
-
----
-
-### P9-2 · P8-4 Virtual Scroll (เมื่อ cards > 200)
-**Priority:** ⚪ Low (defer จนกว่า cards จะเกิน 200)
-**Files:** `public/app.js`, `public/style.css`
-
-**What to do:**
-- All Tasks view: pagination เมื่อ cards > 200 (page size 50)
-- Boards Monitor: IntersectionObserver สำหรับ health fetch
-
-**AC:**
-- [ ] All Tasks แสดง pagination เมื่อ cards > 200
-- [ ] Page size 50, navigation next/prev + page number
-- [ ] Boards Monitor health fetch เฉพาะ boards ใน viewport
-
----
-
-### P9-3 · UX Polish & Feedback Items
-**Priority:** ⚪ Low
-**Files:** ตาม feedback
-
-**What to do:**
-- รวบรวม feedback จากการใช้งานจริง
-- เพิ่ม/ปรับ UX ตาม priority ที่ PM กำหนด
-
-**AC:**
-- [ ] OKR page UI — รอ screenshot / คำอธิบายจาก user (แปลกตรงไหน?)
+### 🔴 Bug Bucket (P9-1)
+ไม่มี open bugs ปัจจุบัน — ถ้าพบ bug ใหม่ให้เปิด session Dev แก้ทันที
 
 ---
 
@@ -157,6 +121,15 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R16 | ✅ Pass | B23 (missing autoDeleteFromGCal import in server.js) pass ทุก 2 AC |
 | 2026-05-07 | R17 | ✅ Pass | V0.1-Ph4 Ph4-2 (Frontend Core Split) pass ทุก 4 AC |
 | 2026-05-07 | R18 | ✅ Pass | V0.1-Ph5 Ph5-1 (Extract Today page module) pass ทุก 5 AC |
+
+## Deferred (ยังไม่ทำ)
+
+| Task | เหตุผลที่ defer |
+|---|---|
+| P9-2 · Virtual Scroll | cards < 200 ยังไม่จำเป็น — รอ threshold ก่อน |
+| P9-3 · UX Polish (OKR UI) | รอ user ส่ง screenshot / คำอธิบายก่อน ถึงจะ scope ได้ |
+
+---
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
