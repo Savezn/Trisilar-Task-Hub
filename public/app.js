@@ -2242,6 +2242,29 @@ function renderAllTasks(cards) {
         `;
       }).join("");
     }
+    if (groupBy === "type") {
+      if (!rows.length) return '<div class="no-results">No tasks match this filter</div>';
+      const OKR_RE = /okr|inspiration/i;
+      const okrCards = [], projectCards = [];
+      rows.forEach(c => {
+        (OKR_RE.test(c.boardName || "") ? okrCards : projectCards).push(c);
+      });
+      return [
+        { label: "OKR & Planning", cards: okrCards },
+        { label: "Projects",       cards: projectCards },
+      ].map(({ label, cards: grpCards }) => `
+        <div class="task-type-section">
+          <div class="task-group-header task-type-header" onclick="this.closest('.task-type-section').classList.toggle('collapsed')" style="cursor:pointer">
+            <span class="task-type-toggle">▾</span>
+            ${esc(label)}
+            <span class="task-group-count">${grpCards.length}</span>
+          </div>
+          <div class="task-type-body">
+            ${grpCards.length ? grpCards.map(buildCardRow).join("") : '<div class="no-results" style="padding:8px 16px;font-size:13px;color:var(--text-muted)">No tasks</div>'}
+          </div>
+        </div>
+      `).join("");
+    }
     return rows.length ? rows.map(buildCardRow).join("") : '<div class="no-results">No tasks match this filter</div>';
   }
 
@@ -2267,18 +2290,18 @@ function renderAllTasks(cards) {
             .join("")}
           <button class="btn btn-ghost btn-xs at-export-btn" id="at-export-btn" title="Export filtered tasks as CSV">⬇ Export CSV</button>
         </div>
-        ${labelChipHtml || ownerChipHtml ? `
         <div class="filters filters-row2">
           ${labelChipHtml ? `<span class="at-chip-label">Label:</span>${labelChipHtml}` : ""}
           ${labelChipHtml && ownerChipHtml ? `<span class="at-chip-divider"></span>` : ""}
           ${ownerChipHtml ? `<span class="at-chip-label">Owner:</span>${ownerChipHtml}` : ""}
-          <span class="at-chip-divider"></span>
+          ${labelChipHtml || ownerChipHtml ? `<span class="at-chip-divider"></span>` : ""}
           <select class="at-select" id="at-group-sel">
             <option value="none"${groupBy==="none"?" selected":""}>No Grouping</option>
+            <option value="type"${groupBy==="type"?" selected":""}>Type (OKR / Project)</option>
             ${allLabels.length ? `<option value="label"${groupBy==="label"?" selected":""}>Group by Label</option>` : ""}
             ${allMembers.length ? `<option value="member"${groupBy==="member"?" selected":""}>Group by Owner</option>` : ""}
           </select>
-        </div>` : ""}
+        </div>
         <div class="task-table">
           <div class="task-table-head"><div>TASK</div><div>BOARD</div><div>LIST</div><div>OWNER</div><div>DUE</div><div>STATUS</div></div>
           <div id="task-rows">${buildGroupedRows(rows)}</div>

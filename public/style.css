@@ -1175,6 +1175,19 @@ a { text-decoration: none; }
   font-weight: 700;
 }
 
+/* P9-5: Type group (OKR / Project) collapsible sections */
+.task-type-toggle {
+  display: inline-block;
+  font-size: 10px;
+  transition: transform 0.15s ease;
+}
+.task-type-section.collapsed .task-type-toggle {
+  transform: rotate(-90deg);
+}
+.task-type-section.collapsed .task-type-body {
+  display: none;
+}
+
 /* Widen table columns to accommodate Owner */
 .task-table-head,
 .task-row {
