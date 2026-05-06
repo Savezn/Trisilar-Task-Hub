@@ -167,6 +167,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-06 | R13 | ✅ Pass | V0.1-Ph3 Ph3-1 (core helpers extraction) pass ทุก 3 AC |
 | 2026-05-06 | R14 | ✅ Pass | V0.1-Ph3 Ph3-2 (google helpers extraction) pass ทุก 3 AC |
 | 2026-05-06 | R15 | ✅ Pass | V0.1-Ph4 Ph4-1 (server hardening) pass — Bug B23 found (autoDelete missing) |
+| 2026-05-06 | R16 | ✅ Pass | B23 (missing autoDeleteFromGCal import in server.js) pass ทุก 2 AC |
 
 ## Bug Fixes This Sprint
 *(PM เพิ่มที่นี่เมื่อ QA พบ bug ใน code ที่ implement แล้ว)*
@@ -186,7 +187,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B20 | Due date display: UTC+7 and dd/mm/yyyy format | `app.js` | ✅ Fixed `d8114bd` |
 | B21 | All Tasks sorting logic not called in render | `app.js` | ✅ Fixed `e79ff3b` |
 | B22 | Team Monitor Board view: hardcoded columns — cards ใน lists อื่นหายไป | `app.js:2118` | ✅ Fixed `5384ab8` |
-| B23 | GCal autoDelete missing after trello routes extraction | `src/routes/trello.routes.js` | ⬜ Pending |
+| B23 | GCal autoDelete missing after trello routes extraction | `server.js:14-21` | ✅ Fixed `c70c681` |
 
 ---
 
@@ -194,44 +195,77 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### B23 · Restore GCal autoDelete functionality 🔴
+### V0.1-Ph4 Ph4-2 · Frontend Core Split 🔴
 
 **Context:**  
-QA พบว่าฟังก์ชัน `autoDeleteFromGCal` หลุดหายไปจากระบบหลังจากแยก Trello routes (Ph2-5) 
-ต้องนำกลับมาเชื่อมต่อเพื่อให้การลบ Trello card ลบ Event ใน Calendar ด้วย
+Backend modularization (Ph2 + Ph3) เสร็จแล้ว ถึงเวลาแยก `public/app.js` (>4000 บรรทัด) ออกเป็น foundation modules ก่อน ซึ่งจะเป็น dependency ของ page splits ทั้งหมดใน Ph5
+
+**Target structure:**
+```
+public/js/
+  api.js      ← api object: get/post/put/delete helpers + BASE_URL
+  state.js    ← S global state object + state update helpers
+  router.js   ← showPage(), nav click handlers, URL hash routing
+  utils.js    ← esc(), $(), debounce(), formatDate(), toast(), etc.
+```
 
 **What to do:**
-1. อัปเดต `src/routes/trello.routes.js`:
-   - เพิ่ม `autoDeleteFromGCal` ใน factory parameters
-   - เรียกใช้ `await autoDeleteFromGCal(req.params.id)` ภายใน `router.delete("/cards/:id", ...)` ก่อนส่ง response
-2. อัปเดต `server.js`:
-   - ส่ง `autoDeleteFromGCal` (จาก `src/utils/google.js`) ให้กับ `makeTrelloRoutes` factory
+1. Grep `public/app.js` หา patterns: `const api =`, `const S =`, `function showPage`, `function esc(`, `function debounce(`
+2. Extract แต่ละ module ออกเป็นไฟล์ใน `public/js/` — ไม่เปลี่ยน logic
+3. อัปเดต `public/index.html` — load ไฟล์ใหม่ **ก่อน** `app.js`:
+   ```html
+   <script src="/js/utils.js"></script>
+   <script src="/js/api.js"></script>
+   <script src="/js/state.js"></script>
+   <script src="/js/router.js"></script>
+   <script src="/app.js"></script>
+   ```
+4. ลบ definitions เดิมออกจาก `app.js` (ใช้ global จากไฟล์ใหม่แทน)
+5. Manual browser check: navigation, Today page, All Tasks, create/edit card
+
+**Rules:**
+- ไม่ย้าย page renderers ใด ๆ ใน session นี้ (ทำใน Ph5)
+- ไม่ใช้ bundler — plain `<script>` tags เท่านั้น
+- Commit ทีละไฟล์ที่ extract ออก
 
 **AC:**
-- [ ] เมื่อลบ Card ใน Trello ผ่าน API, `autoDeleteFromGCal` ถูกเรียกใช้
+- [ ] Navigation ทำงานได้ครบ (ไม่มี console error)
+- [ ] Today, All Tasks, Settings โหลดได้
+- [ ] Create/edit card ทำงานได้
 - [ ] `npm run smoke` pass
 
-**Commit:**
+**Commit (ทำทีละ extract):**
 ```
-git add server.js src/routes/trello.routes.js
-git commit -m "Fix: Restore GCal autoDelete functionality in Trello routes (B23)"
+git add public/js/utils.js public/app.js public/index.html
+git commit -m "V0.1-Ph4 Ph4-2a: extract utils.js from app.js"
+
+git add public/js/api.js public/app.js
+git commit -m "V0.1-Ph4 Ph4-2b: extract api.js from app.js"
+
+git add public/js/state.js public/app.js
+git commit -m "V0.1-Ph4 Ph4-2c: extract state.js from app.js"
+
+git add public/js/router.js public/app.js
+git commit -m "V0.1-Ph4 Ph4-2d: extract router.js from app.js"
 ```
 
 **Copy-paste prompt สำหรับ Dev session:**
 ```
-คุณ Dev — แก้ Bug B23 (GCal autoDelete หายไป)
+คุณ Dev — อ่าน VERSION_0.1_PLAN.md ส่วน V0.1-Ph4 ก่อน
 
-1. เปิด src/routes/trello.routes.js:
-   - รับ autoDeleteFromGCal เพิ่มใน factory parameters
-   - เรียกใช้ await autoDeleteFromGCal(req.params.id) ใน handler router.delete("/cards/:id")
+Task: V0.1-Ph4 Ph4-2 — Frontend Core Split
+แยก foundation modules ออกจาก public/app.js:
+  public/js/api.js     ← api helpers
+  public/js/state.js   ← S state object
+  public/js/router.js  ← showPage + nav
+  public/js/utils.js   ← esc, $, debounce, formatDate, toast
 
-2. เปิด server.js:
-   - ตรวจสอบการ import autoDeleteFromGCal จาก src/utils/google.js
-   - ส่ง autoDeleteFromGCal เข้าไปใน makeTrelloRoutes factory
-
-3. ตรวจ: npm run smoke pass
-
-Commit: "Fix: Restore GCal autoDelete functionality in Trello routes (B23)"
+Rules:
+- ไม่ย้าย page renderers
+- load ไฟล์ใหม่ใน index.html ก่อน app.js
+- ไม่ใช้ bundler
+- Commit ทีละ extract (4 commits)
+- Manual browser check ก่อน commit สุดท้าย
 ```
 
 ---
