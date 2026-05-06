@@ -45,7 +45,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B17 — approve review task invalidate cache | ✅ QA Pass | `c6a09fd` |
 | P9-4 — Boards Monitor Label Filter | ✅ QA Pass | `7926b80` |
 | P9-5 — Tasks View: Group by Type (OKR / Project) | ✅ QA Pass | `b328c8f` |
-| P10-1 — Boards Monitor: Dynamic Team Grouping (Label-based) | ✅ QA Pass | `pending` |
+| P10-1 — Boards Monitor: Dynamic Team Grouping (Label-based) | ✅ QA Pass | `2a4c426` |
+| P10-2 — Team Monitor: Unified Board View (Kanban) | ✅ QA Pass | `pending` |
 
 ---
 

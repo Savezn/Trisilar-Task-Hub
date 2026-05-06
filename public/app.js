@@ -34,6 +34,7 @@ const S = {
   overdueToastShown: false,    // P8-1: show overdue alert only once per session
   bmHiddenLabels: new Set(),   // P9-4: label names hidden in Boards Monitor (persists in session)
   bmGroupBy: "boards",        // P10-1: grouping mode in Boards Monitor ('boards' | 'teams')
+  bmTeamLayout: "stats",       // P10-2: layout mode in Team Monitor ('stats' | 'board')
 };
 
 const COLORS = ["#6366f1","#d29034","#519839","#b04632","#89609e","#cd5a91","#00aecc","#4bbf6b","#e44","#f90"];
@@ -2014,6 +2015,13 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
       <button class="filter-chip${S.bmGroupBy === "boards" ? " active" : ""}" data-view="boards">Boards</button>
       <button class="filter-chip${S.bmGroupBy === "teams" ? " active" : ""}" data-view="teams">Teams</button>
     </div>
+    ${S.bmGroupBy === "teams" ? `
+    <div class="bm-toolbar-group">
+      <span class="sort-label">Layout</span>
+      <button class="filter-chip${S.bmTeamLayout === "stats" ? " active" : ""}" data-layout="stats">Stats</button>
+      <button class="filter-chip${S.bmTeamLayout === "board" ? " active" : ""}" data-layout="board">Board</button>
+    </div>
+    ` : ""}
     <div class="bm-toolbar-group" id="bm-sort-controls" style="${S.bmGroupBy === "teams" ? "display:none" : ""}">
       <span class="sort-label">Sort by</span>
       <button class="filter-chip active" data-sort="name">Name</button>
@@ -2087,6 +2095,57 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
         return;
       }
 
+      if (S.bmTeamLayout === "board") {
+        grid.classList.add("bm-grid-board-mode");
+        const columns = ["Backlog", "In Progress", "Done"];
+        
+        teams.forEach((teamName, i) => {
+          const rawCards = allCards.filter(c => (c.labels || []).some(l => l.name === teamName));
+          const cards = visibleCards(rawCards);
+          const color = COLORS[i % COLORS.length];
+
+          const teamSection = document.createElement("div");
+          teamSection.className = "bm-team-section";
+          teamSection.innerHTML = `
+            <div class="bm-team-header" style="border-left-color:${color}">
+              <span class="bm-team-name">${esc(teamName)}</span>
+              <span class="bm-team-count">${cards.length} cards</span>
+            </div>
+            <div class="bm-team-columns">
+              ${columns.map(col => {
+                const colCards = cards.filter(c => c.listName.toLowerCase() === col.toLowerCase());
+                return `
+                  <div class="bm-team-col">
+                    <div class="bm-col-header">
+                      ${esc(col)} <span class="bm-col-count">${colCards.length}</span>
+                    </div>
+                    <div class="bm-col-cards">
+                      ${colCards.map(c => `
+                        <div class="bm-mini-card" data-id="${c.id}">
+                          <div class="bm-mini-title">${esc(c.name)}</div>
+                          <div class="bm-mini-meta">${esc(c.boardName)}</div>
+                        </div>
+                      `).join("")}
+                      ${!colCards.length ? '<div class="bm-col-empty">No tasks</div>' : ""}
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          `;
+          grid.appendChild(teamSection);
+
+          teamSection.querySelectorAll(".bm-mini-card").forEach(el => {
+            el.onclick = () => {
+              const c = cards.find(x => x.id === el.dataset.id);
+              if (c) openCardModal(c);
+            };
+          });
+        });
+        return;
+      }
+
+      grid.classList.remove("bm-grid-board-mode");
       teams.forEach((teamName, i) => {
         // Aggregated stats for this team (label) across all boards
         const rawCards = allCards.filter(c => (c.labels || []).some(l => l.name === teamName));
