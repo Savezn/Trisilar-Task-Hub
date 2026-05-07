@@ -70,7 +70,12 @@ Every session MUST end with a "Next session" block in this exact format:
 [self-contained copy-paste prompt starting with "คุณ Role"]
 ```
 
-## 6. Engineering Standards
+## 6. Engineering Standards (Agile Execution Mode)
+- **Velocity Priority:** Focus on rapid delivery (5-10 min per session). Aim for 90% functional completeness.
+- **Efficient Research:** Skip deep dependency searches unless critical. Rely on iterative fixes for minor misses.
+- **Consolidated Documentation:** Update `CURRENT_SPRINT.md` and `DEVELOPMENT_PLAN.md` only at the end of a task or session.
+- **Minimal Validation:** Run smoke tests once per task completion, not after every surgical edit.
+- **Direct Action:** Prefer `write_file` for complete updates over multiple complex `replace` calls.
 - **Language:** Stick to **CommonJS JavaScript**. No TypeScript unless requested.
 - **API Keys:** Never modify or log `.env`. Use `dotenv`.
 - **Logic Location:**
