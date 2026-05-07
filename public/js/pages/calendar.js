@@ -32,7 +32,7 @@ async function showCalendar() {
         </div>`;
       return;
     }
-    renderCalendar();
+    await renderCalendar();
   } catch (e) {
     console.error("[Calendar Error]", e);
     $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">⚠</div><h3>Calendar error</h3><p>${esc(e.message)}</p></div>`;
@@ -41,108 +41,114 @@ async function showCalendar() {
 
 async function renderCalendar() {
   const content = $("board-content");
-  content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading events...</div>';
-
-  if (CAL.selectedBoardIds === null) {
-    CAL.selectedBoardIds = S.boards
-      .filter(b => !S.config.hiddenBoards.includes(b.id))
-      .map(b => b.id);
-  }
-
-  const { currentYear: y, currentMonth: m } = CAL;
-  const start = new Date(y, m, 1).toISOString();
-  const end   = new Date(y, m + 1, 0, 23, 59, 59).toISOString();
-
   try {
-    const [gcalEvents, trelloData] = await Promise.all([
-      CAL.status?.connected
-        ? api.get(`/api/calendar/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`).catch(() => [])
-        : Promise.resolve([]),
-      CAL.selectedBoardIds.length
-        ? api.post("/api/boards/cards", { boardIds: CAL.selectedBoardIds })
-        : Promise.resolve([]),
-    ]);
-    CAL.events      = gcalEvents;
-    CAL.trelloCards = trelloData;
+      content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading events...</div>';
+
+    if (CAL.selectedBoardIds === null) {
+      CAL.selectedBoardIds = S.boards
+        .filter(b => !S.config.hiddenBoards.includes(b.id))
+        .map(b => b.id);
+    }
+
+    const { currentYear: y, currentMonth: m } = CAL;
+    const start = new Date(y, m, 1).toISOString();
+    const end   = new Date(y, m + 1, 0, 23, 59, 59).toISOString();
+
+    try {
+      const [gcalEvents, trelloData] = await Promise.all([
+        CAL.status?.connected
+          ? api.get(`/api/calendar/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`).catch(() => [])
+          : Promise.resolve([]),
+        CAL.selectedBoardIds.length
+          ? api.post("/api/boards/cards", { boardIds: CAL.selectedBoardIds })
+          : Promise.resolve([]),
+      ]);
+      CAL.events      = gcalEvents;
+      CAL.trelloCards = trelloData;
+    } catch (e) {
+      content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
+      return;
+    }
+
+    content.innerHTML = "";
+    const view = document.createElement("div");
+    view.className = "calendar-view";
+
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const topbar = document.createElement("div");
+    topbar.className = "cal-topbar";
+    topbar.innerHTML = `
+      <button class="cal-nav-btn" id="cal-prev">‹</button>
+      <span class="cal-month-label">${monthNames[m]} ${y}</span>
+      <button class="cal-nav-btn" id="cal-next">›</button>
+      <button class="cal-today-btn" id="cal-go-today">Today</button>
+      <button class="btn btn-primary cal-add-btn" id="cal-add">+ New Event</button>
+    `;
+    view.appendChild(topbar);
+
+    const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
+    const selectorRow = document.createElement("div");
+    selectorRow.className = "cal-board-selector";
+    const selectorLabel = document.createElement("span");
+    selectorLabel.className = "cal-selector-label";
+    selectorLabel.textContent = "Show boards:";
+    selectorRow.appendChild(selectorLabel);
+
+    visibleBoards.forEach((board, i) => {
+      const chip = document.createElement("button");
+      chip.className = "cal-board-chip" + (CAL.selectedBoardIds.includes(board.id) ? " active" : "");
+      chip.style.setProperty("--chip-color", COLORS[i % COLORS.length]);
+      chip.textContent = board.name;
+      chip.title = board.name;
+      chip.onclick = () => {
+        const idx = CAL.selectedBoardIds.indexOf(board.id);
+        if (idx === -1) CAL.selectedBoardIds.push(board.id);
+        else CAL.selectedBoardIds.splice(idx, 1);
+        renderCalendar();
+      };
+      selectorRow.appendChild(chip);
+    });
+
+    const allBtn = document.createElement("button");
+    allBtn.className = "cal-selector-shortcut";
+    allBtn.textContent = "All";
+    allBtn.onclick = () => { CAL.selectedBoardIds = visibleBoards.map(b => b.id); renderCalendar(); };
+    const noneBtn = document.createElement("button");
+    noneBtn.className = "cal-selector-shortcut";
+    noneBtn.textContent = "None";
+    noneBtn.onclick = () => { CAL.selectedBoardIds = []; renderCalendar(); };
+    selectorRow.appendChild(allBtn);
+    selectorRow.appendChild(noneBtn);
+    view.appendChild(selectorRow);
+
+    const gridWrap = document.createElement("div");
+    gridWrap.className = "cal-grid-wrap";
+    gridWrap.appendChild(buildCalGrid(y, m, CAL.events, CAL.trelloCards));
+    view.appendChild(gridWrap);
+
+    // P6-2: empty state banner when no events for this month
+    const monthPrefix = `${y}-${String(m + 1).padStart(2, "0")}`;
+    const hasTrelloThisMonth = CAL.trelloCards.some(c => c.due?.startsWith(monthPrefix));
+    if (!CAL.events.length && !hasTrelloThisMonth) {
+      const calEmpty = document.createElement("div");
+      calEmpty.className = "cal-empty-notice";
+      calEmpty.innerHTML = CAL.status?.connected
+        ? "No events or Trello deadlines this month"
+        : `No Trello deadlines this month · <a href="#" onclick="openCalSetup();return false" style="color:var(--primary)">Connect Google Calendar</a> to see more`;
+      view.appendChild(calEmpty);
+    }
+
+    content.appendChild(view);
+
+    $("cal-prev").onclick = () => { if (CAL.currentMonth === 0) { CAL.currentMonth = 11; CAL.currentYear--; } else CAL.currentMonth--; renderCalendar(); };
+    $("cal-next").onclick = () => { if (CAL.currentMonth === 11) { CAL.currentMonth = 0; CAL.currentYear++; } else CAL.currentMonth++; renderCalendar(); };
+    $("cal-go-today").onclick = () => { CAL.currentYear = new Date().getFullYear(); CAL.currentMonth = new Date().getMonth(); renderCalendar(); };
+    $("cal-add").onclick = () => openCalCreate();
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
-    return;
+    console.error("[Calendar Render Error]", e);
+    content.innerHTML = `<div class="empty-state"><div class="empty-icon">!</div><h3>Calendar render error</h3><p>${esc(e.message)}</p></div>`;
+    toast("Calendar render error: " + e.message, true);
   }
-
-  content.innerHTML = "";
-  const view = document.createElement("div");
-  view.className = "calendar-view";
-
-  const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  const topbar = document.createElement("div");
-  topbar.className = "cal-topbar";
-  topbar.innerHTML = `
-    <button class="cal-nav-btn" id="cal-prev">‹</button>
-    <span class="cal-month-label">${monthNames[m]} ${y}</span>
-    <button class="cal-nav-btn" id="cal-next">›</button>
-    <button class="cal-today-btn" id="cal-go-today">Today</button>
-    <button class="btn btn-primary cal-add-btn" id="cal-add">+ New Event</button>
-  `;
-  view.appendChild(topbar);
-
-  const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
-  const selectorRow = document.createElement("div");
-  selectorRow.className = "cal-board-selector";
-  const selectorLabel = document.createElement("span");
-  selectorLabel.className = "cal-selector-label";
-  selectorLabel.textContent = "Show boards:";
-  selectorRow.appendChild(selectorLabel);
-
-  visibleBoards.forEach((board, i) => {
-    const chip = document.createElement("button");
-    chip.className = "cal-board-chip" + (CAL.selectedBoardIds.includes(board.id) ? " active" : "");
-    chip.style.setProperty("--chip-color", COLORS[i % COLORS.length]);
-    chip.textContent = board.name;
-    chip.title = board.name;
-    chip.onclick = () => {
-      const idx = CAL.selectedBoardIds.indexOf(board.id);
-      if (idx === -1) CAL.selectedBoardIds.push(board.id);
-      else CAL.selectedBoardIds.splice(idx, 1);
-      renderCalendar();
-    };
-    selectorRow.appendChild(chip);
-  });
-
-  const allBtn = document.createElement("button");
-  allBtn.className = "cal-selector-shortcut";
-  allBtn.textContent = "All";
-  allBtn.onclick = () => { CAL.selectedBoardIds = visibleBoards.map(b => b.id); renderCalendar(); };
-  const noneBtn = document.createElement("button");
-  noneBtn.className = "cal-selector-shortcut";
-  noneBtn.textContent = "None";
-  noneBtn.onclick = () => { CAL.selectedBoardIds = []; renderCalendar(); };
-  selectorRow.appendChild(allBtn);
-  selectorRow.appendChild(noneBtn);
-  view.appendChild(selectorRow);
-
-  const gridWrap = document.createElement("div");
-  gridWrap.className = "cal-grid-wrap";
-  gridWrap.appendChild(buildCalGrid(y, m, CAL.events, CAL.trelloCards));
-  view.appendChild(gridWrap);
-
-  // P6-2: empty state banner when no events for this month
-  const monthPrefix = `${y}-${String(m + 1).padStart(2, "0")}`;
-  const hasTrelloThisMonth = CAL.trelloCards.some(c => c.due?.startsWith(monthPrefix));
-  if (!CAL.events.length && !hasTrelloThisMonth) {
-    const calEmpty = document.createElement("div");
-    calEmpty.className = "cal-empty-notice";
-    calEmpty.innerHTML = CAL.status?.connected
-      ? "No events or Trello deadlines this month"
-      : `No Trello deadlines this month · <a href="#" onclick="openCalSetup();return false" style="color:var(--primary)">Connect Google Calendar</a> to see more`;
-    view.appendChild(calEmpty);
-  }
-
-  content.appendChild(view);
-
-  $("cal-prev").onclick = () => { if (CAL.currentMonth === 0) { CAL.currentMonth = 11; CAL.currentYear--; } else CAL.currentMonth--; renderCalendar(); };
-  $("cal-next").onclick = () => { if (CAL.currentMonth === 11) { CAL.currentMonth = 0; CAL.currentYear++; } else CAL.currentMonth++; renderCalendar(); };
-  $("cal-go-today").onclick = () => { CAL.currentYear = new Date().getFullYear(); CAL.currentMonth = new Date().getMonth(); renderCalendar(); };
-  $("cal-add").onclick = () => openCalCreate();
 }
 
 function buildCalGrid(year, month, events, trelloCards = []) {

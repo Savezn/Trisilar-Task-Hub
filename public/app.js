@@ -1282,7 +1282,7 @@ async function refreshCurrentView() {
     await loadGroupView(group, boards);
   }
   else if (S.mode === "all")      await showAllTasks();
-  else if (S.mode === "calendar") renderCalendar();
+  else if (S.mode === "calendar") await renderCalendar();
   else if (S.mode === "today")    await showTodayPage();
   else if (S.mode === "review")   await showReviewPage();
   else if (S.mode === "planner")  await showPlannerPage();
