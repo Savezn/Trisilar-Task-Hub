@@ -69,6 +69,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph5 Ph5-6 — Extract OKR page module | ✅ QA Pass | `1042113` |
 | V0.1-Ph6 Ph6-1 - Frontend Error Boundaries & Global Error Handler | QA Recheck Pass | `8f34ba8`, `9219381` |
 | V0.1-Ph6 Ph6-2 - Frontend module hardening review | QA Pass | `e85e384` |
+| V0.1-Ph6 Ph6-3 - Frontend module load-order and dependency audit | QA Pass | `0b00854` |
 
 ---
 
@@ -104,7 +105,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph5-7 | Extract Settings page | ⬜ Queued |
 | Ph6-1 | Frontend Error Boundaries & Global Error Handler | Done `8f34ba8`, fix `9219381` |
 | Ph6-2 | Frontend module hardening review | Done `e85e384` |
-| Ph6-3 | Frontend module load-order and dependency audit | Next |
+| Ph6-3 | Frontend module load-order and dependency audit | Done `0b00854` |
+| Ph6-4 | Frontend verification script consolidation | Next |
 
 ---
 
@@ -138,6 +140,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R23 | ✅ Pass | V0.1-Ph5 Ph5-6 (Extract OKR page module) pass ทุก 7 AC; Reviewed by Gemini QA |
 | 2026-05-07 | R24 | Pass | V0.1-Ph6 Ph6-1 frontend error hardening QA Recheck pass after Dev Fix `9219381`; smoke runner exits 0; Reviewed by Codex QA |
 | 2026-05-07 | R25 | Pass | V0.1-Ph6 Ph6-2 frontend module hardening review pass; Calendar render path awaits and renders fallback UI; smoke exits 0; Reviewed by Codex QA |
+| 2026-05-07 | R26 | Pass | V0.1-Ph6 Ph6-3 frontend module load-order audit pass; script order contract verified; smoke exits 0; Reviewed by Codex QA |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -174,70 +177,73 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph6 Ph6-3 - Frontend Module Load-Order and Dependency Audit
+### V0.1-Ph6 Ph6-4 - Frontend Verification Script Consolidation
 
 **Context:**
-Ph6-2 frontend module hardening passed QA.
-Dev commit: `e85e384`
+Ph6-3 frontend module load-order audit passed QA.
+Dev commit: `0b00854`
 Reviewed by: Codex QA
 PM update: Codex PM
 
 **Goal:**
-Audit plain-script frontend module dependencies after Phase 5 extraction and Phase 6 hardening, without changing behavior.
+Make frontend verification repeatable by consolidating the current manual checks into a small script or npm command, without changing app behavior.
 
 **What to do:**
-1. Grep global function/state references across `public/js/pages/*.js`, `public/js/router.js`, `public/js/utils.js`, `public/js/state.js`, and `public/app.js`.
-2. Verify `public/index.html` script order supports every global reference.
-3. Verify page modules do not depend on functions loaded after them unless calls only happen after `app.js` has loaded.
-4. Document any risky dependency in code comments only if it prevents future breakage; otherwise keep code untouched.
-5. If a real load-order issue is found, fix it minimally.
-6. Run `node --check` on changed JS files.
-7. Run `npm.cmd run smoke`.
-8. If checking exact PowerShell npm flow, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke"`.
+1. Inspect `package.json` scripts and existing `scripts/smoke-test.js`.
+2. Add a minimal verification script/command that runs:
+   - `node --check public/app.js`
+   - `node --check` for every `public/js/pages/*.js`
+   - existing smoke check
+3. Keep Windows compatibility in mind; prefer commands that work via `npm.cmd` and PowerShell.
+4. Do not change app runtime behavior.
+5. Run the new verification command.
+6. Run `npm.cmd run smoke`.
+7. If checking exact PowerShell npm flow, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke"`.
 
 **Rules:**
 - Dev role only.
-- Grep first, read targeted ranges for large files.
-- Do not move modules or refactor UI unless a real load-order bug is found.
+- Grep/read targeted files first.
+- Keep the script small and dependency-free.
+- Do not touch unrelated docs or config.
 - Include attribution in handoff/notes: Implemented by Dev agent name.
 
 **AC:**
-- [ ] `index.html` script order is documented/verified against page module dependencies.
-- [ ] No page module has an unsafe load-time dependency on later scripts.
-- [ ] Smoke passes with exit code 0.
+- [ ] A repeatable frontend verification command exists in `package.json`.
+- [ ] The command checks app JS and all page module JS syntax.
+- [ ] Existing smoke still passes with exit code 0.
 
 **Commit:**
 ```
-git add public/index.html public/js/pages public/js/router.js public/js/utils.js public/js/state.js public/app.js
-git commit -m "V0.1-Ph6 Ph6-3: audit frontend module load order"
+git add package.json scripts
+git commit -m "V0.1-Ph6 Ph6-4: consolidate frontend verification script"
 git push
 ```
 
 **Copy-paste prompt for Dev session:**
 ```
-Dev - Task: V0.1-Ph6 Ph6-3 - Frontend module load-order and dependency audit
+Dev - Task: V0.1-Ph6 Ph6-4 - Frontend verification script consolidation
 
 Context:
-Ph6-2 frontend module hardening passed QA (Dev commit `e85e384`, Reviewed by Codex QA). Next, audit plain-script frontend module dependencies after Phase 5 extraction and Phase 6 hardening, without changing behavior.
+Ph6-3 frontend module load-order audit passed QA (Dev commit `0b00854`, Reviewed by Codex QA). Next, make frontend verification repeatable by consolidating current manual checks into a small script or npm command, without changing app behavior.
 
 Steps:
-1. Grep global function/state references across public/js/pages/*.js, public/js/router.js, public/js/utils.js, public/js/state.js, and public/app.js.
-2. Verify public/index.html script order supports every global reference.
-3. Verify page modules do not depend on functions loaded after them unless calls only happen after app.js has loaded.
-4. Document any risky dependency in code comments only if it prevents future breakage; otherwise keep code untouched.
-5. If a real load-order issue is found, fix it minimally.
-6. Run node --check on changed JS files.
-7. Run npm.cmd run smoke.
-8. If checking exact PowerShell npm flow, run powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke".
+1. Inspect package.json scripts and existing scripts/smoke-test.js.
+2. Add a minimal verification script/command that runs node --check public/app.js, node --check for every public/js/pages/*.js, and existing smoke check.
+3. Keep Windows compatibility in mind; prefer commands that work via npm.cmd and PowerShell.
+4. Do not change app runtime behavior.
+5. Run the new verification command.
+6. Run npm.cmd run smoke.
+7. If checking exact PowerShell npm flow, run powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke".
 
 Rules:
-- Grep first, read targeted ranges for large files.
-- Do not move modules or refactor UI unless a real load-order bug is found.
+- Grep/read targeted files first.
+- Keep the script small and dependency-free.
+- Do not touch unrelated docs or config.
 - Include attribution: Implemented by Dev agent name.
 
 Commit:
-git add public/index.html public/js/pages public/js/router.js public/js/utils.js public/js/state.js public/app.js
-git commit -m "V0.1-Ph6 Ph6-3: audit frontend module load order"
+git add package.json scripts
+git commit -m "V0.1-Ph6 Ph6-4: consolidate frontend verification script"
 git push
 ```
 
@@ -276,4 +282,4 @@ git push
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
-| **V0.1 Modularization** | **🔄 In Progress (Ph6-3 next)** |
+| **V0.1 Modularization** | **🔄 In Progress (Ph6-4 next)** |
