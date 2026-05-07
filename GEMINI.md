@@ -72,6 +72,8 @@ Every session MUST end with a "Next session" block in this exact format:
 
 ## 6. Engineering Standards (Agile Execution Mode)
 - **Velocity Priority:** Focus on rapid delivery (5-10 min per session). Aim for 90% functional completeness.
+- **Task-Centric:** Execute only what is explicitly requested. Do not add proactive fixes or extra defensive code.
+- **Consultative Risk Handling:** If a high-risk area or potential error is found, **notify the user first** instead of fixing it immediately.
 - **Efficient Research:** Skip deep dependency searches unless critical. Rely on iterative fixes for minor misses.
 - **Consolidated Documentation:** Update `CURRENT_SPRINT.md` and `DEVELOPMENT_PLAN.md` only at the end of a task or session.
 - **Minimal Validation:** Run smoke tests once per task completion, not after every surgical edit.
