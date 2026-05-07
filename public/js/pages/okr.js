@@ -77,6 +77,28 @@ function renderOKRPage(allCards, boards) {
   // Non-OKR cards (project cards) — used for linking via label name matching
   const projectCards = allCards.filter(c => !okrBoardIds.has(c.boardId));
 
+  let labelFilter = "";
+  let memberFilter = "";
+
+  const allLabels = [];
+  const allMembers = [];
+  const seenLabels = new Set();
+  const seenMembers = new Set();
+  projectCards.forEach(c => {
+    (c.labels || []).forEach(l => {
+      if (l.name && !seenLabels.has(l.name)) {
+        seenLabels.add(l.name);
+        allLabels.push(l);
+      }
+    });
+    (c.members || []).forEach(m => {
+      if (m.id && !seenMembers.has(m.id)) {
+        seenMembers.add(m.id);
+        allMembers.push(m);
+      }
+    });
+  });
+
   // Group OKR cards by listName (each list = one Objective group)
   const objectiveMap = new Map(); // listName → cards[]
   okrCards.forEach(c => {
@@ -92,11 +114,54 @@ function renderOKRPage(allCards, boards) {
     return 0;
   }
 
+  function applyPortfolioFilters(cards) {
+    return cards.filter(c => {
+      if (labelFilter && !(c.labels || []).some(l => l.name === labelFilter)) return false;
+      if (memberFilter && !(c.members || []).some(m => m.id === memberFilter)) return false;
+      return true;
+    });
+  }
+
+  function filterBarHtml() {
+    const labelChips = allLabels.map(l => {
+      const active = labelFilter === l.name;
+      const color = labelColor(l.color);
+      return `<button class="filter-chip okr-label-filter${active ? " active" : ""}" data-label="${esc(l.name)}" style="${active ? `background:${color};border-color:${color};color:#fff` : ""}">${esc(l.name)}</button>`;
+    }).join("");
+    const memberChips = allMembers.map(m =>
+      `<button class="filter-chip okr-member-filter${memberFilter === m.id ? " active" : ""}" data-member-id="${esc(m.id)}">${esc(m.fullName || m.username || m.id)}</button>`
+    ).join("");
+    if (!labelChips && !memberChips) return "";
+    return `
+      <div class="filters filters-row2" style="margin-bottom:12px">
+        ${labelChips ? `<span class="at-chip-label">Label:</span>${labelChips}` : ""}
+        ${labelChips && memberChips ? `<span class="at-chip-divider"></span>` : ""}
+        ${memberChips ? `<span class="at-chip-label">Owner:</span>${memberChips}` : ""}
+      </div>`;
+  }
+
+  function bindPortfolioFilters() {
+    content.querySelectorAll(".okr-label-filter").forEach(btn => {
+      btn.onclick = () => {
+        labelFilter = labelFilter === btn.dataset.label ? "" : btn.dataset.label;
+        drillCard = null;
+        renderOverview();
+      };
+    });
+    content.querySelectorAll(".okr-member-filter").forEach(btn => {
+      btn.onclick = () => {
+        memberFilter = memberFilter === btn.dataset.memberId ? "" : btn.dataset.memberId;
+        drillCard = null;
+        renderOverview();
+      };
+    });
+  }
+
   // Helper: find project cards linked to a KR by label name match
   function linkedCards(krCard) {
     const krLabels = new Set((krCard.labels || []).map(l => l.name).filter(Boolean));
     if (!krLabels.size) return [];
-    return projectCards.filter(c =>
+    return applyPortfolioFilters(projectCards).filter(c =>
       (c.labels || []).some(l => krLabels.has(l.name))
     );
   }
@@ -134,7 +199,10 @@ function renderOKRPage(allCards, boards) {
           <div class="task-table-body">
             ${linked.map(c => `
               <div class="task-row" style="grid-template-columns:1fr 130px 110px 90px">
-                <div class="task-title">${esc(c.name)}</div>
+                <div class="task-title">
+                  ${esc(c.name)}
+                  ${(c.labels || []).filter(l => l.name).map(l => `<span class="task-label-chip" style="background:${labelColor(l.color)}">${esc(l.name)}</span>`).join("")}
+                </div>
                 <div class="task-board">${esc(c.boardName)}</div>
                 <div>${c.due ? buildDueBadge(c.due, c.dueComplete) : '<span style="color:#bbb">—</span>'}</div>
                 <div>${c.dueComplete ? '<span class="due-badge due-complete">Done</span>' : '<span style="color:#aaa;font-size:12px">Active</span>'}</div>
@@ -148,13 +216,19 @@ function renderOKRPage(allCards, boards) {
 
   function renderOverview() {
     const now = new Date();
+    const filtersActive = Boolean(labelFilter || memberFilter);
 
     const objectivesHtml = [...objectiveMap.entries()].map(([objName, krCards]) => {
-      // Objective-level progress = avg of KR progresses
-      const progresses = krCards.map(krProgress);
-      const avgProg = krCards.length ? Math.round(progresses.reduce((a, b) => a + b, 0) / krCards.length) : 0;
+      const visibleKrs = filtersActive
+        ? krCards.filter(card => linkedCards(card).length > 0)
+        : krCards;
+      if (!visibleKrs.length) return "";
 
-      const krsHtml = krCards.map(card => {
+      // Objective-level progress = avg of KR progresses
+      const progresses = visibleKrs.map(krProgress);
+      const avgProg = visibleKrs.length ? Math.round(progresses.reduce((a, b) => a + b, 0) / visibleKrs.length) : 0;
+
+      const krsHtml = visibleKrs.map(card => {
         const prog = krProgress(card);
         const linked = linkedCards(card);
         const overdueCount = linked.filter(c => c.due && new Date(c.due) < now && !c.dueComplete).length;
@@ -192,9 +266,11 @@ function renderOKRPage(allCards, boards) {
     content.innerHTML = `
       <div class="okr-overview">
         <div class="okr-board-label">Source: ${okrBoards.map(b => esc(b.name)).join(", ")}</div>
-        ${objectivesHtml || '<div class="empty-state"><p>OKR board has no cards yet.</p></div>'}
+        ${filterBarHtml()}
+        ${objectivesHtml || `<div class="empty-state"><p>${filtersActive ? "No OKRs match the selected portfolio filters." : "OKR board has no cards yet."}</p></div>`}
       </div>`;
 
+    bindPortfolioFilters();
     content.querySelectorAll(".okr-kr-row").forEach(row => {
       row.onclick = () => {
         drillCard = okrCards.find(c => c.id === row.dataset.cardId);
