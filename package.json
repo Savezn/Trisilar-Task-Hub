@@ -7,6 +7,8 @@
     "start": "node server.js",
     "dev": "node server.js",
     "smoke": "node scripts/smoke-test.js",
+    "verify": "node scripts/verify-frontend.js",
+    "check:all": "node scripts/verify-frontend.js && npm run smoke",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
