@@ -216,17 +216,19 @@ async function loadPlannerTrello() {
 
 // ── Settings Page ─────────────────────────────────────────────────────────────
 function showSettingsPage() {
-  S.mode = "settings";
-  S.currentBoardId = null;
-  S.currentGroupId = null;
-  $("board-title").textContent = "Settings";
-  $("board-subtitle").textContent = "";
-  $("add-list-btn").classList.add("hidden");
+  try {
+    S.mode = "settings";
+    S.currentBoardId = null;
+    S.currentGroupId = null;
+    $("board-title").textContent = "Settings";
+    $("board-subtitle").textContent = "";
+    $("add-list-btn").classList.add("hidden");
 
-  const calConnected = CAL.status?.connected;
+    const calConnected = CAL.status?.connected;
 
-  const page = document.createElement("div");
-  page.className = "settings-page";
+    const page = document.createElement("div");
+    page.className = "settings-page";
+
 
   // ── 1. Integrations ──
   const intSection = document.createElement("div");
@@ -345,6 +347,11 @@ function showSettingsPage() {
       inputs[inputs.length - 1]?.select();
     }, 50);
   };
+  loadSettingsWorkspaces();
+} catch (e) {
+  console.error("[Settings Error]", e);
+  $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">⚠</div><h3>Settings error</h3><p>${esc(e.message)}</p></div>`;
+}
 }
 
 function renderSettingsVisibility() {

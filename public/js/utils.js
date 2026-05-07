@@ -58,9 +58,22 @@ function esc(s) {
 let _tt;
 function toast(msg, isError = false) {
   const el = $("toast");
+  if (!el) return;
   el.textContent = msg;
   el.style.background = isError ? "#b91c1c" : "#1e293b";
   el.classList.add("show");
   clearTimeout(_tt);
   _tt = setTimeout(() => el.classList.remove("show"), 3000);
 }
+
+// ── Global Error Handling ─────────────────────────────────────────────────────
+window.onerror = function(msg, url, line, col, error) {
+  console.error("[Global Error]", msg, error);
+  toast(`Unexpected error: ${msg}`, true);
+  return false;
+};
+
+window.onunhandledrejection = function(event) {
+  console.error("[Unhandled Rejection]", event.reason);
+  toast(`Promise rejected: ${event.reason?.message || event.reason}`, true);
+};

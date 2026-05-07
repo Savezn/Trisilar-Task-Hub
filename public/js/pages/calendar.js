@@ -13,25 +13,30 @@ const CAL = {
 
 // ── Show calendar view ────────────────────────────────────────────────────────
 async function showCalendar() {
-  S.mode = "calendar";
-  S.currentBoardId = null; S.currentGroupId = null;
-  $("board-title").textContent = "Calendar";
-  $("board-subtitle").textContent = "Trisilar";
-  $("add-list-btn").classList.add("hidden");
+  try {
+    S.mode = "calendar";
+    S.currentBoardId = null; S.currentGroupId = null;
+    $("board-title").textContent = "Calendar";
+    $("board-subtitle").textContent = "Trisilar";
+    $("add-list-btn").classList.add("hidden");
 
-  CAL.status = await api.get("/api/calendar/status").catch(() => null);
+    CAL.status = await api.get("/api/calendar/status").catch(() => null);
 
-  if (!CAL.status?.connected) {
-    $("board-content").innerHTML = `
-      <div class="cal-connect-state">
-        <div class="empty-icon">📅</div>
-        <h3>Connect Google Calendar</h3>
-        <p>เชื่อมต่อ Google Calendar เพื่อดูและจัดการ events ใน Trisilar calendar</p>
-        <button class="btn btn-primary" onclick="openCalSetup()" style="margin-top:8px">Connect Google Calendar →</button>
-      </div>`;
-    return;
+    if (!CAL.status?.connected) {
+      $("board-content").innerHTML = `
+        <div class="cal-connect-state">
+          <div class="empty-icon">📅</div>
+          <h3>Connect Google Calendar</h3>
+          <p>เชื่อมต่อ Google Calendar เพื่อดูและจัดการ events ใน Trisilar calendar</p>
+          <button class="btn btn-primary" onclick="openCalSetup()" style="margin-top:8px">Connect Google Calendar →</button>
+        </div>`;
+      return;
+    }
+    renderCalendar();
+  } catch (e) {
+    console.error("[Calendar Error]", e);
+    $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">⚠</div><h3>Calendar error</h3><p>${esc(e.message)}</p></div>`;
   }
-  renderCalendar();
 }
 
 async function renderCalendar() {
