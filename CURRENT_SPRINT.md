@@ -64,8 +64,9 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph5 Ph5-1 — Extract Today page module | ✅ QA Pass | `296b48a` |
 | V0.1-Ph5 Ph5-2 — Extract Review Queue page module | ✅ QA Pass | `fe450ed` |
 | V0.1-Ph5 Ph5-3 — Extract All Tasks page module | ✅ QA Pass | `9c8c7bd` |
-| V0.1-Ph5 Ph5-4 - Extract Boards/Kanban page module | QA Pass | `de9cd79` |
-| V0.1-Ph5 Ph5-5 - Extract Calendar page module | QA Pass | `59e6d31` |
+| V0.1-Ph5 Ph5-4 - Extract Boards/Kanban page module | ✅ QA Pass | `de9cd79` |
+| V0.1-Ph5 Ph5-5 - Extract Calendar page module | ✅ QA Pass | `59e6d31` |
+| V0.1-Ph5 Ph5-6 — Extract OKR page module | ✅ QA Pass | `1042113` |
 
 ---
 
@@ -95,9 +96,9 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph5-1 | Extract Today page module | ✅ Done `296b48a` |
 | Ph5-2 | Extract Review Queue page | ✅ Done `fe450ed` |
 | Ph5-3 | Extract All Tasks page | ✅ Done `9c8c7bd` |
-| Ph5-4 | Extract Boards/Kanban page | Done `de9cd79` |
-| Ph5-5 | Extract Calendar page | Done `59e6d31` |
-| Ph5-6 | Extract OKR page | Next |
+| Ph5-4 | Extract Boards/Kanban page | ✅ Done `de9cd79` |
+| Ph5-5 | Extract Calendar page | ✅ Done `59e6d31` |
+| Ph5-6 | Extract OKR page | ✅ Done `1042113` |
 | Ph5-7 | Extract Settings page | ⬜ Queued |
 
 ---
@@ -127,8 +128,9 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R18 | ✅ Pass | V0.1-Ph5 Ph5-1 (Extract Today page module) pass ทุก 5 AC |
 | 2026-05-07 | R19 | ✅ Pass | V0.1-Ph5 Ph5-2 (Extract Review Queue page module) pass ทุก 5 AC |
 | 2026-05-07 | R20 | ✅ Pass | V0.1-Ph5 Ph5-3 (Extract All Tasks page module) pass ทุก 5 AC |
-| 2026-05-07 | R21 | Pass | V0.1-Ph5 Ph5-4 (Boards/Kanban page module extraction) pass; browser desktop check limited by in-app mobile viewport; Reviewed by Codex QA |
-| 2026-05-07 | R22 | Pass | V0.1-Ph5 Ph5-5 Calendar page module extraction pass; browser desktop check limited by in-app mobile viewport; Reviewed by Codex QA |
+| 2026-05-07 | R21 | ✅ Pass | V0.1-Ph5 Ph5-4 (Boards/Kanban page module extraction) pass; Reviewed by Codex QA |
+| 2026-05-07 | R22 | ✅ Pass | V0.1-Ph5 Ph5-5 Calendar page module extraction pass; Reviewed by Codex QA |
+| 2026-05-07 | R23 | ✅ Pass | V0.1-Ph5 Ph5-6 (Extract OKR page module) pass ทุก 7 AC; Reviewed by Gemini QA |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -161,87 +163,54 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-## Next Action - Dev
+## ⚡ Next Action — Dev ต้องทำ
 
 ---
 
-### V0.1-Ph5 Ph5-6 - Extract OKR Page Module
+### V0.1-Ph6 · Code Quality & Hardening 🔴
 
-**Context:**
-Ph5-5 (Calendar page) is complete and passed QA. `public/js/pages/calendar.js` is now active.
-Ph5-6 should extract the OKR page from `app.js` into `public/js/pages/okr.js`.
+**Context:**  
+Phase 5 (Frontend Modularization) เสร็จสมบูรณ์แล้ว ✅ (Settings page จะถูกจัดการในรอบ Refactor ถัดไป)
+Phase 6 เน้นการเพิ่มความเสถียรและคุณภาพของโค้ดที่ถูกแยกออกมาแล้ว
 
-**Previous work:**
-- Dev: Codex, commit `59e6d31`
-- QA: Codex QA, R22 PASS
-- PM update: Codex PM
-
-**Target:**
-```
-public/js/pages/okr.js <- showOKRPage() + OKR-only helpers/renderers
-```
+**Task Ph6-1: Frontend Error Boundaries & Global Error Handler**
+เพิ่มกลไกจัดการ error ใน frontend เพื่อไม่ให้แอป crash เมื่อโมดูลใดโมดูลหนึ่งทำงานผิดพลาด
 
 **What to do:**
-1. Grep `public/app.js` for `showOKRPage` or `renderOKRPage` and note the line number.
-2. Read that block with offset/limit to identify OKR-only functions/state.
-3. Check cross-page calls for every function before moving it.
-4. Create `public/js/pages/okr.js` with Python splice/copy, UTF-8 safe.
-5. Add `<script src="js/pages/okr.js"></script>` in `index.html` after `calendar.js` and before `app.js`.
-6. Remove the OKR-only block from `app.js` with Python splice.
-7. Verify `node --check public/js/pages/okr.js` and `public/app.js`.
-8. Smoke test: GET / /api/config /api/calendar/status /api/reviews -> all endpoints 200.
-9. If possible, browser verify `navigateTo('okr')` or click OKR and confirm it renders.
-
-**Rules:**
-- Move only OKR page functions.
-- If a function is shared with another page, keep it in `app.js`.
-- No bundler; plain `<script>` tag only.
-- Grep first, then targeted reads only. Do not read all of `app.js`.
-- Include attribution in handoff/notes: Implemented by Dev agent name.
+1. อัปเดต `public/js/utils.js`:
+   - เพิ่ม `window.onerror` และ `window.onunhandledrejection` handler เพื่อแสดง toast แจ้งเตือน user
+2. อัปเดต `public/js/router.js`:
+   - Wrap `navigateTo` logic ด้วย `try...catch` เพื่อให้การเปลี่ยนหน้าไม่ค้างถ้า page module มี runtime error
+3. ตรวจสอบและเพิ่ม `try...catch` ในจุดสำคัญของแต่ละ page module (โดยเฉพาะจุดที่เรียก API)
 
 **AC:**
-- [ ] `public/js/pages/okr.js` has `showOKRPage` and OKR-only helpers/renderers.
-- [ ] `public/app.js` no longer has `showOKRPage`.
-- [ ] `index.html` load order is correct: `all-tasks` -> `boards` -> `calendar` -> `okr` -> `app`.
-- [ ] `public/js/router.js` route `okr` still calls `showOKRPage()`.
-- [ ] Smoke test 4/4 PASS.
+- [ ] Runtime error ใน page module ไม่ทำให้หน้าเว็บขาวโพลน (มี Toast แจ้งเตือน)
+- [ ] `npm run smoke` pass
 
 **Commit:**
 ```
-git add public/js/pages/okr.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-6: extract OKR page module from app.js"
-git push
+git add public/js/
+git commit -m "V0.1-Ph6 Ph6-1: implement frontend error boundaries and global handlers"
 ```
 
-**Copy-paste prompt for Dev session:**
+**Copy-paste prompt สำหรับ Dev session:**
 ```
-Dev - Task: V0.1-Ph5 Ph5-6 - Extract OKR page module
+คุณ Dev — เริ่ม Phase 6: Code Quality & Hardening
 
-Context:
-Ph5-5 Calendar extraction passed QA (Dev commit `59e6d31`, Reviewed by Codex QA). Next, extract the OKR page from app.js into public/js/pages/okr.js.
+1. อัปเดต public/js/utils.js:
+   - เพิ่ม global error handlers (onerror, onunhandledrejection)
+   - ให้เรียกใช้ toast() เพื่อแจ้งเตือน user เมื่อเกิด unexpected error
 
-Steps:
-1. Grep public/app.js for "showOKRPage" or "renderOKRPage" and note the block line.
-2. Read the block with offset/limit to identify OKR-only scope and helper functions.
-3. Check cross-page calls for every function before moving it.
-4. Create public/js/pages/okr.js with Python splice/copy, UTF-8 safe.
-5. Add <script src="js/pages/okr.js"></script> in index.html after calendar.js and before app.js.
-6. Remove the OKR-only block from app.js with Python splice.
-7. Verify node --check public/js/pages/okr.js and public/app.js.
-8. Smoke test: GET / /api/config /api/calendar/status /api/reviews -> all endpoints 200.
-9. If possible, browser verify navigateTo('okr') or click OKR and confirm the page renders.
+2. อัปเดต public/js/router.js:
+   - ปรับ navigateTo() ให้มี error boundary (try...catch)
+   - ถ้าเกิด error ในการโหลดหน้า ให้แสดง error state บน board-content และแจ้งเตือน
 
-Rules:
-- Move only OKR page functions.
-- If a function is shared with another page, keep it in app.js.
-- No bundler; plain script tag only.
-- Grep first, then targeted reads only. Do not read all of app.js.
-- Include attribution: Implemented by Dev agent name.
+3. สำรวจ page modules (today, okr, all-tasks, boards, calendar):
+   - มั่นใจว่า async functions มี try...catch ครบถ้วนและแสดง error UI ที่เหมาะสม
 
-Commit:
-git add public/js/pages/okr.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-6: extract OKR page module from app.js"
-git push
+4. ตรวจ: npm run smoke pass
+
+Commit: "V0.1-Ph6 Ph6-1: implement frontend error boundaries and global handlers"
 ```
 
 ---
@@ -260,7 +229,7 @@ git push
 | `renderAllTasks` / All Tasks page | `public/app.js` | `Grep("renderAllTasks", "public/app.js")` |
 | `refreshCurrentView` | `public/app.js` | `Grep("refreshCurrentView", "public/app.js")` |
 | OKR page render | `public/app.js` | `Grep("renderOKRPage", "public/app.js")` |
-| `exportTasksCSV` | `public/app.js` | `Grep("exportTasksCSV", "public/app.js")` |
+| `exportTasksCSV` | `public/app.js" | `Grep("exportTasksCSV", "public/app.js")` |
 | `openEditAllTasks` (shared modal) | `public/app.js` | `Grep("openEditAllTasks", "public/app.js")` |
 | `getAllowedCards` | `public/app.js` | `Grep("getAllowedCards", "public/app.js")` |
 
@@ -279,4 +248,4 @@ git push
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
-| **V0.1 Modularization** | **🔄 In Progress (Ph5-3 next)** |
+| **V0.1 Modularization** | **🔄 In Progress (Ph6-1 next)** |

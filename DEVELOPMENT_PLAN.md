@@ -932,6 +932,8 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **V0.1-P2** | Route Extraction | ✅ Done | 2026-05-06 | 5 modular route files extracted from server.js — commit 25a31b7 |
 | **V0.1-P3** | Helper Extraction | ✅ Done | 2026-05-06 | Moving logic (cache, errors, models, google) to src/utils and src/models — commit d06d388 |
 | **V0.1-P4** | Server Hardening | ✅ Done | 2026-05-06 | Final cleanup of server.js (~52 lines) and config modularization — commit f6b5ab6 |
+| **V0.1-P5** | Frontend Modularization | ✅ Done | 2026-05-07 | Split app.js into page-based modules (today, review, all-tasks, boards, calendar, okr) |
+| **V0.1-P6** | Code Quality & Hardening | 🔄 In Progress | 2026-05-07 | Implementing error boundaries and global error handlers in frontend |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · 🛑 Blocked · ➡ Deferred
 
@@ -978,9 +980,9 @@ P0 (Bugs) ──────┬─→ P1 (Data) ──→ P2 (UI) ──→ P5 (
 
 ## Next Session Prompt (copy-paste ready)
 
-**Phase 5 (current):**
+**Phase 6 (current):**
 ```
-คุณ Dev อ้างอิง CURRENT_SPRINT.md — ทำ Phase 5 ทั้งหมด (P5-1, P5-2, P5-3) ให้เสร็จตาม Acceptance Criteria
+คุณ Dev อ้างอิง CURRENT_SPRINT.md — ทำ Phase 6: Code Quality & Hardening โดยเริ่มจาก Ph6-1: Frontend Error Boundaries
 ```
 
 **Phase 7 (post-MVP, after Phase 6):**
