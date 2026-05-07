@@ -78,6 +78,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 | P7-1 - Trello Metadata Ingestion | QA Pass | `980b5f0` |
 | P7-2 - Portfolio filters | QA Pass | `387d43b` |
+| P7-3 - OKR Progress View | QA Pass | `422b91b` |
 ---
 
 ## Active Tasks
@@ -122,7 +123,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 |---|---|
 | P7-1 | Trello Metadata Ingestion | Done `980b5f0` |
 | P7-2 | Portfolio filters | Done `387d43b` |
-| P7-3 | OKR Progress View | Awaiting QA `422b91b` |
+| P7-3 | OKR Progress View | Done `422b91b` |
+| P7-4 | Project Board Convention Validator | Next |
 
 ---
 
@@ -160,6 +162,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R27 | Pass | V0.1-Ph5 Ph5-7 Settings page module extraction pass; browser desktop check limited by in-app mobile viewport/sidebar hidden state; Reviewed by Codex QA |
 | 2026-05-07 | R28 | Pass | P7-1 Trello metadata ingestion pass; labels, members, checklistProgress, customFields normalized; check:all passed with temporary server; Reviewed by Codex QA |
 | 2026-05-07 | R29 | Pass | P7-2 Portfolio filters pass; OKR overview filters by label/member, toggle clears filters, empty filtered state explicit; check:all passed with temporary server; Reviewed by Codex QA |
+| 2026-05-07 | R30 | Pass | P7-3 OKR Progress View pass; overview summary, KR progress metadata, linked project task detail, filters, and empty states verified; check:all passed with temporary server; Reviewed by Codex QA; Updated by Codex PM |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -192,66 +195,87 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-## Next Action - QA
+## Next Action - Dev
 
 ---
 
-### P7-3 QA - Verify OKR Progress View improvements
+### P7-4 - Project Board Convention Validator
 
 **Context:**
-Codex Dev implemented P7-3 in commit `422b91b`.
-Files changed:
-- `public/js/pages/okr.js`
-- `public/style.css`
+P7-3 OKR Progress View improvements passed QA.
+Dev commit: `422b91b`
+Reviewed by: Codex QA
 
-**QA goals:**
-1. Verify OKR overview shows a clearer Objective/KR summary.
-2. Verify KR progress uses `checklistProgress` and `dueComplete` fallback consistently.
-3. Verify KR detail still shows linked project tasks.
-4. Verify P7-2 label/member filters still work and affect summary/visible KRs.
-5. Verify empty states are explicit for:
-   - no OKR board/cards
-   - filtered overview with no matching OKRs
-   - KR detail with no linked project cards
-6. Run:
-   - `node --check public/js/pages/okr.js`
-   - `npm.cmd run check:all` with a running local server.
+**Goal:**
+Add a project board convention validator that identifies board/list and card metadata hygiene issues without changing existing task behavior.
+
+**What to do:**
+1. Grep `public/js/pages/boards.js`, `public/js/pages/okr.js`, `public/js/pages/all-tasks.js`, `public/app.js`, and backend Trello route/model files for board stats, labels, members, custom fields, due helpers, and Trello card URLs.
+2. Read targeted ranges only; do not refactor unrelated page modules.
+3. Define minimal convention checks for Project Boards:
+   - missing key lists such as Backlog, Ready, Doing, Review/QA, Done, or accepted mapped equivalents
+   - cards missing execution metadata such as category/OKR/KR reference, priority, owner/member/agent, or due date
+4. Surface warnings in Boards Monitor or OKR/Portfolio page using existing normalized metadata.
+5. Ensure users can open the relevant Trello board/card or existing Task Hub card detail to fix issues.
+6. Keep changes minimal and behavior-preserving.
+7. Run `node --check` on changed JS files.
+8. Run `npm.cmd run check:all` with a running local server.
 
 **Rules:**
-- QA only; do not edit files.
+- Dev role only.
 - Grep first, targeted reads for large files.
-- Report PASS / FAIL with evidence.
-- Include attribution: Reviewed by QA agent name.
+- Preserve P7-1/P7-2/P7-3 behavior.
+- Do not stage unrelated `DEVELOPMENT_PLAN.md` or `public/app.js` changes unless this task actually requires them.
+- Include attribution: Implemented by Dev agent name.
 
-**Copy-paste prompt for QA session:**
+**AC:**
+- [ ] Boards missing important lists are flagged with an actionable recommendation.
+- [ ] Cards missing OKR/category/priority/owner/due metadata are counted as hygiene issues.
+- [ ] User can open the relevant Trello board/card or existing Task Hub detail to fix issues.
+- [ ] Existing Boards Monitor and OKR/Portfolio behavior remains intact.
+- [ ] `npm.cmd run check:all` passes with a running server.
+
+**Commit:**
 ```
-Role: QA
-Task: P7-3 QA - Verify OKR Progress View improvements
+git add public/js/pages public/app.js public/style.css src trello.js
+git commit -m "P7-4: Add project board convention validator"
+git push
+```
+
+**Copy-paste prompt for Dev session:**
+```
+Role: Dev
+Task: P7-4 - Project Board Convention Validator
 
 Context:
-Codex Dev implemented P7-3 in commit `422b91b`.
-Files changed:
-- public/js/pages/okr.js
-- public/style.css
+P7-3 OKR Progress View improvements passed QA (Dev commit `422b91b`, Reviewed by Codex QA). Next, implement P7-4 Project Board Convention Validator.
 
-QA goals:
-1. Verify OKR overview shows a clearer Objective/KR summary.
-2. Verify KR progress uses checklistProgress and dueComplete fallback consistently.
-3. Verify KR detail still shows linked project tasks.
-4. Verify P7-2 label/member filters still work and affect summary/visible KRs.
-5. Verify empty states are explicit for:
-   - no OKR board/cards
-   - filtered overview with no matching OKRs
-   - KR detail with no linked project cards
-6. Run:
-   - node --check public/js/pages/okr.js
-   - npm.cmd run check:all with a running local server
+Goal:
+Add a project board convention validator that identifies board/list and card metadata hygiene issues without changing existing task behavior.
+
+Steps:
+1. Grep public/js/pages/boards.js, public/js/pages/okr.js, public/js/pages/all-tasks.js, public/app.js, and backend Trello route/model files for board stats, labels, members, custom fields, due helpers, and Trello card URLs.
+2. Read targeted ranges only; do not refactor unrelated page modules.
+3. Define minimal convention checks for Project Boards:
+   - missing key lists such as Backlog, Ready, Doing, Review/QA, Done, or accepted mapped equivalents
+   - cards missing execution metadata such as category/OKR/KR reference, priority, owner/member/agent, or due date
+4. Surface warnings in Boards Monitor or OKR/Portfolio page using existing normalized metadata.
+5. Ensure users can open the relevant Trello board/card or existing Task Hub card detail to fix issues.
+6. Keep changes minimal and behavior-preserving.
+7. Run node --check on changed JS files.
+8. Run npm.cmd run check:all with a running local server.
 
 Rules:
-- QA only: do not edit files.
+- Dev role only.
 - Grep first, targeted reads for large files.
-- Report PASS / FAIL with evidence.
-- Include attribution: Reviewed by QA agent name.
+- Preserve P7-1/P7-2/P7-3 behavior.
+- Do not stage unrelated DEVELOPMENT_PLAN.md or public/app.js changes unless this task actually requires them.
+- Include attribution: Implemented by Dev agent name.
+
+Commit:
+git add public/js/pages public/app.js public/style.css src trello.js
+git commit -m "P7-4: Add project board convention validator"
+git push
 ```
 
 ---
@@ -286,7 +310,7 @@ Rules:
 | P4 Google Tasks Planner | ✅ Done (2026-05-05) |
 | P5 Today Enhanced | ✅ Done (2026-05-05) |
 | P6 Hardening & Polish | ✅ Done (2026-05-05) |
-| P7 OKR / Portfolio Layer | 🔄 In Progress (P7-3 awaiting QA) |
+| P7 OKR / Portfolio Layer | 🔄 In Progress (P7-4 next) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
 | **V0.1 Modularization** | **✅ Done (Router-1 + Ph6-4 complete)** |
