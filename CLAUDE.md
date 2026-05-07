@@ -77,7 +77,54 @@ git commit -m "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
 
 ---
 
-## 5. Session Structure per Role
+## 5. AI Work Attribution
+
+This project is worked on by multiple AI agents: Claude, Codex, and Gemini.
+Every agent must make ownership clear in the documents that matter for handoff.
+
+Rule update added by: Codex (2026-05-07).
+
+Required rule:
+- When Claude creates, changes, verifies, reviews, or plans work that is recorded
+  in project documentation, add an attribution such as `Agent: Claude`,
+  `Implemented by: Claude`, `Reviewed by: Claude`, or `Updated by: Claude`.
+- Add attribution in every necessary tracking or handoff document, including
+  `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, QA logs, release notes, task
+  briefs, next-session prompts, and any newly created project rule documents.
+- If a table already has an owner/agent column, fill that column. If not, add a
+  short note in the relevant row or section.
+- Do not claim work done by another agent. If continuing another agent's work,
+  say so explicitly, for example: `Continues Codex implementation` or
+  `QA follow-up after Gemini review`.
+- Handoff prompts should name the prior agent and commit hash when available.
+
+---
+
+## 6. Session Structure per Role
+
+Role flow is a project-state workflow, not an agent-rotation rule. Stay with the
+same AI agent when possible. Switch agents only when needed, such as rate limits,
+tool availability, or context limits. When switching agents, keep the same role
+unless the project state has changed, and read the latest handoff, git status,
+latest commit, and attribution notes before continuing.
+
+Use the workflow that matches task risk:
+
+| Task type | Role workflow |
+|---|---|
+| Tiny docs, typo, rename, no behavior risk | Dev -> PM |
+| Refactor, extraction, route, data flow | Dev -> QA -> PM |
+| Bug found by QA | QA -> Dev Fix -> QA Recheck -> PM |
+| Planning only | PM -> Dev |
+| Production-ish behavior or critical API | Dev -> QA -> Dev Fix -> QA Recheck -> PM |
+
+Rules:
+- If no code behavior changed, QA is optional.
+- If behavior changed, QA is required.
+- If QA finds a bug, PM should wait until QA Recheck passes or explicitly records
+  accepted risk.
+- Agent handoff can happen at any point without changing the role, for example
+  `Codex Dev -> Claude Dev continuation -> QA`.
 
 ### Dev session
 1. `mark_chapter` with task name
@@ -85,7 +132,7 @@ git commit -m "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
 3. Implement — one file at a time, targeted edits only
 4. Verify: run smoke test or `node server.js` check
 5. Commit + push
-6. End with **QA next-session prompt** (see §6)
+6. End with **QA next-session prompt** (see §7)
 
 ### QA session
 1. `mark_chapter` with task name
@@ -99,7 +146,7 @@ git commit -m "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
    |---|---|
    | 1. description | ✅ PASS |
    ```
-5. End with **PM next-session prompt** (see §6)
+5. End with **PM next-session prompt** (see §7)
 
 ### PM session
 1. `mark_chapter` with task name
@@ -109,11 +156,11 @@ git commit -m "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
    - Add row to QA Log
    - Replace Next Action section with new Dev brief
 4. Commit + push
-5. End with **Dev next-session prompt** (see §6)
+5. End with **Dev next-session prompt** (see §7)
 
 ---
 
-## 6. End-of-Session Next Action
+## 7. End-of-Session Next Action
 
 Every session must end with a "Next session" block in this exact format:
 
@@ -128,5 +175,7 @@ Every session must end with a "Next session" block in this exact format:
 
 The copy-paste prompt must be self-contained — include role declaration ("คุณ Dev"), task steps, rules, and commit message. The next session should be able to start cold from just that prompt.
 
-**Handoff chain:** Dev → QA → PM → Dev → QA → PM → …  
-Never skip a role. Never combine two roles in one prompt.
+**Project-state flow:** Dev -> QA -> PM -> Dev is the default for
+behavior-changing work. It is not an instruction to rotate agents every session.
+Never combine two roles in one prompt. Do not skip QA after behavior-changing Dev
+work unless the user explicitly asks to bypass it or PM records accepted risk.
