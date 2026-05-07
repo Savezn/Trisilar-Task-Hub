@@ -166,16 +166,43 @@ function renderOKRPage(allCards, boards) {
     );
   }
 
+  function krProgressLabel(card) {
+    const { done, total } = card.checklistProgress || {};
+    if (total > 0) return `${done}/${total} checklist`;
+    if (card.dueComplete) return "Due complete";
+    return "No checklist";
+  }
+
+  function linkedStats(cards) {
+    const now = new Date();
+    const overdue = cards.filter(c => c.due && new Date(c.due) < now && !c.dueComplete);
+    const done = cards.filter(c => c.dueComplete);
+    const upcoming = cards.filter(c => c.due && new Date(c.due) >= now && !c.dueComplete)
+      .sort((a, b) => new Date(a.due) - new Date(b.due));
+    return { overdue, done, upcoming, nextDue: upcoming[0] || null };
+  }
+
+  function visibleKrsFor(krCards) {
+    return labelFilter || memberFilter
+      ? krCards.filter(card => linkedCards(card).length > 0)
+      : krCards;
+  }
+
+  function averageProgress(krCards) {
+    if (!krCards.length) return 0;
+    const total = krCards.reduce((sum, card) => sum + krProgress(card), 0);
+    return Math.round(total / krCards.length);
+  }
+
   // OKR drill-down state: null = overview, cardId = KR detail
   let drillCard = null;
 
   function renderDetail(krCard) {
     const linked = linkedCards(krCard);
-    const now = new Date();
-    const overdue = linked.filter(c => c.due && new Date(c.due) < now && !c.dueComplete);
-    const upcoming = linked.filter(c => c.due && new Date(c.due) >= now && !c.dueComplete)
-      .sort((a, b) => new Date(a.due) - new Date(b.due));
-    const done = linked.filter(c => c.dueComplete);
+    const { overdue, upcoming, done } = linkedStats(linked);
+    const filterHint = labelFilter || memberFilter
+      ? "The current label/member filter may hide linked project cards."
+      : "Add labels to this KR card that match labels on project board cards.";
 
     content.innerHTML = `
       <div class="okr-detail">
@@ -208,43 +235,51 @@ function renderOKRPage(allCards, boards) {
                 <div>${c.dueComplete ? '<span class="due-badge due-complete">Done</span>' : '<span style="color:#aaa;font-size:12px">Active</span>'}</div>
               </div>`).join("")}
           </div>
-        </div>` : `<div class="empty-state" style="padding:32px"><p>No linked project cards found.<br><span style="font-size:12px;color:var(--text-faint)">Add labels to this KR card that match labels on project board cards.</span></p></div>`}
+        </div>` : `<div class="empty-state okr-empty-state"><h3>No linked project cards</h3><p>${filterHint}</p></div>`}
       </div>`;
 
     content.querySelector(".okr-back-btn").onclick = () => { drillCard = null; renderOverview(); };
   }
 
   function renderOverview() {
-    const now = new Date();
     const filtersActive = Boolean(labelFilter || memberFilter);
+    const visibleObjectives = [...objectiveMap.entries()]
+      .map(([objName, krCards]) => ({ objName, krCards: visibleKrsFor(krCards) }))
+      .filter(obj => obj.krCards.length > 0);
+    const visibleKrs = visibleObjectives.flatMap(obj => obj.krCards);
+    const visibleLinked = visibleKrs.flatMap(card => linkedCards(card));
+    const visibleLinkedIds = new Set(visibleLinked.map(c => c.id));
+    const uniqueLinked = [...visibleLinkedIds].map(id => visibleLinked.find(c => c.id === id));
+    const summaryStats = linkedStats(uniqueLinked);
+    const overallProgress = averageProgress(visibleKrs);
 
-    const objectivesHtml = [...objectiveMap.entries()].map(([objName, krCards]) => {
-      const visibleKrs = filtersActive
-        ? krCards.filter(card => linkedCards(card).length > 0)
-        : krCards;
-      if (!visibleKrs.length) return "";
-
-      // Objective-level progress = avg of KR progresses
-      const progresses = visibleKrs.map(krProgress);
-      const avgProg = visibleKrs.length ? Math.round(progresses.reduce((a, b) => a + b, 0) / visibleKrs.length) : 0;
+    const objectivesHtml = visibleObjectives.map(({ objName, krCards: visibleKrs }) => {
+      const avgProg = averageProgress(visibleKrs);
+      const objectiveLinked = visibleKrs.flatMap(card => linkedCards(card));
+      const objectiveLinkedIds = new Set(objectiveLinked.map(c => c.id));
+      const objectiveUniqueLinked = [...objectiveLinkedIds].map(id => objectiveLinked.find(c => c.id === id));
+      const objectiveStats = linkedStats(objectiveUniqueLinked);
 
       const krsHtml = visibleKrs.map(card => {
         const prog = krProgress(card);
         const linked = linkedCards(card);
-        const overdueCount = linked.filter(c => c.due && new Date(c.due) < now && !c.dueComplete).length;
-        const nextDue = linked.filter(c => c.due && !c.dueComplete).sort((a, b) => new Date(a.due) - new Date(b.due))[0];
+        const stats = linkedStats(linked);
 
         return `
           <div class="okr-kr-row" data-card-id="${card.id}">
-            <div class="okr-kr-name">${esc(card.name)}</div>
+            <div class="okr-kr-main">
+              <div class="okr-kr-name">${esc(card.name)}</div>
+              <div class="okr-kr-submeta">${esc(krProgressLabel(card))}</div>
+            </div>
             <div class="okr-kr-progress">
               <div class="okr-progress-bar"><div class="okr-progress-fill" style="width:${prog}%"></div></div>
               <span class="okr-progress-pct">${prog}%</span>
             </div>
             <div class="okr-kr-meta">
               ${linked.length ? `<span class="okr-meta-tag">${linked.length} task${linked.length !== 1 ? "s" : ""}</span>` : ""}
-              ${overdueCount ? `<span class="okr-meta-tag okr-meta-overdue">⚠ ${overdueCount} overdue</span>` : ""}
-              ${nextDue ? `<span class="okr-meta-tag">Next: ${formatThaiDateTime(nextDue.due)}</span>` : ""}
+              ${stats.done.length ? `<span class="okr-meta-tag okr-meta-done">${stats.done.length} done</span>` : ""}
+              ${stats.overdue.length ? `<span class="okr-meta-tag okr-meta-overdue">${stats.overdue.length} overdue</span>` : ""}
+              ${stats.nextDue ? `<span class="okr-meta-tag">Next: ${formatThaiDateTime(stats.nextDue.due)}</span>` : ""}
               ${!linked.length ? `<span class="okr-meta-tag" style="color:var(--text-faint)">No linked tasks</span>` : ""}
             </div>
           </div>`;
@@ -254,6 +289,11 @@ function renderOKRPage(allCards, boards) {
         <div class="okr-objective">
           <div class="okr-objective-header">
             <div class="okr-objective-name">${esc(objName)}</div>
+            <div class="okr-objective-stats">
+              <span>${visibleKrs.length} KR${visibleKrs.length !== 1 ? "s" : ""}</span>
+              <span>${objectiveUniqueLinked.length} linked task${objectiveUniqueLinked.length !== 1 ? "s" : ""}</span>
+              ${objectiveStats.overdue.length ? `<span class="okr-stat-danger">${objectiveStats.overdue.length} overdue</span>` : ""}
+            </div>
             <div class="okr-objective-progress">
               <div class="okr-progress-bar okr-progress-bar--lg"><div class="okr-progress-fill" style="width:${avgProg}%"></div></div>
               <span class="okr-progress-pct">${avgProg}%</span>
@@ -267,7 +307,15 @@ function renderOKRPage(allCards, boards) {
       <div class="okr-overview">
         <div class="okr-board-label">Source: ${okrBoards.map(b => esc(b.name)).join(", ")}</div>
         ${filterBarHtml()}
-        ${objectivesHtml || `<div class="empty-state"><p>${filtersActive ? "No OKRs match the selected portfolio filters." : "OKR board has no cards yet."}</p></div>`}
+        ${visibleKrs.length ? `
+          <div class="okr-summary-grid">
+            <div class="okr-summary-card"><span class="okr-summary-num">${visibleObjectives.length}</span><span class="okr-summary-label">Objectives</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num">${visibleKrs.length}</span><span class="okr-summary-label">Key Results</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num">${overallProgress}%</span><span class="okr-summary-label">Avg Progress</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num">${uniqueLinked.length}</span><span class="okr-summary-label">Linked Tasks</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num" style="color:var(--danger)">${summaryStats.overdue.length}</span><span class="okr-summary-label">Overdue</span></div>
+          </div>` : ""}
+        ${objectivesHtml || `<div class="empty-state okr-empty-state"><h3>${filtersActive ? "No OKRs match this filter" : "No OKR cards yet"}</h3><p>${filtersActive ? "Try clearing the active label/member filter or link matching project cards to the KR labels." : "Create Key Result cards in the OKR board to populate this progress view."}</p></div>`}
       </div>`;
 
     bindPortfolioFilters();

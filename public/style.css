@@ -1223,6 +1223,35 @@ a { text-decoration: none; }
   padding-bottom: 4px;
   border-bottom: 1px solid var(--border);
 }
+.okr-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.okr-summary-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+.okr-summary-num {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+.okr-summary-label {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
 .okr-objective {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -1243,6 +1272,18 @@ a { text-decoration: none; }
   font-weight: 700;
   color: var(--text);
   flex: 1;
+}
+.okr-objective-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+.okr-stat-danger {
+  color: var(--danger);
 }
 .okr-objective-progress {
   display: flex;
@@ -1288,11 +1329,19 @@ a { text-decoration: none; }
 }
 .okr-kr-row:last-child { border-bottom: none; }
 .okr-kr-row:hover { background: #f8fafc; }
-.okr-kr-name {
+.okr-kr-main {
   flex: 1;
+  min-width: 0;
+}
+.okr-kr-name {
   font-size: 13px;
   color: var(--text);
   font-weight: 500;
+}
+.okr-kr-submeta {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text-faint);
 }
 .okr-kr-progress {
   display: flex;
@@ -1319,6 +1368,24 @@ a { text-decoration: none; }
   color: var(--danger);
   border-color: var(--danger);
   background: #fff5f5;
+}
+.okr-meta-done {
+  color: var(--success);
+  border-color: var(--success);
+  background: #f0fdf4;
+}
+.okr-empty-state {
+  padding: 32px;
+}
+.okr-empty-state h3 {
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 15px;
+}
+.okr-empty-state p {
+  margin: 0;
+  color: var(--text-faint);
+  font-size: 12px;
 }
 /* Detail view */
 .okr-detail {
@@ -2839,6 +2906,17 @@ a { text-decoration: none; }
   .task-row > *:nth-child(4) {
     display: none;
   }
+  .okr-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .okr-objective-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .okr-kr-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .okr-kr-meta { flex-wrap: wrap; }
 }
 
 /* Monitor Team Management */
