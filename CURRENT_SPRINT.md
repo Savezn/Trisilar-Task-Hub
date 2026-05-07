@@ -65,6 +65,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph5 Ph5-2 — Extract Review Queue page module | ✅ QA Pass | `fe450ed` |
 | V0.1-Ph5 Ph5-3 — Extract All Tasks page module | ✅ QA Pass | `9c8c7bd` |
 | V0.1-Ph5 Ph5-4 - Extract Boards/Kanban page module | QA Pass | `de9cd79` |
+| V0.1-Ph5 Ph5-5 - Extract Calendar page module | QA Pass | `59e6d31` |
 
 ---
 
@@ -95,8 +96,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph5-2 | Extract Review Queue page | ✅ Done `fe450ed` |
 | Ph5-3 | Extract All Tasks page | ✅ Done `9c8c7bd` |
 | Ph5-4 | Extract Boards/Kanban page | Done `de9cd79` |
-| Ph5-5 | Extract Calendar page | Next |
-| Ph5-6 | Extract OKR page | ⬜ Queued |
+| Ph5-5 | Extract Calendar page | Done `59e6d31` |
+| Ph5-6 | Extract OKR page | Next |
 | Ph5-7 | Extract Settings page | ⬜ Queued |
 
 ---
@@ -127,6 +128,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R19 | ✅ Pass | V0.1-Ph5 Ph5-2 (Extract Review Queue page module) pass ทุก 5 AC |
 | 2026-05-07 | R20 | ✅ Pass | V0.1-Ph5 Ph5-3 (Extract All Tasks page module) pass ทุก 5 AC |
 | 2026-05-07 | R21 | Pass | V0.1-Ph5 Ph5-4 (Boards/Kanban page module extraction) pass; browser desktop check limited by in-app mobile viewport; Reviewed by Codex QA |
+| 2026-05-07 | R22 | Pass | V0.1-Ph5 Ph5-5 Calendar page module extraction pass; browser desktop check limited by in-app mobile viewport; Reviewed by Codex QA |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -163,81 +165,82 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph5 Ph5-5 - Extract Calendar Page Module
+### V0.1-Ph5 Ph5-6 - Extract OKR Page Module
 
 **Context:**
-Ph5-4 (Boards/Kanban page) is complete and passed QA. `public/js/pages/boards.js` is now active.
-Ph5-5 should extract the Calendar page from `app.js` into `public/js/pages/calendar.js`.
+Ph5-5 (Calendar page) is complete and passed QA. `public/js/pages/calendar.js` is now active.
+Ph5-6 should extract the OKR page from `app.js` into `public/js/pages/okr.js`.
 
 **Previous work:**
-- Dev: Codex, commit `de9cd79`
-- QA: Codex QA, R21 PASS
+- Dev: Codex, commit `59e6d31`
+- QA: Codex QA, R22 PASS
 - PM update: Codex PM
 
 **Target:**
 ```
-public/js/pages/calendar.js <- showCalendar() + Calendar-only helpers/state
+public/js/pages/okr.js <- showOKRPage() + OKR-only helpers/renderers
 ```
 
 **What to do:**
-1. Grep `public/app.js` for `showCalendar` or the Calendar section and note the line number.
-2. Read that block with offset/limit to identify Calendar-only functions/state.
+1. Grep `public/app.js` for `showOKRPage` or `renderOKRPage` and note the line number.
+2. Read that block with offset/limit to identify OKR-only functions/state.
 3. Check cross-page calls for every function before moving it.
-4. Create `public/js/pages/calendar.js` with Python splice/copy, UTF-8 safe.
-5. Add `<script src="js/pages/calendar.js"></script>` in `index.html` after `boards.js` and before `app.js`.
-6. Remove the Calendar-only block from `app.js` with Python splice.
-7. Smoke test 4 endpoints PASS.
-8. If possible, browser verify `navigateTo('calendar')` or click Calendar and confirm it renders.
+4. Create `public/js/pages/okr.js` with Python splice/copy, UTF-8 safe.
+5. Add `<script src="js/pages/okr.js"></script>` in `index.html` after `calendar.js` and before `app.js`.
+6. Remove the OKR-only block from `app.js` with Python splice.
+7. Verify `node --check public/js/pages/okr.js` and `public/app.js`.
+8. Smoke test: GET / /api/config /api/calendar/status /api/reviews -> all endpoints 200.
+9. If possible, browser verify `navigateTo('okr')` or click OKR and confirm it renders.
 
 **Rules:**
-- Move only Calendar page functions.
+- Move only OKR page functions.
 - If a function is shared with another page, keep it in `app.js`.
 - No bundler; plain `<script>` tag only.
 - Grep first, then targeted reads only. Do not read all of `app.js`.
 - Include attribution in handoff/notes: Implemented by Dev agent name.
 
 **AC:**
-- [ ] `public/js/pages/calendar.js` has `showCalendar` and Calendar-only helpers.
-- [ ] `public/app.js` no longer has `showCalendar`.
-- [ ] `index.html` load order is correct: `all-tasks` -> `boards` -> `calendar` -> `app`.
-- [ ] `public/js/router.js` route `calendar` still calls `showCalendar()`.
+- [ ] `public/js/pages/okr.js` has `showOKRPage` and OKR-only helpers/renderers.
+- [ ] `public/app.js` no longer has `showOKRPage`.
+- [ ] `index.html` load order is correct: `all-tasks` -> `boards` -> `calendar` -> `okr` -> `app`.
+- [ ] `public/js/router.js` route `okr` still calls `showOKRPage()`.
 - [ ] Smoke test 4/4 PASS.
 
 **Commit:**
 ```
-git add public/js/pages/calendar.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-5: extract Calendar page module from app.js"
+git add public/js/pages/okr.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-6: extract OKR page module from app.js"
 git push
 ```
 
 **Copy-paste prompt for Dev session:**
 ```
-Dev - Task: V0.1-Ph5 Ph5-5 - Extract Calendar page module
+Dev - Task: V0.1-Ph5 Ph5-6 - Extract OKR page module
 
 Context:
-Ph5-4 Boards/Kanban extraction passed QA (Dev commit `de9cd79`, Reviewed by Codex QA). Next, extract the Calendar page from app.js into public/js/pages/calendar.js.
+Ph5-5 Calendar extraction passed QA (Dev commit `59e6d31`, Reviewed by Codex QA). Next, extract the OKR page from app.js into public/js/pages/okr.js.
 
 Steps:
-1. Grep public/app.js for "showCalendar" or the Calendar section and note the block line.
-2. Read the block with offset/limit to identify Calendar-only scope and helper functions.
+1. Grep public/app.js for "showOKRPage" or "renderOKRPage" and note the block line.
+2. Read the block with offset/limit to identify OKR-only scope and helper functions.
 3. Check cross-page calls for every function before moving it.
-4. Create public/js/pages/calendar.js with Python splice/copy, UTF-8 safe.
-5. Add <script src="js/pages/calendar.js"></script> in index.html after boards.js and before app.js.
-6. Remove the Calendar-only block from app.js with Python splice.
-7. Verify node --check public/js/pages/calendar.js and public/app.js.
+4. Create public/js/pages/okr.js with Python splice/copy, UTF-8 safe.
+5. Add <script src="js/pages/okr.js"></script> in index.html after calendar.js and before app.js.
+6. Remove the OKR-only block from app.js with Python splice.
+7. Verify node --check public/js/pages/okr.js and public/app.js.
 8. Smoke test: GET / /api/config /api/calendar/status /api/reviews -> all endpoints 200.
-9. If possible, browser verify navigateTo('calendar') or click Calendar and confirm the page renders.
+9. If possible, browser verify navigateTo('okr') or click OKR and confirm the page renders.
 
 Rules:
-- Move only Calendar page functions.
+- Move only OKR page functions.
 - If a function is shared with another page, keep it in app.js.
 - No bundler; plain script tag only.
 - Grep first, then targeted reads only. Do not read all of app.js.
 - Include attribution: Implemented by Dev agent name.
 
 Commit:
-git add public/js/pages/calendar.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-5: extract Calendar page module from app.js"
+git add public/js/pages/okr.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-6: extract OKR page module from app.js"
 git push
 ```
 
