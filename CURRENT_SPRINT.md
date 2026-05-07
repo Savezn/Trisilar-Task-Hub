@@ -67,6 +67,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph5 Ph5-4 - Extract Boards/Kanban page module | ✅ QA Pass | `de9cd79` |
 | V0.1-Ph5 Ph5-5 - Extract Calendar page module | ✅ QA Pass | `59e6d31` |
 | V0.1-Ph5 Ph5-6 — Extract OKR page module | ✅ QA Pass | `1042113` |
+| V0.1-Ph6 Ph6-1 - Frontend Error Boundaries & Global Error Handler | QA Recheck Pass | `8f34ba8`, `9219381` |
 
 ---
 
@@ -100,6 +101,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph5-5 | Extract Calendar page | ✅ Done `59e6d31` |
 | Ph5-6 | Extract OKR page | ✅ Done `1042113` |
 | Ph5-7 | Extract Settings page | ⬜ Queued |
+| Ph6-1 | Frontend Error Boundaries & Global Error Handler | Done `8f34ba8`, fix `9219381` |
+| Ph6-2 | Frontend module hardening review | Next |
 
 ---
 
@@ -131,6 +134,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R21 | ✅ Pass | V0.1-Ph5 Ph5-4 (Boards/Kanban page module extraction) pass; Reviewed by Codex QA |
 | 2026-05-07 | R22 | ✅ Pass | V0.1-Ph5 Ph5-5 Calendar page module extraction pass; Reviewed by Codex QA |
 | 2026-05-07 | R23 | ✅ Pass | V0.1-Ph5 Ph5-6 (Extract OKR page module) pass ทุก 7 AC; Reviewed by Gemini QA |
+| 2026-05-07 | R24 | Pass | V0.1-Ph6 Ph6-1 frontend error hardening QA Recheck pass after Dev Fix `9219381`; smoke runner exits 0; Reviewed by Codex QA |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -163,54 +167,74 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-## ⚡ Next Action — Dev ต้องทำ
+## Next Action - Dev
 
 ---
 
-### V0.1-Ph6 · Code Quality & Hardening 🔴
+### V0.1-Ph6 Ph6-2 - Frontend Module Hardening Review
 
-**Context:**  
-Phase 5 (Frontend Modularization) เสร็จสมบูรณ์แล้ว ✅ (Settings page จะถูกจัดการในรอบ Refactor ถัดไป)
-Phase 6 เน้นการเพิ่มความเสถียรและคุณภาพของโค้ดที่ถูกแยกออกมาแล้ว
+**Context:**
+Ph6-1 frontend error hardening passed QA Recheck.
+Implementation commit: `8f34ba8`
+Dev Fix commit: `9219381`
+Reviewed by: Codex QA
+PM update: Codex PM
 
-**Task Ph6-1: Frontend Error Boundaries & Global Error Handler**
-เพิ่มกลไกจัดการ error ใน frontend เพื่อไม่ให้แอป crash เมื่อโมดูลใดโมดูลหนึ่งทำงานผิดพลาด
+**Goal:**
+Review extracted frontend page modules for consistent failure handling and shared helper safety without changing behavior.
 
 **What to do:**
-1. อัปเดต `public/js/utils.js`:
-   - เพิ่ม `window.onerror` และ `window.onunhandledrejection` handler เพื่อแสดง toast แจ้งเตือน user
-2. อัปเดต `public/js/router.js`:
-   - Wrap `navigateTo` logic ด้วย `try...catch` เพื่อให้การเปลี่ยนหน้าไม่ค้างถ้า page module มี runtime error
-3. ตรวจสอบและเพิ่ม `try...catch` ในจุดสำคัญของแต่ละ page module (โดยเฉพาะจุดที่เรียก API)
+1. Grep page entry functions in `public/js/pages/*.js` and remaining page functions in `public/app.js`.
+2. Check async page entry functions have appropriate `try...catch` or are protected by `navigateTo` fallback.
+3. Check user-facing API failures render toast or fallback UI instead of leaving stale/loading-only UI.
+4. Keep changes minimal and behavior-preserving.
+5. Run `node --check` on changed JS files.
+6. Run `npm.cmd run smoke`.
+7. If checking exact PowerShell npm flow, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke"`.
+
+**Rules:**
+- Dev role only.
+- Grep first, read targeted ranges for large files.
+- Do not refactor unrelated UI or move modules in this task.
+- Include attribution in handoff/notes: Implemented by Dev agent name.
 
 **AC:**
-- [ ] Runtime error ใน page module ไม่ทำให้หน้าเว็บขาวโพลน (มี Toast แจ้งเตือน)
-- [ ] `npm run smoke` pass
+- [ ] No page module can leave the main content in a permanent loading state on API failure.
+- [ ] Navigation-level fallback from Ph6-1 remains intact.
+- [ ] Smoke passes with exit code 0.
 
 **Commit:**
 ```
-git add public/js/
-git commit -m "V0.1-Ph6 Ph6-1: implement frontend error boundaries and global handlers"
+git add public/js/pages public/app.js public/js/router.js public/js/utils.js scripts/smoke-test.js
+git commit -m "V0.1-Ph6 Ph6-2: harden frontend module failure states"
+git push
 ```
 
-**Copy-paste prompt สำหรับ Dev session:**
+**Copy-paste prompt for Dev session:**
 ```
-คุณ Dev — เริ่ม Phase 6: Code Quality & Hardening
+Dev - Task: V0.1-Ph6 Ph6-2 - Frontend module hardening review
 
-1. อัปเดต public/js/utils.js:
-   - เพิ่ม global error handlers (onerror, onunhandledrejection)
-   - ให้เรียกใช้ toast() เพื่อแจ้งเตือน user เมื่อเกิด unexpected error
+Context:
+Ph6-1 frontend error hardening passed QA Recheck. Implementation commit `8f34ba8`; Dev Fix commit `9219381`; Reviewed by Codex QA. Next, review frontend modules for consistent failure handling without changing behavior.
 
-2. อัปเดต public/js/router.js:
-   - ปรับ navigateTo() ให้มี error boundary (try...catch)
-   - ถ้าเกิด error ในการโหลดหน้า ให้แสดง error state บน board-content และแจ้งเตือน
+Steps:
+1. Grep page entry functions in public/js/pages/*.js and remaining page functions in public/app.js.
+2. Check async page entry functions have appropriate try...catch or are protected by navigateTo fallback.
+3. Check user-facing API failures render toast or fallback UI instead of leaving stale/loading-only UI.
+4. Keep changes minimal and behavior-preserving.
+5. Run node --check on changed JS files.
+6. Run npm.cmd run smoke.
+7. If checking exact PowerShell npm flow, run powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke".
 
-3. สำรวจ page modules (today, okr, all-tasks, boards, calendar):
-   - มั่นใจว่า async functions มี try...catch ครบถ้วนและแสดง error UI ที่เหมาะสม
+Rules:
+- Grep first, read targeted ranges for large files.
+- Do not refactor unrelated UI or move modules in this task.
+- Include attribution: Implemented by Dev agent name.
 
-4. ตรวจ: npm run smoke pass
-
-Commit: "V0.1-Ph6 Ph6-1: implement frontend error boundaries and global handlers"
+Commit:
+git add public/js/pages public/app.js public/js/router.js public/js/utils.js scripts/smoke-test.js
+git commit -m "V0.1-Ph6 Ph6-2: harden frontend module failure states"
+git push
 ```
 
 ---
@@ -248,4 +272,4 @@ Commit: "V0.1-Ph6 Ph6-1: implement frontend error boundaries and global handlers
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
-| **V0.1 Modularization** | **🔄 In Progress (Ph6-1 next)** |
+| **V0.1 Modularization** | **🔄 In Progress (Ph6-2 next)** |
