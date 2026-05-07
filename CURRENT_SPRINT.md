@@ -68,6 +68,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph5 Ph5-5 - Extract Calendar page module | ✅ QA Pass | `59e6d31` |
 | V0.1-Ph5 Ph5-6 — Extract OKR page module | ✅ QA Pass | `1042113` |
 | V0.1-Ph6 Ph6-1 - Frontend Error Boundaries & Global Error Handler | QA Recheck Pass | `8f34ba8`, `9219381` |
+| V0.1-Ph6 Ph6-2 - Frontend module hardening review | QA Pass | `e85e384` |
 
 ---
 
@@ -102,7 +103,8 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph5-6 | Extract OKR page | ✅ Done `1042113` |
 | Ph5-7 | Extract Settings page | ⬜ Queued |
 | Ph6-1 | Frontend Error Boundaries & Global Error Handler | Done `8f34ba8`, fix `9219381` |
-| Ph6-2 | Frontend module hardening review | Next |
+| Ph6-2 | Frontend module hardening review | Done `e85e384` |
+| Ph6-3 | Frontend module load-order and dependency audit | Next |
 
 ---
 
@@ -135,6 +137,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R22 | ✅ Pass | V0.1-Ph5 Ph5-5 Calendar page module extraction pass; Reviewed by Codex QA |
 | 2026-05-07 | R23 | ✅ Pass | V0.1-Ph5 Ph5-6 (Extract OKR page module) pass ทุก 7 AC; Reviewed by Gemini QA |
 | 2026-05-07 | R24 | Pass | V0.1-Ph6 Ph6-1 frontend error hardening QA Recheck pass after Dev Fix `9219381`; smoke runner exits 0; Reviewed by Codex QA |
+| 2026-05-07 | R25 | Pass | V0.1-Ph6 Ph6-2 frontend module hardening review pass; Calendar render path awaits and renders fallback UI; smoke exits 0; Reviewed by Codex QA |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -171,69 +174,70 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph6 Ph6-2 - Frontend Module Hardening Review
+### V0.1-Ph6 Ph6-3 - Frontend Module Load-Order and Dependency Audit
 
 **Context:**
-Ph6-1 frontend error hardening passed QA Recheck.
-Implementation commit: `8f34ba8`
-Dev Fix commit: `9219381`
+Ph6-2 frontend module hardening passed QA.
+Dev commit: `e85e384`
 Reviewed by: Codex QA
 PM update: Codex PM
 
 **Goal:**
-Review extracted frontend page modules for consistent failure handling and shared helper safety without changing behavior.
+Audit plain-script frontend module dependencies after Phase 5 extraction and Phase 6 hardening, without changing behavior.
 
 **What to do:**
-1. Grep page entry functions in `public/js/pages/*.js` and remaining page functions in `public/app.js`.
-2. Check async page entry functions have appropriate `try...catch` or are protected by `navigateTo` fallback.
-3. Check user-facing API failures render toast or fallback UI instead of leaving stale/loading-only UI.
-4. Keep changes minimal and behavior-preserving.
-5. Run `node --check` on changed JS files.
-6. Run `npm.cmd run smoke`.
-7. If checking exact PowerShell npm flow, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke"`.
+1. Grep global function/state references across `public/js/pages/*.js`, `public/js/router.js`, `public/js/utils.js`, `public/js/state.js`, and `public/app.js`.
+2. Verify `public/index.html` script order supports every global reference.
+3. Verify page modules do not depend on functions loaded after them unless calls only happen after `app.js` has loaded.
+4. Document any risky dependency in code comments only if it prevents future breakage; otherwise keep code untouched.
+5. If a real load-order issue is found, fix it minimally.
+6. Run `node --check` on changed JS files.
+7. Run `npm.cmd run smoke`.
+8. If checking exact PowerShell npm flow, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke"`.
 
 **Rules:**
 - Dev role only.
 - Grep first, read targeted ranges for large files.
-- Do not refactor unrelated UI or move modules in this task.
+- Do not move modules or refactor UI unless a real load-order bug is found.
 - Include attribution in handoff/notes: Implemented by Dev agent name.
 
 **AC:**
-- [ ] No page module can leave the main content in a permanent loading state on API failure.
-- [ ] Navigation-level fallback from Ph6-1 remains intact.
+- [ ] `index.html` script order is documented/verified against page module dependencies.
+- [ ] No page module has an unsafe load-time dependency on later scripts.
 - [ ] Smoke passes with exit code 0.
 
 **Commit:**
 ```
-git add public/js/pages public/app.js public/js/router.js public/js/utils.js scripts/smoke-test.js
-git commit -m "V0.1-Ph6 Ph6-2: harden frontend module failure states"
+git add public/index.html public/js/pages public/js/router.js public/js/utils.js public/js/state.js public/app.js
+git commit -m "V0.1-Ph6 Ph6-3: audit frontend module load order"
 git push
 ```
 
 **Copy-paste prompt for Dev session:**
 ```
-Dev - Task: V0.1-Ph6 Ph6-2 - Frontend module hardening review
+Dev - Task: V0.1-Ph6 Ph6-3 - Frontend module load-order and dependency audit
 
 Context:
-Ph6-1 frontend error hardening passed QA Recheck. Implementation commit `8f34ba8`; Dev Fix commit `9219381`; Reviewed by Codex QA. Next, review frontend modules for consistent failure handling without changing behavior.
+Ph6-2 frontend module hardening passed QA (Dev commit `e85e384`, Reviewed by Codex QA). Next, audit plain-script frontend module dependencies after Phase 5 extraction and Phase 6 hardening, without changing behavior.
 
 Steps:
-1. Grep page entry functions in public/js/pages/*.js and remaining page functions in public/app.js.
-2. Check async page entry functions have appropriate try...catch or are protected by navigateTo fallback.
-3. Check user-facing API failures render toast or fallback UI instead of leaving stale/loading-only UI.
-4. Keep changes minimal and behavior-preserving.
-5. Run node --check on changed JS files.
-6. Run npm.cmd run smoke.
-7. If checking exact PowerShell npm flow, run powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke".
+1. Grep global function/state references across public/js/pages/*.js, public/js/router.js, public/js/utils.js, public/js/state.js, and public/app.js.
+2. Verify public/index.html script order supports every global reference.
+3. Verify page modules do not depend on functions loaded after them unless calls only happen after app.js has loaded.
+4. Document any risky dependency in code comments only if it prevents future breakage; otherwise keep code untouched.
+5. If a real load-order issue is found, fix it minimally.
+6. Run node --check on changed JS files.
+7. Run npm.cmd run smoke.
+8. If checking exact PowerShell npm flow, run powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke".
 
 Rules:
 - Grep first, read targeted ranges for large files.
-- Do not refactor unrelated UI or move modules in this task.
+- Do not move modules or refactor UI unless a real load-order bug is found.
 - Include attribution: Implemented by Dev agent name.
 
 Commit:
-git add public/js/pages public/app.js public/js/router.js public/js/utils.js scripts/smoke-test.js
-git commit -m "V0.1-Ph6 Ph6-2: harden frontend module failure states"
+git add public/index.html public/js/pages public/js/router.js public/js/utils.js public/js/state.js public/app.js
+git commit -m "V0.1-Ph6 Ph6-3: audit frontend module load order"
 git push
 ```
 
@@ -272,4 +276,4 @@ git push
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
-| **V0.1 Modularization** | **🔄 In Progress (Ph6-2 next)** |
+| **V0.1 Modularization** | **🔄 In Progress (Ph6-3 next)** |
