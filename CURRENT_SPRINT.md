@@ -102,11 +102,12 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph5-4 | Extract Boards/Kanban page | ✅ Done `de9cd79` |
 | Ph5-5 | Extract Calendar page | ✅ Done `59e6d31` |
 | Ph5-6 | Extract OKR page | ✅ Done `1042113` |
-| Ph5-7 | Extract Settings page | ⬜ Queued |
+| Ph5-7 | Extract Settings page | Next |
 | Ph6-1 | Frontend Error Boundaries & Global Error Handler | Done `8f34ba8`, fix `9219381` |
 | Ph6-2 | Frontend module hardening review | Done `e85e384` |
 | Ph6-3 | Frontend module load-order and dependency audit | Done `0b00854` |
-| Ph6-4 | Frontend verification script consolidation | Next |
+| Router-1 | URL path sync for page navigation | Queued after Ph5-7 |
+| Ph6-4 | Frontend verification script consolidation | Queued after Router-1 |
 
 ---
 
@@ -177,73 +178,85 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph6 Ph6-4 - Frontend Verification Script Consolidation
+### V0.1-Ph5 Ph5-7 - Extract Settings Page Module
 
 **Context:**
-Ph6-3 frontend module load-order audit passed QA.
-Dev commit: `0b00854`
-Reviewed by: Codex QA
-PM update: Codex PM
+PM review found Phase 5 is not fully closed because `Ph5-7 Extract Settings page` is still queued.
+The next sequence is:
+1. Finish Ph5-7 Settings extraction.
+2. Then do Router-1 URL path sync.
+3. Then return to Ph6-4 frontend verification script consolidation.
 
 **Goal:**
-Make frontend verification repeatable by consolidating the current manual checks into a small script or npm command, without changing app behavior.
+Extract the Settings page from `public/app.js` into `public/js/pages/settings.js` without changing behavior.
 
 **What to do:**
-1. Inspect `package.json` scripts and existing `scripts/smoke-test.js`.
-2. Add a minimal verification script/command that runs:
+1. Grep `public/app.js` for `showSettingsPage`, `renderSettingsVisibility`, `renderSettingsTeams`, `renderSettingsGroups`, `loadSettingsWorkspaces`, and `saveSettingsConfig`.
+2. Read targeted ranges only to identify Settings-only scope.
+3. Check cross-page references before moving each function.
+4. Create `public/js/pages/settings.js` with Python splice/copy, UTF-8 safe.
+5. Add `<script src="js/pages/settings.js"></script>` in `public/index.html` after `okr.js` and before `app.js`.
+6. Remove Settings-only block from `public/app.js` with Python splice.
+7. Keep shared helpers/state in `app.js` if they are used outside Settings.
+8. Verify:
+   - `node --check public/js/pages/settings.js`
    - `node --check public/app.js`
-   - `node --check` for every `public/js/pages/*.js`
-   - existing smoke check
-3. Keep Windows compatibility in mind; prefer commands that work via `npm.cmd` and PowerShell.
-4. Do not change app runtime behavior.
-5. Run the new verification command.
-6. Run `npm.cmd run smoke`.
-7. If checking exact PowerShell npm flow, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke"`.
+   - `npm.cmd run smoke`
+   - `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke"`
+9. If possible, browser verify Settings page renders.
 
 **Rules:**
 - Dev role only.
-- Grep/read targeted files first.
-- Keep the script small and dependency-free.
-- Do not touch unrelated docs or config.
-- Include attribution in handoff/notes: Implemented by Dev agent name.
+- Grep first, targeted reads for large files.
+- Move only Settings page functions.
+- No bundler; plain script tag only.
+- Do not stage unrelated `GEMINI.md` changes.
+- Include attribution: Implemented by Dev agent name.
 
 **AC:**
-- [ ] A repeatable frontend verification command exists in `package.json`.
-- [ ] The command checks app JS and all page module JS syntax.
-- [ ] Existing smoke still passes with exit code 0.
+- [ ] `public/js/pages/settings.js` exists and contains Settings page functions.
+- [ ] `public/app.js` no longer contains `showSettingsPage`.
+- [ ] `public/index.html` script order is `... calendar.js -> okr.js -> settings.js -> app.js`.
+- [ ] `public/js/router.js` route `settings` still calls `showSettingsPage()`.
+- [ ] Smoke passes with exit code 0.
 
 **Commit:**
 ```
-git add package.json scripts
-git commit -m "V0.1-Ph6 Ph6-4: consolidate frontend verification script"
+git add public/js/pages/settings.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-7: extract Settings page module from app.js"
 git push
 ```
 
 **Copy-paste prompt for Dev session:**
 ```
-Dev - Task: V0.1-Ph6 Ph6-4 - Frontend verification script consolidation
+Dev - Task: V0.1-Ph5 Ph5-7 - Extract Settings page module
 
 Context:
-Ph6-3 frontend module load-order audit passed QA (Dev commit `0b00854`, Reviewed by Codex QA). Next, make frontend verification repeatable by consolidating current manual checks into a small script or npm command, without changing app behavior.
+PM review found Phase 5 is not fully closed because Ph5-7 Extract Settings page is still queued. Complete Settings extraction first, then Router-1 URL path sync, then return to Ph6-4 verification script consolidation.
 
 Steps:
-1. Inspect package.json scripts and existing scripts/smoke-test.js.
-2. Add a minimal verification script/command that runs node --check public/app.js, node --check for every public/js/pages/*.js, and existing smoke check.
-3. Keep Windows compatibility in mind; prefer commands that work via npm.cmd and PowerShell.
-4. Do not change app runtime behavior.
-5. Run the new verification command.
-6. Run npm.cmd run smoke.
-7. If checking exact PowerShell npm flow, run powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke".
+1. Grep public/app.js for showSettingsPage, renderSettingsVisibility, renderSettingsTeams, renderSettingsGroups, loadSettingsWorkspaces, and saveSettingsConfig.
+2. Read targeted ranges only to identify Settings-only scope.
+3. Check cross-page references before moving each function.
+4. Create public/js/pages/settings.js with Python splice/copy, UTF-8 safe.
+5. Add <script src="js/pages/settings.js"></script> in public/index.html after okr.js and before app.js.
+6. Remove Settings-only block from public/app.js with Python splice.
+7. Keep shared helpers/state in app.js if they are used outside Settings.
+8. Verify node --check public/js/pages/settings.js and public/app.js.
+9. Run npm.cmd run smoke.
+10. Run powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke".
+11. If possible, browser verify Settings page renders.
 
 Rules:
-- Grep/read targeted files first.
-- Keep the script small and dependency-free.
-- Do not touch unrelated docs or config.
+- Grep first, targeted reads for large files.
+- Move only Settings page functions.
+- No bundler; plain script tag only.
+- Do not stage unrelated GEMINI.md changes.
 - Include attribution: Implemented by Dev agent name.
 
 Commit:
-git add package.json scripts
-git commit -m "V0.1-Ph6 Ph6-4: consolidate frontend verification script"
+git add public/js/pages/settings.js public/app.js public/index.html
+git commit -m "V0.1-Ph5 Ph5-7: extract Settings page module from app.js"
 git push
 ```
 
@@ -282,4 +295,4 @@ git push
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
-| **V0.1 Modularization** | **🔄 In Progress (Ph6-4 next)** |
+| **V0.1 Modularization** | **🔄 In Progress (Ph5-7 next, then Router-1, then Ph6-4)** |
