@@ -18,6 +18,7 @@ async function run() {
   for (const { label, url } of CHECKS) {
     try {
       const res = await fetch(url);
+      await res.arrayBuffer();
       if (res.ok) {
         console.log(`PASS  ${label}  (${res.status})`);
       } else {
@@ -30,7 +31,10 @@ async function run() {
     }
   }
 
-  process.exit(anyFail ? 1 : 0);
+  process.exitCode = anyFail ? 1 : 0;
 }
 
-run();
+run().catch(err => {
+  console.error(`FAIL  smoke runner  (${err.message})`);
+  process.exitCode = 1;
+});
