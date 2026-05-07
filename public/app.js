@@ -17,7 +17,7 @@ async function init() {
   }
 
   renderSidebar();
-  navigateTo("today");
+  navigateTo(getPageFromPath(), { replace: true });
   updateReviewBadge().catch(() => {});
 }
 

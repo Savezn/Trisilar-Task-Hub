@@ -57,5 +57,20 @@ app.use("/api", makeTrelloRoutes({
 }));
 
 // ── Start ─────────────────────────────────────────────────────────────────────
+// Page route fallback for browser history navigation.
+app.get([
+  "/today",
+  "/review",
+  "/all",
+  "/boards",
+  "/calendar",
+  "/planner",
+  "/okr",
+  "/focus",
+  "/settings",
+], (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀  http://localhost:${PORT}`));

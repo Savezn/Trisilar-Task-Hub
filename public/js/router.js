@@ -1,6 +1,43 @@
 // ── Navigation ────────────────────────────────────────────────────────────────
-function navigateTo(page) {
+// Implemented by: Codex Dev (2026-05-07) - Router-1 URL path sync.
+const PAGE_PATHS = {
+  today: "/today",
+  review: "/review",
+  all: "/all",
+  boards: "/boards",
+  calendar: "/calendar",
+  planner: "/planner",
+  okr: "/okr",
+  focus: "/focus",
+  settings: "/settings",
+};
+
+const PATH_PAGES = Object.fromEntries(
+  Object.entries(PAGE_PATHS).map(([page, path]) => [path, page])
+);
+
+function getPageFromPath(pathname = window.location.pathname) {
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  if (normalized === "/") return "today";
+  return PATH_PAGES[normalized] || "today";
+}
+
+function syncPagePath(page, { replace = false } = {}) {
+  const path = PAGE_PATHS[page];
+  if (!path || window.location.pathname === path) return;
+  if (page === "today" && replace && window.location.pathname === "/") return;
+  const nextUrl = `${path}${window.location.search}${window.location.hash}`;
+  const state = { page };
+  if (replace) window.history.replaceState(state, "", nextUrl);
+  else window.history.pushState(state, "", nextUrl);
+}
+
+function navigateTo(page, options = {}) {
   try {
+    if (PAGE_PATHS[page] && options.updateUrl !== false) {
+      syncPagePath(page, { replace: Boolean(options.replace) });
+    }
+
     // Update active nav items
     document.querySelectorAll(".nav-item").forEach(el => {
       el.classList.toggle("active", el.dataset.page === page);
@@ -40,3 +77,7 @@ function navigateTo(page) {
     toast(`Page load error: ${e.message}`, true);
   }
 }
+
+window.addEventListener("popstate", () => {
+  navigateTo(getPageFromPath(), { updateUrl: false });
+});
