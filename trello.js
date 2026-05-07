@@ -1,5 +1,11 @@
 const BASE_URL = "https://api.trello.com/1";
 
+const CARD_METADATA_QUERY = "fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList,idMembers,labels" +
+  "&members=true&member_fields=id,username,fullName" +
+  "&checklists=all&checklist_fields=id,name,pos" +
+  "&checkItems=all&checkItem_fields=id,name,state,pos" +
+  "&customFieldItems=true";
+
 async function trelloRequest(method, path, body = null) {
   // B5: Move AUTH inside function to ensure process.env is loaded (fixes 401: invalid key)
   const authQuery = `key=${process.env.TRELLO_API_KEY}&token=${process.env.TRELLO_TOKEN}`;
@@ -55,15 +61,15 @@ async function createList(boardId, name) {
 // ── Cards ────────────────────────────────────────────────────────────────────
 
 async function getCards(listId) {
-  return trelloRequest("GET", `/lists/${listId}/cards?fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList,idMembers,labels&members=true&member_fields=id,username,fullName&checklists=all&checklist_fields=id,name,pos&checkItems=all&checkItem_fields=id,name,state&customFieldItems=true`);
+  return trelloRequest("GET", `/lists/${listId}/cards?${CARD_METADATA_QUERY}`);
 }
 
 async function getBoardCards(boardId) {
-  return trelloRequest("GET", `/boards/${boardId}/cards?fields=id,name,desc,due,dueComplete,start,dueReminder,url,idList,idMembers,labels&members=true&member_fields=id,username,fullName&checklists=all&checklist_fields=id,name,pos&checkItems=all&checkItem_fields=id,name,state&customFieldItems=true`);
+  return trelloRequest("GET", `/boards/${boardId}/cards?${CARD_METADATA_QUERY}`);
 }
 
 async function getCard(cardId) {
-  return trelloRequest("GET", `/cards/${cardId}?fields=id,name,desc,due,url,idList`);
+  return trelloRequest("GET", `/cards/${cardId}?${CARD_METADATA_QUERY}`);
 }
 
 async function createCard(listId, name, desc = "", due = null, start = null, dueReminder = -1) {

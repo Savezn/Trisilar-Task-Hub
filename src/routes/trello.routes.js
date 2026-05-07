@@ -67,6 +67,23 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
     catch (e) { res.status(500).json({ error: friendlyError(e) }); }
   });
 
+  router.get("/boards/:id/cards", async (req, res) => {
+    try {
+      const boardId = req.params.id;
+      const [lists, cards] = await Promise.all([
+        trello.getLists(boardId).catch(() => []),
+        trello.getBoardCards(boardId),
+      ]);
+      const cfData = await buildCfNames(boardId, new Map(), trello);
+      const listMap = Object.fromEntries((lists || []).map(l => [l.id, l.name]));
+      res.json(cards.map(card => ({
+        ...normalizeCard(card, cfData),
+        listName: listMap[card.idList] || "Unknown",
+        boardId,
+      })));
+    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+  });
+
   router.post("/cards", async (req, res) => {
     try {
       const { listId, name, desc, due, start, dueReminder, syncCalendar } = req.body;
@@ -126,12 +143,12 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       const cfCache = new Map();
 
       await Promise.all(boards.map(async (board) => {
-        const cfNames = await buildCfNames(board.id, cfCache, board.customFields);
+        const cfData = await buildCfNames(board.id, cfCache, board.customFields);
         const listMap = Object.fromEntries((board.lists || []).map(l => [l.id, l.name]));
         
         const cards = await trello.getBoardCards(board.id);
         cards.forEach((card) => result.push({
-          ...normalizeCard(card, cfNames),
+          ...normalizeCard(card, cfData),
           listName: listMap[card.idList] || "Unknown",
           boardName: board.name,
           boardId: board.id,
@@ -163,12 +180,12 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       const cfCache = new Map();
 
       await Promise.all(filteredBoards.map(async (board) => {
-        const cfNames = await buildCfNames(board.id, cfCache, board.customFields);
+        const cfData = await buildCfNames(board.id, cfCache, board.customFields);
         const listMap = Object.fromEntries((board.lists || []).map(l => [l.id, l.name]));
         
         const cards = await trello.getBoardCards(board.id);
         cards.forEach(card => result.push({
-          ...normalizeCard(card, cfNames),
+          ...normalizeCard(card, cfData),
           listName: listMap[card.idList] || "Unknown",
           boardId: board.id,
           boardName: board.name,

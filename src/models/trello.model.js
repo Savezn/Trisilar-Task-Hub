@@ -1,8 +1,10 @@
 /**
  * Normalize raw Trello card → consistent shape for all-cards / boards/cards
- * cfNames: Map<idCustomField, fieldName> — built per-board to resolve human-readable keys
+ * cfData: { nameMap: Map<id, name>, optionMap: Map<id, value> }
  */
-function normalizeCard(card, cfNames = new Map()) {
+function normalizeCard(card, cfData = { nameMap: new Map(), optionMap: new Map() }) {
+  const { nameMap, optionMap } = cfData;
+
   // Checklist progress from embedded checkItems
   let clDone = 0, clTotal = 0;
   (card.checklists || []).forEach(cl => {
@@ -16,8 +18,15 @@ function normalizeCard(card, cfNames = new Map()) {
   const customFields = {};
   (card.customFieldItems || []).forEach(cf => {
     const val = cf.value || {};
-    const key = cfNames.get(cf.idCustomField) || cf.idCustomField;
-    customFields[key] = val.text ?? val.number ?? val.date ?? val.checked ?? null;
+    const key = nameMap.get(cf.idCustomField) || cf.idCustomField;
+
+    // Value resolution: Check for standard types, then fallback to dropdown options
+    let value = val.text ?? val.number ?? val.date ?? val.checked ?? null;
+    if (value === null && cf.idValue) {
+      value = optionMap.get(cf.idValue) || cf.idValue;
+    }
+
+    customFields[key] = value;
   });
 
   return {
@@ -38,23 +47,42 @@ function normalizeCard(card, cfNames = new Map()) {
 }
 
 /**
- * Build cfNames Map for a board — per-request cache (Map passed in by caller)
- * @param {string} boardId 
- * @param {Map} cfCache 
- * @param {object} trello - Trello API client
+ * Build cfData (names and options maps) for a board
+ * @param {string} boardId
+ * @param {Map} cfCache - global cache Map<boardId, cfData>
+ * @param {Array|object} source - either array of custom field definitions OR trello client
  */
-async function buildCfNames(boardId, cfCache, trello) {
+async function buildCfNames(boardId, cfCache, source) {
   if (cfCache.has(boardId)) return cfCache.get(boardId);
-  try {
-    const fields = await trello.getBoardCustomFields(boardId);
-    const map = new Map((fields || []).map(f => [f.id, f.name]));
-    cfCache.set(boardId, map);
-    return map;
-  } catch {
-    // Board has no custom fields or API unsupported — return empty map (safe fallback)
-    cfCache.set(boardId, new Map());
-    return new Map();
+
+  let fields = [];
+  if (Array.isArray(source)) {
+    fields = source;
+  } else if (source && typeof source.getBoardCustomFields === 'function') {
+    try {
+      fields = await source.getBoardCustomFields(boardId);
+    } catch {
+      fields = [];
+    }
   }
+
+  const nameMap = new Map();
+  const optionMap = new Map();
+
+  (fields || []).forEach(f => {
+    nameMap.set(f.id, f.name);
+    if (f.options) {
+      f.options.forEach(opt => {
+        if (opt.value && opt.value.text) {
+          optionMap.set(opt.id, opt.value.text);
+        }
+      });
+    }
+  });
+
+  const data = { nameMap, optionMap };
+  cfCache.set(boardId, data);
+  return data;
 }
 
 module.exports = {
