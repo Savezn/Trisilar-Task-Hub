@@ -67,6 +67,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | V0.1-Ph5 Ph5-4 - Extract Boards/Kanban page module | ✅ QA Pass | `de9cd79` |
 | V0.1-Ph5 Ph5-5 - Extract Calendar page module | ✅ QA Pass | `59e6d31` |
 | V0.1-Ph5 Ph5-6 — Extract OKR page module | ✅ QA Pass | `1042113` |
+| V0.1-Ph5 Ph5-7 - Extract Settings page module | QA Pass | `94ec023` |
 | V0.1-Ph6 Ph6-1 - Frontend Error Boundaries & Global Error Handler | QA Recheck Pass | `8f34ba8`, `9219381` |
 | V0.1-Ph6 Ph6-2 - Frontend module hardening review | QA Pass | `e85e384` |
 | V0.1-Ph6 Ph6-3 - Frontend module load-order and dependency audit | QA Pass | `0b00854` |
@@ -102,11 +103,11 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph5-4 | Extract Boards/Kanban page | ✅ Done `de9cd79` |
 | Ph5-5 | Extract Calendar page | ✅ Done `59e6d31` |
 | Ph5-6 | Extract OKR page | ✅ Done `1042113` |
-| Ph5-7 | Extract Settings page | Next |
+| Ph5-7 | Extract Settings page | Done `94ec023` |
 | Ph6-1 | Frontend Error Boundaries & Global Error Handler | Done `8f34ba8`, fix `9219381` |
 | Ph6-2 | Frontend module hardening review | Done `e85e384` |
 | Ph6-3 | Frontend module load-order and dependency audit | Done `0b00854` |
-| Router-1 | URL path sync for page navigation | Queued after Ph5-7 |
+| Router-1 | URL path sync for page navigation | Next |
 | Ph6-4 | Frontend verification script consolidation | Queued after Router-1 |
 
 ---
@@ -142,6 +143,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R24 | Pass | V0.1-Ph6 Ph6-1 frontend error hardening QA Recheck pass after Dev Fix `9219381`; smoke runner exits 0; Reviewed by Codex QA |
 | 2026-05-07 | R25 | Pass | V0.1-Ph6 Ph6-2 frontend module hardening review pass; Calendar render path awaits and renders fallback UI; smoke exits 0; Reviewed by Codex QA |
 | 2026-05-07 | R26 | Pass | V0.1-Ph6 Ph6-3 frontend module load-order audit pass; script order contract verified; smoke exits 0; Reviewed by Codex QA |
+| 2026-05-07 | R27 | Pass | V0.1-Ph5 Ph5-7 Settings page module extraction pass; browser desktop check limited by in-app mobile viewport/sidebar hidden state; Reviewed by Codex QA |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -178,85 +180,84 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1-Ph5 Ph5-7 - Extract Settings Page Module
+### Router-1 - URL Path Sync for Page Navigation
 
 **Context:**
-PM review found Phase 5 is not fully closed because `Ph5-7 Extract Settings page` is still queued.
-The next sequence is:
-1. Finish Ph5-7 Settings extraction.
-2. Then do Router-1 URL path sync.
-3. Then return to Ph6-4 frontend verification script consolidation.
+Phase 5 page extraction is now closed through Ph5-7 Settings extraction.
+Next sequence is:
+1. Implement Router-1 URL path sync.
+2. Then return to Ph6-4 frontend verification script consolidation.
 
 **Goal:**
-Extract the Settings page from `public/app.js` into `public/js/pages/settings.js` without changing behavior.
+Make page navigation update the browser URL path and support direct URL entry/back-forward navigation without changing existing page behavior.
 
 **What to do:**
-1. Grep `public/app.js` for `showSettingsPage`, `renderSettingsVisibility`, `renderSettingsTeams`, `renderSettingsGroups`, `loadSettingsWorkspaces`, and `saveSettingsConfig`.
-2. Read targeted ranges only to identify Settings-only scope.
-3. Check cross-page references before moving each function.
-4. Create `public/js/pages/settings.js` with Python splice/copy, UTF-8 safe.
-5. Add `<script src="js/pages/settings.js"></script>` in `public/index.html` after `okr.js` and before `app.js`.
-6. Remove Settings-only block from `public/app.js` with Python splice.
-7. Keep shared helpers/state in `app.js` if they are used outside Settings.
+1. Grep `public/js/router.js`, `public/app.js`, and `public/index.html` for `navigateTo`, `S.mode`, page route cases, and startup/init flow.
+2. Read targeted ranges only to understand current router and initialization behavior.
+3. Add URL path sync for page navigation, using plain browser history APIs.
+4. Support direct path load for known pages, for example `/today`, `/all`, `/boards`, `/calendar`, `/okr`, `/settings`, while preserving existing default behavior for `/`.
+5. Support browser back/forward via `popstate`.
+6. Keep existing `navigateTo(page)` call sites working.
+7. Avoid hard reloads and avoid changing API/server behavior unless a minimal static fallback is required.
 8. Verify:
-   - `node --check public/js/pages/settings.js`
+   - `node --check public/js/router.js`
    - `node --check public/app.js`
    - `npm.cmd run smoke`
    - `powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke"`
-9. If possible, browser verify Settings page renders.
+9. If possible, browser verify clicking pages changes the URL path and direct navigation to a page path renders the expected page.
 
 **Rules:**
 - Dev role only.
 - Grep first, targeted reads for large files.
-- Move only Settings page functions.
-- No bundler; plain script tag only.
+- Keep changes minimal and behavior-preserving.
+- No bundler; plain script behavior only.
 - Do not stage unrelated `GEMINI.md` changes.
 - Include attribution: Implemented by Dev agent name.
 
 **AC:**
-- [ ] `public/js/pages/settings.js` exists and contains Settings page functions.
-- [ ] `public/app.js` no longer contains `showSettingsPage`.
-- [ ] `public/index.html` script order is `... calendar.js -> okr.js -> settings.js -> app.js`.
-- [ ] `public/js/router.js` route `settings` still calls `showSettingsPage()`.
+- [ ] Clicking a page updates the URL path.
+- [ ] Direct page paths render the matching page.
+- [ ] Browser back/forward changes the rendered page.
+- [ ] Existing `navigateTo(page)` call sites still work.
 - [ ] Smoke passes with exit code 0.
 
 **Commit:**
 ```
-git add public/js/pages/settings.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-7: extract Settings page module from app.js"
+git add public/js/router.js public/app.js public/index.html server.js
+git commit -m "Router-1: sync URL path with page navigation"
 git push
 ```
 
 **Copy-paste prompt for Dev session:**
 ```
-Dev - Task: V0.1-Ph5 Ph5-7 - Extract Settings page module
+Dev - Task: Router-1 - URL Path Sync for Page Navigation
 
 Context:
-PM review found Phase 5 is not fully closed because Ph5-7 Extract Settings page is still queued. Complete Settings extraction first, then Router-1 URL path sync, then return to Ph6-4 verification script consolidation.
+Phase 5 page extraction is complete through Ph5-7 Settings extraction (commit `94ec023`, Reviewed by Codex QA). Next, implement URL path sync for page navigation before returning to Ph6-4 verification script consolidation.
 
 Steps:
-1. Grep public/app.js for showSettingsPage, renderSettingsVisibility, renderSettingsTeams, renderSettingsGroups, loadSettingsWorkspaces, and saveSettingsConfig.
-2. Read targeted ranges only to identify Settings-only scope.
-3. Check cross-page references before moving each function.
-4. Create public/js/pages/settings.js with Python splice/copy, UTF-8 safe.
-5. Add <script src="js/pages/settings.js"></script> in public/index.html after okr.js and before app.js.
-6. Remove Settings-only block from public/app.js with Python splice.
-7. Keep shared helpers/state in app.js if they are used outside Settings.
-8. Verify node --check public/js/pages/settings.js and public/app.js.
+1. Grep public/js/router.js, public/app.js, and public/index.html for navigateTo, S.mode, route cases, and init/startup flow.
+2. Read targeted ranges only to understand current router and initialization behavior.
+3. Add URL path sync using browser history APIs so page navigation updates the URL path.
+4. Support direct URL entry for known pages such as /today, /all, /boards, /calendar, /okr, /settings, while preserving / default behavior.
+5. Support browser back/forward with popstate.
+6. Keep existing navigateTo(page) call sites working.
+7. Avoid hard reloads and avoid changing API/server behavior unless a minimal static fallback is required.
+8. Verify node --check on changed JS files.
 9. Run npm.cmd run smoke.
 10. Run powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "npm run smoke".
-11. If possible, browser verify Settings page renders.
+11. If possible, browser verify clicking pages changes URL path and direct page path renders correctly.
 
 Rules:
 - Grep first, targeted reads for large files.
-- Move only Settings page functions.
-- No bundler; plain script tag only.
+- Keep changes minimal and behavior-preserving.
+- No bundler; plain script behavior only.
 - Do not stage unrelated GEMINI.md changes.
 - Include attribution: Implemented by Dev agent name.
 
 Commit:
-git add public/js/pages/settings.js public/app.js public/index.html
-git commit -m "V0.1-Ph5 Ph5-7: extract Settings page module from app.js"
+git add public/js/router.js public/app.js public/index.html server.js
+git commit -m "Router-1: sync URL path with page navigation"
 git push
 ```
 
@@ -295,4 +296,4 @@ git push
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-05) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
-| **V0.1 Modularization** | **🔄 In Progress (Ph5-7 next, then Router-1, then Ph6-4)** |
+| **V0.1 Modularization** | **🔄 In Progress (Router-1 next, then Ph6-4)** |
