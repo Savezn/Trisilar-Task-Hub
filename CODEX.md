@@ -65,6 +65,11 @@ rg -n "router\.(get|post|put|delete)|app\.(get|post|put|delete)" server.js src
 - Use `apply_patch` for manual file edits.
 - Use Python splice only when the user explicitly asks for UTF-8 safe block moves
   or large mechanical extraction.
+- For Markdown files that contain Thai, emoji, or typographic punctuation, read
+  and write UTF-8 explicitly. Do not use broad rewrites through PowerShell
+  default encoding or ANSI/Windows-1252 paths.
+- After editing UTF-8-heavy Markdown, verify no mojibake markers remain
+  (for example UTF-8 bytes rendered as Windows-1252 text).
 - Never revert unrelated user changes.
 - Never use `git add .`; stage specific files only.
 

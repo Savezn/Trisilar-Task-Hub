@@ -75,6 +75,13 @@ For Version 0.1 work use prefix `V0.1-PhX:` instead of `Phase X —`:
 git commit -m "V0.1-Ph2: extract config routes to src/routes/config.routes.js"
 ```
 
+Encoding rule:
+- For Markdown files that contain Thai, emoji, or typographic punctuation, read
+  and write UTF-8 explicitly. Do not use broad rewrites through PowerShell
+  default encoding or ANSI/Windows-1252 paths.
+- After editing UTF-8-heavy Markdown, verify no mojibake markers remain
+  (for example UTF-8 bytes rendered as Windows-1252 text).
+
 ---
 
 ## 5. AI Work Attribution

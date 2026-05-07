@@ -38,6 +38,13 @@ Rules:
 - **Content:** Describe **what changed and why**.
 - **Staging:** Stage specific files only (`git add <file>`). **Never** use `git add .`.
 
+## 3.1 Encoding Rule
+- For Markdown files that contain Thai, emoji, or typographic punctuation, read
+  and write UTF-8 explicitly. Do not use broad rewrites through PowerShell
+  default encoding or ANSI/Windows-1252 paths.
+- After editing UTF-8-heavy Markdown, verify no mojibake markers remain
+  (for example UTF-8 bytes rendered as Windows-1252 text).
+
 ## 4. AI Work Attribution
 This project is worked on by multiple AI agents: Gemini, Claude, and Codex. Every
 agent must make ownership clear in the documents that matter for handoff.
