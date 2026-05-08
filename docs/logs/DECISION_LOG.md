@@ -24,6 +24,7 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | 2026-05-08 | Use Cloudflare Tunnel + Cloudflare Access as W1 no-cost teammate preview path | The current team is two users, does not want paid deploy cost yet, and needs a cleaner future path for Paperclip agent/service-token access than ngrok; Render remains paid hosted default and Railway remains paid hosted alternate when always-on runtime is justified | Codex PM |
 | 2026-05-08 | Create project-wide ladder in `docs/plans/PROJECT_LADDER.md` | Separates release sequencing from `CURRENT_SPRINT.md` and keeps `TODO.md` as an index while clarifying V0.2 cannot release until access, full UI, and Paperclip gates are accepted | Codex PM |
 | 2026-05-08 | Lead W2 phase planning with canonical IDs `V0.2-W2-01`-`V0.2-W2-06`; keep `W2a`-`W2f` as aliases only | Aligns W2 phase structure with the latest dev naming policy so Dev, QA, PM prompts, commits, and PR notes use stable canonical task IDs | Codex PM |
+| 2026-05-08 | Accept `V0.2-W2-02` Review Queue redesign at `d33d8f7` | QA Recheck passed drawer click handling regression, Review create/edit/approve/reject/bulk workflows, processed read-only rows, mobile overflow 0, Today controlled smoke, and W3 Paperclip contract/mock regression; local Trello 401 was credential/env noise | Codex PM |
 
 ---
 
@@ -93,6 +94,7 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | Date | Decision | Updated by |
 |---|---|---|
 | 2026-05-08 | Reclassified accepted `b5f67fb` work as `V0.2-W2-01` (`W2a`) Shell Foundation + Today Redesign only. Full W2 UI Redesign remains open through `V0.2-W2-02`-`V0.2-W2-06` (`W2b`-`W2f`) and must be accepted phase by phase against `docs/design/ui-design-v1-0/`. | Codex PM |
+| 2026-05-08 | Accepted `V0.2-W2-02` (`W2b`) Review Queue + Shared Task Drawer at `d33d8f7`. Full W2 UI Redesign remains open through `V0.2-W2-03`-`V0.2-W2-06` (`W2c`-`W2f`). | Codex PM |
 
 ---
 

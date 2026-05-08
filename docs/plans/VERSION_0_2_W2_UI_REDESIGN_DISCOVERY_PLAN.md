@@ -1,7 +1,7 @@
 # V0.2 W2 UI Redesign Discovery and Implementation Plan
 
 **Doc Role:** W2-owned discovery, scope, rollout, and QA plan
-**Status:** PM updated - phased full UI redesign plan
+**Status:** PM updated - W2-02 accepted; phased full UI redesign continues
 **Workstream:** V0.2 W2 - Full UI Redesign
 **Branch Baseline:** `dev` after W0 QA pass at `9dbb47b`
 **Created:** 2026-05-08
@@ -125,8 +125,8 @@ W2 is now managed as a sequence of implementation phases. Each phase should keep
 | Canonical ID | Alias | Name | Status | Production surfaces | Design baseline | PM acceptance gate |
 |---|---|---|---|---|---|---|
 | `V0.2-W2-01` | `W2a` | Shell Foundation + Today Redesign | Accepted at `b5f67fb` / merged to `dev` | Shell, mobile nav, Today | `pages-shell.jsx`, shared tokens, Today command center | Accepted as foundation only, not full redesign |
-| `V0.2-W2-02` | `W2b` | Review Queue + Shared Task Drawer | Planned | `/review`, shared review task cards, task detail/edit drawer if feasible | `pages-review-cal-settings.jsx`, `TaskDrawer`, review task patterns | Review create/edit/approve/reject/bulk workflows pass with desktop/mobile evidence |
-| `V0.2-W2-03` | `W2c` | Tasks Inbox + Cross-board Rows | Planned | `/all`, task filters, grouping, CSV export, card open/edit | `pages-tasks-boards.jsx`, reusable `TaskRow`, filters, board tags | Tasks page visually matches prototype direction and preserves all task workflows |
+| `V0.2-W2-02` | `W2b` | Review Queue + Shared Task Drawer | Accepted at `d33d8f7` | `/review`, shared review task cards, task detail/edit drawer foundation | `pages-review-cal-settings.jsx`, `TaskDrawer`, review task patterns | QA/Recheck passed Review create/edit/approve/reject/bulk, drawer close paths, mobile overflow, Today smoke, and W3 smoke |
+| `V0.2-W2-03` | `W2c` | Tasks Inbox + Cross-board Rows | Planned next | `/all`, task filters, grouping, CSV export, card open/edit | `pages-tasks-boards.jsx`, reusable `TaskRow`, filters, board tags | Tasks page visually matches prototype direction and preserves all task workflows |
 | `V0.2-W2-04` | `W2d` | Boards Monitor + Team Board Views | Planned | `/boards`, board/team modes, health/convention surfaces, board open behavior | `pages-tasks-boards.jsx`, board/team cards and dense monitor layouts | Boards monitor is redesigned without losing metadata health and label/team workflows |
 | `V0.2-W2-05` | `W2e` | Calendar + Planner | Planned | `/calendar`, `/planner`, Google Calendar status/events, Google Tasks add/complete, Trello due lists | `pages-review-cal-settings.jsx`, calendar/planner surface direction | Calendar and Planner distinguish event/task sources and pass mobile responsive checks |
 | `V0.2-W2-06` | `W2f` | Settings + OKR + Weekly Focus Polish | Planned | `/settings`, `/okr`, `/focus`, integration controls, BU groups, workspace visibility | `pages-review-cal-settings.jsx`, settings cards, page system tokens | Remaining pages inherit the same shell/tokens and no longer look like legacy screens |
@@ -141,7 +141,8 @@ Project phase-ladder alignment:
 Phase rules:
 
 - `V0.2-W2-01` remains accepted and should not be reopened unless a regression is found.
-- `V0.2-W2-02` should be the next Dev implementation phase because Review Queue is the highest-risk automation workflow after Today. Alias: `W2b`.
+- `V0.2-W2-02` is accepted at `d33d8f7` as Review Queue redesign and shared task drawer foundation only. Alias: `W2b`.
+- `V0.2-W2-03` should be the next Dev implementation phase because Tasks Inbox is the next highest-use cross-board workflow and can reuse the accepted Review/drawer patterns. Alias: `W2c`.
 - Every phase must include screenshots for desktop and mobile, plus at least one populated state and one empty/error/disconnected state where applicable.
 - QA must compare changed pages against `docs/design/ui-design-v1-0/` and state any accepted visual deviations.
 - PM must update `CURRENT_SPRINT.md`, this plan, and decision logs after each phase acceptance.
@@ -150,6 +151,7 @@ Phase rules:
 
 **Alias:** W2b
 **Depends on:** `V0.2-W2-01` accepted; W3 mock routes preserved.
+**Status:** Accepted by Codex PM at `d33d8f7` after Codex QA Recheck pass.
 
 **Tasks:**
 
@@ -160,16 +162,18 @@ Phase rules:
 
 **AC:**
 
-- [ ] Review create/edit/approve/reject/bulk workflows pass.
-- [ ] Duplicate or processed task guard behavior is not weakened.
-- [ ] Desktop and mobile Review screenshots show populated and empty/error states.
-- [ ] `V0.2-W2-01` Today smoke passes.
-- [ ] W3 Paperclip mock contract smoke passes if touched or if shared review code is changed.
+- [x] Review create/edit/approve/reject/bulk workflows pass.
+- [x] Duplicate or processed task guard behavior is not weakened.
+- [x] Desktop and mobile Review screenshots show populated and processed states; controlled/local env limitations documented.
+- [x] `V0.2-W2-01` Today smoke passes with controlled API responses when local Trello credentials are unavailable.
+- [x] W3 Paperclip mock contract smoke passes.
+- [x] Drawer open/edit/Close/backdrop/Escape paths pass; mobile Review overflow remains 0.
 
 ### V0.2-W2-03 - Tasks Inbox + Cross-board Rows
 
 **Alias:** W2c
 **Depends on:** `V0.2-W2-02` accepted or shared row/drawer primitives stable.
+**Status:** Planned next after `V0.2-W2-02` acceptance.
 
 **Tasks:**
 
@@ -241,9 +245,9 @@ Phase rules:
 Recommended next implementation PR:
 
 1. Start from `dev` after accepted W2/W3 integration and current W1 runtime setup changes.
-2. Create a W2 phase branch under the existing branch family, default `feature/w2-02-review-redesign`.
-3. Preserve `V0.2-W2-01` shell/Today behavior and W3 Paperclip mock behavior.
-4. Implement `V0.2-W2-02` Review Queue redesign first, including shared task-row/drawer primitives only where needed by Review and later pages. Alias: W2b.
+2. Create a W2 phase branch under the existing branch family, default `feature/w2-03-tasks-redesign`.
+3. Preserve `V0.2-W2-01` shell/Today behavior, `V0.2-W2-02` Review/drawer behavior, and W3 Paperclip mock behavior.
+4. Implement `V0.2-W2-03` Tasks Inbox redesign first, reusing or staying compatible with the accepted Review/drawer primitives where practical. Alias: W2c.
 5. Keep the existing static JS architecture; do not rewrite to React/Vite unless PM explicitly approves a separate migration workstream.
 6. Capture desktop/mobile screenshots and run `npm.cmd run check:all` before QA.
 
@@ -309,24 +313,26 @@ Recommended next Dev task:
 
 ```text
 Role: Dev
-Task: V0.2-W2-02 - Review Queue Redesign + Shared Task Drawer Foundation
+Task: V0.2-W2-03 - Tasks Inbox + Cross-board Rows
 
-Start from `dev` after accepted `V0.2-W2-01`/W3 integration and current W1 runtime setup changes. Implement `V0.2-W2-02` only. Alias: W2b.
+Start from `dev` after accepted `V0.2-W2-01`, accepted `V0.2-W2-02`, W3 integration, and current W1 runtime setup changes. Implement `V0.2-W2-03` only. Alias: W2c.
 
 Read first:
 - CODEX.md
 - CURRENT_SPRINT.md
 - docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
 - docs/design/ui-design-v1-0/README.md
-- docs/design/ui-design-v1-0/pages-review-cal-settings.jsx
+- docs/design/ui-design-v1-0/pages-tasks-boards.jsx
 - docs/design/ui-design-v1-0/app.jsx
 - public/style.css
 - public/app.js
 - public/js/router.js
+- public/js/utils.js
+- public/js/pages/all-tasks.js
 - public/js/pages/review.js
 
 Goal:
-Redesign Review Queue to match the `ui-design-v1-0` direction while preserving current review APIs and workflows. Introduce shared task row/detail drawer primitives only as needed for Review and future W2 phases.
+Redesign `/all` as a dense cross-board Tasks Inbox aligned to the `ui-design-v1-0` direction while preserving search, filters, grouping, CSV export, and card open/edit workflows. Reuse or stay compatible with the accepted `V0.2-W2-02` shared task drawer foundation where it fits.
 
 Rules:
 - Do not implement W1 deployment/access.
@@ -334,11 +340,14 @@ Rules:
 - Do not rewrite to React/Vite.
 - Preserve route behavior and existing APIs.
 - Preserve accepted `V0.2-W2-01` shell/Today behavior.
+- Preserve accepted `V0.2-W2-02` Review Queue and drawer behavior.
 - Include attribution: Implemented by Codex Dev.
 
 Verify:
 - `npm.cmd run check:all`
-- Review create/edit/approve/reject/bulk workflows with controlled or live data.
+- Tasks search/filter/group/export/open/edit workflows with controlled or live data.
 - `V0.2-W2-01` Today smoke.
-- Desktop/mobile visual QA evidence for Review and any shared drawer primitives.
+- `V0.2-W2-02` Review/drawer smoke.
+- W3 Paperclip mock smoke.
+- Desktop/mobile visual QA evidence for Tasks populated, filtered, and empty states.
 ```
