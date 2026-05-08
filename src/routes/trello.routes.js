@@ -43,7 +43,13 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
   });
 
   // P7-4: Board convention health check
-  const REQUIRED_LISTS = ["Backlog", "In Progress", "Done"];
+  const REQUIRED_LIST_GROUPS = [
+    { name: "Backlog", aliases: ["backlog", "inbox", "ideas"] },
+    { name: "Ready", aliases: ["ready", "todo", "to do", "next", "planned"] },
+    { name: "Doing", aliases: ["doing", "in progress", "progress", "active", "wip"] },
+    { name: "Review/QA", aliases: ["review", "qa", "review/qa", "testing", "verify"] },
+    { name: "Done", aliases: ["done", "complete", "completed", "closed"] },
+  ];
 
   router.get("/boards/:id/health", async (req, res) => {
     try {
@@ -52,8 +58,10 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       if (hit) return res.json(hit);
 
       const lists = await trello.getLists(req.params.id);
-      const names = lists.map(l => l.name.trim());
-      const missing = REQUIRED_LISTS.filter(r => !names.some(n => n.toLowerCase() === r.toLowerCase()));
+      const names = lists.map(l => l.name.trim().toLowerCase());
+      const missing = REQUIRED_LIST_GROUPS
+        .filter(group => !names.some(n => group.aliases.some(alias => n === alias || n.includes(alias))))
+        .map(group => group.name);
       const result = { ok: missing.length === 0, missing };
       cacheSet(hKey, result, 5 * 60_000); // 5 min TTL (lists rarely change)
       res.json(result);

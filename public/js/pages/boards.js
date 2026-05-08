@@ -88,6 +88,56 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
     });
   }
 
+  const META_PATTERNS = {
+    category: /\b(category|type|area|portfolio)\b/i,
+    okr: /\b(okr|objective|kr|key result)\b/i,
+    priority: /\b(priority|prio|p[0-3])\b/i,
+    agent: /\b(agent|ai|source)\b/i,
+  };
+  const LABEL_PATTERNS = {
+    category: /\b(revenue|saas|ops|sales|marketing|product|finance|customer|proof|inbound)\b/i,
+    okr: /\b(o\d+|kr\d+(\.\d+)?|okr|objective)\b/i,
+    priority: /\b(p[0-3]|urgent|high|medium|low)\b/i,
+    agent: /\b(ai|agent|codex|claude|gemini|automation)\b/i,
+  };
+
+  function customFieldHas(card, kind) {
+    return Object.entries(card.customFields || {}).some(([key, value]) =>
+      META_PATTERNS[kind].test(key) && value != null && String(value).trim() !== ""
+    );
+  }
+
+  function labelHas(card, kind) {
+    return (card.labels || []).some(l => LABEL_PATTERNS[kind].test(l.name || ""));
+  }
+
+  function missingMetadata(card) {
+    const missing = [];
+    if (!customFieldHas(card, "category") && !labelHas(card, "category")) missing.push("category");
+    if (!customFieldHas(card, "okr") && !labelHas(card, "okr")) missing.push("OKR/KR");
+    if (!customFieldHas(card, "priority") && !labelHas(card, "priority")) missing.push("priority");
+    if (!(card.members || []).length && !customFieldHas(card, "agent") && !labelHas(card, "agent")) missing.push("owner/agent");
+    if (!card.due) missing.push("due");
+    return missing;
+  }
+
+  function metadataHealth(cards) {
+    const issueCards = cards
+      .filter(c => !c.dueComplete)
+      .map(c => ({ card: c, missing: missingMetadata(c) }))
+      .filter(item => item.missing.length > 0);
+    const counts = {};
+    issueCards.forEach(item => item.missing.forEach(key => { counts[key] = (counts[key] || 0) + 1; }));
+    return { issueCards, counts };
+  }
+
+  function metadataSummary(meta) {
+    return Object.entries(meta.counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name, count]) => `${count} ${name}`)
+      .join(", ");
+  }
+
   const page = document.createElement("div");
   page.className = "boards-monitor-page";
 
@@ -338,6 +388,7 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
       // P9-4: apply label filter before computing stats
       const rawCards = allCards.filter(c => c.boardId === board.id);
       const cards    = visibleCards(rawCards);
+      const metaHealth = metadataHealth(cards);
       const active   = cards.filter(c => !c.dueComplete);
       const overdue  = active.filter(c => c.due && new Date(c.due) < now);
       const dueToday = active.filter(c => c.due && new Date(c.due).toDateString() === todayStr && new Date(c.due) >= now);
@@ -360,9 +411,15 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
       const todayClass   = dueToday.length > 0 ? " has-issues" : "";
 
       // P7-4: convention badge
-      const conventionBadge = !health.ok
-        ? `<span class="bm-convention-badge" title="Missing lists: ${health.missing.join(', ')}">⚠ Convention</span>`
+      const hasConventionIssues = !health.ok || metaHealth.issueCards.length > 0;
+      const conventionTitle = [
+        !health.ok ? `Missing lists: ${health.missing.join(", ")}` : "",
+        metaHealth.issueCards.length ? `${metaHealth.issueCards.length} card metadata issue${metaHealth.issueCards.length !== 1 ? "s" : ""}` : "",
+      ].filter(Boolean).join(" · ");
+      const conventionBadge = hasConventionIssues
+        ? `<span class="bm-convention-badge" title="${esc(conventionTitle)}">⚠ Convention</span>`
         : "";
+      const firstIssue = metaHealth.issueCards[0];
 
       card.innerHTML = `
         <div class="bm-banner" style="background:${color}"></div>
@@ -412,7 +469,13 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
           <div class="bm-alert">⚠ ${overdue.length} card${overdue.length > 1 ? "s" : ""} past due date</div>
           ` : ""}
           ${!health.ok ? `
-          <div class="bm-alert bm-alert-convention">⚠ Missing lists: ${health.missing.map(s => esc(s)).join(", ")}</div>
+          <div class="bm-alert bm-alert-convention">⚠ Missing lists: ${health.missing.map(s => esc(s)).join(", ")}. Add or map these workflow columns.</div>
+          ` : ""}
+          ${metaHealth.issueCards.length ? `
+          <div class="bm-alert bm-alert-convention bm-alert-hygiene">
+            <span>⚠ ${metaHealth.issueCards.length} card${metaHealth.issueCards.length !== 1 ? "s" : ""} missing metadata: ${esc(metadataSummary(metaHealth))}</span>
+            ${firstIssue ? `<button class="bm-fix-card-btn" data-card-id="${firstIssue.card.id}" title="Open ${esc(firstIssue.card.name)}">${esc(firstIssue.card.name)}</button>` : ""}
+          </div>
           ` : ""}
           ${S.bmHiddenLabels.size && rawCards.length > cards.length ? `
           <div class="bm-label-filter-note">⚗ Filtered · ${rawCards.length - cards.length} card${rawCards.length - cards.length !== 1 ? "s" : ""} hidden by label</div>
@@ -423,6 +486,13 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
       card.querySelector(".bm-open-btn").addEventListener("click", e => {
         e.stopPropagation();
         selectBoard(board.id, board.name);
+      });
+      card.querySelectorAll(".bm-fix-card-btn").forEach(btn => {
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          const target = allCards.find(c => c.id === btn.dataset.cardId);
+          if (target) openEditAllTasks(target);
+        });
       });
       card.addEventListener("click", () => selectBoard(board.id, board.name));
       grid.appendChild(card);
