@@ -7,7 +7,7 @@
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely by establishing branch/environment workflow before company access, UI redesign, and Paperclip integration work.
 
 ---
@@ -16,6 +16,7 @@
 
 - Use as the main V0.2 planning file.
 - Start each session from `../../CURRENT_SPRINT.md`; read this file when the task is part of W0/W1/W2/W3.
+- Use `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` as the durable prompt registry for W1/W2/W3.
 - Update this file when PM changes V0.2 workstream scope, sequencing, or branch/environment rules.
 - Keep detailed QA history in `../logs/QA_LOG.md`, not in this plan.
 - Use `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md` for branch, environment, PR, and verification rules.
@@ -171,6 +172,8 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 - UI redesign PRs must include desktop/mobile visual evidence and console error check.
 - Paperclip integration PRs must include contract/mock verification before live connector work.
 - Keep `CURRENT_SPRINT.md` short; put history in logs and multi-session plans in `docs/plans/`.
+- During parallel W1/W2/W3 work, only PM updates `CURRENT_SPRINT.md`; Dev/QA agents keep updates in their owned workstream docs/branches.
+- Durable W1/W2/W3 prompts live in `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` and must not be overwritten by a single workstream update.
 
 ---
 
@@ -217,3 +220,4 @@ Rules:
 |---|---|---|
 | 2026-05-08 | Created V0.2 workstream plan after V0.1 Release Acceptance | Codex PM |
 | 2026-05-08 | Standardized plan document format with V0.1 archive plan | Codex PM |
+| 2026-05-08 | Added PM-owned Current Sprint rule for parallel workstreams | Codex PM |

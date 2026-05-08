@@ -4,7 +4,7 @@
 **Status:** Active for V0.2 W0
 **Owner:** Dev / PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-08 - **Updated by:** Codex Dev
+**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../plans/VERSION_0_2_PLAN.md`, `../../README.md`
 
 ---
@@ -56,6 +56,10 @@ Environment files:
 - Feature work starts from `dev` after W0.
 - Open PRs into `dev` for W1/W2/W3 workstreams.
 - Merge `dev` into `main` only after integration QA passes and PM approves.
+- During parallel W1/W2/W3 work, Dev and QA agents must not edit `CURRENT_SPRINT.md` directly.
+- Each workstream writes only to its owned plan/files/branch until PM checkpoint.
+- PM is the only role that updates `CURRENT_SPRINT.md` after QA pass, PM decision, or integration checkpoint.
+- Durable workstream prompts live in `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`; preserve prompts for other workstreams.
 - Every PR must state:
   - owner agent
   - files changed

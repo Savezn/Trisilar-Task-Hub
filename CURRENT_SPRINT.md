@@ -39,6 +39,7 @@
 |---|---|
 | Current task and next action | `CURRENT_SPRINT.md` |
 | Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
+| Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | QA history and completed work archive | `docs/logs/QA_LOG.md` |
 | PM decisions and phase context | `docs/logs/DECISION_LOG.md` |
 | Product/UX scope | `MVP_PRD.md` |
@@ -47,9 +48,30 @@
 
 ---
 
+## Parallel Workstream Write Ownership
+
+| File / Area | Write Owner | Rule |
+|---|---|---|
+| `CURRENT_SPRINT.md` | PM only | Dev/QA may read but must not update this file during W1/W2/W3 parallel work. |
+| `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` | PM only | Preserve prompts for all workstreams; do not delete other workstream prompts. |
+| W1 plan/files | W1 Dev / QA | Keep W1 updates inside W1-owned docs/branches until PM checkpoint. |
+| W2 plan/files | W2 Dev / QA | Keep W2 updates inside W2-owned docs/branches until PM checkpoint. |
+| W3 plan/files | W3 Dev / QA | Keep W3 updates inside W3-owned docs/branches until PM checkpoint. |
+
+Parallel rule:
+
+- W1/W2/W3 Dev agents must not edit `CURRENT_SPRINT.md` directly.
+- QA agents report evidence in the workstream handoff/doc, not `CURRENT_SPRINT.md`.
+- PM is the only role that updates `CURRENT_SPRINT.md` after QA/decision checkpoints.
+- If a Dev/QA task needs a status change, leave a PM handoff note instead of editing the sprint snapshot.
+
+---
+
 ## Next Action - Parallel Dev Sessions
 
 W0 passed QA. `dev` exists and is aligned with `main` at `9dbb47b`, so W1/W2/W3 can now run in parallel from `dev`.
+
+> Durable W1/W2/W3 prompts are preserved in `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`. Do not overwrite that prompt registry when updating this single Next Action section.
 
 ### Prompt A - W1 Company Access + Deployment
 
