@@ -1478,7 +1478,14 @@ $("cal-allday").addEventListener("change", () => {
 });
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { closeModal(); closeConfirm(); closeManage(); closeCalSetup(); closeCalModal(); }
+  if (e.key === "Escape") {
+    closeModal();
+    closeConfirm();
+    closeManage();
+    closeCalSetup();
+    closeCalModal();
+    if (typeof closeReviewTaskDrawer === "function") closeReviewTaskDrawer();
+  }
   if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
     if (!$("card-modal").classList.contains("hidden"))      saveCard();
     if (!$("cal-event-modal").classList.contains("hidden")) saveCalEvent();
