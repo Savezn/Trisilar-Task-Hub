@@ -3,7 +3,7 @@
 **Phase:** V0.2 W2 Full UI Redesign Phase Planning
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-09 - **Updated by:** Codex PM
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -18,7 +18,7 @@
 | V0.2 W0 Branch / Environment / CI Setup | QA Pass `9dbb47b` | Implemented by Codex Dev; Reviewed by Codex QA |
 | V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
 | V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
-| V0.2 W2 Full UI Redesign | `V0.2-W2-01` accepted (`W2a`, `b5f67fb`); `V0.2-W2-02` accepted (`W2b`, `d33d8f7`) / `V0.2-W2-03`-`V0.2-W2-06` planned | `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, accepted by Codex PM; full redesign still open through `V0.2-W2-06` |
+| V0.2 W2 Full UI Redesign | `V0.2-W2-01` accepted (`W2a`, `b5f67fb`); `V0.2-W2-02` accepted (`W2b`, `d33d8f7`); `V0.2-W2-03` accepted (`W2c`, `ea807fd`) / `V0.2-W2-04`-`V0.2-W2-06` planned | `V0.2-W2-03` implemented by Codex Dev, reviewed by Codex QA Recheck, accepted by Codex PM; full redesign still open through `V0.2-W2-06` |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
@@ -32,7 +32,7 @@
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` no-domain ngrok demo path active; `V0.2-W1-06` stable Cloudflare Access gate deferred until domain/subdomain exists | Dev / PM |
-| W2 | Full UI Redesign | `V0.2-W2-01` and `V0.2-W2-02` accepted; `V0.2-W2-03`-`V0.2-W2-06` planned; full redesign not complete | Dev |
+| W2 | Full UI Redesign | `V0.2-W2-01`, `V0.2-W2-02`, and `V0.2-W2-03` accepted; `V0.2-W2-04`-`V0.2-W2-06` planned; full redesign not complete | Dev Integration |
 | W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | PM complete |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
@@ -71,7 +71,7 @@ Required branches:
 
 - `V0.2-W1-02` / legacy W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
 - `V0.2-W1-03` / legacy W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
-- W2: `feature/w2-*` phase branches; next default `feature/w2-02-review-redesign`
+- W2: `feature/w2-*` phase branches; next integration branch `feature/w2-03-tasks-redesign`, then next implementation branch `feature/w2-04-boards-redesign`
 - W3: `feature/w3-paperclip-integration`
 
 Required worktrees:
@@ -93,16 +93,16 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W2-02 Integration Into dev
+## Next Action - V0.2-W2-03 Integration Into dev
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted `V0.2-W2-01` (`W2a`, `b5f67fb`) is shell foundation and Today redesign only. Accepted `V0.2-W2-02` (`W2b`, `d33d8f7`) is Review Queue redesign and shared task drawer foundation only. Full W2 UI redesign remains open through `V0.2-W2-03`-`V0.2-W2-06` (`W2c`-`W2f`). The next planned role is Dev integration to merge accepted `feature/w2-02-review-redesign` into `dev`; after Integration QA/PM pass, start `V0.2-W2-03` from updated `dev`.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted `V0.2-W2-01` (`W2a`, `b5f67fb`) is shell foundation and Today redesign only. Accepted `V0.2-W2-02` (`W2b`, `d33d8f7`) is Review Queue redesign and shared task drawer foundation only. Accepted `V0.2-W2-03` (`W2c`, `ea807fd`) is Tasks Inbox + Cross-board Rows only. Full W2 UI redesign remains open through `V0.2-W2-04`-`V0.2-W2-06` (`W2d`-`W2f`). The next planned role is Dev integration to merge accepted `feature/w2-03-tasks-redesign` into `dev`; after Integration QA/PM pass, start `V0.2-W2-04` from updated `dev`.
 
 ```text
 Role: Dev
-Task: V0.2-W2-02 Integration - Merge Accepted Review Redesign Into dev
+Task: V0.2-W2-03 Integration - Merge Accepted Tasks Redesign Into dev
 
 Context:
-`V0.2-W2-02` (`W2b`) Review Queue redesign and shared task drawer foundation passed QA Recheck and was accepted by PM at `d33d8f7`. PM tracker docs were updated at `d556bb2`. Merge only accepted W2-02 into `dev`; do not merge W1 runtime/access work or any unaccepted W2 future phase work.
+`V0.2-W2-03` (`W2c`) Tasks Inbox + Cross-board Rows passed QA Recheck and was accepted by PM at `ea807fd`. Merge only accepted W2-03 into `dev`; do not merge W1 runtime/access work or any unaccepted W2 future phase work.
 
 Read first:
 - CODEX.md
@@ -112,24 +112,24 @@ Read first:
 - docs/plans/VERSION_0_2_PLAN.md
 
 Goal:
-Integrate accepted `V0.2-W2-02` from `feature/w2-02-review-redesign` into `dev` without changing product scope.
+Integrate accepted `V0.2-W2-03` from `feature/w2-03-tasks-redesign` into `dev` without changing product scope.
 
 Steps:
-1. Confirm `dev` and `feature/w2-02-review-redesign` branch graph.
-2. Merge `feature/w2-02-review-redesign` into `dev`.
-3. Resolve only integration conflicts, preserving accepted W2-01, W2-02, and W3 behavior.
+1. Confirm `dev` and `feature/w2-03-tasks-redesign` branch graph.
+2. Merge `feature/w2-03-tasks-redesign` into `dev`.
+3. Resolve only integration conflicts, preserving accepted W2-01, W2-02, W2-03, and W3 behavior.
 4. Run `node server.js` and `npm.cmd run check:all`.
 5. Run `npm.cmd run verify:paperclip-contract` and `npm.cmd run verify:paperclip-mock`.
-6. Smoke `/review` drawer click handling and mobile overflow.
+6. Smoke `/all` Tasks Inbox workflows, mobile overflow, W2-01 Today, W2-02 Review drawer, and W3 Paperclip mock regression.
 7. Push `dev`.
 
 Rules:
 - Do not implement W1 deployment/access.
 - Do not implement new W3 Paperclip behavior.
 - Do not rewrite to React/Vite unless PM explicitly approves.
-- Do not start `V0.2-W2-03` in the same integration task.
+- Do not start `V0.2-W2-04` in the same integration task.
 - Preserve route behavior and existing APIs.
 - Include attribution: Integrated by Codex Dev.
 ```
 
-**Attribution:** `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, and accepted by Codex PM at `d33d8f7`. V0.2 `V0.2-W2-01`/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. `V0.2-W1-02`/`V0.2-W1-03` implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W1 phase naming and no-domain ngrok demo decision updated by Codex PM to latest canonical policy. `V0.2-W2-01` and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.
+**Attribution:** `V0.2-W2-03` implemented by Codex Dev, reviewed by Codex QA Recheck, and accepted by Codex PM at `ea807fd`. `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, and accepted by Codex PM at `d33d8f7`. V0.2 `V0.2-W2-01`/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. `V0.2-W1-02`/`V0.2-W1-03` implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W1 phase naming and no-domain ngrok demo decision updated by Codex PM to latest canonical policy.

@@ -60,6 +60,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.2 W3 - Paperclip Mock Integration | QA Pass / PM Accepted | `1d1f638` |
 | V0.2 Integration - Accepted W2/W3 on dev | QA Pass / PM Accepted | `dde7ab0` |
 | V0.2-W2-02 - Review Queue Redesign + Shared Task Drawer Foundation | QA Recheck Pass / PM Accepted | `d33d8f7` |
+| V0.2-W2-03 - Tasks Inbox + Cross-board Rows | QA Recheck Pass / PM Accepted | `ea807fd` |
 
 ---
 
@@ -106,6 +107,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-08 | R36 | Pass | V0.2 Integration QA pass on `dev` at `dde7ab0`; accepted W2 shell/Today and W3 Paperclip mock integration remained stable, check:all passed, Paperclip contract/mock verification passed, controlled desktop/mobile Today QA passed with no overflow/clipped rows and console errors 0. Controlled API responses were used for populated visual/workflow QA due local credential sensitivity; Reviewed by Codex QA; Accepted by Codex PM |
 | 2026-05-08 | R37 | Pass | Documentation/file consolidation pass at `af822c6`; W2 plan rename, deployment docs consolidation, archive moves, design asset relocation, legacy CLI move, agent docs deduplication, package entrypoint, path references, diff check, legacy syntax checks, and check:all verified; Reviewed by Codex QA; Updated by Codex PM |
 | 2026-05-08 | R38 | Pass | `V0.2-W2-02` Review Queue redesign QA Recheck pass at `d33d8f7`; drawer opens, title edit persists, header/footer Close works, backdrop click closes, Escape closes, approve/reject/bulk workflows pass, processed rows are read-only, mobile Review overflow is 0, Today controlled smoke passes, W3 Paperclip contract/mock verification passes. Local Trello `401 invalid key` is credential/env noise, not a W2 regression; Reviewed by Codex QA; Accepted by Codex PM |
+| 2026-05-09 | R39 | Pass | `V0.2-W2-03` Tasks Inbox + Cross-board Rows QA Recheck pass at `ea807fd`; `check:all`, Paperclip contract/mock verification, Tasks populated/search/filter/label/owner/group/export/open-edit/inline rename/mark done workflows, mobile Tasks overflow 0, unclipped rows, mobile nav, Today smoke, Review drawer smoke, and console checks passed. Controlled API responses were used for populated visual/workflow QA to avoid local Trello credential dependency; Reviewed by Codex QA Recheck; Accepted by Codex PM |
 
 ---
 
