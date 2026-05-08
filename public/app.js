@@ -703,6 +703,9 @@ async function showWeeklyFocusPage() {
 function renderWeeklyFocusPage(allCards, pendingCount) {
   const content = $("board-content");
   const now = new Date();
+  const weekStart = new Date(now);
+  weekStart.setDate(weekStart.getDate() - 7);
+  weekStart.setHours(0, 0, 0, 0);
   const weekEnd = new Date(now);
   weekEnd.setDate(weekEnd.getDate() + 7);
   weekEnd.setHours(23, 59, 59, 999);
@@ -716,41 +719,102 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     });
   });
 
-  // Owner state (persisted on S so it survives re-render)
-  if (!S.focusOwner) S.focusOwner = allMembers[0]?.id || "";
+  function labelText(card) {
+    return (card.labels || []).map(l => l.name || "").join(" ");
+  }
 
-  function getWeekCards(ownerId) {
-    let result = allCards.filter(c =>
-      c.due && !c.dueComplete &&
-      new Date(c.due) >= now &&
+  function customFieldText(card) {
+    return Object.entries(card.customFields || {}).map(([k, v]) => `${k} ${v ?? ""}`).join(" ");
+  }
+
+  function cardText(card) {
+    return `${card.name || ""} ${card.desc || ""} ${card.listName || ""} ${labelText(card)} ${customFieldText(card)}`;
+  }
+
+  function hasSignal(card, re) {
+    return re.test(cardText(card));
+  }
+
+  function dueTs(card) {
+    return card.due ? new Date(card.due).getTime() : Infinity;
+  }
+
+  function isDueSoon(card) {
+    if (!card.due) return false;
+    const due = new Date(card.due);
+    const soon = new Date(now);
+    soon.setDate(soon.getDate() + 2);
+    return due <= soon;
+  }
+
+  function isPriority(card) {
+    return hasSignal(card, /\b(p0|p1|urgent|high|critical|priority)\b/i);
+  }
+
+  function isAiWork(card) {
+    return hasSignal(card, /\b(ai|agent|codex|claude|gemini|automation|pending review)\b/i);
+  }
+
+  function isBlocked(card) {
+    return hasSignal(card, /\b(blocked|blocking|waiting|wait|hold|stuck)\b/i);
+  }
+
+  function filterOwner(cards) {
+    if (!S.focusOwner) return cards;
+    return cards.filter(c => (c.members || []).some(m => m.id === S.focusOwner));
+  }
+
+  function sortFocus(cards) {
+    return [...cards].sort((a, b) => {
+      const pa = isPriority(a) ? 0 : 1;
+      const pb = isPriority(b) ? 0 : 1;
+      if (pa !== pb) return pa - pb;
+      return dueTs(a) - dueTs(b);
+    });
+  }
+
+  function buildLanes(cards) {
+    const active = filterOwner(cards.filter(c => !c.dueComplete));
+    const done = filterOwner(cards.filter(c => c.dueComplete));
+    const doNow = active.filter(c => isPriority(c) || isDueSoon(c));
+    const blocked = active.filter(isBlocked);
+    const reviewAi = active.filter(isAiWork);
+    const schedule = active.filter(c =>
+      c.due &&
+      new Date(c.due) > now &&
+      new Date(c.due) <= weekEnd &&
+      !doNow.some(d => d.id === c.id) &&
+      !blocked.some(d => d.id === c.id)
+    );
+    const doneThisWeek = done.filter(c =>
+      c.due &&
+      new Date(c.due) >= weekStart &&
       new Date(c.due) <= weekEnd
     );
-    if (ownerId) result = result.filter(c => (c.members || []).some(m => m.id === ownerId));
-    return result.sort((a, b) => new Date(a.due) - new Date(b.due));
+
+    return [
+      { key: "do-now", label: "Do Now", hint: "P0/P1, urgent, overdue, or due in 48h", cards: sortFocus(doNow) },
+      { key: "review-ai", label: "Review AI", hint: "Pending review plus AI-agent/source tasks", cards: sortFocus(reviewAi), showReviewAction: pendingCount > 0 },
+      { key: "waiting", label: "Waiting / Blocked", hint: "Blocked, waiting, held, or stuck work", cards: sortFocus(blocked) },
+      { key: "schedule", label: "Schedule", hint: "Active work due in the next 7 days", cards: sortFocus(schedule) },
+      { key: "done", label: "Done This Week", hint: "Completed cards with due dates in this weekly window", cards: sortFocus(doneThisWeek) },
+    ];
   }
 
-  function groupByDay(cards) {
-    const groups = new Map();
-    cards.forEach(c => {
-      const d = new Date(c.due);
-      const key = d.toDateString();
-      if (!groups.has(key)) groups.set(key, { label: formatDayLabel(d), cards: [] });
-      groups.get(key).cards.push(c);
-    });
-    return groups;
-  }
-
-  function formatDayLabel(d) {
-    const today = new Date();
-    const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
-    if (d.toDateString() === today.toDateString()) return "Today";
-    if (d.toDateString() === tomorrow.toDateString()) return "Tomorrow";
-    return formatThaiDateTime(d.toISOString());
+  function cardMeta(card) {
+    const bits = [`<span class="focus-task-board">${esc(card.boardName)}</span>`];
+    if (card.listName) bits.push(`<span>${esc(card.listName)}</span>`);
+    if (card.due) bits.push(buildDueBadge(card.due, card.dueComplete));
+    else bits.push('<span class="focus-muted">No due</span>');
+    return bits.join("");
   }
 
   function render() {
-    const ownerCards = getWeekCards(S.focusOwner);
-    const groups = groupByDay(ownerCards);
+    const lanes = buildLanes(allCards);
+    const activeCards = filterOwner(allCards.filter(c => !c.dueComplete));
+    const doNowCount = lanes.find(l => l.key === "do-now")?.cards.length || 0;
+    const reviewAiCount = lanes.find(l => l.key === "review-ai")?.cards.length || 0;
+    const doneCount = lanes.find(l => l.key === "done")?.cards.length || 0;
 
     const ownerOpts = allMembers.map(m =>
       `<option value="${esc(m.id)}"${S.focusOwner === m.id ? " selected" : ""}>${esc(m.fullName || m.username || m.id)}</option>`
@@ -760,12 +824,14 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
       ? `<span class="focus-pending-badge">📋 ${pendingCount} pending review</span>`
       : "";
 
-    const dayGroupsHtml = [...groups.entries()].map(([, { label, cards }]) => `
+    const laneHtml = lanes.map(({ key, label, hint, cards, showReviewAction }) => `
       <div class="focus-day-group">
         <div class="focus-day-header">
           <span class="focus-day-label">${esc(label)}</span>
           <span class="focus-day-count">${cards.length}</span>
         </div>
+        <div class="focus-lane-hint">${esc(hint)}</div>
+        ${showReviewAction ? `<button class="focus-review-action" data-action="review">Open Review Queue (${pendingCount})</button>` : ""}
         ${cards.map(c => `
           <div class="focus-task-row" data-card-id="${c.id}">
             <div class="focus-task-name">${esc(c.name)}
@@ -774,17 +840,17 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
               ).join("")}
             </div>
             <div class="focus-task-meta">
-              <span class="focus-task-board">${esc(c.boardName)}</span>
-              ${buildDueBadge(c.due, c.dueComplete)}
+              ${cardMeta(c)}
             </div>
           </div>`).join("")}
+        ${!cards.length && !showReviewAction ? `<div class="focus-lane-empty">No matching work</div>` : ""}
       </div>`).join("");
 
-    const emptyHtml = !ownerCards.length
+    const emptyHtml = !activeCards.length && !doneCount && !pendingCount
       ? `<div class="empty-state" style="padding:48px">
           <div class="empty-icon">🗓</div>
-          <h3>No tasks in the next 7 days</h3>
-          <p>${S.focusOwner ? "No assigned tasks for this owner in the next 7 days." : "No tasks with due dates in the next 7 days."}</p>
+          <h3>No weekly focus work</h3>
+          <p>${S.focusOwner ? "No assigned active work for this owner." : "No active work or pending review items found."}</p>
         </div>`
       : "";
 
@@ -799,17 +865,21 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
           ${pendingBadgeHtml}
         </div>
         <div class="focus-summary">
-          <div class="focus-stat"><span class="focus-stat-num">${ownerCards.length}</span><span class="focus-stat-label">Tasks this week</span></div>
-          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--warning)">${ownerCards.filter(c => { const d = new Date(c.due); const t = new Date(); t.setDate(t.getDate()+1); return d.toDateString() === new Date().toDateString() || d.toDateString() === t.toDateString(); }).length}</span><span class="focus-stat-label">Due today/tomorrow</span></div>
+          <div class="focus-stat"><span class="focus-stat-num">${doNowCount}</span><span class="focus-stat-label">Do Now</span></div>
+          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--warning)">${reviewAiCount}</span><span class="focus-stat-label">AI / Agent</span></div>
           <div class="focus-stat"><span class="focus-stat-num" style="color:var(--purple,#8b5cf6)">${pendingCount}</span><span class="focus-stat-label">Pending review</span></div>
+          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--success)">${doneCount}</span><span class="focus-stat-label">Done this week</span></div>
         </div>
         <div class="focus-task-list">
-          ${dayGroupsHtml}${emptyHtml}
+          ${laneHtml}${emptyHtml}
         </div>
       </div>`;
 
     const sel = $("focus-owner-sel");
     if (sel) sel.onchange = () => { S.focusOwner = sel.value; render(); };
+    content.querySelectorAll("[data-action='review']").forEach(btn => {
+      btn.onclick = () => navigateTo("review");
+    });
 
     content.querySelectorAll(".focus-task-row").forEach(row => {
       row.onclick = () => {

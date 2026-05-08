@@ -2804,7 +2804,8 @@ a { text-decoration: none; }
 }
 /* Summary stat cards */
 .focus-summary {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 .focus-stat {
@@ -2853,6 +2854,31 @@ a { text-decoration: none; }
   background: var(--list-bg);
   border-bottom: 1px solid var(--border);
 }
+.focus-lane-hint {
+  padding: 8px 14px 0;
+  color: var(--text-faint);
+  font-size: 11px;
+}
+.focus-lane-empty {
+  padding: 12px 14px;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+.focus-review-action {
+  align-self: flex-start;
+  background: #f3e8ff;
+  border: 1px solid #c4b5fd;
+  border-radius: var(--radius-sm);
+  color: #6d28d9;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 10px 14px 0;
+  padding: 6px 10px;
+}
+.focus-review-action:hover {
+  background: #ede9fe;
+}
 .focus-day-label {
   font-size: 12px;
   font-weight: 700;
@@ -2900,6 +2926,10 @@ a { text-decoration: none; }
   font-size: 11px;
   color: var(--text-faint);
   white-space: nowrap;
+}
+.focus-muted {
+  color: var(--text-faint);
+  font-size: 11px;
 }
 
 /* ════════════════════════════════════════════════════════════
