@@ -81,6 +81,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | P7-3 - OKR Progress View | QA Pass | `422b91b` |
 | P7-4 - Project Board Convention Validator | QA Pass | `b345e65` |
 | P7-5 - Weekly Focus View | QA Pass | `5be2ea6` |
+| P9-6 - Trello-backed preview regression | QA Recheck Pass | `e1b4801` |
 ---
 
 ## Active Tasks
@@ -168,6 +169,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R30 | Pass | P7-3 OKR Progress View pass; overview summary, KR progress metadata, linked project task detail, filters, and empty states verified; check:all passed with temporary server; Reviewed by Codex QA; Updated by Codex PM |
 | 2026-05-08 | R31 | Pass | P7-4 Project Board Convention Validator pass; list group aliases, metadata hygiene counts, combined convention badge, board/card open paths verified; check:all passed with temporary server; Reviewed by Codex QA; Updated by Codex PM |
 | 2026-05-08 | R32 | Pass | P7-5 Weekly Focus View pass; action lanes, priority/due-soon queue, Review AI path, edit modal path, and check:all verified with temporary server; Reviewed by Codex QA; Updated by Codex PM |
+| 2026-05-08 | R33 | Pass | P9-6 Trello-backed preview regression QA Recheck pass; Trello endpoints return 200 in normal runtime, 429 mapping verified, boards/workspaces cache verified, desktop preview renders Today/All/Boards/OKR/Weekly Focus/Settings with 0 console errors; Reviewed by Codex QA; Updated by Codex PM |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -197,6 +199,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | B21 | All Tasks sorting logic not called in render | `app.js` | ✅ Fixed `e79ff3b` |
 | B22 | Team Monitor Board view: hardcoded columns — cards ใน lists อื่นหายไป | `app.js:2118` | ✅ Fixed `5384ab8` |
 | B23 | GCal autoDelete missing after trello routes extraction | `server.js:14-21` | ✅ Fixed `c70c681` |
+| B24 | Trello-backed preview regression: rate-limit/runtime errors surfaced as 500 and blocked preview QA | `src/routes/trello.routes.js` | ✅ Fixed `e1b4801` |
 
 ---
 
@@ -204,19 +207,30 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### P9 Real Preview Regression Pass
+### V0.1 Release Acceptance Test
 
 **Context:**
-Phase 7 / OKR Portfolio Layer is closed after P7-5 QA pass.
-Latest PM closeout updated `CURRENT_SPRINT.md` and `DEVELOPMENT_PLAN.md`.
+Phase 7 is closed and P9-6 Trello-backed preview regression passed QA Recheck.
+Latest Dev Fix commit: `e1b4801`
+Reviewed by: Codex QA
 
 **Goal:**
-Run one real-preview regression pass before opening the next feature milestone.
+Verify V0.1 is stable after modularization, hardening, routing, Phase 7 OKR/Portfolio work, and P9-6 preview regression fix.
 
 **What to do:**
 1. Run `npm.cmd run check:all` with a running local server.
-2. Browser preview at desktop width if possible.
-3. Verify navigation and URL paths still work for:
+2. Browser preview desktop width.
+3. Verify direct paths render matching pages:
+   - `/`
+   - `/today`
+   - `/review`
+   - `/all`
+   - `/boards`
+   - `/calendar`
+   - `/okr`
+   - `/focus`
+   - `/settings`
+4. Verify sidebar navigation updates URL path and renders matching page:
    - Today
    - Review
    - All Tasks
@@ -225,11 +239,16 @@ Run one real-preview regression pass before opening the next feature milestone.
    - OKR
    - Weekly Focus
    - Settings
-4. Verify Phase 7 surfaces still render:
+5. Verify browser back/forward works.
+6. Verify Phase 7 surfaces render:
    - OKR/Portfolio filters and progress view
    - Boards Monitor convention validator
    - Weekly Focus action lanes
-5. Report any visual/behavior regression as P9 maintenance bug.
+7. Verify at least one existing card can open in the Task Hub edit modal from:
+   - All Tasks
+   - Boards Monitor or Weekly Focus
+8. Verify no uncaught browser console errors during navigation.
+9. Verify mobile-width behavior does not white-screen.
 
 **Rules:**
 - QA only: do not edit files.
@@ -240,19 +259,30 @@ Run one real-preview regression pass before opening the next feature milestone.
 **Copy-paste prompt for QA session:**
 ```
 Role: QA
-Task: P9 Real Preview Regression Pass
+Task: V0.1 Release Acceptance Test
 
 Context:
-Phase 7 / OKR Portfolio Layer is closed after P7-5 QA pass.
-Latest PM closeout updated CURRENT_SPRINT.md and DEVELOPMENT_PLAN.md.
+Phase 7 is closed and P9-6 Trello-backed preview regression passed QA Recheck.
+Latest Dev Fix commit: e1b4801
+Reviewed by: Codex QA
 
 Goal:
-Run one real-preview regression pass before opening the next feature milestone.
+Verify V0.1 is stable after modularization, hardening, routing, Phase 7 OKR/Portfolio work, and P9-6 preview regression fix.
 
 Steps:
 1. Run npm.cmd run check:all with a running local server.
-2. Browser preview at desktop width if possible.
-3. Verify navigation and URL paths still work for:
+2. Browser preview desktop width.
+3. Verify direct paths render matching pages:
+   - /
+   - /today
+   - /review
+   - /all
+   - /boards
+   - /calendar
+   - /okr
+   - /focus
+   - /settings
+4. Verify sidebar navigation updates URL path and renders matching page:
    - Today
    - Review
    - All Tasks
@@ -261,11 +291,16 @@ Steps:
    - OKR
    - Weekly Focus
    - Settings
-4. Verify Phase 7 surfaces still render:
+5. Verify browser back/forward works.
+6. Verify Phase 7 surfaces render:
    - OKR/Portfolio filters and progress view
    - Boards Monitor convention validator
    - Weekly Focus action lanes
-5. Report any visual/behavior regression as P9 maintenance bug.
+7. Verify at least one existing card can open in the Task Hub edit modal from:
+   - All Tasks
+   - Boards Monitor or Weekly Focus
+8. Verify no uncaught browser console errors during navigation.
+9. Verify mobile-width behavior does not white-screen.
 
 Rules:
 - QA only: do not edit files.
