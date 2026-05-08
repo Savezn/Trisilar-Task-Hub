@@ -17,8 +17,9 @@
 | P9 open bugs | None currently open | `docs/logs/QA_LOG.md` |
 | V0.2 W0 Branch / Environment / CI Setup | QA Pass `9dbb47b` | Implemented by Codex Dev; Reviewed by Codex QA |
 | V0.2 W1b Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/reference/DEPLOYMENT_SETUP.md` |
-| V0.2 W2 Shell + Today Redesign | PM Accepted `b5f67fb` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
-| V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
+| V0.2 W1c Dev Environment Deployment Setup | Merged to `dev` via PR #2 / `84c01cf` | `docs/reference/DEV_ENVIRONMENT_DEPLOYMENT.md` |
+| V0.2 W2 Shell + Today Redesign | PM Accepted `b5f67fb` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
+| V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | In progress on `dev` | Implemented by Codex Dev |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Logs/plans split from Current Sprint; branch workflow documented | Updated by Codex PM |
@@ -30,7 +31,7 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | W1b merged / W1c separate | Dev |
+| W1 | Company Access + Deployment | W1c setup merged / runtime setup separate | Dev |
 | W2 | Full UI Redesign | Done `b5f67fb` / QA Pass / PM Accepted / merged to `dev` | QA |
 | W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | QA |
 | Integration | Accepted W2/W3 into `dev` | Verification pending in current Dev session | QA |
@@ -45,6 +46,7 @@
 | Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | W1 deploy-readiness setup | `docs/reference/DEPLOYMENT_SETUP.md` |
+| W1 dev environment runtime setup | `docs/reference/DEV_ENVIRONMENT_DEPLOYMENT.md` |
 | QA history and completed work archive | `docs/logs/QA_LOG.md` |
 | PM decisions and phase context | `docs/logs/DECISION_LOG.md` |
 | Product/UX scope | `MVP_PRD.md` |
@@ -66,14 +68,14 @@
 Required branches:
 
 - W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
-- W1c: use a dedicated W1 worktree/branch for dev environment deployment setup
+- W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
 - W2: `feature/w2-ui-redesign`
 - W3: `feature/w3-paperclip-integration`
 
 Required worktrees:
 
 - PM / Integration: `trisilar-task-hub` on `dev`
-- W1c: use a dedicated W1 worktree/branch for dev environment deployment setup
+- W1c: runtime setup uses hosted platform dashboards and no repo branch unless a fix is discovered
 - W2: `trisilar-task-hub-w2-ui-redesign` on `feature/w2-ui-redesign`
 - W3: `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`
 
@@ -91,7 +93,7 @@ Parallel rule:
 
 ## Next Action - Integration QA
 
-Accepted W2 (`b5f67fb`) and W3 (`1d1f638`) have been routed into `dev` by Codex Dev. W1b was already present on `dev` before this integration merge; do not treat W1c as accepted unless PM explicitly confirms it.
+Accepted W2 (`b5f67fb`) and W3 (`1d1f638`) have been routed into `dev` by Codex Dev. W1b/W1c setup commits are already present on `dev`; do not test W1 deployment/access beyond smoke endpoints unless PM explicitly asks.
 
 ```text
 Role: QA
@@ -129,4 +131,4 @@ Report:
 Lead with findings by severity. Mark each acceptance criterion PASS/FAIL with evidence. Next role should be PM if pass, or Dev Fix if bugs are found.
 ```
 
-**Attribution:** Integration merge implemented by Codex Dev. W1b implemented by Codex Dev, reviewed by Codex QA/PM, merged by Codex PM. W2 and W3 accepted by Codex PM.
+**Attribution:** Integration merge implemented by Codex Dev. W1b/W1c implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W2 and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.

@@ -6,13 +6,15 @@
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex Dev
-**Related Docs:** `../../README.md`, `BRANCH_ENVIRONMENT_WORKFLOW.md`, `../plans/VERSION_0_2_PLAN.md`
+**Related Docs:** `../../README.md`, `BRANCH_ENVIRONMENT_WORKFLOW.md`, `DEV_ENVIRONMENT_DEPLOYMENT.md`, `../plans/VERSION_0_2_PLAN.md`
 
 ---
 
 ## Purpose
 
 This document describes how to configure Trisilar Task Hub for a hosted dev or production environment without deploying production yet.
+
+For the prepared W1c dev-only service path, see `DEV_ENVIRONMENT_DEPLOYMENT.md`.
 
 W1b keeps the app as a long-running Node/Express service and adds deploy-readiness only:
 

@@ -1,7 +1,7 @@
 # Trisilar Task Hub
 
 **Status:** V0.1 release acceptance passed
-**Primary docs:** `CURRENT_SPRINT.md`, `docs/plans/VERSION_0_2_PLAN.md`, `docs/reference/DEPLOYMENT_SETUP.md`, `MVP_PRD.md`
+**Primary docs:** `CURRENT_SPRINT.md`, `docs/plans/VERSION_0_2_PLAN.md`, `docs/reference/DEPLOYMENT_SETUP.md`, `docs/reference/DEV_ENVIRONMENT_DEPLOYMENT.md`, `MVP_PRD.md`
 **Agent rules:** `CODEX.md`, `CLAUDE.md`, `GEMINI.md`
 **Updated by:** Codex PM
 
@@ -39,6 +39,7 @@ Open the app at `http://localhost:3000`.
 | `docs/README.md` | Reference, archive, and design artifact index |
 | `docs/plans/VERSION_0_2_PLAN.md` | Main V0.2 branch/workstream plan |
 | `docs/reference/DEPLOYMENT_SETUP.md` | W1b deploy-readiness setup for Render/Railway, access gate, env vars, and persistent state |
+| `docs/reference/DEV_ENVIRONMENT_DEPLOYMENT.md` | W1c hosted dev environment setup handoff for Render default, Railway alternate, Cloudflare Access, and blockers |
 | `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
 | `docs/logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
 | `docs/logs/DECISION_LOG.md` | PM decisions and phase context |
@@ -57,6 +58,8 @@ Open the app at `http://localhost:3000`.
 | `docs/reference/` | Architecture/reference materials |
 | `docs/archive/` | Historical plans no longer used as active prompts |
 | `docs/design/` | UI design prototypes and handoff artifacts |
+| `render.yaml` | Render dev service blueprint for W1c |
+| `railway.toml` | Railway alternate dev service config for W1c |
 
 ---
 
