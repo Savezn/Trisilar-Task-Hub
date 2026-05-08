@@ -1,9 +1,9 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2 Integration Routing
+**Phase:** V0.2 W1c Dev Runtime Setup
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-08 - **Updated by:** Codex Dev
+**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -20,7 +20,7 @@
 | V0.2 W1c Dev Environment Deployment Setup | Merged to `dev` via PR #2 / `84c01cf` | `docs/reference/DEV_ENVIRONMENT_DEPLOYMENT.md` |
 | V0.2 W2 Shell + Today Redesign | PM Accepted `b5f67fb` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
-| V0.2 Integration Merge | In progress on `dev` | Implemented by Codex Dev |
+| V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Logs/plans split from Current Sprint; branch workflow documented | Updated by Codex PM |
 
@@ -31,10 +31,10 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | W1c setup merged / runtime setup separate | Dev |
-| W2 | Full UI Redesign | Done `b5f67fb` / QA Pass / PM Accepted / merged to `dev` | QA |
-| W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | QA |
-| Integration | Accepted W2/W3 into `dev` | Verification pending in current Dev session | QA |
+| W1 | Company Access + Deployment | W1c setup merged / hosted runtime setup next | Dev |
+| W2 | Full UI Redesign | Done `b5f67fb` / QA Pass / PM Accepted / merged to `dev` | PM complete |
+| W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | PM complete |
+| Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
 
@@ -91,44 +91,45 @@ Parallel rule:
 
 ---
 
-## Next Action - Integration QA
+## Next Action - W1c Hosted Dev Runtime Setup
 
-Accepted W2 (`b5f67fb`) and W3 (`1d1f638`) have been routed into `dev` by Codex Dev. W1b/W1c setup commits are already present on `dev`; do not test W1 deployment/access beyond smoke endpoints unless PM explicitly asks.
+Accepted W2 (`b5f67fb`) and W3 (`1d1f638`) are integrated and PM accepted on `dev` at `dde7ab0`. The next planned role returns to W1c hosted dev runtime setup. This is runtime/platform setup only; do not implement new W2/W3 scope and do not deploy production.
 
 ```text
-Role: QA
-Task: V0.2 Integration QA - Accepted W2/W3 on dev
+Role: Dev
+Task: V0.2 W1c - Hosted Dev Runtime Setup and Verification
 
-Scope:
-- Verify the `dev` branch after accepted W2/W3 integration.
-- Do not edit code.
-- Do not update PM trackers.
-- Do not test W1 deployment/access beyond smoke endpoints unless PM asks.
-- Focus on regressions across accepted W2 shell/Today and W3 Paperclip mock integration.
+Context:
+V0.2 W2/W3 integration was accepted on `dev` at `dde7ab0`. W1c dev environment deployment setup was merged to `dev` through PR #2 at `84c01cf`. The next W1 step is hosted dev runtime setup and verification only.
 
 Read first:
 - CODEX.md
 - CURRENT_SPRINT.md
-- docs/plans/VERSION_0_2_PLAN.md
-- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
-- docs/plans/W2_UI_REDESIGN_DISCOVERY_PLAN.md
-- docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
+- docs/reference/DEPLOYMENT_SETUP.md
+- docs/reference/DEV_ENVIRONMENT_DEPLOYMENT.md
 
-Run:
-- node server.js
-- npm.cmd run check:all
-- npm.cmd run verify:paperclip-contract
-- npm.cmd run verify:paperclip-mock
+Goal:
+Complete hosted dev runtime setup and verification only. Do not deploy production.
 
-Acceptance:
-- `dev` contains accepted W2 and W3 commits without merge conflict markers.
-- W2 shell/Today smoke remains pass.
-- W3 mock endpoint contract/idempotency/audit behavior remains pass.
-- Existing stable smoke endpoints pass.
-- No live Paperclip connector or pre-approval Trello/Calendar side effects are introduced.
+Steps:
+1. Confirm Trisilar Render account/workspace access, or explicitly choose Railway.
+2. Connect the hosted dev service from branch `dev`.
+3. Configure dev-only platform secret values in the platform dashboard; do not commit secret values.
+4. Configure persistent disk/volume and set `APP_DATA_DIR` for `review-sessions.json`, `card-events.json`, and `bu-config.json`.
+5. Configure the hosted dev `APP_BASE_URL` and matching `GOOGLE_REDIRECT_URI`.
+6. Configure dev DNS.
+7. Put the dev URL behind Cloudflare Access email allowlist before teammate preview.
+8. Verify hosted `GET /healthz`, anonymous access blocked by Cloudflare Access, approved teammate access, and basic non-destructive app loading.
+9. Record any remaining user/runtime blockers clearly.
 
-Report:
-Lead with findings by severity. Mark each acceptance criterion PASS/FAIL with evidence. Next role should be PM if pass, or Dev Fix if bugs are found.
+Rules:
+- Do not implement W2 UI redesign or W3 Paperclip integration.
+- Do not deploy production.
+- Do not commit secrets.
+- Do not merge to `main`.
+- Use platform dashboards for secrets; repo changes are only allowed if a setup defect is found and must go through PR.
+- Preserve accepted W2/W3 behavior on `dev`.
+- Include attribution: Runtime setup by Codex Dev.
 ```
 
-**Attribution:** Integration merge implemented by Codex Dev. W1b/W1c implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W2 and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.
+**Attribution:** V0.2 W2/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W1b/W1c implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W2 and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.

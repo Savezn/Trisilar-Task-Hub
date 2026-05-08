@@ -1,7 +1,7 @@
 # Version 0.2 Workstream Plan - Trisilar Task Hub
 
 **Doc Role:** Active version plan
-**Status:** Active - W2/W3 accepted, integration routing next
+**Status:** Active - W2/W3 integration accepted; W1c hosted runtime setup next
 **Version:** V0.2
 **Planning Stage:** Pre-workstream setup
 **Owner:** PM
@@ -88,9 +88,9 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev | W1b merged / W1c separate | Internal access, deployment target, env/secrets, teammate onboarding |
-| W2 | Full UI Redesign | Frontend Dev | Done `b5f67fb` / QA Pass / PM Accepted | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | Done `1d1f638` / QA Pass / PM Accepted | Contract-first mock adapter, attribution/audit sync; live connector remains future work |
+| W1 | Company Access + Deployment | Platform Dev | W1c setup merged / hosted runtime setup next | Internal access, deployment target, env/secrets, teammate onboarding |
+| W2 | Full UI Redesign | Frontend Dev | Done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev` | Design system, shell/nav, page-by-page redesign, responsive QA |
+| W3 | Paperclip Multi-Agent Integration | Integration Dev | Done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` | Contract-first mock adapter, attribution/audit sync; live connector remains future work |
 
 ---
 
@@ -127,7 +127,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P0 after W0
 **Owner Role:** Platform Dev
-**Status:** W1b merged to `dev`; W1c separate
+**Status:** W1c setup merged to `dev`; hosted runtime setup next
 
 **Scope:**
 - Internal access method.
@@ -140,7 +140,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P1 after W0
 **Owner Role:** Frontend Dev
-**Status:** Done `b5f67fb` / QA Pass / PM Accepted
+**Status:** Done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`
 
 **Scope:**
 - Design system.
@@ -153,7 +153,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P1 after W0
 **Owner Role:** Integration Dev
-**Status:** Done `1d1f638` / QA Pass / PM Accepted
+**Status:** Done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`
 
 **Scope:**
 - Integration contract.
@@ -226,3 +226,4 @@ Rules:
 | 2026-05-08 | Added per-workstream Git worktree requirement | Codex PM |
 | 2026-05-08 | Accepted W3 Paperclip mock integration after QA pass at `1d1f638` | Codex PM |
 | 2026-05-08 | Merged accepted W2/W3 into `dev` for integration QA routing | Codex Dev |
+| 2026-05-08 | Accepted V0.2 W2/W3 integration on `dev` after QA pass at `dde7ab0` | Codex PM |
