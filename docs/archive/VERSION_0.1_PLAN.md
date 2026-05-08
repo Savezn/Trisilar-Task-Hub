@@ -1,7 +1,10 @@
 # Trisilar Task Hub — Version 0.1 Plan
 
-**Reference:** `ARCHITECTURE_ANALYSIS.md`  
+**Doc Role:** Archived V0.1 planning reference
+**Status:** Archived; V0.1 Release Acceptance passed on 2026-05-08
+**Reference:** `../reference/ARCHITECTURE_ANALYSIS.md`
 **Created:** 2026-05-06  
+**Moved by:** Codex PM
 **Theme:** "Keep the app local-first and useful, but split the monolith into clear modules so future features can be added without breaking existing workflows."
 
 > **วิธีใช้ไฟล์นี้:**

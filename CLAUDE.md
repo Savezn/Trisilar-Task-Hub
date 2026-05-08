@@ -1,5 +1,9 @@
 # Trisilar Task Hub — Project Rules for Claude
 
+**Doc Role:** Claude-specific agent operating rules
+**Status:** Active
+**Last Updated:** 2026-05-08 · **Updated by:** Codex PM
+
 ## 1. Role Isolation (1 Role per Session)
 
 Each session has exactly ONE role. Do not switch roles mid-session.

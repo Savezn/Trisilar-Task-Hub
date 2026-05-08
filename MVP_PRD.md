@@ -1,5 +1,9 @@
 # Trisilar Task Hub MVP PRD
 
+**Doc Role:** Product requirement source for MVP and redesign planning
+**Status:** V0.1 accepted; use for product/UX context before V0.2 planning
+**Last Updated:** 2026-05-08 · **Updated by:** Codex PM
+
 เอกสารนี้สรุป Product Requirement สำหรับ MVP ของ Trisilar Task Hub โดยอ้างอิงจากโค้ดปัจจุบันในโปรเจ็คและเอกสารแนวคิด `TRISILAR AUTOMATION SYSTEM - System Architecture & Design Overview v1.0`
 
 ## 1. Product Vision
@@ -370,3 +374,16 @@ Important UX details:
 
 - Committed by: Codex (2026-05-07)
 - Scope: Existing OKR / Portfolio Layer PRD notes were reviewed and committed as a documentation-only update.
+- Updated by: Codex PM (2026-05-08)
+- Scope: Added V0.1 acceptance status, V0.2 planning notes, and documentation metadata.
+
+---
+
+## 17. Post-V0.1 Planning Notes
+
+V0.1 release acceptance passed on 2026-05-08. Use this PRD as product/UX context for V0.2 planning, especially:
+
+- Company access and deployment for internal Trisilar users.
+- Full UI redesign based on the existing daily workflow surfaces.
+- Paperclip multi-agent integration.
+- Branch/environment separation: `main` for production, `dev` for integration/dev environment, and `feature/*` branches for parallel workstreams.

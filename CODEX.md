@@ -1,5 +1,9 @@
 # Trisilar Task Hub - Project Rules for Codex
 
+**Doc Role:** Codex-specific agent operating rules
+**Status:** Active
+**Last Updated:** 2026-05-08 · **Updated by:** Codex PM
+
 This file is the Codex-specific companion to `CLAUDE.md`. It preserves the
 project workflow rules, while adapting the execution details to how Codex works
 in this workspace.

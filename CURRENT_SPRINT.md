@@ -1,6 +1,8 @@
 # Current Sprint — Trisilar Task Hub
 **Phase 9 · Maintenance & Iteration**
 **Started:** 2026-05-06 · **Status:** 🟢 Active
+**Doc Role:** Active source of truth for sprint state, QA log, and next action
+**Last Updated:** 2026-05-08 · **Updated by:** Codex PM
 
 > **วิธีใช้ไฟล์นี้:**
 > - Dev / QA / PM อ้างอิงไฟล์นี้เท่านั้น (ไม่ต้องอ่าน DEVELOPMENT_PLAN.md)
@@ -210,31 +212,42 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-### V0.1 Release Closeout + Next Milestone Decision
+### V0.2 Parallel Workstream Plan + Branch Strategy
 
 **Context:**
-V0.1 Release Acceptance Test passed.
+V0.1 Release Acceptance Test passed. The next milestone requires multiple agents working in parallel:
+
+- Company access/deployment
+- Full UI redesign
+- Paperclip multi-agent integration
+
 Latest runtime fix: `e1b4801`
 Reviewed by: Codex QA
 
 **Goal:**
-Close V0.1 formally, decide whether to tag a `v0.1.0` release, and choose the next milestone before opening a new Dev session.
+Define V0.2 workstreams, branch/environment rules, and PR/QA gates before opening parallel Dev sessions.
 
 **What to do:**
-1. Review `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, and `MVP_PRD.md` for stale V0.1 status.
-2. Decide whether to create release tag `v0.1.0`.
-3. Decide next milestone:
-   - P9 maintenance backlog cleanup
-   - P8/P10 post-MVP polish
-   - New V0.2 scope
-4. If docs need updates, update only the necessary status/roadmap sections.
-5. If tagging release, run:
-   - `git tag -a v0.1.0 -m "V0.1 release"`
-   - `git push origin v0.1.0`
-6. Replace Next Action with the chosen Dev/QA/PM prompt.
+1. Define branch model:
+   - `main` = production
+   - `dev` = integration/dev environment
+   - `feature/*` = workstream branches
+   - PR flow: `feature/*` -> `dev` -> `main`
+2. Define V0.2 workstreams:
+   - W0 Branch / Environment / CI Setup
+   - W1 Company Access + Deployment
+   - W2 Full UI Redesign
+   - W3 Paperclip Multi-Agent Integration
+3. Add PR/QA rules:
+   - no direct push to `main`
+   - feature branches must state owner agent
+   - every PR must include QA evidence
+   - docs must identify which agent did the work
+4. Update `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, and `MVP_PRD.md` only if needed.
+5. Replace Next Action with Dev prompt for W0 Branch / Environment / CI Setup.
 
 **Rules:**
-- PM only unless a release tag is explicitly approved.
+- PM only.
 - Keep docs targeted and UTF-8 safe.
 - Do not rewrite Thai/emoji-heavy markdown broadly.
 - Include attribution: Updated by PM agent name.
@@ -242,26 +255,32 @@ Close V0.1 formally, decide whether to tag a `v0.1.0` release, and choose the ne
 **Copy-paste prompt for PM session:**
 ```
 Role: PM
-Task: V0.1 Release Closeout + Next Milestone Decision
+Task: V0.2 Parallel Workstream Plan + Branch Strategy
 
 Context:
-V0.1 Release Acceptance Test passed.
+V0.1 Release Acceptance Test passed. The next milestone requires multiple agents working in parallel:
+- Company access/deployment
+- Full UI redesign
+- Paperclip multi-agent integration
 Latest runtime fix: e1b4801
 Reviewed by: Codex QA
 
 Goal:
-Close V0.1 formally, decide whether to tag v0.1.0, and choose the next milestone before opening a new Dev session.
+Define V0.2 workstreams, branch/environment rules, and PR/QA gates before opening parallel Dev sessions.
 
 Steps:
-1. Review CURRENT_SPRINT.md, DEVELOPMENT_PLAN.md, and MVP_PRD.md for stale V0.1 status.
-2. Decide whether to create release tag v0.1.0.
-3. Decide next milestone: P9 maintenance backlog cleanup, P8/P10 post-MVP polish, or V0.2 scope.
-4. If docs need updates, update only necessary status/roadmap sections.
-5. If tagging release, ask for explicit approval before creating/pushing the tag.
-6. Replace Next Action with the chosen Dev/QA/PM prompt.
+1. Define branch model: main = production, dev = integration/dev environment, feature/* = workstream branches.
+2. Define V0.2 workstreams:
+   - W0 Branch / Environment / CI Setup
+   - W1 Company Access + Deployment
+   - W2 Full UI Redesign
+   - W3 Paperclip Multi-Agent Integration
+3. Add PR/QA rules and agent attribution requirements.
+4. Update CURRENT_SPRINT.md, DEVELOPMENT_PLAN.md, and MVP_PRD.md only if needed.
+5. Replace CURRENT_SPRINT.md Next Action with Dev prompt for W0 Branch / Environment / CI Setup.
 
 Rules:
-- PM only unless release tag is explicitly approved.
+- PM only.
 - Keep docs targeted and UTF-8 safe.
 - Do not rewrite Thai/emoji-heavy markdown broadly.
 - Include attribution: Updated by PM agent name.

@@ -1,8 +1,8 @@
 # Trisilar Task Hub — Development Plan
-**Role:** Project Manager Reference Document  
-**Purpose:** Track Claude Code sessions against a structured build sequence  
-**Based on:** MVP_PRD.md  
-**Last updated:** 2026-05-07 (Phase 6 complete · Ph6-4 Consolidated Verification · Agent: Gemini Dev)
+**Doc Role:** Roadmap and historical progress tracker
+**Purpose:** Track implementation phases, completed milestones, and future planning context
+**Based on:** `MVP_PRD.md`
+**Last Updated:** 2026-05-08 (V0.1 Release Acceptance passed · Updated by Codex PM)
 
 ---
 
@@ -934,24 +934,27 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **V0.1-P4** | Server Hardening | ✅ Done | 2026-05-06 | Final cleanup of server.js (~52 lines) and config modularization — commit f6b5ab6 |
 | **V0.1-P5** | Frontend Modularization | ✅ Done | 2026-05-07 | Split app.js into page-based modules (today, review, all-tasks, boards, calendar, okr) |
 | **V0.1-P6** | Code Quality & Hardening | ✅ Done | 2026-05-07 | Error boundaries, load-order audit, and consolidated verification scripts |
+| **V0.1-Release** | Release Acceptance | ✅ Done | 2026-05-08 | check:all, direct routes, sidebar navigation, back/forward, Phase 7 surfaces, console errors 0 |
 
 **Status legend:** ⬜ Todo · 🔄 In Progress · ✅ Done · 🛑 Blocked · ➡ Deferred
 
 ---
 
-## 🏆 Milestone: Version 0.1 Modular Architecture Complete
+## 🏆 Milestone: Version 0.1 Release Acceptance Complete
 
-Version 0.1 has successfully transformed the monolithic `server.js` into a maintainable, modular structure:
+Version 0.1 has transformed the monolithic app into a maintainable modular local-first system and passed release acceptance:
 - **Routes:** 5 dedicated files in `src/routes/`
 - **Models:** Trello data logic in `src/models/`
 - **Utils:** Centralized logic for cache, errors, date, google, and config in `src/utils/`
-- **Server:** Hardened `server.js` acting as a clean entry point.
+- **Frontend:** page modules split under `public/js/pages/`
+- **Router:** URL path sync and direct route fallback are in place.
+- **Verification:** `check:all` and browser release acceptance passed.
 
 ---
 
 ## Open Questions (จาก PRD §15)
 
-ตอบก่อนเริ่ม Phase 2:
+Revisit these before V0.2 workstream planning:
 
 | # | Question | Answer | Decided by |
 |---|---|---|---|
@@ -980,9 +983,24 @@ P0 (Bugs) ──────┬─→ P1 (Data) ──→ P2 (UI) ──→ P5 (
 
 ## Next Session Prompt (copy-paste ready)
 
-**P9 Maintenance / Real Preview QA (Next):**
+**V0.2 Parallel Workstream Planning (Next):**
 ```
-คุณ QA อ้างอิง CURRENT_SPRINT.md และ DEVELOPMENT_PLAN.md — ทำ P9 real preview regression pass หลัง Phase 7 closeout โดยตรวจ navigation, Today, All Tasks, Boards Monitor, OKR/Portfolio, Weekly Focus, Settings และ smoke/check:all
+Role: PM
+Task: V0.2 Parallel Workstream Plan + Branch Strategy
+
+Context:
+V0.1 Release Acceptance passed. Before opening parallel Dev sessions, define branch/environment rules and split V0.2 into independent workstreams.
+
+Goals:
+1. Define branch model: main = production, dev = integration/dev environment, feature/* PRs into dev, dev PRs into main after QA.
+2. Define V0.2 workstreams:
+   - W0 Branch / Environment / CI Setup
+   - W1 Company Access + Deployment
+   - W2 Full UI Redesign
+   - W3 Paperclip Multi-Agent Integration
+3. Add PR/QA rules and agent attribution requirements.
+4. Replace CURRENT_SPRINT.md Next Action with W0 Dev prompt.
+5. Commit and push docs.
 ```
 
 ---

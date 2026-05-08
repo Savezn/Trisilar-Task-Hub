@@ -1,5 +1,9 @@
 # Project-Specific Mandates (GEMINI.md) - Trisilar Task Hub
 
+**Doc Role:** Gemini-specific agent operating rules
+**Status:** Active
+**Last Updated:** 2026-05-08 · **Updated by:** Codex PM
+
 This file defines the foundational rules for the `trisilar-task-hub` project, aligning with `CLAUDE.md`.
 
 ## 1. Role Isolation (1 Role per Session)

@@ -1,8 +1,8 @@
 # Trisilar Task Hub - Software Architecture Analysis
 
-**Purpose:** Reference document for Claude Code / AI Agent work after MVP  
-**Target next version:** Version 0.1  
-**Last updated:** 2026-05-06  
+**Doc Role:** Architecture reference
+**Status:** Reference; V0.1 modularization is complete
+**Last Updated:** 2026-05-08 · **Moved by:** Codex PM
 **Primary use:** Use this file before planning refactors, adding major features, or restructuring the app.
 
 ---
@@ -814,4 +814,3 @@ The current architecture is good enough for MVP and internal use. The next versi
 The best Version 0.1 theme is:
 
 > Keep the app local-first and useful, but split the monolith into clear modules so future features can be added without breaking existing workflows.
-
