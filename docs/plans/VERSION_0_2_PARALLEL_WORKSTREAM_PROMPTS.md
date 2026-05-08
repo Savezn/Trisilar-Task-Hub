@@ -148,7 +148,7 @@ Goals:
 
 Rules:
 - Start from `dev`.
-- Work only in the W2 worktree folder and a W2 phase branch under `feature/w2-*`, default `feature/w2b-review-redesign`.
+- Work only in the W2 worktree folder and a W2 phase branch under `feature/w2-*`, default `feature/w2-02-review-redesign`.
 - Use `V0.2-W2-02` as the primary task ID; `W2b` is an alias only.
 - Do not implement W1 deployment/access or W3 Paperclip integration.
 - Do not rewrite to React/Vite unless PM explicitly approves.

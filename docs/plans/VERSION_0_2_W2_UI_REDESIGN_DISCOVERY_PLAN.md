@@ -135,7 +135,7 @@ Project phase-ladder alignment:
 
 - Use canonical IDs such as `V0.2-W2-02` first. Keep `W2a`, `W2b`, ... as aliases only.
 - Treat each W2 subphase like prior project phases: dependency, scoped task list, acceptance criteria, Dev -> QA -> PM flow, and explicit next handoff.
-- W2 implementation branches must remain under the existing `feature/w2-*` branch family. Default branch for the next phase is `feature/w2b-review-redesign`; if PM chooses to reuse `feature/w2-ui-redesign`, Dev must first verify it is reset to latest `dev` and contains no stale accepted work.
+- W2 implementation branches must remain under the existing `feature/w2-*` branch family. Default branch for the next phase is `feature/w2-02-review-redesign`; if PM chooses to reuse `feature/w2-ui-redesign`, Dev must first verify it is reset to latest `dev` and contains no stale accepted work.
 - Do not merge W2 phase work to `main` directly. Each phase goes `feature/w2-* -> dev -> QA -> PM`.
 
 Phase rules:
@@ -241,7 +241,7 @@ Phase rules:
 Recommended next implementation PR:
 
 1. Start from `dev` after accepted W2/W3 integration and current W1 runtime setup changes.
-2. Create a W2 phase branch under the existing branch family, default `feature/w2b-review-redesign`.
+2. Create a W2 phase branch under the existing branch family, default `feature/w2-02-review-redesign`.
 3. Preserve `V0.2-W2-01` shell/Today behavior and W3 Paperclip mock behavior.
 4. Implement `V0.2-W2-02` Review Queue redesign first, including shared task-row/drawer primitives only where needed by Review and later pages. Alias: W2b.
 5. Keep the existing static JS architecture; do not rewrite to React/Vite unless PM explicitly approves a separate migration workstream.
