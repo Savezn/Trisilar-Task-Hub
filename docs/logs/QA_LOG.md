@@ -57,6 +57,8 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | P7-5 - Weekly Focus View | QA Pass | `5be2ea6` |
 | P9-6 - Trello-backed preview regression | QA Recheck Pass | `e1b4801` |
 | V0.1 Release Acceptance Test | QA Pass | QA only |
+| V0.2 W3 - Paperclip Mock Integration | QA Pass / PM Accepted | `1d1f638` |
+| V0.2 Integration - Accepted W2/W3 on dev | QA Pass / PM Accepted | `dde7ab0` |
 
 ---
 
@@ -99,6 +101,9 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-08 | R32 | Pass | P7-5 Weekly Focus View pass; action lanes, priority/due-soon queue, Review AI path, edit modal path, and check:all verified with temporary server; Reviewed by Codex QA; Updated by Codex PM |
 | 2026-05-08 | R33 | Pass | P9-6 Trello-backed preview regression QA Recheck pass; Trello endpoints return 200 in normal runtime, 429 mapping verified, boards/workspaces cache verified, desktop preview renders Today/All/Boards/OKR/Weekly Focus/Settings with 0 console errors; Reviewed by Codex QA; Updated by Codex PM |
 | 2026-05-08 | R34 | Pass | V0.1 Release Acceptance Test pass; check:all passed, direct routes/sidebar navigation/back-forward verified, Phase 7 surfaces rendered, console errors 0, no white-screen observed; Reviewed by Codex QA; Updated by Codex PM |
+| 2026-05-08 | R35 | Pass | V0.2 W3 Paperclip mock integration pass at `1d1f638`; contract/mock verification, duplicate requestId, invalid payload field errors, audit persistence, no live Paperclip call, no Trello/Calendar side effect before approval, and W2 smoke passed. Local Trello 401 during task-diff was missing `.env` noise, not a W3 regression; Reviewed by Codex QA; Accepted by Codex PM |
+| 2026-05-08 | R36 | Pass | V0.2 Integration QA pass on `dev` at `dde7ab0`; accepted W2 shell/Today and W3 Paperclip mock integration remained stable, check:all passed, Paperclip contract/mock verification passed, controlled desktop/mobile Today QA passed with no overflow/clipped rows and console errors 0. Controlled API responses were used for populated visual/workflow QA due local credential sensitivity; Reviewed by Codex QA; Accepted by Codex PM |
+| 2026-05-08 | R37 | Pass | Documentation/file consolidation pass at `af822c6`; W2 plan rename, deployment docs consolidation, archive moves, design asset relocation, legacy CLI move, agent docs deduplication, package entrypoint, path references, diff check, legacy syntax checks, and check:all verified; Reviewed by Codex QA; Updated by Codex PM |
 
 ---
 
