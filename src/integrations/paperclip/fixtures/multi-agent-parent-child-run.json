@@ -1,0 +1,44 @@
+{
+  "contractVersion": "paperclip.taskhub.v0.2",
+  "requestId": "pc_req_multi_agent_child",
+  "source": {
+    "system": "paperclip",
+    "environment": "mock",
+    "workspaceId": "paperclip_workspace_id",
+    "threadId": "paperclip_thread_multi_agent"
+  },
+  "agent": {
+    "agentId": "agent_followup_02",
+    "agentName": "Paperclip Follow-up Agent",
+    "agentRole": "follow_up",
+    "runId": "run_child_20260508_002",
+    "parentRunId": "run_parent_20260508_001"
+  },
+  "reviewSession": {
+    "title": "Paperclip handoff - child agent run",
+    "summary": "Fixture preserving parent and child run traceability.",
+    "transcript": "Child agent proposed follow-up tasks from a parent coordination run.",
+    "sourceUrl": "https://paperclip.local/runs/run_child_20260508_002",
+    "sourceCreatedAt": "2026-05-08T09:00:00.000Z"
+  },
+  "tasks": [
+    {
+      "externalTaskId": "pc_task_child_001",
+      "title": "Confirm next owner for follow-up task",
+      "description": "Follow-up task proposed by a child Paperclip agent.",
+      "deadline": "2026-05-15T10:00:00.000Z",
+      "priority": "med",
+      "confidence": 0.66,
+      "syncCalendar": false,
+      "syncGoogleTasks": false,
+      "agentRationale": "The parent run identified an unresolved owner.",
+      "sourceEvidence": [
+        {
+          "type": "agent_note",
+          "text": "Owner was not confirmed in the parent coordination run.",
+          "sourceOffset": 42
+        }
+      ]
+    }
+  ]
+}

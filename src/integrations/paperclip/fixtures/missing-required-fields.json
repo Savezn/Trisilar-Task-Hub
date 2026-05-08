@@ -1,0 +1,18 @@
+{
+  "contractVersion": "paperclip.taskhub.v0.2",
+  "source": {
+    "system": "paperclip",
+    "environment": "mock"
+  },
+  "agent": {
+    "agentName": "Paperclip Strategy Agent"
+  },
+  "reviewSession": {
+    "summary": "Required fields are intentionally missing."
+  },
+  "tasks": [
+    {
+      "description": "Task title is intentionally missing."
+    }
+  ]
+}
