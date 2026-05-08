@@ -1,7 +1,7 @@
 # Trisilar Task Hub
 
 **Status:** V0.1 release acceptance passed
-**Primary docs:** `CURRENT_SPRINT.md`, `docs/plans/V0_2_WORKSTREAM_PLAN.md`, `MVP_PRD.md`
+**Primary docs:** `CURRENT_SPRINT.md`, `docs/plans/VERSION_0_2_PLAN.md`, `MVP_PRD.md`
 **Agent rules:** `CODEX.md`, `CLAUDE.md`, `GEMINI.md`
 **Updated by:** Codex PM
 
@@ -32,7 +32,7 @@ Open the app at `http://localhost:3000`.
 | `CLAUDE.md` | Claude-specific project workflow rules |
 | `GEMINI.md` | Gemini-specific project workflow rules |
 | `docs/README.md` | Reference, archive, and design artifact index |
-| `docs/plans/V0_2_WORKSTREAM_PLAN.md` | Main V0.2 branch/workstream plan |
+| `docs/plans/VERSION_0_2_PLAN.md` | Main V0.2 branch/workstream plan |
 | `docs/logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
 | `docs/logs/DECISION_LOG.md` | PM decisions and phase context |
 

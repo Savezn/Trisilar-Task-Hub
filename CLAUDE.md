@@ -37,7 +37,7 @@ Step 3: Edit only the targeted section
 | `public/style.css` | ~2159 | 60 lines |
 | `server.js` | ~603 | read in full (ok) |
 | `CURRENT_SPRINT.md` | short | read in full (ok) |
-| `docs/plans/V0_2_WORKSTREAM_PLAN.md` | short | read for V0.2 workstream context |
+| `docs/plans/VERSION_0_2_PLAN.md` | short | read for V0.2 workstream context |
 | `docs/logs/QA_LOG.md` | historical | read only when QA/completed work history is needed |
 | `docs/logs/DECISION_LOG.md` | historical | read only for PM decision/phase context |
 | `DEVELOPMENT_PLAN.md` | long | **do not read** unless PM syncing tracker |
@@ -61,7 +61,7 @@ Grep("app\.(get|post|put|delete).*route", "server.js")
 ## 3. Planning Reference
 
 - **Active work:** read `CURRENT_SPRINT.md` (always ok; kept short)
-- **V0.2 planning:** read `docs/plans/V0_2_WORKSTREAM_PLAN.md`
+- **V0.2 planning:** read `docs/plans/VERSION_0_2_PLAN.md`
 - **Phase history / full AC:** read `DEVELOPMENT_PLAN.md` only when necessary
 - **PM only:** update `DEVELOPMENT_PLAN.md` progress tracker when a full Phase completes
 

@@ -26,7 +26,7 @@ This folder contains logs, plans, references, archives, and design artifacts. Th
 |---|---|---|
 | Reserved root docs | Keep established filename | `CURRENT_SPRINT.md` |
 | Agent rules | Keep established filename | `CODEX.md` |
-| Reference/archive markdown | `UPPER_SNAKE_CASE.md` | `VERSION_0_1_PLAN.md` |
+| Reference/archive markdown | `UPPER_SNAKE_CASE.md` | `VERSION_0_2_PLAN.md` |
 | Design folders/files | `lower-kebab-case` | `ui-design-v1-0/` |
 | Folder indexes | `README.md` | `docs/README.md` |
 
@@ -77,4 +77,4 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `design/ui-design-v1-0/` | UI redesign prototype artifact |
 | `logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
 | `logs/DECISION_LOG.md` | PM decisions and phase context |
-| `plans/V0_2_WORKSTREAM_PLAN.md` | V0.2 branch/workstream plan |
+| `plans/VERSION_0_2_PLAN.md` | V0.2 branch/workstream plan |

@@ -191,7 +191,7 @@ Role: Dev
 Task: V0.2 W0 - Branch / Environment / CI Setup
 
 Context:
-V0.1 Release Acceptance passed. PM split logs/plans out of CURRENT_SPRINT.md and created docs/plans/V0_2_WORKSTREAM_PLAN.md. Before W1/W2/W3 can run in parallel, establish the dev branch and environment/PR workflow.
+V0.1 Release Acceptance passed. PM split logs/plans out of CURRENT_SPRINT.md and created docs/plans/VERSION_0_2_PLAN.md. Before W1/W2/W3 can run in parallel, establish the dev branch and environment/PR workflow.
 
 Steps:
 1. Verify current branch and remote status.

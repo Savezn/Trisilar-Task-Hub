@@ -46,7 +46,7 @@ Project file guidance:
 | `public/style.css` | Large file. Search first; read small ranges only. |
 | `server.js` | Small enough to read fully when useful. |
 | `CURRENT_SPRINT.md` | OK to read fully; short active-state file. |
-| `docs/plans/V0_2_WORKSTREAM_PLAN.md` | Read for V0.2 branch/workstream context. |
+| `docs/plans/VERSION_0_2_PLAN.md` | Read for V0.2 branch/workstream context. |
 | `docs/logs/QA_LOG.md` | Read only when historical QA/completed work evidence is needed. |
 | `docs/logs/DECISION_LOG.md` | Read only for PM decision history or phase context. |
 | `DEVELOPMENT_PLAN.md` | Avoid unless PM syncing phase history or tracker. |

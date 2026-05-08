@@ -35,7 +35,7 @@ Rules:
 - `public/app.js`: Max 80 lines.
 - `public/style.css`: Max 60 lines.
 - `server.js`, `CURRENT_SPRINT.md`, `review-store.js`, `task-diff.js`: Read in full (ok).
-- `docs/plans/V0_2_WORKSTREAM_PLAN.md`: Read for V0.2 branch/workstream context.
+- `docs/plans/VERSION_0_2_PLAN.md`: Read for V0.2 branch/workstream context.
 - `docs/logs/QA_LOG.md`: Read only when QA/completed work history is needed.
 - `docs/logs/DECISION_LOG.md`: Read only for PM decision/phase context.
 - `DEVELOPMENT_PLAN.md`: Do not read unless PM syncing tracker.

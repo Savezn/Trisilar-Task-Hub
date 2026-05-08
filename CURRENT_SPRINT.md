@@ -15,7 +15,7 @@
 |---|---|---|
 | V0.1 Release Acceptance | Pass | `docs/logs/QA_LOG.md` R34 |
 | P9 open bugs | None currently open | `docs/logs/QA_LOG.md` |
-| V0.2 planning | Ready for W0 | `docs/plans/V0_2_WORKSTREAM_PLAN.md` |
+| V0.2 planning | Ready for W0 | `docs/plans/VERSION_0_2_PLAN.md` |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Logs/plans split from Current Sprint | Updated by Codex PM |
 
@@ -37,7 +37,7 @@
 | Need | Read |
 |---|---|
 | Current task and next action | `CURRENT_SPRINT.md` |
-| Full V0.2 branch/workstream plan | `docs/plans/V0_2_WORKSTREAM_PLAN.md` |
+| Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
 | QA history and completed work archive | `docs/logs/QA_LOG.md` |
 | PM decisions and phase context | `docs/logs/DECISION_LOG.md` |
 | Product/UX scope | `MVP_PRD.md` |
@@ -55,7 +55,7 @@ V0.1 Release Acceptance passed. PM split historical logs and plans out of `CURRE
 
 **Read first:**
 - `CURRENT_SPRINT.md`
-- `docs/plans/V0_2_WORKSTREAM_PLAN.md`
+- `docs/plans/VERSION_0_2_PLAN.md`
 - `README.md`
 - `docs/README.md`
 
