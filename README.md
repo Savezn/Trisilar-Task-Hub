@@ -1,7 +1,7 @@
 # Trisilar Task Hub
 
 **Status:** V0.1 release acceptance passed
-**Primary docs:** `CURRENT_SPRINT.md`, `docs/plans/VERSION_0_2_PLAN.md`, `MVP_PRD.md`
+**Primary docs:** `CURRENT_SPRINT.md`, `docs/plans/VERSION_0_2_PLAN.md`, `docs/reference/DEPLOYMENT_SETUP.md`, `MVP_PRD.md`
 **Agent rules:** `CODEX.md`, `CLAUDE.md`, `GEMINI.md`
 **Updated by:** Codex PM
 
@@ -38,6 +38,7 @@ Open the app at `http://localhost:3000`.
 | `GEMINI.md` | Gemini-specific project workflow rules |
 | `docs/README.md` | Reference, archive, and design artifact index |
 | `docs/plans/VERSION_0_2_PLAN.md` | Main V0.2 branch/workstream plan |
+| `docs/reference/DEPLOYMENT_SETUP.md` | W1b deploy-readiness setup for Render/Railway, access gate, env vars, and persistent state |
 | `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
 | `docs/logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
 | `docs/logs/DECISION_LOG.md` | PM decisions and phase context |

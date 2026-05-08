@@ -73,6 +73,7 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 |---|---|
 | `reference/ARCHITECTURE_ANALYSIS.md` | Architecture analysis and refactor rationale |
 | `reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
+| `reference/DEPLOYMENT_SETUP.md` | V0.2 W1b deploy-readiness setup for hosted company access |
 | `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
 | `archive/VERSION_0_1_PLAN.md` | Historical V0.1 modularization plan |
 | `design/ui-design-v1-0/` | UI redesign prototype artifact |

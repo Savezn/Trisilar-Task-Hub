@@ -1,7 +1,7 @@
 const express = require("express");
 
 // Helpers stay in server.js until Ph3
-module.exports = function calendarRoutes({ getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, friendlyError }) {
+module.exports = function calendarRoutes({ getAppBaseUrl, getCalendarClient, getCalendarId, getGoogleRedirectUri, getOAuth2Client, updateEnvKey, friendlyError }) {
   const router = express.Router();
 
   router.post("/auth/google", (req, res) => {
@@ -26,7 +26,7 @@ module.exports = function calendarRoutes({ getCalendarClient, getCalendarId, get
       const auth = getOAuth2Client();
       const { tokens } = await auth.getToken(req.query.code);
       if (tokens.refresh_token) updateEnvKey("GOOGLE_REFRESH_TOKEN", tokens.refresh_token);
-      res.send(`<script>window.opener?.postMessage('cal_connected','http://localhost:3000');window.close();</script><p>✓ Connected! You can close this window.</p>`);
+      res.send(`<script>window.opener?.postMessage('cal_connected','${getAppBaseUrl()}');window.close();</script><p>✓ Connected! You can close this window.</p>`);
     } catch (e) {
       res.send(`<p style="color:red">Error: ${friendlyError(e)}</p>`);
     }
@@ -38,6 +38,7 @@ module.exports = function calendarRoutes({ getCalendarClient, getCalendarId, get
       hasClientSecret:  !!process.env.GOOGLE_CLIENT_SECRET,
       hasRefreshToken:  !!process.env.GOOGLE_REFRESH_TOKEN,
       calendarId:       getCalendarId(),
+      redirectUri:      getGoogleRedirectUri(),
       connected: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REFRESH_TOKEN),
     });
   });
