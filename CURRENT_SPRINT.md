@@ -200,56 +200,78 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-## Next Action - PM
+## Next Action - QA
 
 ---
 
-### Phase 7 Closeout + Next Milestone Decision
+### P9 Real Preview Regression Pass
 
 **Context:**
-P7-5 Weekly Focus View passed QA.
-Dev commit: `5be2ea6`
-Reviewed by: Codex QA
+Phase 7 / OKR Portfolio Layer is closed after P7-5 QA pass.
+Latest PM closeout updated `CURRENT_SPRINT.md` and `DEVELOPMENT_PLAN.md`.
 
 **Goal:**
-Close Phase 7 cleanly and decide the next milestone before opening another Dev task.
+Run one real-preview regression pass before opening the next feature milestone.
 
 **What to do:**
-1. Review Phase 7 status in `CURRENT_SPRINT.md` and `DEVELOPMENT_PLAN.md`.
-2. Decide whether Phase 7 is complete or needs one polish/bug pass from real preview usage.
-3. If Phase 7 is complete, update planning docs to mark P7 done and define the next milestone.
-4. If more verification is needed, create the next QA/Dev prompt with exact AC and files.
+1. Run `npm.cmd run check:all` with a running local server.
+2. Browser preview at desktop width if possible.
+3. Verify navigation and URL paths still work for:
+   - Today
+   - Review
+   - All Tasks
+   - Boards Monitor
+   - Calendar
+   - OKR
+   - Weekly Focus
+   - Settings
+4. Verify Phase 7 surfaces still render:
+   - OKR/Portfolio filters and progress view
+   - Boards Monitor convention validator
+   - Weekly Focus action lanes
+5. Report any visual/behavior regression as P9 maintenance bug.
 
 **Rules:**
-- PM role only unless opening a Dev Fix.
-- Use UTF-8 explicit/targeted edits for `.md` files with Thai text.
-- Do not broad rewrite docs through PowerShell default encoding.
-- Include attribution: Updated by PM agent name.
+- QA only: do not edit files.
+- Grep first, targeted reads for large files.
+- Report PASS / FAIL with evidence.
+- Include attribution: Reviewed by QA agent name.
 
-**Copy-paste prompt for PM session:**
+**Copy-paste prompt for QA session:**
 ```
-Role: PM
-Task: Phase 7 Closeout + Next Milestone Decision
+Role: QA
+Task: P9 Real Preview Regression Pass
 
 Context:
-P7-5 Weekly Focus View passed QA.
-Dev commit: 5be2ea6
-Reviewed by: Codex QA
+Phase 7 / OKR Portfolio Layer is closed after P7-5 QA pass.
+Latest PM closeout updated CURRENT_SPRINT.md and DEVELOPMENT_PLAN.md.
 
 Goal:
-Close Phase 7 cleanly and decide the next milestone before opening another Dev task.
+Run one real-preview regression pass before opening the next feature milestone.
 
 Steps:
-1. Review Phase 7 status in CURRENT_SPRINT.md and DEVELOPMENT_PLAN.md.
-2. Decide whether Phase 7 is complete or needs one polish/bug pass from real preview usage.
-3. If Phase 7 is complete, update planning docs to mark P7 done and define the next milestone.
-4. If more verification is needed, create the next QA/Dev prompt with exact AC and files.
+1. Run npm.cmd run check:all with a running local server.
+2. Browser preview at desktop width if possible.
+3. Verify navigation and URL paths still work for:
+   - Today
+   - Review
+   - All Tasks
+   - Boards Monitor
+   - Calendar
+   - OKR
+   - Weekly Focus
+   - Settings
+4. Verify Phase 7 surfaces still render:
+   - OKR/Portfolio filters and progress view
+   - Boards Monitor convention validator
+   - Weekly Focus action lanes
+5. Report any visual/behavior regression as P9 maintenance bug.
 
 Rules:
-- PM role only unless opening a Dev Fix.
-- Use UTF-8 explicit/targeted edits for .md files with Thai text.
-- Do not broad rewrite docs through PowerShell default encoding.
-- Include attribution: Updated by PM agent name.
+- QA only: do not edit files.
+- Grep first, targeted reads for large files.
+- Report PASS / FAIL with evidence.
+- Include attribution: Reviewed by QA agent name.
 ```
 
 ---

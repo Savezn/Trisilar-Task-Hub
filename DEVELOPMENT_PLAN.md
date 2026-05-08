@@ -47,7 +47,7 @@ Phase 3 — Task Diff Engine                 ✅ COMPLETE  (2026-05-04, QA clean
 Phase 4 — Google Tasks Daily Planner       ✅ COMPLETE  (2026-05-05)
 Phase 5 — Today Dashboard: Enhanced        ✅ COMPLETE  (2026-05-05)
 Phase 6 — Hardening & Polish               ✅ COMPLETE  (2026-05-07)
-Phase 7 — OKR / Portfolio Layer            ⬜ TODO
+Phase 7 — OKR / Portfolio Layer            ✅ COMPLETE  (2026-05-08)
 Phase 8 — Post-MVP Enhancements            ✅ COMPLETE  (2026-05-06, P8-4 deferred per spec)
 ```
 
@@ -910,7 +910,11 @@ window.opener?.postMessage('cal_connected', 'http://localhost:3000')
 | **P6** | **P6-6** Task diff skip Done/Completed lists | ✅ Done | 2026-05-05 | DONE_LIST_PATTERN regex; filter before card fetch |
 | **P6** | **P6-7** matchReason cleanup for create_new | ✅ Done | 2026-05-05 | All 3 create_new return paths: matchReason: "" |
 | **P6** | **P6-8** Processed task matchReason display | ✅ Done | 2026-05-05 | buildProcessedTaskHTML: reasonTip muted text for update/duplicate |
-| **P7** | **P7-1** Trello metadata ingestion | ⬜ Todo | — | metadata ingestion: labels, members, checklist progress, custom fields |
+| **P7** | **P7-1** Trello metadata ingestion | ✅ Done | 2026-05-07 | labels, members, checklist progress, custom fields normalized — commit 980b5f0 |
+| **P7** | **P7-2** Portfolio filters | ✅ Done | 2026-05-07 | OKR overview filters by label/member with explicit empty state — commit 387d43b |
+| **P7** | **P7-3** OKR Progress View | ✅ Done | 2026-05-07 | overview summary, KR metadata, linked project task detail — commit 422b91b |
+| **P7** | **P7-4** Project Board Convention Validator | ✅ Done | 2026-05-08 | list group aliases, metadata hygiene counts, board/card open paths — commit b345e65 |
+| **P7** | **P7-5** Weekly Focus View | ✅ Done | 2026-05-08 | Do Now, Review AI, Waiting/Blocked, Schedule, Done This Week lanes — commit 5be2ea6 |
 | **P8** | **P8-1** Notification & Alert System | ✅ Done | 2026-05-06 | tab title (N) + once-per-session overdue alert banner, dismiss ✕/click-away — commit d9ce8b1 |
 | **P8** | **P8-2** Card Quick-Edit Inline | ✅ Done | 2026-05-06 | dblclick rename All Tasks + inline date picker overdue Today, B9 fix — commit e8e4b75 |
 | **P8** | **P8-3** Export / Report CSV | ✅ Done | 2026-05-06 | Export CSV button filtered tasks, 7 columns, BOM UTF-8, filename YYYY-MM-DD — commit 8068e38 |
@@ -976,9 +980,9 @@ P0 (Bugs) ──────┬─→ P1 (Data) ──→ P2 (UI) ──→ P5 (
 
 ## Next Session Prompt (copy-paste ready)
 
-**Phase 7 (Next):**
+**P9 Maintenance / Real Preview QA (Next):**
 ```
-คุณ Dev อ้างอิง DEVELOPMENT_PLAN.md — ทำ Phase 7: OKR / Portfolio Layer โดยเริ่มจาก P7-1 metadata ingestion แล้วต่อ P7-2 filters และ P7-3 OKR Progress View
+คุณ QA อ้างอิง CURRENT_SPRINT.md และ DEVELOPMENT_PLAN.md — ทำ P9 real preview regression pass หลัง Phase 7 closeout โดยตรวจ navigation, Today, All Tasks, Boards Monitor, OKR/Portfolio, Weekly Focus, Settings และ smoke/check:all
 ```
 
 ---
