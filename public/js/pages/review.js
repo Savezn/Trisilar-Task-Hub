@@ -361,8 +361,8 @@ function renderReviewTaskDrawer() {
   ).join("");
 
   host.innerHTML = `
-    <div class="review-drawer-back show" onclick="closeReviewTaskDrawer()"></div>
-    <aside class="review-drawer show" role="dialog" aria-modal="true" aria-label="Edit review task">
+    <div class="review-drawer-back show" onclick="if(event.target===this) closeReviewTaskDrawer()">
+    <aside class="review-drawer show" role="dialog" aria-modal="true" aria-label="Edit review task" onclick="event.stopPropagation()">
       <div class="review-drawer-header">
         <div class="review-drawer-dot"></div>
         <h2>Edit review task</h2>
@@ -427,6 +427,7 @@ function renderReviewTaskDrawer() {
         <button class="btn btn-success" onclick="approveReviewTask('${sessionId}','${taskId}')">${icon("check")} Approve</button>
       </div>
     </aside>
+    </div>
   `;
 
   if (task.targetBoardId) loadReviewDrawerLists(task.targetBoardId, task.targetListId);
