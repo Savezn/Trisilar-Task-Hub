@@ -81,6 +81,7 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 |---|---|
 | `reference/ARCHITECTURE.md` | Current technical architecture reference |
 | `reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
+| `reference/FILE_ORGANIZATION.md` | File placement policy for future files |
 | `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
 | `reference/PROJECT_CONTEXT.md` | Stable product context and operating model |
 | `deployment/README.md` | Deployment docs index |

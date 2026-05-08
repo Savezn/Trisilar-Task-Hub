@@ -43,6 +43,7 @@ Open the app at `http://localhost:3000`.
 | `docs/plans/VERSION_0_2_PLAN.md` | Main V0.2 branch/workstream plan |
 | `docs/reference/PROJECT_CONTEXT.md` | Stable product and operating context |
 | `docs/reference/ARCHITECTURE.md` | Current technical architecture reference |
+| `docs/reference/FILE_ORGANIZATION.md` | File placement rules for future files |
 | `docs/deployment/README.md` | Deployment documentation index |
 | `docs/deployment/DEPLOYMENT_SETUP.md` | W1b deploy-readiness setup for Render/Railway, access gate, env vars, and persistent state |
 | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` | W1c hosted dev environment setup handoff for Render default, Railway alternate, Cloudflare Access, and blockers |
@@ -60,7 +61,7 @@ Open the app at `http://localhost:3000`.
 |---|---|
 | `public/` | Frontend app, styles, plain script modules |
 | `src/` | Backend route/model/helper modules |
-| `scripts/` | Smoke, syntax, load-order, and verification scripts |
+| `scripts/` | Smoke, syntax, load-order, verification scripts, and local helper scripts |
 | `scripts/legacy/` | Archived utilities not used by the web app runtime |
 | `docs/adr/` | Architecture Decision Records |
 | `docs/deployment/` | Deployment and hosted environment docs |

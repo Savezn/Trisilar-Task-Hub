@@ -1,0 +1,126 @@
+# File Organization - Trisilar Task Hub
+
+**Doc Role:** File placement policy for future files
+**Status:** Active
+**Owner:** PM / Dev
+**Last Updated:** 2026-05-08
+**Updated by:** Codex PM
+
+Use this document before adding, moving, or renaming project files. The goal is to keep the repo navigable for humans and AI agents.
+
+---
+
+## Root Directory
+
+Keep the root directory small. Root files should be entrypoints, package/config files, or active operating docs.
+
+| Root file type | Allowed examples | Rule |
+|---|---|---|
+| App/package entrypoints | `server.js`, `package.json`, `package-lock.json` | Keep here unless an ADR approves a runtime restructure. |
+| Active operating docs | `README.md`, `.ai-instructions.md`, `CONTRIBUTING.md`, `TODO.md`, `CURRENT_SPRINT.md`, `MVP_PRD.md`, `CODEX.md`, `CLAUDE.md`, `GEMINI.md` | Keep short and link to deeper docs. |
+| Runtime config baseline | `.env.example`, `bu-config.json` | Do not commit secrets. Keep generated local data ignored. |
+| Deployment config | `render.yaml`, `railway.toml` | Keep provider root config here unless provider docs require otherwise. |
+| Legacy or helper scripts | none | Put under `scripts/` or `scripts/legacy/`. |
+
+Do not add new long-form planning, QA, architecture, or deployment docs to root.
+
+---
+
+## Production Code
+
+| Path | Use for | Do not put here |
+|---|---|---|
+| `server.js` | Current Express app entrypoint | New large helper logic; prefer `src/`. |
+| `trello.js`, `review-store.js`, `task-diff.js` | Current root backend modules retained for compatibility | New backend domains unless they extend these modules directly. |
+| `src/routes/` | Express route modules | Frontend code or docs. |
+| `src/models/` | Data normalization/model helpers | Route wiring. |
+| `src/integrations/` | External integration boundaries and contracts | UI-only code. |
+| `src/utils/` | Backend utility helpers | Page-specific rendering. |
+| `public/` | Production static frontend only | Design prototypes, screenshots, docs, or throwaway assets. |
+| `public/js/pages/` | Production page modules | Shared backend logic. |
+
+If a root backend module grows significantly, create a focused Dev task and ADR before moving it into `src/`.
+
+---
+
+## Scripts
+
+| Path | Use for |
+|---|---|
+| `scripts/` | Verification scripts, local dev helpers, one-command utilities used by the project |
+| `scripts/legacy/` | Archived utilities that are not part of the web app runtime |
+
+Rules:
+
+- New smoke/verification scripts go in `scripts/`.
+- Old utilities that are kept only for reference go in `scripts/legacy/<utility-name>/` with a `README.md`.
+- Do not place runnable helper scripts in root unless they are required by package manager or platform tooling.
+
+---
+
+## Documentation
+
+| Path | Use for |
+|---|---|
+| `docs/README.md` | Documentation index |
+| `docs/adr/` | Architecture Decision Records |
+| `docs/archive/` | Historical docs no longer used as active prompts |
+| `docs/deployment/` | Deployment and hosted environment setup docs |
+| `docs/design/` | Design prototypes, screenshots, visual handoff assets |
+| `docs/logs/` | QA logs, decision logs, completed-work history |
+| `docs/plans/` | Active version/workstream plans and durable prompts |
+| `docs/reference/` | Durable product, architecture, workflow, and file maps |
+| `docs/testing/` | Test strategy and verification policy |
+
+Rules:
+
+- Active sprint state belongs in `CURRENT_SPRINT.md`.
+- Roadmap index belongs in `TODO.md`.
+- Historical roadmap detail belongs in `docs/archive/DEVELOPMENT_HISTORY.md`.
+- Current architecture belongs in `docs/reference/ARCHITECTURE.md`.
+- Older analysis belongs in `docs/archive/`.
+- Deployment setup belongs in `docs/deployment/`.
+- New design artifacts must live under `docs/design/<artifact-name>/`.
+
+---
+
+## Runtime Data and Secrets
+
+| File type | Placement |
+|---|---|
+| Secret values | Local `.env` or platform dashboard only |
+| Secret placeholders | `.env.example` |
+| Local runtime JSON | `APP_DATA_DIR` when configured; otherwise root fallback for current runtime |
+| Ignored generated files | `review-sessions.json`, `card-events.json`, `.data/` |
+| Tracked baseline config | `bu-config.json` |
+
+Do not commit `.env`, API tokens, OAuth secrets, or production data exports.
+
+---
+
+## Naming Rules
+
+| File type | Format | Example |
+|---|---|---|
+| Active version plans | `VERSION_0_2_PLAN.md` | `VERSION_0_2_PLAN.md` |
+| Workstream plans | `VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` | `VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md` |
+| ADRs | `ADR_0001_SHORT_TITLE.md` | `ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` |
+| Logs | `UPPER_SNAKE_CASE.md` | `QA_LOG.md` |
+| Design artifact folders | `lower-kebab-case` | `ui-design-v1-0/` |
+| Legacy utilities | `lower-kebab-case` | `trello-gemini-cli/` |
+
+Use descriptive names. Avoid generic names such as `notes.md`, `new.md`, `test2.js`, or `final-final.md`.
+
+---
+
+## Checklist for New Files
+
+Before adding a file:
+
+1. Check whether an existing folder already owns that type of artifact.
+2. If it is documentation, add or update an index link in `docs/README.md` or the relevant folder `README.md`.
+3. If it changes architecture/process, add or update an ADR.
+4. If it is generated/runtime data, keep it ignored unless PM explicitly approves tracking it.
+5. If it is a script, put it in `scripts/` and document when to run it.
+6. If it is a design artifact, keep it under `docs/design/`.
+7. If no existing category fits, ask PM before creating a new top-level folder.
