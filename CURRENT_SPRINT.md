@@ -80,6 +80,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | P7-2 - Portfolio filters | QA Pass | `387d43b` |
 | P7-3 - OKR Progress View | QA Pass | `422b91b` |
 | P7-4 - Project Board Convention Validator | QA Pass | `b345e65` |
+| P7-5 - Weekly Focus View | QA Pass | `5be2ea6` |
 ---
 
 ## Active Tasks
@@ -126,7 +127,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | P7-2 | Portfolio filters | Done `387d43b` |
 | P7-3 | OKR Progress View | Done `422b91b` |
 | P7-4 | Project Board Convention Validator | Done `b345e65` |
-| P7-5 | Weekly Focus View | Next |
+| P7-5 | Weekly Focus View | Done `5be2ea6` |
 
 ---
 
@@ -166,6 +167,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-07 | R29 | Pass | P7-2 Portfolio filters pass; OKR overview filters by label/member, toggle clears filters, empty filtered state explicit; check:all passed with temporary server; Reviewed by Codex QA |
 | 2026-05-07 | R30 | Pass | P7-3 OKR Progress View pass; overview summary, KR progress metadata, linked project task detail, filters, and empty states verified; check:all passed with temporary server; Reviewed by Codex QA; Updated by Codex PM |
 | 2026-05-08 | R31 | Pass | P7-4 Project Board Convention Validator pass; list group aliases, metadata hygiene counts, combined convention badge, board/card open paths verified; check:all passed with temporary server; Reviewed by Codex QA; Updated by Codex PM |
+| 2026-05-08 | R32 | Pass | P7-5 Weekly Focus View pass; action lanes, priority/due-soon queue, Review AI path, edit modal path, and check:all verified with temporary server; Reviewed by Codex QA; Updated by Codex PM |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -198,94 +200,56 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-## Next Action - Dev
+## Next Action - PM
 
 ---
 
-### P7-5 - Weekly Focus View
+### Phase 7 Closeout + Next Milestone Decision
 
 **Context:**
-P7-4 Project Board Convention Validator passed QA.
-Dev commit: `b345e65`
+P7-5 Weekly Focus View passed QA.
+Dev commit: `5be2ea6`
 Reviewed by: Codex QA
 
 **Goal:**
-Add a Weekly Focus View for the 2-person + AI Agent team that pulls the highest-priority execution queue from all Project Boards without creating a duplicate Team Board.
+Close Phase 7 cleanly and decide the next milestone before opening another Dev task.
 
 **What to do:**
-1. Grep `public/app.js`, `public/js/pages/all-tasks.js`, `public/js/pages/boards.js`, `public/js/pages/okr.js`, `public/js/router.js`, `public/index.html`, and Trello route/model files for Weekly Focus, due date, Pending Review, AI Agent, labels, members, priority, and route/nav patterns.
-2. Read targeted ranges only; do not refactor unrelated page modules.
-3. Add or refine a Weekly Focus page/view that uses the same normalized card data as Today/Planner/All Tasks.
-4. Include action lanes:
-   - Do Now: P0/P1 or urgent/high-priority active work, due soon/overdue first
-   - Review AI: Pending Review and AI-agent/source tasks
-   - Waiting/Blocked: blocked/waiting-labeled active work
-   - Schedule: active work with upcoming due dates
-   - Done This Week: completed work from the last 7 days when available
-5. Keep card opening behavior through existing Task Hub edit modal or existing board/card open paths.
-6. Keep behavior-preserving; do not create a duplicate Team Board in Trello.
-7. Run `node --check` on changed JS files.
-8. Run `npm.cmd run check:all` with a running local server.
+1. Review Phase 7 status in `CURRENT_SPRINT.md` and `DEVELOPMENT_PLAN.md`.
+2. Decide whether Phase 7 is complete or needs one polish/bug pass from real preview usage.
+3. If Phase 7 is complete, update planning docs to mark P7 done and define the next milestone.
+4. If more verification is needed, create the next QA/Dev prompt with exact AC and files.
 
 **Rules:**
-- Dev role only.
-- Grep first, targeted reads for large files.
-- Preserve P7-1 through P7-4 behavior.
-- Do not stage unrelated `DEVELOPMENT_PLAN.md` or `public/app.js` changes unless this task actually requires them.
-- Include attribution: Implemented by Dev agent name.
+- PM role only unless opening a Dev Fix.
+- Use UTF-8 explicit/targeted edits for `.md` files with Thai text.
+- Do not broad rewrite docs through PowerShell default encoding.
+- Include attribution: Updated by PM agent name.
 
-**AC:**
-- [ ] User sees weekly focus from all Project Boards in one view.
-- [ ] Pending Review and AI Agent tasks are easy to inspect.
-- [ ] Work due soon/overdue and P0/P1 work is prioritized.
-- [ ] Done-this-week work is visible when data is available.
-- [ ] Existing Today, All Tasks, Boards Monitor, and OKR/Portfolio behavior remains intact.
-- [ ] `npm.cmd run check:all` passes with a running server.
-
-**Commit:**
+**Copy-paste prompt for PM session:**
 ```
-git add public/js/pages public/app.js public/index.html public/js/router.js public/style.css src trello.js
-git commit -m "P7-5: Add weekly focus view"
-git push
-```
-
-**Copy-paste prompt for Dev session:**
-```
-Role: Dev
-Task: P7-5 - Weekly Focus View
+Role: PM
+Task: Phase 7 Closeout + Next Milestone Decision
 
 Context:
-P7-4 Project Board Convention Validator passed QA (Dev commit `b345e65`, Reviewed by Codex QA). Next, implement P7-5 Weekly Focus View for the 2-person + AI Agent team.
+P7-5 Weekly Focus View passed QA.
+Dev commit: 5be2ea6
+Reviewed by: Codex QA
 
 Goal:
-Add a Weekly Focus View that pulls the highest-priority execution queue from all Project Boards without creating a duplicate Team Board.
+Close Phase 7 cleanly and decide the next milestone before opening another Dev task.
 
 Steps:
-1. Grep public/app.js, public/js/pages/all-tasks.js, public/js/pages/boards.js, public/js/pages/okr.js, public/js/router.js, public/index.html, and Trello route/model files for Weekly Focus, due date, Pending Review, AI Agent, labels, members, priority, and route/nav patterns.
-2. Read targeted ranges only; do not refactor unrelated page modules.
-3. Add or refine a Weekly Focus page/view that uses the same normalized card data as Today/Planner/All Tasks.
-4. Include action lanes:
-   - Do Now: P0/P1 or urgent/high-priority active work, due soon/overdue first
-   - Review AI: Pending Review and AI-agent/source tasks
-   - Waiting/Blocked: blocked/waiting-labeled active work
-   - Schedule: active work with upcoming due dates
-   - Done This Week: completed work from the last 7 days when available
-5. Keep card opening behavior through existing Task Hub edit modal or existing board/card open paths.
-6. Keep behavior-preserving; do not create a duplicate Team Board in Trello.
-7. Run node --check on changed JS files.
-8. Run npm.cmd run check:all with a running local server.
+1. Review Phase 7 status in CURRENT_SPRINT.md and DEVELOPMENT_PLAN.md.
+2. Decide whether Phase 7 is complete or needs one polish/bug pass from real preview usage.
+3. If Phase 7 is complete, update planning docs to mark P7 done and define the next milestone.
+4. If more verification is needed, create the next QA/Dev prompt with exact AC and files.
 
 Rules:
-- Dev role only.
-- Grep first, targeted reads for large files.
-- Preserve P7-1 through P7-4 behavior.
-- Do not stage unrelated DEVELOPMENT_PLAN.md or public/app.js changes unless this task actually requires them.
-- Include attribution: Implemented by Dev agent name.
-
-Commit:
-git add public/js/pages public/app.js public/index.html public/js/router.js public/style.css src trello.js
-git commit -m "P7-5: Add weekly focus view"
-git push
+- PM role only unless opening a Dev Fix.
+- Use UTF-8 explicit/targeted edits for .md files with Thai text.
+- Do not broad rewrite docs through PowerShell default encoding.
+- Include attribution: Updated by PM agent name.
 ```
 
 ---
@@ -320,7 +284,7 @@ git push
 | P4 Google Tasks Planner | ✅ Done (2026-05-05) |
 | P5 Today Enhanced | ✅ Done (2026-05-05) |
 | P6 Hardening & Polish | ✅ Done (2026-05-05) |
-| P7 OKR / Portfolio Layer | 🔄 In Progress (P7-5 next) |
+| P7 OKR / Portfolio Layer | ✅ Done (2026-05-08) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
 | **V0.1 Modularization** | **✅ Done (Router-1 + Ph6-4 complete)** |
