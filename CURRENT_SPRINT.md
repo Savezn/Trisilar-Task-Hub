@@ -1,6 +1,6 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2 Planning / Branch & Environment Setup
+**Phase:** V0.2 Parallel Workstream Setup
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
@@ -15,9 +15,10 @@
 |---|---|---|
 | V0.1 Release Acceptance | Pass | `docs/logs/QA_LOG.md` R34 |
 | P9 open bugs | None currently open | `docs/logs/QA_LOG.md` |
-| V0.2 planning | Ready for W0 | `docs/plans/VERSION_0_2_PLAN.md` |
+| V0.2 W0 Branch / Environment / CI Setup | QA Pass `9dbb47b` | Implemented by Codex Dev; Reviewed by Codex QA |
+| V0.2 planning | Ready for W1/W2/W3 parallel Dev sessions | `docs/plans/VERSION_0_2_PLAN.md` |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
-| Latest docs policy | Logs/plans split from Current Sprint | Updated by Codex PM |
+| Latest docs policy | Logs/plans split from Current Sprint; branch workflow documented | Updated by Codex PM |
 
 ---
 
@@ -25,10 +26,10 @@
 
 | ID | Task | Status | Next Role |
 |---|---|---|---|
-| W0 | Branch / Environment / CI Setup | Next | Dev |
-| W1 | Company Access + Deployment | Pending W0 | Dev |
-| W2 | Full UI Redesign | Pending W0 | Dev |
-| W3 | Paperclip Multi-Agent Integration | Pending W0 | Dev |
+| W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
+| W1 | Company Access + Deployment | Next | Dev |
+| W2 | Full UI Redesign | Next | Dev |
+| W3 | Paperclip Multi-Agent Integration | Next | Dev |
 
 ---
 
@@ -46,36 +47,96 @@
 
 ---
 
-## Next Action - Dev
+## Next Action - Parallel Dev Sessions
 
-### V0.2 W0 - Branch / Environment / CI Setup
+W0 passed QA. `dev` exists and is aligned with `main` at `9dbb47b`, so W1/W2/W3 can now run in parallel from `dev`.
 
-**Context:**
-V0.1 Release Acceptance passed. PM split historical logs and plans out of `CURRENT_SPRINT.md` so agents can start from a shorter active-state file. V0.2 has three parallel goals: company access/deployment, full UI redesign, and Paperclip multi-agent integration. W0 must establish the branch/environment workflow before W1/W2/W3 start in parallel.
+### Prompt A - W1 Company Access + Deployment
 
-**Read first:**
-- `CURRENT_SPRINT.md`
-- `docs/plans/VERSION_0_2_PLAN.md`
-- `README.md`
-- `docs/README.md`
-
-**Steps:**
-1. Verify current branch and remote status.
-2. Create `dev` branch from current `main` if it does not already exist.
-3. Push `dev` to origin.
-4. Add targeted docs for branch/environment workflow if missing.
-5. Document dev/prod expectations and PR flow: `feature/* -> dev -> main`.
-6. Run `npm.cmd run check:all` if any behavior/config files change.
-7. Commit and push any doc/config updates.
-
-**Rules:**
-- Dev role only.
-- Do not start W1/W2/W3 implementation yet.
-- Preserve existing app behavior.
-- Keep docs targeted and UTF-8 safe.
-- Include attribution: Implemented by Dev agent name.
-
-**Commit suggestion:**
 ```text
-V0.2 W0: establish dev branch and environment workflow
+Role: Dev
+Task: V0.2 W1 - Company Access + Deployment Plan
+
+Context:
+V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Start W1 from `dev`.
+
+Read first:
+- CURRENT_SPRINT.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- README.md
+
+Goals:
+1. Evaluate practical deployment/access options for Trisilar teammates.
+2. Recommend dev/prod deployment target and access model.
+3. Document environment variables/secrets boundary.
+4. Produce a concrete implementation plan before changing production-ish behavior.
+
+Rules:
+- Start from `dev`.
+- Do not implement W2 UI redesign or W3 Paperclip integration.
+- Do not commit secrets.
+- Preserve existing app behavior unless explicitly required.
+- Include attribution: Implemented by Dev agent name.
 ```
+
+### Prompt B - W2 Full UI Redesign
+
+```text
+Role: Dev
+Task: V0.2 W2 - Full UI Redesign Discovery and Implementation Plan
+
+Context:
+V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Start W2 from `dev`.
+
+Read first:
+- CURRENT_SPRINT.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- MVP_PRD.md
+- docs/design/ui-design-v1-0/README.md
+
+Goals:
+1. Audit current app shell/pages and existing design artifacts.
+2. Propose redesign scope, visual direction, and page rollout order.
+3. Identify responsive/desktop QA requirements.
+4. Make only targeted preparatory docs or prototype updates unless implementation scope is clear.
+
+Rules:
+- Start from `dev`.
+- Do not implement W1 deployment/access or W3 Paperclip integration.
+- Preserve core workflows.
+- Include desktop/mobile visual QA expectations.
+- Include attribution: Implemented by Dev agent name.
+```
+
+### Prompt C - W3 Paperclip Multi-Agent Integration
+
+```text
+Role: Dev
+Task: V0.2 W3 - Paperclip Multi-Agent Integration Discovery and Contract Plan
+
+Context:
+V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Start W3 from `dev`.
+
+Read first:
+- CURRENT_SPRINT.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- MVP_PRD.md
+
+Goals:
+1. Identify required Paperclip integration touchpoints.
+2. Draft a contract-first API/webhook or adapter plan.
+3. Define mock adapter verification before live connector work.
+4. Define attribution/audit trail requirements so multi-agent work stays traceable.
+
+Rules:
+- Start from `dev`.
+- Do not implement W1 deployment/access or W2 UI redesign.
+- Do not add live external calls before contract/mock verification.
+- Preserve existing app behavior.
+- Include attribution: Implemented by Dev agent name.
+```
+
+**PM Attribution:** W0 implemented by Codex Dev, reviewed by Codex QA, updated after QA pass by Codex PM.
