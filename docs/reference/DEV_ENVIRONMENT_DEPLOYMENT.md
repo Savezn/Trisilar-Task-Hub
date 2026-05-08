@@ -1,7 +1,7 @@
 # Dev Environment Deployment - V0.2 W1c
 
 **Doc Role:** Hosted dev environment setup handoff
-**Status:** Prepared; waiting on Trisilar runtime account, DNS, Cloudflare Access, and secret configuration
+**Status:** Runtime setup blocked on Trisilar platform/DNS/Access configuration
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -138,17 +138,50 @@ After Trisilar configures the platform account, DNS, secrets, and Cloudflare Acc
 
 ---
 
+## 2026-05-08 Runtime Setup Attempt
+
+Runtime setup by Codex Dev on branch `dev` at `53dc8ff`.
+
+What was checked from the local workstation:
+
+- Confirmed the local checkout is clean on `dev` and matches `origin/dev`.
+- Confirmed `render.yaml` targets Render service `trisilar-task-hub-dev` on branch `dev`.
+- Confirmed `railway.toml` remains available as the alternate Railway service config.
+- Confirmed local environment variable names are present without exposing secret values.
+- Checked local CLI availability: `render`, `railway`, `wrangler`, and `cloudflared` were not installed or available in PATH.
+- Checked proposed DNS/hosted health endpoint: `taskhub-dev.trisilar.com` did not resolve, so hosted `/healthz` could not be verified.
+- Ran hosted-equivalent local runtime with:
+  - `APP_DATA_DIR` set to a temporary runtime directory.
+  - `APP_BASE_URL=https://taskhub-dev.trisilar.com`.
+  - `GOOGLE_REDIRECT_URI=https://taskhub-dev.trisilar.com/auth/callback`.
+- Verified local `GET /healthz` returned `200`.
+- Verified `/api/calendar/status` used the hosted `GOOGLE_REDIRECT_URI` value.
+- Verified `APP_DATA_DIR` wrote runtime files under the configured directory for `bu-config.json` and `review-sessions.json`.
+- Did not trigger Google Calendar sync, so `card-events.json` was not written in this pass; its path is still configured through the same `APP_DATA_DIR` helper and should be verified with a non-production sync action after hosted dev credentials are configured.
+- Ran `npm.cmd run check:all` against the local hosted-equivalent server; frontend verification and smoke endpoints passed.
+- Ran Paperclip contract/mock verification after W2/W3 integration; both passed.
+
+Current conclusion:
+
+- Repo-side W1c configuration is ready.
+- Hosted runtime setup is blocked until a Trisilar-controlled platform account/workspace, DNS, secret values, and Cloudflare Access policy are configured.
+- No production deployment was attempted.
+- No secrets were committed.
+
+---
+
 ## Current Runtime Blockers
 
 W1c cannot complete hosted verification from the repo alone. These Trisilar runtime items are required:
 
 - Confirm Render account/workspace access, or choose Railway explicitly.
+- Install/authenticate the selected platform CLI or complete setup through the selected platform dashboard.
 - Connect the GitHub repo service from branch `dev`.
 - Configure dev-only Trello and Google credentials in the platform dashboard.
 - Configure the dev Google OAuth redirect URI.
-- Configure DNS for the dev hostname.
+- Configure DNS for the dev hostname; `taskhub-dev.trisilar.com` did not resolve during this Codex Dev attempt.
 - Configure Cloudflare Access email allowlist.
-- Run approved teammate access verification.
+- Run anonymous-blocked and approved-teammate access verification.
 
 ---
 
