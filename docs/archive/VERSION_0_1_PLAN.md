@@ -1,23 +1,32 @@
-# Trisilar Task Hub — Version 0.1 Plan
+# Version 0.1 Plan - Trisilar Task Hub
 
-**Doc Role:** Archived V0.1 planning reference
-**Status:** Archived; V0.1 Release Acceptance passed on 2026-05-08
-**Reference:** `../reference/ARCHITECTURE_ANALYSIS.md`
-**Created:** 2026-05-06  
-**Moved by:** Codex PM
-**Renamed by:** Codex PM
-**Theme:** "Keep the app local-first and useful, but split the monolith into clear modules so future features can be added without breaking existing workflows."
-
-> **วิธีใช้ไฟล์นี้:**
-> - PM ใช้ไฟล์นี้วางแผน phases ของ Version 0.1
-> - Dev / QA ดู `CURRENT_SPRINT.md` สำหรับ task ที่ active อยู่
-> - เมื่อ phase เสร็จ → PM tick ✅ ที่นี่ + อัปเดต CURRENT_SPRINT.md
+**Doc Role:** Archived version plan
+**Status:** Archived - V0.1 Release Acceptance passed on 2026-05-08
+**Version:** V0.1
+**Planning Stage:** Completed / archived
+**Owner:** PM
+**Created:** 2026-05-06
+**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
+**Related Docs:** `../reference/ARCHITECTURE_ANALYSIS.md`, `../../CURRENT_SPRINT.md`, `../../DEVELOPMENT_PLAN.md`
+**Theme:** Keep the app local-first and useful, but split the monolith into clear modules so future features can be added without breaking existing workflows.
 
 ---
 
-## Version 0.1 Goal
+## How to Use This Document
+
+- Use as historical reference for V0.1 modularization decisions.
+- Do not use this as the active prompt source; use `../../CURRENT_SPRINT.md` for active work.
+- Preserve completed planning history; update only when correcting references or archival metadata.
+
+---
+
+## Planning Summary
 
 แปลง working monolith ให้เป็น **modular local-first app** โดยไม่ rewrite และไม่ทำให้ functionality เดิมพัง
+
+---
+
+## Scope / Non-Goals
 
 **ห้ามทำใน V0.1:**
 - ❌ Rewrite ทั้ง frontend หรือ backend
@@ -28,7 +37,9 @@
 
 ---
 
-## Prerequisites — แก้ก่อน (P9 Bugs)
+## Dependency / Workflow Model
+
+### Prerequisites - แก้ก่อน (P9 Bugs)
 
 | ID | Bug | Priority | Status |
 |---|---|---|---|
@@ -38,7 +49,7 @@
 
 ---
 
-## Phase Map
+## Workstream / Phase Map
 
 | Phase | Name | Priority | Status |
 |---|---|---|---|
@@ -52,7 +63,7 @@
 
 ---
 
-## Phase Detail
+## Workstream / Phase Details
 
 ---
 
@@ -251,7 +262,7 @@ card_calendar_events
 
 ---
 
-## Development Principles for Version 0.1
+## Delivery Rules
 
 1. **One file per session** — ย้ายทีละไฟล์ ไม่ทำ big bang
 2. **Smoke test กัน regression** — รัน `npm run smoke` หลังทุก phase
@@ -262,7 +273,7 @@ card_calendar_events
 
 ---
 
-## Estimated Session Count
+## Session Estimate
 
 | Phase | Dev Sessions | Notes |
 |---|---|---|
@@ -278,7 +289,9 @@ card_calendar_events
 
 ---
 
-## AI Agent Prompt Templates
+## Next Recommended Session
+
+Historical prompt templates from the V0.1 modularization plan are retained below for traceability.
 
 ### Dev: Backend Route Split (ใช้ซ้ำต่อแต่ละ route)
 
@@ -311,5 +324,13 @@ Rules:
 ```
 
 ---
+
+## Change Attribution
+
+| Date | Change | Updated by |
+|---|---|---|
+| 2026-05-06 | Created V0.1 modularization plan | PM |
+| 2026-05-08 | Archived after V0.1 Release Acceptance pass | Codex PM |
+| 2026-05-08 | Standardized plan document format | Codex PM |
 
 *แผนนี้ใช้ร่วมกับ docs/reference/ARCHITECTURE_ANALYSIS.md — อ่านทั้งคู่ก่อนเริ่ม phase ใหม่ทุกครั้ง*

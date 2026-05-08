@@ -34,6 +34,26 @@ Do not rename reserved root docs unless all agent instructions and handoff promp
 
 ---
 
+## Plan Document Format
+
+Version/workstream plans should use the same section order so agents can scan them consistently:
+
+1. Metadata block: doc role, status, version, planning stage, owner, created date, updated date, related docs, theme.
+2. `How to Use This Document`
+3. `Planning Summary`
+4. `Scope / Non-Goals`
+5. `Dependency / Workflow Model`
+6. `Workstream / Phase Map`
+7. `Workstream / Phase Details`
+8. `Delivery Rules`
+9. `Session Estimate`
+10. `Next Recommended Session`
+11. `Change Attribution`
+
+Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion rows in `logs/QA_LOG.md`.
+
+---
+
 ## Active Root Documents
 
 | File | Purpose |

@@ -1,14 +1,31 @@
-# V0.2 Workstream Plan - Trisilar Task Hub
+# Version 0.2 Workstream Plan - Trisilar Task Hub
 
-**Doc Role:** Main V0.2 planning file
-**Status:** Draft for PM approval, W0 is next
+**Doc Role:** Active version plan
+**Status:** Draft - W0 is next
+**Version:** V0.2
+**Planning Stage:** Pre-workstream setup
+**Owner:** PM
+**Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
-
-V0.1 Release Acceptance passed. V0.2 will be managed as parallel workstreams after W0 establishes branch and environment rules.
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `../logs/DECISION_LOG.md`
+**Theme:** Enable parallel agents safely by establishing branch/environment workflow before company access, UI redesign, and Paperclip integration work.
 
 ---
 
-## Goals
+## How to Use This Document
+
+- Use as the main V0.2 planning file.
+- Start each session from `../../CURRENT_SPRINT.md`; read this file when the task is part of W0/W1/W2/W3.
+- Update this file when PM changes V0.2 workstream scope, sequencing, or branch/environment rules.
+- Keep detailed QA history in `../logs/QA_LOG.md`, not in this plan.
+
+---
+
+## Planning Summary
+
+V0.1 Release Acceptance passed. V0.2 will be managed as parallel workstreams after W0 establishes branch and environment rules.
+
+Goals:
 
 1. Make Trisilar Task Hub accessible to company teammates.
 2. Redesign the full web app UI while preserving existing workflows.
@@ -17,7 +34,28 @@ V0.1 Release Acceptance passed. V0.2 will be managed as parallel workstreams aft
 
 ---
 
-## Branch Model
+## Scope / Non-Goals
+
+In scope:
+
+- Branch and environment workflow for `main`, `dev`, and `feature/*`.
+- Internal company access and deployment planning.
+- Full UI redesign planning and implementation path.
+- Paperclip multi-agent integration planning and implementation path.
+- PR/QA rules for parallel workstreams.
+
+Not in scope for W0:
+
+- Implementing company access/deployment.
+- Implementing the UI redesign.
+- Implementing Paperclip live integration.
+- Replacing the current Trello/Google integrations.
+
+---
+
+## Dependency / Workflow Model
+
+### Branch Model
 
 | Branch | Role | Rule |
 |---|---|---|
@@ -35,31 +73,95 @@ Flow:
 feature/* -> dev -> QA/integration -> main -> production
 ```
 
+Dependency rule:
+
+```text
+W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
+```
+
 ---
 
-## Workstreams
+## Workstream / Phase Map
 
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Next | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev | Pending | Internal access, deployment target, env/secrets, teammate onboarding |
-| W2 | Full UI Redesign | Frontend Dev | Pending | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | Pending | Contract-first API/webhook bridge, mock adapter, real connector, attribution sync |
+| W1 | Company Access + Deployment | Platform Dev | Pending W0 | Internal access, deployment target, env/secrets, teammate onboarding |
+| W2 | Full UI Redesign | Frontend Dev | Pending W0 | Design system, shell/nav, page-by-page redesign, responsive QA |
+| W3 | Paperclip Multi-Agent Integration | Integration Dev | Pending W0 | Contract-first API/webhook bridge, mock adapter, real connector, attribution sync |
 
 ---
 
-## W0 Acceptance Criteria
+## Workstream / Phase Details
 
-1. `dev` branch exists and is pushed to remote.
-2. Branch model is documented in README/docs.
-3. PR flow is documented: `feature/* -> dev -> main`.
-4. Dev/prod environment expectations are documented.
-5. Required check command is documented: `npm.cmd run check:all`.
-6. Next actions for W1, W2, and W3 are clear enough to open parallel Dev sessions.
+### W0 - Branch / Environment / CI Setup
+
+**Priority:** P0
+**Owner Role:** Dev / PM
+**Status:** Next
+
+**Why:**
+- Parallel agent work needs a stable integration branch.
+- Company access, UI redesign, and Paperclip integration should not merge directly to production.
+- PR/QA rules must be explicit before W1/W2/W3 begin.
+
+**Tasks:**
+- Verify current branch and remote status.
+- Create `dev` from current `main` if it does not exist.
+- Push `dev` to origin.
+- Document branch model and environment expectations.
+- Document PR flow: `feature/* -> dev -> main`.
+- Confirm verification command: `npm.cmd run check:all`.
+
+**AC:**
+- [ ] `dev` branch exists and is pushed to remote.
+- [ ] Branch model is documented in README/docs.
+- [ ] PR flow is documented: `feature/* -> dev -> main`.
+- [ ] Dev/prod environment expectations are documented.
+- [ ] Required check command is documented: `npm.cmd run check:all`.
+- [ ] Next actions for W1, W2, and W3 are clear enough to open parallel Dev sessions.
+
+### W1 - Company Access + Deployment
+
+**Priority:** P0 after W0
+**Owner Role:** Platform Dev
+**Status:** Pending W0
+
+**Scope:**
+- Internal access method.
+- Deployment target.
+- Environment variables and secrets.
+- Teammate onboarding path.
+- Dev/prod access boundary.
+
+### W2 - Full UI Redesign
+
+**Priority:** P1 after W0
+**Owner Role:** Frontend Dev
+**Status:** Pending W0
+
+**Scope:**
+- Design system.
+- App shell and navigation.
+- Page-by-page redesign.
+- Desktop/mobile visual QA.
+- No server/API refactor unless explicitly required.
+
+### W3 - Paperclip Multi-Agent Integration
+
+**Priority:** P1 after W0
+**Owner Role:** Integration Dev
+**Status:** Pending W0
+
+**Scope:**
+- Integration contract.
+- Mock adapter before live connector.
+- Task/agent attribution sync.
+- Error handling and audit trail.
 
 ---
 
-## PR / QA Rules
+## Delivery Rules
 
 - No direct push to `main` for feature work.
 - Every workstream branch must state owner agent in docs and PR notes.
@@ -67,6 +169,18 @@ feature/* -> dev -> QA/integration -> main -> production
 - Any production-ish behavior or critical API change requires QA Recheck before PM signoff.
 - UI redesign PRs must include desktop/mobile visual evidence and console error check.
 - Paperclip integration PRs must include contract/mock verification before live connector work.
+- Keep `CURRENT_SPRINT.md` short; put history in logs and multi-session plans in `docs/plans/`.
+
+---
+
+## Session Estimate
+
+| Workstream | Expected Sessions | Notes |
+|---|---|---|
+| W0 | 1-2 | Branch, environment docs, PR workflow |
+| W1 | 2-4 | Depends on auth/deployment choice |
+| W2 | 4-8 | Depends on redesign depth and page count |
+| W3 | 3-6 | Contract/mock first, live connector second |
 
 ---
 
@@ -93,3 +207,12 @@ Rules:
 - Preserve existing app behavior.
 - Include attribution: Implemented by Dev agent name.
 ```
+
+---
+
+## Change Attribution
+
+| Date | Change | Updated by |
+|---|---|---|
+| 2026-05-08 | Created V0.2 workstream plan after V0.1 Release Acceptance | Codex PM |
+| 2026-05-08 | Standardized plan document format with V0.1 archive plan | Codex PM |
