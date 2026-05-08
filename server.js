@@ -24,6 +24,7 @@ const {
 // ── Routes ───────────────────────────────────────────────────────────────────
 const makeConfigRoutes      = require("./src/routes/config.routes");
 const makeReviewRoutes      = require("./src/routes/review.routes");
+const makePaperclipRoutes   = require("./src/routes/paperclip.routes");
 const makeCalendarRoutes    = require("./src/routes/calendar.routes");
 const makeGoogleTasksRoutes = require("./src/routes/google-tasks.routes");
 const makeTrelloRoutes      = require("./src/routes/trello.routes");
@@ -35,6 +36,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // ── API Mount ─────────────────────────────────────────────────────────────────
 app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
 app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate, autoSyncToGCal }));
+app.use("/api", makePaperclipRoutes({ store, diff, friendlyError }));
 app.use("/api", makeGoogleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }));
 
 // Root-level mounts (auth, etc)

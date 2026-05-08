@@ -2,13 +2,17 @@ const fs   = require("fs");
 const path = require("path");
 const { randomUUID } = require("crypto");
 
-const STORE_FILE = path.join(__dirname, "review-sessions.json");
+const DEFAULT_STORE_FILE = path.join(__dirname, "review-sessions.json");
+
+function getStoreFile() {
+  return process.env.REVIEW_STORE_FILE || DEFAULT_STORE_FILE;
+}
 
 // All file operations are synchronous, so Node's single-threaded event loop
 // guarantees read-modify-write cycles are never interleaved. No external lock needed.
 
 function read() {
-  try { return JSON.parse(fs.readFileSync(STORE_FILE, "utf8")); }
+  try { return JSON.parse(fs.readFileSync(getStoreFile(), "utf8")); }
   catch (e) {
     if (e.code === "ENOENT") return [];
     console.error("[review-store] corrupt data file:", e.message);
@@ -17,7 +21,7 @@ function read() {
 }
 
 function write(sessions) {
-  fs.writeFileSync(STORE_FILE, JSON.stringify(sessions, null, 2));
+  fs.writeFileSync(getStoreFile(), JSON.stringify(sessions, null, 2));
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -28,6 +32,11 @@ function getAllSessions() {
 
 function getSession(id) {
   return read().find(s => s.id === id) || null;
+}
+
+function getSessionByRequestId(requestId) {
+  if (!requestId) return null;
+  return read().find(s => s.requestId === requestId) || null;
 }
 
 function createSession(data) {
@@ -41,6 +50,11 @@ function createSession(data) {
     createdAt:  new Date().toISOString(),
     tasks: [],
   };
+  if ("requestId" in data) session.requestId = data.requestId;
+  if ("externalSource" in data) session.externalSource = data.externalSource;
+  if ("agent" in data) session.agent = data.agent;
+  if ("auditTrail" in data) session.auditTrail = Array.isArray(data.auditTrail) ? data.auditTrail : [];
+
   session.tasks = (data.tasks || []).map(t => ({
     id:               randomUUID(),
     meetingId:        session.id,
@@ -60,6 +74,11 @@ function createSession(data) {
     syncGoogleTasks:  t.syncGoogleTasks  || false,
     status:           "pending",
     trelloCardId:     null,
+    ...("externalTaskId" in t ? { externalTaskId: t.externalTaskId } : {}),
+    ...("agentRationale" in t ? { agentRationale: t.agentRationale } : {}),
+    ...("sourceEvidence" in t ? { sourceEvidence: t.sourceEvidence } : {}),
+    ...("createdByAgent" in t ? { createdByAgent: t.createdByAgent } : {}),
+    ...("auditTrail" in t ? { auditTrail: Array.isArray(t.auditTrail) ? t.auditTrail : [] } : {}),
   }));
   sessions.push(session);
   write(sessions);
@@ -134,6 +153,7 @@ function dismissSession(id) {
 module.exports = {
   getAllSessions,
   getSession,
+  getSessionByRequestId,
   createSession,
   updateTask,
   approveTask,
