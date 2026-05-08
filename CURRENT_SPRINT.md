@@ -19,7 +19,7 @@
 | V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
 | V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
 | V0.2-W1-05 ngrok Random URL Demo | QA Pass / PM Accepted as demo-only path | Reviewed by Codex QA; Accepted by Codex PM; current URL/credentials remain local-only in Desktop handoff file |
-| V0.2 W2 Full UI Redesign | `V0.2-W2-01` accepted (`W2a`, `b5f67fb`); `V0.2-W2-02` accepted (`W2b`, `d33d8f7`) / `V0.2-W2-03`-`V0.2-W2-06` planned | `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, accepted by Codex PM; full redesign still open through `V0.2-W2-06` |
+| V0.2 W2 Full UI Redesign | `V0.2-W2-01` accepted (`W2a`, `b5f67fb`); `V0.2-W2-02` accepted (`W2b`, `d33d8f7`); `V0.2-W2-03` accepted (`W2c`, `ea807fd`) / `V0.2-W2-04`-`V0.2-W2-06` planned | `V0.2-W2-03` implemented by Codex Dev, reviewed by Codex QA Recheck, accepted by Codex PM; full redesign still open through `V0.2-W2-06` |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
@@ -33,7 +33,7 @@
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06` stable Cloudflare Access gate deferred until domain/subdomain exists | PM / User |
-| W2 | Full UI Redesign | `V0.2-W2-01` and `V0.2-W2-02` accepted; `V0.2-W2-03`-`V0.2-W2-06` planned; full redesign not complete | Dev |
+| W2 | Full UI Redesign | `V0.2-W2-01`, `V0.2-W2-02`, and `V0.2-W2-03` accepted; `V0.2-W2-04`-`V0.2-W2-06` planned; full redesign not complete | Dev Integration |
 | W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | PM complete |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
@@ -72,7 +72,7 @@ Required branches:
 
 - `V0.2-W1-02` / legacy W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
 - `V0.2-W1-03` / legacy W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
-- W2: `feature/w2-*` phase branches; next default `feature/w2-02-review-redesign`
+- W2: `feature/w2-*` phase branches; next integration branch `feature/w2-03-tasks-redesign`, then next implementation branch `feature/w2-04-boards-redesign`
 - W3: `feature/w3-paperclip-integration`
 
 Required worktrees:
@@ -94,43 +94,43 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W1-05 Teammate Demo Handoff
+## Next Action - V0.2-W2-03 Integration Into dev
 
-`V0.2-W1-05` passed QA and is accepted by PM as a random ngrok URL manual demo path only. This is not a stable Paperclip automation endpoint and does not satisfy the future `V0.2-W1-06` Cloudflare Access / stable hostname gate. The current URL and temporary Basic Auth credentials stay local-only in `C:\Users\User\Desktop\Trisilar-TaskHub-current-demo-url.txt`; do not paste the password in chat, docs, commits, PRs, or issue trackers.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted `V0.2-W2-01` (`W2a`, `b5f67fb`) is shell foundation and Today redesign only. Accepted `V0.2-W2-02` (`W2b`, `d33d8f7`) is Review Queue redesign and shared task drawer foundation only. Accepted `V0.2-W2-03` (`W2c`, `ea807fd`) is Tasks Inbox + Cross-board Rows only. Full W2 UI redesign remains open through `V0.2-W2-04`-`V0.2-W2-06` (`W2d`-`W2f`). The next planned role is Dev integration to merge accepted `feature/w2-03-tasks-redesign` into `dev`; after Integration QA/PM pass, start `V0.2-W2-04` from updated `dev`.
 
 ```text
-Role: PM / User
-Task: V0.2-W1-05 - Run Manual Teammate Demo With Random ngrok URL
-Alias: W1.4
+Role: Dev
+Task: V0.2-W2-03 Integration - Merge Accepted Tasks Redesign Into dev
 
 Context:
-QA passed W1.4 no-domain ngrok temporary demo verification. PM accepted the random ngrok URL path for short manual teammate demo only. Paperclip stable endpoint remains deferred until a stable hostname is available.
+`V0.2-W2-03` (`W2c`) Tasks Inbox + Cross-board Rows passed QA Recheck and was accepted by PM at `ea807fd`. Merge only accepted W2-03 into `dev`; do not merge W1 runtime/access work or any unaccepted W2 future phase work.
 
 Read first:
+- CODEX.md
 - CURRENT_SPRINT.md
-- docs/plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md
-- docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
+- docs/plans/VERSION_0_2_PLAN.md
 
 Goal:
-Run a short teammate demo through the currently running ngrok URL without exposing secrets or treating the URL as a stable integration endpoint.
+Integrate accepted `V0.2-W2-03` from `feature/w2-03-tasks-redesign` into `dev` without changing product scope.
 
 Steps:
-1. Open `C:\Users\User\Desktop\Trisilar-TaskHub-current-demo-url.txt` locally.
-2. Share the current URL, username, and password to the teammate out of band.
-3. Keep the launcher window open while the teammate previews the app.
-4. Ask teammate to verify login prompt, app load, and basic non-destructive navigation.
-5. Do not ask teammate or Paperclip to store this URL as a permanent endpoint.
-6. Stop the demo by pressing Enter in the launcher window after the demo.
-7. Record feedback in the next PM update without including the password.
+1. Confirm `dev` and `feature/w2-03-tasks-redesign` branch graph.
+2. Merge `feature/w2-03-tasks-redesign` into `dev`.
+3. Resolve only integration conflicts, preserving accepted W2-01, W2-02, W2-03, and W3 behavior.
+4. Run `node server.js` and `npm.cmd run check:all`.
+5. Run `npm.cmd run verify:paperclip-contract` and `npm.cmd run verify:paperclip-mock`.
+6. Smoke `/all` Tasks Inbox workflows, mobile overflow, W2-01 Today, W2-02 Review drawer, and W3 Paperclip mock regression.
+7. Push `dev`.
 
 Rules:
-- Do not deploy production.
-- Do not use paid Render/Railway.
-- Do not expose the ngrok password in chat or repo.
-- Do not commit secrets.
-- Do not treat random ngrok URL as Paperclip automation or stable service integration.
-- Keep Basic Auth enabled.
-- Include attribution: Accepted by Codex PM.
+- Do not implement W1 deployment/access.
+- Do not implement new W3 Paperclip behavior.
+- Do not rewrite to React/Vite unless PM explicitly approves.
+- Do not start `V0.2-W2-04` in the same integration task.
+- Preserve route behavior and existing APIs.
+- Include attribution: Integrated by Codex Dev.
 ```
 
-**Attribution:** `V0.2-W1-05` runtime setup by Codex Dev, reviewed by Codex QA, and accepted as demo-only by Codex PM. `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, and accepted by Codex PM at `d33d8f7`; W2 full UI redesign remains open through `V0.2-W2-06`.
+**Attribution:** `V0.2-W2-03` implemented by Codex Dev, reviewed by Codex QA Recheck, and accepted by Codex PM at `ea807fd`. `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, and accepted by Codex PM at `d33d8f7`. V0.2 `V0.2-W2-01`/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. `V0.2-W1-02`/`V0.2-W1-03` implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W1 phase naming and no-domain ngrok demo decision updated by Codex PM to latest canonical policy.

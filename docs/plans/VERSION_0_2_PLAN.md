@@ -99,7 +99,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
 | W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06` deferred pending domain/subdomain | Internal access, no-cost teammate preview, deferred paid hosted target, env/secrets, future agent access pattern |
-| W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03`-`V0.2-W2-06` planned / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
+| W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04`-`V0.2-W2-06` planned / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
 | W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` | Contract-first mock adapter, attribution/audit sync; live connector remains future work |
 
 ---
@@ -127,8 +127,8 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 |---|---|---|---|
 | `V0.2-W2-01` | `W2a` | Accepted `b5f67fb` | Shell foundation, mobile nav baseline, Today redesign |
 | `V0.2-W2-02` | `W2b` | Accepted `d33d8f7` | Review Queue redesign and shared task drawer foundation |
-| `V0.2-W2-03` | `W2c` | Planned next | Tasks inbox and cross-board task rows |
-| `V0.2-W2-04` | `W2d` | Planned | Boards Monitor and team board views |
+| `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
+| `V0.2-W2-04` | `W2d` | Planned next after W2-03 integration | Boards Monitor and team board views |
 | `V0.2-W2-05` | `W2e` | Planned | Calendar and Planner redesign |
 | `V0.2-W2-06` | `W2f` | Planned | Settings, OKR, and Weekly Focus polish |
 
@@ -227,7 +227,7 @@ W1 uses random ngrok URL + temporary Basic Auth as the current no-domain manual 
 
 **Priority:** P1 after W0
 **Owner Role:** Frontend Dev
-**Status:** `V0.2-W2-01` done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W2-02` done `d33d8f7` / QA Recheck Pass / PM Accepted; `V0.2-W2-03`-`V0.2-W2-06` planned
+**Status:** `V0.2-W2-01` done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W2-02` done `d33d8f7` / QA Recheck Pass / PM Accepted; `V0.2-W2-03` done `ea807fd` / QA Recheck Pass / PM Accepted; `V0.2-W2-04`-`V0.2-W2-06` planned
 **Detailed Plan:** `VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`
 
 **Scope:**
@@ -243,14 +243,14 @@ W1 uses random ngrok URL + temporary Basic Auth as the current no-domain manual 
 |---|---|---|---|
 | `V0.2-W2-01` | `W2a` | Accepted | Shell foundation, mobile nav baseline, Today redesign |
 | `V0.2-W2-02` | `W2b` | Accepted `d33d8f7` | Review Queue redesign and shared task drawer foundation |
-| `V0.2-W2-03` | `W2c` | Planned next | Tasks inbox and cross-board task rows |
-| `V0.2-W2-04` | `W2d` | Planned | Boards monitor and team board views |
+| `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
+| `V0.2-W2-04` | `W2d` | Planned next after W2-03 integration | Boards monitor and team board views |
 | `V0.2-W2-05` | `W2e` | Planned | Calendar and Planner redesign |
 | `V0.2-W2-06` | `W2f` | Planned | Settings, OKR, and Weekly Focus polish |
 
 **PM Clarification:**
 
-`V0.2-W2-01` and `V0.2-W2-02` acceptance does not mean the full UI redesign is complete. Full W2 acceptance still requires `V0.2-W2-03`-`V0.2-W2-06` implementation, QA, and PM acceptance against `docs/design/ui-design-v1-0/`.
+`V0.2-W2-01`, `V0.2-W2-02`, and `V0.2-W2-03` acceptance does not mean the full UI redesign is complete. Full W2 acceptance still requires `V0.2-W2-04`-`V0.2-W2-06` implementation, QA, and PM acceptance against `docs/design/ui-design-v1-0/`.
 
 Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
@@ -353,3 +353,4 @@ Rules:
 | 2026-05-08 | Accepted `V0.2-W2-02` Review Queue redesign and shared task drawer foundation at `d33d8f7`; routed W2 next to W2-02 integration into `dev`, then `V0.2-W2-03` Tasks Inbox | Codex PM |
 | 2026-05-08 | Amended W1 no-cost path to use ngrok + temporary Basic Auth while no domain/subdomain exists; Cloudflare Access remains the stable gate after DNS is available | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W1-05` as random ngrok URL manual teammate demo only; Paperclip stable endpoint remains deferred until stable hostname exists | Codex PM |
+| 2026-05-09 | Accepted `V0.2-W2-03` Tasks Inbox + Cross-board Rows at `ea807fd`; routed W2 next to W2-03 integration into `dev`, then `V0.2-W2-04` Boards Monitor + Team Board Views | Codex PM |

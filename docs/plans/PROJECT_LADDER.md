@@ -88,7 +88,7 @@ Provide a safe no-cost preview environment before wider teammate access.
 
 ### L2 - V0.2 Full UI Redesign
 
-**Status:** Active; `V0.2-W2-01` (`W2a`) and `V0.2-W2-02` (`W2b`) accepted, `V0.2-W2-03`-`V0.2-W2-06` remain.
+**Status:** Active; `V0.2-W2-01` (`W2a`), `V0.2-W2-02` (`W2b`), and `V0.2-W2-03` (`W2c`) accepted, `V0.2-W2-04`-`V0.2-W2-06` remain.
 
 **Goal:**
 Make the whole app feel like one coherent command center, not a mix of old screens and one redesigned page.
@@ -99,8 +99,8 @@ Make the whole app feel like one coherent command center, not a mix of old scree
 |---|---|---|---|
 | `V0.2-W2-01` | `W2a` | Accepted | Shell foundation, mobile nav baseline, Today redesign |
 | `V0.2-W2-02` | `W2b` | Accepted `d33d8f7` | Review Queue redesign and shared task drawer foundation |
-| `V0.2-W2-03` | `W2c` | Next | Tasks inbox and cross-board task rows |
-| `V0.2-W2-04` | `W2d` | Planned | Boards monitor and team board views |
+| `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
+| `V0.2-W2-04` | `W2d` | Next after W2-03 integration | Boards monitor and team board views |
 | `V0.2-W2-05` | `W2e` | Planned | Calendar and Planner redesign |
 | `V0.2-W2-06` | `W2f` | Planned | Settings, OKR, and Weekly Focus polish |
 
@@ -198,10 +198,10 @@ Focus:
 Current recommended next implementation path:
 
 ```text
-Merge accepted V0.2-W2-02 into dev
--> Integration QA V0.2-W2-02 on dev
+Merge accepted V0.2-W2-03 into dev
+-> Integration QA V0.2-W2-03 on dev
 -> PM integration acceptance
--> V0.2-W2-03 Tasks Inbox
+-> V0.2-W2-04 Boards Monitor + Team Board Views
 ```
 
 W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. `V0.2-W1-06` access setup remains important for stable/release-grade access: Cloudflare Access remains the gate when DNS is available. PM has currently prioritized the manual demo handoff before resuming the W2 ladder.
@@ -217,3 +217,4 @@ W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. `V0.2-W1-06` 
 | 2026-05-08 | Accepted `V0.2-W2-02` at `d33d8f7` and routed L2 to W2-02 integration into `dev` before `V0.2-W2-03` starts | Codex PM |
 | 2026-05-08 | Updated L1 to reflect no-domain ngrok + temporary Basic Auth demo path while keeping Cloudflare Access as the stable release-grade gate | Codex PM |
 | 2026-05-09 | Accepted W1.4 random ngrok URL path for manual teammate demo only; stable Paperclip/service endpoint remains deferred | Codex PM |
+| 2026-05-09 | Accepted `V0.2-W2-03` at `ea807fd` and routed L2 to W2-03 integration into `dev` before `V0.2-W2-04` starts | Codex PM |
