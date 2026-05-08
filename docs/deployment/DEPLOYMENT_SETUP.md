@@ -5,7 +5,7 @@
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-08 - **Updated by:** Codex Dev
+**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
 **Related Docs:** `../../README.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `DEV_ENVIRONMENT_DEPLOYMENT.md`, `../plans/VERSION_0_2_PLAN.md`
 
 ---
@@ -27,17 +27,25 @@ W1b keeps the app as a long-running Node/Express service and adds deploy-readine
 
 ## Approved Platform Decision
 
-Default target:
+No-cost preview target:
+
+- Cloudflare Tunnel + Cloudflare Access is the W1 teammate preview path.
+- The app runs on a local/dev machine and is exposed through `cloudflared`.
+- Cloudflare Access email allowlist protects the preview URL before teammate access.
+- This avoids paid hosted deployment until preview usage proves an always-on cloud runtime is needed.
+
+Paid hosted target:
 
 - Render Web Service for dev and production.
 - Railway Service is an equivalent alternate if Trisilar chooses Railway operationally.
 - Do not use Vercel for W1 because the current app uses a long-running Express process and file-backed runtime state.
+- Paid Render/Railway setup is deferred during the no-cost preview phase.
 
 Default access gate:
 
 - Cloudflare Access email allowlist in front of the hosted URLs.
 - Tailscale is acceptable for a private first preview.
-- Temporary Basic Auth is a fallback only when a public URL is needed before Cloudflare Access is ready. Credentials must be env-only and temporary.
+- ngrok or temporary Basic Auth is a fallback only for short-lived troubleshooting/demo access before the Cloudflare path is ready. Credentials must be env-only and temporary.
 
 Integration identity rule:
 

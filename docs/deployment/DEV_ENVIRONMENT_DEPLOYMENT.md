@@ -5,7 +5,7 @@
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-08 - **Updated by:** Codex Dev
+**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
 **Related Docs:** `DEPLOYMENT_SETUP.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../plans/VERSION_0_2_PLAN.md`, `../../README.md`
 
 ---
@@ -18,9 +18,11 @@ This document records the W1c dev environment deployment path only. It prepares 
 
 ## Platform Decision
 
-Use Render as the default W1c dev service because W1b approved Render as the default long-running Node/Express host with persistent disk support.
+Use Cloudflare Tunnel + Cloudflare Access as the no-cost W1 teammate preview path. The app runs on a local/dev machine, `cloudflared` exposes it through the dev hostname, and Cloudflare Access gates human teammate access by email allowlist.
 
-Use Railway only if Trisilar account availability makes Railway faster operationally. The alternate Railway config is included, but Render remains the primary path for W1c.
+Keep Render as the default paid hosted dev service because W1b approved Render as the default long-running Node/Express host with persistent disk support. Paid Render setup is deferred until always-on runtime is justified.
+
+Use Railway only if Trisilar account availability makes Railway faster operationally or PM chooses it as the paid hosted alternate. The alternate Railway config is included, but it is not the W1 no-cost preview path.
 
 ---
 
@@ -31,7 +33,31 @@ Use Railway only if Trisilar account availability makes Railway faster operation
 | `render.yaml` | Render Blueprint for the dev web service on branch `dev` with `/healthz`, `APP_DATA_DIR`, and placeholder secret slots |
 | `railway.toml` | Railway alternate service config with the same build/start/health check shape |
 
-No production service is configured in W1c.
+No production service is configured in W1c. Paid hosted dev service creation is deferred while W1 uses the Cloudflare Tunnel preview path.
+
+---
+
+## No-Cost Preview Path
+
+Run the app on the local/dev machine and expose it through Cloudflare Tunnel:
+
+| Setting | Value |
+|---|---|
+| Local app | `http://localhost:3000` |
+| Tunnel connector | `cloudflared` |
+| Dev hostname | `taskhub-dev.trisilar.com` or PM-confirmed equivalent |
+| Access gate | Cloudflare Access email allowlist |
+| `APP_BASE_URL` | `https://taskhub-dev.trisilar.com` |
+| `GOOGLE_REDIRECT_URI` | `https://taskhub-dev.trisilar.com/auth/callback` |
+| `APP_DATA_DIR` | Stable local preview data directory |
+
+Rules:
+
+- Keep the local machine online during teammate preview.
+- Store dev secrets in local `.env` or approved runtime secret storage only.
+- Do not commit secrets or generated runtime data.
+- Verify anonymous access is blocked before sharing the URL.
+- Use ngrok only as a short-lived fallback for troubleshooting/demo access.
 
 ---
 

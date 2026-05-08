@@ -3,12 +3,12 @@
 **Doc Role:** Active version plan
 **Status:** Active - W2 full UI redesign re-scoped into W2a-W2f phases
 **Version:** V0.2
-**Planning Stage:** Pre-workstream setup
+**Planning Stage:** Parallel workstreams active; W1 no-cost preview rebaseline accepted
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
-**Theme:** Enable parallel agents safely by establishing branch/environment workflow before company access, UI redesign, and Paperclip integration work.
+**Theme:** Enable parallel agents safely while giving the small team a no-cost internal preview path before paid hosted deployment.
 
 ---
 
@@ -29,7 +29,7 @@ V0.1 Release Acceptance passed. V0.2 will be managed as parallel workstreams aft
 
 Goals:
 
-1. Make Trisilar Task Hub accessible to company teammates.
+1. Make Trisilar Task Hub accessible to company teammates through a no-cost internal preview path first.
 2. Redesign the full web app UI while preserving existing workflows.
 3. Connect Trisilar Task Hub to the Paperclip multi-agent system.
 4. Establish a `dev` integration environment and PR flow into production.
@@ -88,7 +88,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev | W1c setup merged / hosted runtime setup next | Internal access, deployment target, env/secrets, teammate onboarding |
+| W1 | Company Access + Deployment | Platform Dev / PM | W1.0-W1.2 done; W1.3 no-cost preview decision accepted; W1.4 Cloudflare Tunnel setup next | Internal access, no-cost teammate preview, deferred paid hosted target, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | W2a accepted `b5f67fb`; W2b-W2f planned / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
 | W3 | Paperclip Multi-Agent Integration | Integration Dev | Done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` | Contract-first mock adapter, attribution/audit sync; live connector remains future work |
 
@@ -126,15 +126,50 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 ### W1 - Company Access + Deployment
 
 **Priority:** P0 after W0
-**Owner Role:** Platform Dev
-**Status:** W1c setup merged to `dev`; hosted runtime setup next
+**Owner Role:** Platform Dev / PM
+**Status:** W1.0-W1.2 done; W1.3 no-cost preview path accepted; W1.4 Cloudflare Tunnel setup next
 
 **Scope:**
 - Internal access method.
-- Deployment target.
+- No-cost teammate preview path.
+- Paid hosted deployment target, deferred until always-on runtime is needed.
 - Environment variables and secrets.
 - Teammate onboarding path.
 - Dev/prod access boundary.
+- Future Paperclip multi-agent access pattern.
+
+**Current PM Decision:**
+
+W1 uses Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path. Render remains the default paid hosted target, Railway remains the paid hosted alternate, and both are deferred until the team needs an always-on cloud runtime. ngrok is allowed only as a short-lived troubleshooting/demo fallback, not as the standard W1 company access path.
+
+**Why:**
+
+- Current expected usage is two human users.
+- The team does not want paid deployment cost before preview value is proven.
+- The app still uses file-backed runtime state, so a local machine plus `APP_DATA_DIR` is acceptable for no-cost preview.
+- Cloudflare Access gives a cleaner path for both human email allowlists and future service-token access for Paperclip-style agents.
+
+**Phase Ladder:**
+
+| Phase | Status | Scope | Exit Criteria |
+|---|---|---|---|
+| W1.0 | Done | Platform/access decision | Render/Railway/Vercel tradeoff reviewed; Cloudflare Access selected as default gate |
+| W1.1 | Done | Repo deploy readiness | `APP_BASE_URL`, `GOOGLE_REDIRECT_URI`, `APP_DATA_DIR`, `/healthz`, placeholder env docs merged |
+| W1.2 | Done | Dev deployment config | `render.yaml`, `railway.toml`, and hosted dev setup handoff merged to `dev` |
+| W1.3 | Accepted | No-cost preview decision | Cloudflare Tunnel + Cloudflare Access selected for W1 teammate preview; paid Render/Railway deferred |
+| W1.4 | Next | Cloudflare Tunnel local runtime | Local app served through `taskhub-dev.trisilar.com` or confirmed dev hostname via `cloudflared` |
+| W1.5 | Pending | Cloudflare Access email allowlist | Anonymous access blocked; approved teammate email can access |
+| W1.6 | Pending | Paperclip agent access prep | Service-token pattern documented for future agent/API access without implementing new W3 behavior |
+| W1.7 | Deferred | Paid hosted dev review | Revisit Render/Railway only when always-on runtime, stronger dev/prod parity, or preview usage justifies cost |
+
+**No-Cost Preview Rules:**
+
+- The local machine hosting the tunnel must be treated as the dev runtime while preview is active.
+- Secrets stay in local `.env` or dashboard configuration only; never commit secrets.
+- `APP_DATA_DIR` should point to a stable local data directory for preview persistence.
+- Human users use Cloudflare Access email allowlist.
+- Future agent access should use Cloudflare Access service tokens or an equivalent service-auth pattern, aligned with W3 and not implemented early in W1.
+- Production deployment remains out of scope.
 
 ### W2 - Full UI Redesign
 
@@ -202,7 +237,7 @@ W2 phase labels intentionally use `W2a`-style IDs to stay inside the V0.2 workst
 | Workstream | Expected Sessions | Notes |
 |---|---|---|
 | W0 | 1-2 | Branch, environment docs, PR workflow |
-| W1 | 2-4 | Depends on auth/deployment choice |
+| W1 | 4-7 | Repo readiness is done; no-cost Cloudflare preview setup remains, paid hosted deployment is deferred |
 | W2 | 4-8 | Depends on redesign depth and page count |
 | W3 | 3-6 | Contract/mock first, live connector second |
 
@@ -210,26 +245,39 @@ W2 phase labels intentionally use `W2a`-style IDs to stay inside the V0.2 workst
 
 ## Next Recommended Session
 
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. If resuming W1 specifically, use this W1.4 handoff:
+
 ```text
 Role: Dev
-Task: V0.2 W0 - Branch / Environment / CI Setup
+Task: V0.2 W1.4 - Cloudflare Tunnel Local Runtime Setup
 
 Context:
-V0.1 Release Acceptance passed. PM split logs/plans out of CURRENT_SPRINT.md and created docs/plans/VERSION_0_2_PLAN.md. Before W1/W2/W3 can run in parallel, establish the dev branch and environment/PR workflow.
+W1 repo deploy-readiness and dev deployment config are merged to `dev`. PM selected Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path. Render remains the default paid hosted target and Railway remains the paid hosted alternate, but both are deferred until always-on runtime is justified.
+
+Read first:
+- CURRENT_SPRINT.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/deployment/DEPLOYMENT_SETUP.md
+- docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Steps:
-1. Verify current branch and remote status.
-2. Create `dev` branch from current `main` if it does not already exist.
-3. Push `dev` to origin.
-4. Add targeted docs for branch/environment workflow if missing.
-5. Run `npm.cmd run check:all` if any repo behavior/config files are changed.
-6. Commit and push any doc/config updates.
+1. Confirm dev hostname, default `taskhub-dev.trisilar.com`, or record the PM-approved alternate.
+2. Install or verify `cloudflared` on the local/dev machine.
+3. Run the app locally with a stable `APP_DATA_DIR`.
+4. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the Cloudflare preview hostname.
+5. Create a Cloudflare Tunnel route from the preview hostname to `http://localhost:3000`.
+6. Add Cloudflare Access email allowlist before teammate preview.
+7. Verify local `/healthz`, tunneled `/healthz`, anonymous blocked access, approved teammate access, and non-destructive app load.
+8. Record any remaining runtime blockers.
 
 Rules:
 - Dev role only.
-- Do not start W1/W2/W3 implementation yet.
+- Do not deploy production.
+- Do not use paid Render/Railway unless PM explicitly changes the decision.
+- Do not commit secrets.
+- Do not implement W2 UI redesign or new W3 Paperclip behavior.
 - Preserve existing app behavior.
-- Include attribution: Implemented by Dev agent name.
+- Include attribution: Runtime setup by Dev agent name.
 ```
 
 ---
@@ -245,3 +293,4 @@ Rules:
 | 2026-05-08 | Accepted W3 Paperclip mock integration after QA pass at `1d1f638` | Codex PM |
 | 2026-05-08 | Merged accepted W2/W3 into `dev` for integration QA routing | Codex Dev |
 | 2026-05-08 | Accepted V0.2 W2/W3 integration on `dev` after QA pass at `dde7ab0` | Codex PM |
+| 2026-05-08 | Rebaselined W1 into a phase ladder and selected Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path; deferred paid Render/Railway hosted dev | Codex PM |

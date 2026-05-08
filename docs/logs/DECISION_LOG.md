@@ -21,6 +21,7 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | 2026-05-08 | Plan V0.2 as parallel workstreams gated by W0 branch/environment setup | Lets agents work in parallel without colliding on integration/release flow | Codex PM |
 | 2026-05-08 | Accept V0.2 W3 Paperclip mock integration at `1d1f638` | QA passed contract/mock verification and confirmed no live Paperclip call or pre-approval Trello/Calendar side effect; local Trello 401 was environment-only | Codex PM |
 | 2026-05-08 | Accept V0.2 W2/W3 integration on `dev` at `dde7ab0` | Integration QA passed accepted W2 shell/Today regression, W3 Paperclip contract/mock verification, `check:all`, mobile overflow checks, and console checks; populated visual QA used controlled API responses due local credential sensitivity | Codex PM |
+| 2026-05-08 | Use Cloudflare Tunnel + Cloudflare Access as W1 no-cost teammate preview path | The current team is two users, does not want paid deploy cost yet, and needs a cleaner future path for Paperclip agent/service-token access than ngrok; Render remains paid hosted default and Railway remains paid hosted alternate when always-on runtime is justified | Codex PM |
 
 ---
 
