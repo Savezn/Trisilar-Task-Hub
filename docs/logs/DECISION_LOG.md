@@ -88,3 +88,11 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | Date | Decision | Updated by |
 |---|---|---|
 | 2026-05-08 | Reclassified accepted `b5f67fb` work as W2a Shell Foundation + Today Redesign only. Full W2 UI Redesign remains open through W2b-W2f and must be accepted phase by phase against `docs/design/ui-design-v1-0/`. | Codex PM |
+
+---
+
+## Enterprise-Grade Hardening Roadmap Boundary
+
+| Date | Decision | Updated by |
+|---|---|---|
+| 2026-05-08 | Track automated test-suite expansion, root backend module migration, hosted runtime setup, and historical mojibake repair as hardening backlog items. These are important quality upgrades, but they do not block the current W2b Review Queue redesign or W1 runtime setup unless a task specifically depends on them. | Codex PM |
