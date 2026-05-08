@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** Mock adapter implemented for QA review
+**Status:** `V0.2-W3-01` mock adapter implemented for QA review
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -269,33 +269,18 @@ npm.cmd run verify:paperclip-mock
 
 ## Implementation Sequence
 
-1. Contract data definitions
-   - Complete: pure validator/normalizer for Paperclip payloads.
-   - Complete: fixture files and unit-level validation checks.
-   - No live Paperclip external calls are introduced.
+| Canonical ID | Alias | Status | Scope |
+|---|---|---|---|
+| `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
+| `V0.2-W3-02` | W3 sequence 2 | Future | Live webhook route after W1 access/security readiness |
+| `V0.2-W3-03` | W3 sequence 3 | Future | Source signature/replay protection once Paperclip auth details are known |
 
-2. Mock route
-   - Complete: `POST /api/integrations/paperclip/mock/review-session`.
-   - Complete: route accepts only `source.environment=mock`.
-   - Complete: route calls the normalizer and then the existing review session creation flow.
+Details:
 
-3. Idempotency and audit store
-   - Complete: review store supports backward-compatible `requestId`, `agent`, `externalSource`, and `auditTrail`.
-   - Complete: idempotency lookup by `requestId`.
-
-4. Mock verification script
-   - Complete: `scripts/verify-paperclip-mock.js`.
-   - Complete: mock route and persisted output are exercised through HTTP.
-   - Complete: no live external Paperclip connector work is performed.
-
-5. QA handoff
-   - Provide fixture names, command outputs, and changed files.
-   - Mark live webhook as blocked until W1 access/security decisions and PM approval.
-
-6. Future live connector
-   - Add authenticated `POST /api/integrations/paperclip/webhook`.
-   - Use the same normalizer and audit path.
-   - Add replay protection and source signature checks once Paperclip auth details are known.
+- `V0.2-W3-01` completed pure validator/normalizer logic, fixture files, unit-level validation checks, `POST /api/integrations/paperclip/mock/review-session`, backward-compatible review-store attribution fields, idempotency lookup by `requestId`, and `scripts/verify-paperclip-mock.js`.
+- `V0.2-W3-01` introduced no live Paperclip external calls.
+- `V0.2-W3-02` should add authenticated `POST /api/integrations/paperclip/webhook`, reuse the same normalizer and audit path, and stay blocked until W1 provides a protected reachable URL and secret path.
+- Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
 ---
 

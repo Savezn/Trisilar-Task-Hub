@@ -1,7 +1,7 @@
 # Version 0.2 W1 Company Access + Deployment Plan
 
 **Doc Role:** W1 workstream phase ladder and execution plan
-**Status:** Active - W1.4 Cloudflare Tunnel local runtime setup is next
+**Status:** Active - `V0.2-W1-05` Cloudflare Tunnel local runtime setup is next (alias W1.4)
 **Version:** V0.2
 **Planning Stage:** No-cost teammate preview path accepted
 **Owner:** PM / Platform Dev
@@ -62,13 +62,15 @@ Out of scope:
 ## Dependency / Workflow Model
 
 ```text
-W1.0-W1.2 repo readiness done
-    -> W1.3 PM no-cost preview decision accepted
-    -> W1.4 Cloudflare Tunnel local runtime setup
-    -> W1.5 Cloudflare Access teammate gate
-    -> W1.6 future agent access pattern
-    -> W1.7 paid hosted review only if needed
+V0.2-W1-01..V0.2-W1-03 repo readiness done
+    -> V0.2-W1-04 PM no-cost preview decision accepted
+    -> V0.2-W1-05 Cloudflare Tunnel local runtime setup
+    -> V0.2-W1-06 Cloudflare Access teammate gate
+    -> V0.2-W1-07 future agent access pattern
+    -> V0.2-W1-08 paid hosted review only if needed
 ```
+
+Aliases: `W1.0`-`W1.7`.
 
 Branch/workflow rules:
 
@@ -88,22 +90,24 @@ Runtime dependency rules:
 
 ## Workstream / Phase Map
 
-| Phase | Status | Owner | Scope | Exit Criteria |
-|---|---|---|---|---|
-| W1.0 | Done | PM / QA | Platform/access decision | Render/Railway/Vercel tradeoff reviewed; Cloudflare Access selected as gate |
-| W1.1 | Done | Dev / QA | Repo deploy readiness | `APP_BASE_URL`, `GOOGLE_REDIRECT_URI`, `APP_DATA_DIR`, `/healthz`, placeholder env docs merged |
-| W1.2 | Done | Dev / QA / PM | Dev deployment config | `render.yaml`, `railway.toml`, and hosted dev setup handoff merged to `dev` |
-| W1.3 | Accepted | PM | No-cost preview decision | Cloudflare Tunnel + Cloudflare Access selected; paid hosted Render/Railway deferred |
-| W1.4 | Next | Dev | Cloudflare Tunnel local runtime | Local app served through `taskhub-dev.trisilar.com` or PM-approved hostname via `cloudflared` |
-| W1.5 | Pending | Dev / QA | Cloudflare Access email allowlist | Anonymous access blocked; approved teammate can access and load the app |
-| W1.6 | Pending | Dev / PM | Paperclip agent access prep | Service-token pattern documented for future agent/API access without W3 implementation |
-| W1.7 | Deferred | PM | Paid hosted dev review | Render/Railway revisited only when always-on runtime, stronger parity, or preview usage justifies cost |
+| Canonical ID | Alias | Status | Owner | Scope | Exit Criteria |
+|---|---|---|---|---|---|
+| `V0.2-W1-01` | `W1.0` | Done | PM / QA | Platform/access decision | Render/Railway/Vercel tradeoff reviewed; Cloudflare Access selected as gate |
+| `V0.2-W1-02` | `W1.1` | Done | Dev / QA | Repo deploy readiness | `APP_BASE_URL`, `GOOGLE_REDIRECT_URI`, `APP_DATA_DIR`, `/healthz`, placeholder env docs merged |
+| `V0.2-W1-03` | `W1.2` | Done | Dev / QA / PM | Dev deployment config | `render.yaml`, `railway.toml`, and hosted dev setup handoff merged to `dev` |
+| `V0.2-W1-04` | `W1.3` | Accepted | PM | No-cost preview decision | Cloudflare Tunnel + Cloudflare Access selected; paid hosted Render/Railway deferred |
+| `V0.2-W1-05` | `W1.4` | Next | Dev | Cloudflare Tunnel local runtime | Local app served through `taskhub-dev.trisilar.com` or PM-approved hostname via `cloudflared` |
+| `V0.2-W1-06` | `W1.5` | Pending | Dev / QA | Cloudflare Access email allowlist | Anonymous access blocked; approved teammate can access and load the app |
+| `V0.2-W1-07` | `W1.6` | Pending | Dev / PM | Paperclip agent access prep | Service-token pattern documented for future agent/API access without W3 implementation |
+| `V0.2-W1-08` | `W1.7` | Deferred | PM | Paid hosted dev review | Render/Railway revisited only when always-on runtime, stronger parity, or preview usage justifies cost |
 
 ---
 
 ## Workstream / Phase Details
 
-### W1.0 - Platform / Access Decision
+### V0.2-W1-01 - Platform / Access Decision
+
+**Alias:** W1.0
 
 **Status:** Done
 **Owner:** PM / QA
@@ -115,7 +119,9 @@ Decision:
 - Vercel is not suitable for W1 because the current app is a long-running Express service with file-backed state.
 - Cloudflare Access is the preferred access gate.
 
-### W1.1 - Repo Deploy Readiness
+### V0.2-W1-02 - Repo Deploy Readiness
+
+**Alias:** W1.1
 
 **Status:** Done
 **Owner:** Dev / QA
@@ -128,7 +134,9 @@ Completed:
 - Updated placeholder-only env docs.
 - Verified local behavior and persistence.
 
-### W1.2 - Dev Deployment Config
+### V0.2-W1-03 - Dev Deployment Config
+
+**Alias:** W1.2
 
 **Status:** Done
 **Owner:** Dev / QA / PM
@@ -140,7 +148,9 @@ Completed:
 - Added deployment handoff docs.
 - Merged PR #2 to `dev`.
 
-### W1.3 - No-Cost Preview Decision
+### V0.2-W1-04 - No-Cost Preview Decision
+
+**Alias:** W1.3
 
 **Status:** Accepted
 **Owner:** PM
@@ -151,7 +161,9 @@ Decision:
 - Defer paid hosted Render/Railway deployment.
 - Keep ngrok as a temporary fallback only.
 
-### W1.4 - Cloudflare Tunnel Local Runtime Setup
+### V0.2-W1-05 - Cloudflare Tunnel Local Runtime Setup
+
+**Alias:** W1.4
 
 **Status:** Next
 **Owner:** Dev
@@ -175,7 +187,9 @@ Acceptance criteria:
 - No secrets are committed.
 - No production service is deployed.
 
-### W1.5 - Cloudflare Access Email Allowlist
+### V0.2-W1-06 - Cloudflare Access Email Allowlist
+
+**Alias:** W1.5
 
 **Status:** Pending
 **Owner:** Dev / QA
@@ -194,7 +208,9 @@ Acceptance criteria:
 - Approved teammate can access the app.
 - App loads without destructive Trello or Google writes.
 
-### W1.6 - Paperclip Agent Access Prep
+### V0.2-W1-07 - Paperclip Agent Access Prep
+
+**Alias:** W1.6
 
 **Status:** Pending
 **Owner:** Dev / PM
@@ -211,7 +227,9 @@ Acceptance criteria:
 - Service-token pattern is documented without committing credentials.
 - No new W3 implementation is introduced.
 
-### W1.7 - Paid Hosted Dev Review
+### V0.2-W1-08 - Paid Hosted Dev Review
+
+**Alias:** W1.7
 
 **Status:** Deferred
 **Owner:** PM
@@ -248,10 +266,10 @@ Decision checkpoint:
 
 | Phase | Expected Sessions | Notes |
 |---|---|---|
-| W1.4 | 1-2 | Depends on Cloudflare account/DNS access and `cloudflared` install |
-| W1.5 | 1 | Depends on allowlist emails/group and teammate availability |
-| W1.6 | 1 | Documentation/pattern only; no live W3 behavior |
-| W1.7 | 1 | PM decision checkpoint if paid hosting becomes necessary |
+| `V0.2-W1-05` | 1-2 | Alias W1.4; depends on Cloudflare account/DNS access and `cloudflared` install |
+| `V0.2-W1-06` | 1 | Alias W1.5; depends on allowlist emails/group and teammate availability |
+| `V0.2-W1-07` | 1 | Alias W1.6; documentation/pattern only; no live W3 behavior |
+| `V0.2-W1-08` | 1 | Alias W1.7; PM decision checkpoint if paid hosting becomes necessary |
 
 ---
 
@@ -259,7 +277,8 @@ Decision checkpoint:
 
 ```text
 Role: Dev
-Task: V0.2 W1.4 - Cloudflare Tunnel Local Runtime Setup
+Task: V0.2-W1-05 - Cloudflare Tunnel Local Runtime Setup
+Alias: W1.4
 
 Context:
 W1 repo deploy-readiness and dev deployment config are merged to `dev`. PM selected Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path. Render remains the default paid hosted target and Railway remains the paid hosted alternate, but both are deferred until always-on runtime is justified.

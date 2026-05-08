@@ -17,6 +17,8 @@
 - Start every V0.2 workstream from `dev` unless the workflow doc explicitly says otherwise.
 - W1/W2/W3 Dev agents must not edit `CURRENT_SPRINT.md`; PM updates it after QA/decision checkpoints.
 - QA agents report evidence in their workstream handoff/doc; PM decides what enters `CURRENT_SPRINT.md`.
+- Use canonical task IDs first: `V0.2-W1-XX`, `V0.2-W2-XX`, and `V0.2-W3-XX`.
+- Old labels such as `W1.4`, `W2b`, and `W3 sequence 1` are aliases only.
 
 ---
 
@@ -61,47 +63,69 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 
 ---
 
-## Prompt A - W1 Company Access + Deployment
+## Canonical Prompt IDs
+
+| Prompt | Canonical ID | Alias | Purpose |
+|---|---|---|---|
+| A | `V0.2-W1-05` | `W1.4` | Cloudflare Tunnel local runtime setup |
+| B | `V0.2-W2-02` | `W2b` | Review Queue redesign and shared task drawer foundation |
+| C | `V0.2-W3-01` | W3 sequence 1 | Paperclip integration discovery and contract plan |
+
+Use the canonical ID in the task title. Include the alias only for continuity.
+
+---
+
+## Prompt A - V0.2-W1-05 Cloudflare Tunnel Local Runtime Setup
 
 ```text
 Role: Dev
-Task: V0.2 W1 - Company Access + Deployment Plan
+Task: V0.2-W1-05 - Cloudflare Tunnel Local Runtime Setup
+Alias: W1.4
 
 Context:
-V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w1-company-access` on `feature/w1-company-access-deployment`.
+V0.2-W1-01 through V0.2-W1-03 are done, and V0.2-W1-04 selected Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w1-company-access` on the W1-owned feature branch.
 
 Read first:
 - CURRENT_SPRINT.md
 - docs/plans/VERSION_0_2_PLAN.md
+- docs/plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md
 - docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md
 - docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- docs/deployment/DEPLOYMENT_SETUP.md
+- docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 - README.md
 
 Goals:
-1. Evaluate practical deployment/access options for Trisilar teammates.
-2. Recommend dev/prod deployment target and access model.
-3. Document environment variables/secrets boundary.
-4. Produce a concrete implementation plan before changing production-ish behavior.
+1. Confirm preview hostname, default `taskhub-dev.trisilar.com`, or record the PM-approved alternate.
+2. Install or verify `cloudflared`.
+3. Run the app locally with stable `APP_DATA_DIR`.
+4. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the preview hostname.
+5. Create a Cloudflare Tunnel route from the preview hostname to `http://localhost:3000`.
+6. Add Cloudflare Access email allowlist before teammate preview.
+7. Verify local `/healthz`, tunneled `/healthz`, anonymous blocked access, approved teammate access, and non-destructive app load.
+8. Record remaining runtime blockers.
 
 Rules:
 - Start from `dev`.
-- Work only in the W1 worktree folder on `feature/w1-company-access-deployment`.
+- Work only in the W1 worktree folder and W1-owned feature branch.
+- Use `V0.2-W1-05` as the primary task ID; `W1.4` is an alias only.
 - Do not implement W2 UI redesign or W3 Paperclip integration.
 - Do not commit secrets.
+- Do not deploy production or use paid Render/Railway unless PM changes the decision.
 - Preserve existing app behavior unless explicitly required.
 - Include attribution: Implemented by Dev agent name.
 ```
 
 ---
 
-## Prompt B - W2b Review Queue Redesign
+## Prompt B - V0.2-W2-02 Review Queue Redesign
 
 ```text
 Role: Dev
-Task: V0.2 W2b - Review Queue Redesign + Shared Task Drawer Foundation
+Task: V0.2-W2-02 - Review Queue Redesign + Shared Task Drawer Foundation
 
 Context:
-V0.2 W2a shell/Today redesign was accepted at `b5f67fb`, but PM clarified this is not full W2 UI redesign completion. W2 is now phased as W2a-W2f in `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`. Work in the W2 worktree folder and implement W2b only.
+V0.2-W2-01 (alias W2a) shell/Today redesign was accepted at `b5f67fb`, but PM clarified this is not full W2 UI redesign completion. W2 is now phased as canonical IDs `V0.2-W2-01` through `V0.2-W2-06` in `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`. Work in the W2 worktree folder and implement V0.2-W2-02 only. Alias: W2b.
 
 Read first:
 - CODEX.md
@@ -119,12 +143,13 @@ Read first:
 Goals:
 1. Redesign Review Queue to match the `ui-design-v1-0` direction while preserving current review APIs and workflows.
 2. Introduce shared task row/detail drawer primitives only where needed by Review and future W2 phases.
-3. Preserve accepted W2a shell/Today behavior and W3 Paperclip mock behavior.
+3. Preserve accepted V0.2-W2-01 shell/Today behavior and W3 Paperclip mock behavior.
 4. Capture desktop/mobile visual QA evidence and run `npm.cmd run check:all`.
 
 Rules:
 - Start from `dev`.
 - Work only in the W2 worktree folder and a W2 phase branch under `feature/w2-*`, default `feature/w2b-review-redesign`.
+- Use `V0.2-W2-02` as the primary task ID; `W2b` is an alias only.
 - Do not implement W1 deployment/access or W3 Paperclip integration.
 - Do not rewrite to React/Vite unless PM explicitly approves.
 - Preserve route behavior and existing APIs.
@@ -133,11 +158,11 @@ Rules:
 
 ---
 
-## Prompt C - W3 Paperclip Multi-Agent Integration
+## Prompt C - V0.2-W3-01 Paperclip Multi-Agent Integration
 
 ```text
 Role: Dev
-Task: V0.2 W3 - Paperclip Multi-Agent Integration Discovery and Contract Plan
+Task: V0.2-W3-01 - Paperclip Multi-Agent Integration Discovery and Contract Plan
 
 Context:
 V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`.
@@ -158,6 +183,7 @@ Goals:
 Rules:
 - Start from `dev`.
 - Work only in the W3 worktree folder on `feature/w3-paperclip-integration`.
+- Use `V0.2-W3-01` as the primary task ID; any W3 sequence or W3-P label is an alias only.
 - Do not implement W1 deployment/access or W2 UI redesign.
 - Do not add live external calls before contract/mock verification.
 - Preserve existing app behavior.
