@@ -5,6 +5,7 @@
 **Reference:** `../reference/ARCHITECTURE_ANALYSIS.md`
 **Created:** 2026-05-06  
 **Moved by:** Codex PM
+**Renamed by:** Codex PM
 **Theme:** "Keep the app local-first and useful, but split the monolith into clear modules so future features can be added without breaking existing workflows."
 
 > **วิธีใช้ไฟล์นี้:**
@@ -282,7 +283,7 @@ card_calendar_events
 ### Dev: Backend Route Split (ใช้ซ้ำต่อแต่ละ route)
 
 ```
-คุณ Dev — อ่าน ARCHITECTURE_ANALYSIS.md และ VERSION_0.1_PLAN.md ก่อน
+คุณ Dev — อ่าน docs/reference/ARCHITECTURE_ANALYSIS.md และ docs/archive/VERSION_0_1_PLAN.md ก่อน
 
 Task: แยก [config/review/calendar/google-tasks/trello] routes ออกจาก server.js
 Target: src/routes/[name].routes.js
@@ -297,7 +298,7 @@ Rules:
 ### Dev: Frontend Page Split (ใช้ซ้ำต่อแต่ละ page)
 
 ```
-คุณ Dev — อ่าน ARCHITECTURE_ANALYSIS.md และ VERSION_0.1_PLAN.md ก่อน
+คุณ Dev — อ่าน docs/reference/ARCHITECTURE_ANALYSIS.md และ docs/archive/VERSION_0_1_PLAN.md ก่อน
 
 Task: แยก [page name] page renderer ออกจาก app.js
 Target: public/js/pages/[page].js
@@ -311,4 +312,4 @@ Rules:
 
 ---
 
-*แผนนี้ใช้ร่วมกับ ARCHITECTURE_ANALYSIS.md — อ่านทั้งคู่ก่อนเริ่ม phase ใหม่ทุกครั้ง*
+*แผนนี้ใช้ร่วมกับ docs/reference/ARCHITECTURE_ANALYSIS.md — อ่านทั้งคู่ก่อนเริ่ม phase ใหม่ทุกครั้ง*

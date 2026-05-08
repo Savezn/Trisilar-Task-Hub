@@ -51,6 +51,9 @@ Open the app at `http://localhost:3000`.
 ## Documentation Rules
 
 - Keep active operating docs in the project root.
+- Keep reserved filenames unchanged: `README.md`, `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, `MVP_PRD.md`, `CODEX.md`, `CLAUDE.md`, `GEMINI.md`.
+- Use `UPPER_SNAKE_CASE.md` for reference/archive planning documents.
+- Use `lower-kebab-case` for design artifact folders and generated/static design files.
 - Move historical/reference docs under `docs/`.
 - Edit Thai/emoji-heavy markdown with targeted UTF-8-safe patches.
 - Every Dev/QA/PM update must include agent attribution in the relevant doc.

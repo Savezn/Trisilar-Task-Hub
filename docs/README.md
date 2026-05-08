@@ -18,6 +18,20 @@ This folder contains non-active reference, archive, and design artifacts. Active
 
 ---
 
+## Naming Standard
+
+| Document type | Format | Example |
+|---|---|---|
+| Reserved root docs | Keep established filename | `CURRENT_SPRINT.md` |
+| Agent rules | Keep established filename | `CODEX.md` |
+| Reference/archive markdown | `UPPER_SNAKE_CASE.md` | `VERSION_0_1_PLAN.md` |
+| Design folders/files | `lower-kebab-case` | `ui-design-v1-0/` |
+| Folder indexes | `README.md` | `docs/README.md` |
+
+Do not rename reserved root docs unless all agent instructions and handoff prompts are updated in the same change.
+
+---
+
 ## Active Root Documents
 
 | File | Purpose |
@@ -36,5 +50,5 @@ This folder contains non-active reference, archive, and design artifacts. Active
 | File | Purpose |
 |---|---|
 | `reference/ARCHITECTURE_ANALYSIS.md` | Architecture analysis and refactor rationale |
-| `archive/VERSION_0.1_PLAN.md` | Historical V0.1 modularization plan |
-| `design/ui-design-1.0/` | UI redesign prototype artifact |
+| `archive/VERSION_0_1_PLAN.md` | Historical V0.1 modularization plan |
+| `design/ui-design-v1-0/` | UI redesign prototype artifact |
