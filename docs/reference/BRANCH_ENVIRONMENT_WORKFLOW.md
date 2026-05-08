@@ -27,6 +27,22 @@ This document defines the branch, environment, PR, and verification workflow req
 | `feature/w3-*` | Paperclip integration | Starts from `dev`. |
 | `hotfix/*` | Emergency production fix | Starts from `main`; merge or cherry-pick back to `dev` after release. |
 
+Recommended V0.2 workstream branches:
+
+| Workstream | Required Branch | Owner Scope |
+|---|---|---|
+| W1 Company Access + Deployment | `feature/w1-company-access-deployment` | Deployment/access plan, deploy readiness, secrets boundary docs |
+| W2 Full UI Redesign | `feature/w2-ui-redesign` | UI design discovery, design system, app shell/page redesign files |
+| W3 Paperclip Multi-Agent Integration | `feature/w3-paperclip-integration` | Integration contract, mock adapter, attribution/audit plan |
+
+Branch ownership rules:
+
+- W1/W2/W3 must not share one feature branch.
+- Each workstream branch starts from latest `dev`.
+- A workstream agent may only commit files owned by its workstream unless PM explicitly approves a cross-workstream change.
+- If a task needs files owned by another workstream, stop and hand off to PM instead of editing across branches.
+- PM/integration work merges completed workstream branches into `dev`; agents do not merge sibling workstream branches into each other.
+
 Flow:
 
 ```text
@@ -58,6 +74,7 @@ Environment files:
 - Merge `dev` into `main` only after integration QA passes and PM approves.
 - During parallel W1/W2/W3 work, Dev and QA agents must not edit `CURRENT_SPRINT.md` directly.
 - Each workstream writes only to its owned plan/files/branch until PM checkpoint.
+- Each workstream must use its required feature branch; do not run W1/W2/W3 in the same branch.
 - PM is the only role that updates `CURRENT_SPRINT.md` after QA pass, PM decision, or integration checkpoint.
 - Durable workstream prompts live in `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`; preserve prompts for other workstreams.
 - Every PR must state:

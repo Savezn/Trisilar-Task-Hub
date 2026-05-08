@@ -30,6 +30,16 @@
 
 Do not replace this registry with a single workstream's next action. Update one prompt at a time and preserve the rest.
 
+## Branch Ownership
+
+| Workstream | Required Branch | Rule |
+|---|---|---|
+| W1 | `feature/w1-company-access-deployment` | Do not commit W2/W3 work here. |
+| W2 | `feature/w2-ui-redesign` | Do not commit W1/W3 work here. |
+| W3 | `feature/w3-paperclip-integration` | Do not commit W1/W2 work here. |
+
+All three branches start from latest `dev`. Do not run multiple workstreams in one feature branch. PM/integration merges finished workstream branches into `dev`.
+
 ---
 
 ## Prompt A - W1 Company Access + Deployment
@@ -71,7 +81,7 @@ Role: Dev
 Task: V0.2 W2 - Full UI Redesign Discovery and Implementation Plan
 
 Context:
-V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Start W2 from `dev`.
+V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Create or switch to `feature/w2-ui-redesign` from latest `dev` before starting W2.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -89,6 +99,7 @@ Goals:
 
 Rules:
 - Start from `dev`.
+- Work only on `feature/w2-ui-redesign`.
 - Do not implement W1 deployment/access or W3 Paperclip integration.
 - Preserve core workflows.
 - Include desktop/mobile visual QA expectations.
@@ -104,7 +115,7 @@ Role: Dev
 Task: V0.2 W3 - Paperclip Multi-Agent Integration Discovery and Contract Plan
 
 Context:
-V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Start W3 from `dev`.
+V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Create or switch to `feature/w3-paperclip-integration` from latest `dev` before starting W3.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -121,6 +132,7 @@ Goals:
 
 Rules:
 - Start from `dev`.
+- Work only on `feature/w3-paperclip-integration`.
 - Do not implement W1 deployment/access or W2 UI redesign.
 - Do not add live external calls before contract/mock verification.
 - Preserve existing app behavior.

@@ -174,6 +174,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 - Keep `CURRENT_SPRINT.md` short; put history in logs and multi-session plans in `docs/plans/`.
 - During parallel W1/W2/W3 work, only PM updates `CURRENT_SPRINT.md`; Dev/QA agents keep updates in their owned workstream docs/branches.
 - Durable W1/W2/W3 prompts live in `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` and must not be overwritten by a single workstream update.
+- W1/W2/W3 must use separate feature branches: `feature/w1-company-access-deployment`, `feature/w2-ui-redesign`, and `feature/w3-paperclip-integration`.
 
 ---
 

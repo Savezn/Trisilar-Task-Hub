@@ -58,9 +58,16 @@
 | W2 plan/files | W2 Dev / QA | Keep W2 updates inside W2-owned docs/branches until PM checkpoint. |
 | W3 plan/files | W3 Dev / QA | Keep W3 updates inside W3-owned docs/branches until PM checkpoint. |
 
+Required branches:
+
+- W1: `feature/w1-company-access-deployment`
+- W2: `feature/w2-ui-redesign`
+- W3: `feature/w3-paperclip-integration`
+
 Parallel rule:
 
 - W1/W2/W3 Dev agents must not edit `CURRENT_SPRINT.md` directly.
+- W1/W2/W3 Dev agents must not share one feature branch.
 - QA agents report evidence in the workstream handoff/doc, not `CURRENT_SPRINT.md`.
 - PM is the only role that updates `CURRENT_SPRINT.md` after QA/decision checkpoints.
 - If a Dev/QA task needs a status change, leave a PM handoff note instead of editing the sprint snapshot.
