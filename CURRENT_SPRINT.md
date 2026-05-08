@@ -31,7 +31,7 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | `V0.2-W1-05` Cloudflare Tunnel local runtime setup next; `V0.2-W1-06` Access gate pending | Dev |
+| W1 | Company Access + Deployment | `V0.2-W1-05` no-domain ngrok demo path active; `V0.2-W1-06` stable Cloudflare Access gate deferred until domain/subdomain exists | Dev / PM |
 | W2 | Full UI Redesign | `V0.2-W2-01` and `V0.2-W2-02` accepted; `V0.2-W2-03`-`V0.2-W2-06` planned; full redesign not complete | Dev |
 | W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | PM complete |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
@@ -77,7 +77,7 @@ Required branches:
 Required worktrees:
 
 - PM / Integration: `trisilar-task-hub` on `dev`
-- `V0.2-W1-05`: Cloudflare Tunnel runtime setup uses the W1 worktree or Cloudflare/local runtime tools; repo branch only if a docs/setup defect is discovered
+- `V0.2-W1-05`: ngrok temporary demo runtime uses the W1 worktree or local runtime tools; repo branch only if a docs/setup defect is discovered
 - W2: `trisilar-task-hub-w2-ui-redesign` on the active `feature/w2-*` phase branch
 - W3: `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`
 
@@ -132,4 +132,4 @@ Rules:
 - Include attribution: Integrated by Codex Dev.
 ```
 
-**Attribution:** `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, and accepted by Codex PM at `d33d8f7`. V0.2 `V0.2-W2-01`/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. `V0.2-W1-02`/`V0.2-W1-03` implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W1 phase naming updated by Codex PM to latest canonical policy. `V0.2-W2-01` and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.
+**Attribution:** `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, and accepted by Codex PM at `d33d8f7`. V0.2 `V0.2-W2-01`/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. `V0.2-W1-02`/`V0.2-W1-03` implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W1 phase naming and no-domain ngrok demo decision updated by Codex PM to latest canonical policy. `V0.2-W2-01` and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.

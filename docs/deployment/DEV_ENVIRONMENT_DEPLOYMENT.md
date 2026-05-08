@@ -1,7 +1,7 @@
 # Dev Environment Deployment - V0.2-W1-03 / V0.2-W1-05
 
 **Doc Role:** Dev deployment config and no-cost preview runtime handoff
-**Status:** `V0.2-W1-05` runtime setup blocked on Cloudflare/DNS/local secret configuration
+**Status:** `V0.2-W1-05` no-domain ngrok demo path active; `V0.2-W1-06` Cloudflare Access path blocked until domain/subdomain exists
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -14,11 +14,15 @@
 
 This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
+Current no-domain runtime decision: use ngrok + temporary Basic Auth for a short teammate demo while no Trisilar domain/subdomain is available. Cloudflare named tunnel + Cloudflare Access remains the stable access-gated path after DNS is available.
+
 ---
 
 ## Platform Decision
 
-Use Cloudflare Tunnel + Cloudflare Access as the no-cost W1 teammate preview path. The app runs on a local/dev machine, `cloudflared` exposes it through the dev hostname, and Cloudflare Access gates human teammate access by email allowlist.
+Use ngrok + temporary Basic Auth as the current no-domain W1 teammate demo path. The app runs on a local/dev machine, ngrok exposes it through a public demo URL, and the Basic Auth proxy gates access before sharing.
+
+Use Cloudflare Tunnel + Cloudflare Access as the durable no-cost teammate preview path once a domain/subdomain is available. At that point, `cloudflared` should expose the app through the dev hostname, and Cloudflare Access should gate human teammate access by email allowlist.
 
 Keep Render as the default paid hosted dev service because `V0.2-W1-02` approved Render as the default long-running Node/Express host with persistent disk support. Paid Render setup is deferred until always-on runtime is justified.
 
@@ -33,11 +37,45 @@ Use Railway only if Trisilar account availability makes Railway faster operation
 | `render.yaml` | Render Blueprint for the dev web service on branch `dev` with `/healthz`, `APP_DATA_DIR`, and placeholder secret slots |
 | `railway.toml` | Railway alternate service config with the same build/start/health check shape |
 
-No production service is configured in W1. Paid hosted dev service creation is deferred while W1 uses the Cloudflare Tunnel preview path.
+No production service is configured in W1. Paid hosted dev service creation is deferred while W1 uses the local tunnel preview path.
 
 ---
 
-## No-Cost Preview Path
+## No-Domain ngrok Demo Path
+
+Run the app on the local/dev machine and expose it through ngrok while no domain/subdomain is available:
+
+| Setting | Value |
+|---|---|
+| Local app | `http://localhost:3000` |
+| Temporary proxy | Local Basic Auth proxy |
+| Tunnel connector | ngrok |
+| Public URL | Random ngrok URL unless a reserved/static ngrok domain is configured |
+| Access gate | Temporary Basic Auth |
+| `APP_BASE_URL` | Current ngrok URL when testing hosted callbacks |
+| `GOOGLE_REDIRECT_URI` | Current ngrok URL + `/auth/callback` when testing hosted callbacks |
+| `APP_DATA_DIR` | Stable local preview data directory |
+
+Local helper artifacts outside git:
+
+| File | Purpose |
+|---|---|
+| `C:\Users\User\Desktop\Start Trisilar TaskHub Demo (ngrok).lnk` | Manual Desktop shortcut to start the demo |
+| `C:\Users\User\Desktop\Start-Trisilar-TaskHub-Demo-Ngrok.ps1` | Local launcher for app, Basic Auth proxy, and ngrok |
+| `C:\Users\User\Desktop\Trisilar-TaskHub-current-demo-url.txt` | Local-only handoff file with current URL and temporary credentials |
+| `C:\Users\User\Desktop\Trisilar-TaskHub-Demo-Ngrok.local.example.ps1` | Local-only example override file |
+
+Rules:
+
+- Do not commit Desktop launcher files or generated handoff files.
+- Share the current URL and temporary password out of band.
+- Random ngrok URLs are acceptable for a one-off human demo.
+- Paperclip or repeat multi-agent testing should use a reserved/static ngrok domain, or the endpoint must be updated manually every run.
+- The ngrok demo does not replace `V0.2-W1-06` stable Cloudflare Access verification.
+
+---
+
+## Stable Cloudflare Preview Path
 
 Run the app on the local/dev machine and expose it through Cloudflare Tunnel:
 
@@ -57,7 +95,7 @@ Rules:
 - Store dev secrets in local `.env` or approved runtime secret storage only.
 - Do not commit secrets or generated runtime data.
 - Verify anonymous access is blocked before sharing the URL.
-- Use ngrok only as a short-lived fallback for troubleshooting/demo access.
+- Use Cloudflare Access only after a domain/subdomain is available.
 
 ---
 
@@ -119,6 +157,8 @@ Attach a Railway volume for file-backed runtime state and set `APP_DATA_DIR` to 
 
 ## Cloudflare Access Gate
 
+This gate is deferred until Trisilar has a domain/subdomain for the dev preview hostname. It remains the stable access model for repeat teammate preview and future service-token patterns.
+
 Before teammate preview, protect the hosted dev URL with Cloudflare Access:
 
 1. Add the dev hostname, for example `taskhub-dev.trisilar.com`, to Cloudflare DNS.
@@ -164,6 +204,28 @@ After Trisilar configures the platform account, DNS, secrets, and Cloudflare Acc
 
 ---
 
+## 2026-05-08 ngrok Demo Launcher Evidence
+
+Runtime setup by Codex Dev for the no-domain temporary demo path.
+
+What was verified locally:
+
+- ngrok is installed and authenticated (`3.39.1-msix-stable`).
+- ngrok config is present under the local user profile.
+- The Desktop shortcut and local launcher start a local Task Hub server, a temporary Basic Auth proxy, and an ngrok tunnel.
+- The smoke run returned a public `ngrok-free.dev` URL.
+- `GET /healthz` returned `200` through the public ngrok URL after Basic Auth.
+- The launcher writes the current URL and temporary credentials to a Desktop handoff file outside git.
+- The smoke test stopped its local processes after verification.
+
+Current conclusion:
+
+- `V0.2-W1-05` can support a short two-person demo without paid hosting or a domain.
+- For Paperclip repeat testing, use a reserved/static ngrok domain or update Paperclip with the current URL each run.
+- `V0.2-W1-06` remains blocked until a domain/subdomain and Cloudflare Access policy are available.
+
+---
+
 ## 2026-05-08 Runtime Setup Attempt
 
 Runtime setup by Codex Dev on branch `dev` at `53dc8ff`.
@@ -190,7 +252,7 @@ What was checked from the local workstation:
 Current conclusion:
 
 - Repo-side `V0.2-W1-03` configuration is ready.
-- `V0.2-W1-05`/`V0.2-W1-06` runtime setup is blocked until Cloudflare Tunnel/DNS, local secret values, and Cloudflare Access policy are configured.
+- The stable Cloudflare `V0.2-W1-06` runtime setup is blocked until Cloudflare Tunnel/DNS, local secret values, and Cloudflare Access policy are configured.
 - No production deployment was attempted.
 - No secrets were committed.
 
@@ -198,9 +260,10 @@ Current conclusion:
 
 ## Current Runtime Blockers
 
-`V0.2-W1-05` cannot complete preview verification from the repo alone. These Trisilar runtime items are required:
+The current ngrok demo path is available for short-lived preview, but stable Cloudflare access cannot complete from the repo alone. These Trisilar runtime items are required for `V0.2-W1-06`:
 
 - Confirm preview hostname, default `taskhub-dev.trisilar.com`, or record a PM-approved alternate.
+- Confirm a domain/subdomain exists for that hostname.
 - Install or authenticate `cloudflared` on the local/dev machine.
 - Run the app locally from the `dev` baseline with stable `APP_DATA_DIR`.
 - Configure dev-only Trello and Google credentials locally or in a secure runtime dashboard; do not put values in chat or git.
@@ -208,6 +271,8 @@ Current conclusion:
 - Configure DNS for the dev hostname; `taskhub-dev.trisilar.com` did not resolve during this Codex Dev attempt.
 - Configure Cloudflare Access email allowlist.
 - Run anonymous-blocked and approved-teammate access verification.
+
+For repeat Paperclip demo use before `V0.2-W1-06`, configure a reserved/static ngrok domain and set `APP_BASE_URL` / `GOOGLE_REDIRECT_URI` to that stable ngrok URL for the demo session.
 
 ---
 

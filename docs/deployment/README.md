@@ -10,8 +10,8 @@ Deployment and hosted environment documents live here so deployment setup is not
 
 | File | Purpose |
 |---|---|
-| `DEPLOYMENT_SETUP.md` | V0.2-W1-02 deploy-readiness setup for Render/Railway, access gate, env vars, and persistent state; legacy label W1b |
-| `DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config and V0.2-W1-05 no-cost preview handoff |
+| `DEPLOYMENT_SETUP.md` | V0.2-W1-02 deploy-readiness setup for Render/Railway, temporary ngrok demo, stable Cloudflare Access gate, env vars, and persistent state; legacy label W1b |
+| `DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config, V0.2-W1-05 no-domain ngrok demo handoff, and V0.2-W1-06 Cloudflare Access blockers |
 
 Related docs:
 

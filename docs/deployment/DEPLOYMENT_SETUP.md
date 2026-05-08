@@ -14,7 +14,7 @@
 
 This document describes how to configure Trisilar Task Hub for a hosted dev or production environment without deploying production yet.
 
-For the prepared `V0.2-W1-03` dev deployment config and `V0.2-W1-05` no-cost preview handoff, see `DEV_ENVIRONMENT_DEPLOYMENT.md`.
+For the prepared `V0.2-W1-03` dev deployment config and `V0.2-W1-05` no-domain ngrok demo handoff, see `DEV_ENVIRONMENT_DEPLOYMENT.md`.
 
 `V0.2-W1-02` keeps the app as a long-running Node/Express service and adds deploy-readiness only. Legacy label: W1b.
 
@@ -29,9 +29,11 @@ For the prepared `V0.2-W1-03` dev deployment config and `V0.2-W1-05` no-cost pre
 
 No-cost preview target:
 
-- Cloudflare Tunnel + Cloudflare Access is the W1 teammate preview path.
-- The app runs on a local/dev machine and is exposed through `cloudflared`.
-- Cloudflare Access email allowlist protects the preview URL before teammate access.
+- ngrok + temporary Basic Auth is the current W1 no-domain demo path because no Trisilar domain/subdomain is available.
+- The app runs on a local/dev machine and is exposed through ngrok.
+- Temporary Basic Auth protects the demo URL before teammate access.
+- Random ngrok URLs are acceptable for short human demos; repeat Paperclip testing should use a reserved/static ngrok domain or receive a fresh URL handoff each run.
+- Cloudflare named tunnel + Cloudflare Access remains the stable no-cost preview path once a domain/subdomain is available.
 - This avoids paid hosted deployment until preview usage proves an always-on cloud runtime is needed.
 
 Paid hosted target:
@@ -43,9 +45,10 @@ Paid hosted target:
 
 Default access gate:
 
-- Cloudflare Access email allowlist in front of the hosted URLs.
+- Temporary Basic Auth in front of the no-domain ngrok demo URL.
+- Cloudflare Access email allowlist in front of stable Cloudflare or hosted URLs once a domain/subdomain exists.
 - Tailscale is acceptable for a private first preview.
-- ngrok or temporary Basic Auth is a fallback only for short-lived troubleshooting/demo access before the Cloudflare path is ready. Credentials must be env-only and temporary.
+- `trycloudflare` remains a troubleshooting option only; its random URL is not suitable for repeat teammate or Paperclip handoff.
 
 Integration identity rule:
 
@@ -116,8 +119,8 @@ Configure these in the platform dashboard only. Do not commit real values.
 | `GOOGLE_CLIENT_SECRET` | Dev secret | Production secret | Platform secret only. |
 | `GOOGLE_REFRESH_TOKEN` | Dev refresh token | Production refresh token | Generate through admin/bootstrap flow. |
 | `GOOGLE_CALENDAR_ID` | Dev/shared test calendar | Production team calendar | Avoid dev writes to production calendars. |
-| `GOOGLE_REDIRECT_URI` | `https://taskhub-dev.trisilar.com/auth/callback` | `https://taskhub.trisilar.com/auth/callback` | Must match Google OAuth console. |
-| `APP_BASE_URL` | `https://taskhub-dev.trisilar.com` | `https://taskhub.trisilar.com` | Used for OAuth callback messaging. |
+| `GOOGLE_REDIRECT_URI` | Current ngrok callback for temporary demo, then `https://taskhub-dev.trisilar.com/auth/callback` after domain exists | `https://taskhub.trisilar.com/auth/callback` | Must match Google OAuth console. |
+| `APP_BASE_URL` | Current ngrok URL for temporary demo, then `https://taskhub-dev.trisilar.com` after domain exists | `https://taskhub.trisilar.com` | Used for OAuth callback messaging. |
 | `APP_DATA_DIR` | Dev persistent disk path | Production persistent disk path | Stores runtime JSON files. |
 | `PORT` | Platform-managed | Platform-managed | The app already reads `process.env.PORT`. |
 
@@ -137,7 +140,24 @@ Local development keeps the current defaults when `APP_DATA_DIR` is unset.
 
 ---
 
+## Temporary ngrok Demo
+
+Use this only while no domain/subdomain is available:
+
+- Start the app from the local `dev` baseline.
+- Set `APP_DATA_DIR` to a stable local data directory.
+- Start the local Basic Auth proxy and ngrok tunnel.
+- Share the current ngrok URL and temporary credentials out of band.
+- For OAuth callback testing, set `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` to the current ngrok URL.
+- For Paperclip repeat testing, use a reserved/static ngrok domain. A random ngrok URL requires a fresh manual Paperclip endpoint update every run.
+
+The temporary ngrok demo does not satisfy the stable `V0.2-W1-06` Cloudflare Access release gate unless PM explicitly accepts it as a demo-only waiver.
+
+---
+
 ## Cloudflare Access
+
+Cloudflare Access is deferred until a Trisilar domain/subdomain exists.
 
 Protect both URLs before teammate preview:
 

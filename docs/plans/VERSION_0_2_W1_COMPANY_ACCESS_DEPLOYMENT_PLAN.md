@@ -1,7 +1,7 @@
 # Version 0.2 W1 Company Access + Deployment Plan
 
 **Doc Role:** W1 workstream phase ladder and execution plan
-**Status:** Active - `V0.2-W1-05` Cloudflare Tunnel local runtime setup is next (alias W1.4)
+**Status:** Active - `V0.2-W1-05` no-domain temporary demo path is active; `V0.2-W1-06` stable Access gate is deferred until a domain/subdomain exists
 **Version:** V0.2
 **Planning Stage:** No-cost teammate preview path accepted
 **Owner:** PM / Platform Dev
@@ -26,14 +26,16 @@
 
 W1 originally prepared Render/Railway hosted deployment readiness. PM later decided not to spend on hosted deployment before teammate preview value is proven.
 
+PM later confirmed no Trisilar domain/subdomain is currently available for a Cloudflare named tunnel and Cloudflare Access application. `trycloudflare` was verified as technically useful, but its random URL makes it a poor fit for Paperclip or repeat teammate handoff. For the immediate no-cost demo window, W1 uses a local ngrok tunnel with a temporary Basic Auth proxy. The durable target remains Cloudflare named tunnel + Cloudflare Access once a domain/subdomain is available.
+
 Current W1 decision:
 
-- Use Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path.
+- Use ngrok + temporary Basic Auth as the current no-domain demo path.
 - Run Trisilar Task Hub on a local/dev machine during preview.
-- Protect human access with Cloudflare Access email allowlist.
-- Prepare future Paperclip/multi-agent access with a service-token pattern, but do not implement new W3 behavior in W1.
+- Keep Cloudflare named tunnel + Cloudflare Access as the stable access gate once a domain/subdomain is available.
+- Prepare future Paperclip/multi-agent access with a stable URL/auth pattern, but do not implement new W3 behavior in W1.
 - Keep Render as the default paid hosted target and Railway as the paid hosted alternate, both deferred until always-on runtime is justified.
-- Keep ngrok as a short-lived demo/troubleshooting fallback only.
+- Do not treat random `trycloudflare` or random ngrok URLs as durable Paperclip integration endpoints.
 
 ---
 
@@ -41,8 +43,9 @@ Current W1 decision:
 
 In scope:
 
-- No-cost teammate preview through Cloudflare Tunnel.
-- Cloudflare Access email allowlist for human users.
+- No-cost teammate preview through ngrok while no domain/subdomain exists.
+- Temporary Basic Auth gate for the no-domain demo.
+- Cloudflare Access email allowlist for human users once a domain/subdomain exists.
 - Stable local preview runtime with `APP_DATA_DIR`.
 - Hosted callback values through `APP_BASE_URL` and `GOOGLE_REDIRECT_URI`.
 - Clear separation between human access and future agent/API access.
@@ -64,8 +67,8 @@ Out of scope:
 ```text
 V0.2-W1-01..V0.2-W1-03 repo readiness done
     -> V0.2-W1-04 PM no-cost preview decision accepted
-    -> V0.2-W1-05 Cloudflare Tunnel local runtime setup
-    -> V0.2-W1-06 Cloudflare Access teammate gate
+    -> V0.2-W1-05 no-domain temporary demo path with ngrok
+    -> V0.2-W1-06 stable Cloudflare Access teammate gate when domain/subdomain exists
     -> V0.2-W1-07 future agent access pattern
     -> V0.2-W1-08 paid hosted review only if needed
 ```
@@ -75,7 +78,7 @@ Aliases: `W1.0`-`W1.7`.
 Branch/workflow rules:
 
 - W1 repo changes still start from `dev` and go through PR unless PM explicitly approves a docs-only direct update.
-- Runtime setup uses local machine and Cloudflare dashboards/CLI; secrets stay out of git.
+- Runtime setup uses local machine and ngrok for the temporary demo; Cloudflare dashboard/CLI work resumes once a domain/subdomain exists. Secrets stay out of git.
 - Production remains untouched.
 - W2 and W3 continue independently from their own branches/worktrees.
 
@@ -83,8 +86,9 @@ Runtime dependency rules:
 
 - Local machine must stay online during teammate preview.
 - `APP_DATA_DIR` must point to a stable preview data directory.
-- Cloudflare Access must block anonymous users before sharing the URL.
-- Paperclip agent/service-token access is only a pattern in W1; live agent integration remains W3-owned.
+- Temporary Basic Auth must protect the ngrok demo URL before sharing it.
+- Cloudflare Access must block anonymous users before sharing a stable Cloudflare URL.
+- Paperclip agent/service-token access is only a pattern in W1; live agent integration remains W3-owned. Random tunnel URLs are not durable Paperclip endpoints.
 
 ---
 
@@ -95,9 +99,9 @@ Runtime dependency rules:
 | `V0.2-W1-01` | `W1.0` | Done | PM / QA | Platform/access decision | Render/Railway/Vercel tradeoff reviewed; Cloudflare Access selected as gate |
 | `V0.2-W1-02` | `W1.1` | Done | Dev / QA | Repo deploy readiness | `APP_BASE_URL`, `GOOGLE_REDIRECT_URI`, `APP_DATA_DIR`, `/healthz`, placeholder env docs merged |
 | `V0.2-W1-03` | `W1.2` | Done | Dev / QA / PM | Dev deployment config | `render.yaml`, `railway.toml`, and hosted dev setup handoff merged to `dev` |
-| `V0.2-W1-04` | `W1.3` | Accepted | PM | No-cost preview decision | Cloudflare Tunnel + Cloudflare Access selected; paid hosted Render/Railway deferred |
-| `V0.2-W1-05` | `W1.4` | Next | Dev | Cloudflare Tunnel local runtime | Local app served through `taskhub-dev.trisilar.com` or PM-approved hostname via `cloudflared` |
-| `V0.2-W1-06` | `W1.5` | Pending | Dev / QA | Cloudflare Access email allowlist | Anonymous access blocked; approved teammate can access and load the app |
+| `V0.2-W1-04` | `W1.3` | Accepted / amended | PM | No-cost preview decision | Paid Render/Railway deferred; no-domain ngrok demo selected until Cloudflare domain/subdomain exists |
+| `V0.2-W1-05` | `W1.4` | Active | Dev / PM | No-domain temporary demo runtime | Local app exposed through ngrok with temporary Basic Auth; `/healthz` and non-destructive load verified before teammate handoff |
+| `V0.2-W1-06` | `W1.5` | Deferred | Dev / QA | Stable Cloudflare Access email allowlist | Domain/subdomain exists; anonymous access blocked; approved teammate can access and load the app |
 | `V0.2-W1-07` | `W1.6` | Pending | Dev / PM | Paperclip agent access prep | Service-token pattern documented for future agent/API access without W3 implementation |
 | `V0.2-W1-08` | `W1.7` | Deferred | PM | Paid hosted dev review | Render/Railway revisited only when always-on runtime, stronger parity, or preview usage justifies cost |
 
@@ -152,50 +156,56 @@ Completed:
 
 **Alias:** W1.3
 
-**Status:** Accepted
+**Status:** Accepted / amended
 **Owner:** PM
 
 Decision:
 
-- Use Cloudflare Tunnel + Cloudflare Access for W1 teammate preview.
+- Use ngrok + temporary Basic Auth for the immediate no-domain demo.
+- Resume Cloudflare Tunnel + Cloudflare Access when a domain/subdomain is available.
 - Defer paid hosted Render/Railway deployment.
-- Keep ngrok as a temporary fallback only.
+- Keep `trycloudflare` as a troubleshooting tool only because the random URL is not suitable for Paperclip or repeat handoff.
 
-### V0.2-W1-05 - Cloudflare Tunnel Local Runtime Setup
+### V0.2-W1-05 - No-Domain Temporary Demo Runtime
 
 **Alias:** W1.4
 
-**Status:** Next
-**Owner:** Dev
+**Status:** Active
+**Owner:** Dev / PM
 
 Tasks:
 
-- Confirm preview hostname, default `taskhub-dev.trisilar.com`.
-- Install or verify `cloudflared`.
+- Use the local Desktop ngrok launcher or equivalent local-only script.
 - Run the app locally with stable `APP_DATA_DIR`.
-- Configure local preview env:
-  - `APP_BASE_URL=https://taskhub-dev.trisilar.com`
-  - `GOOGLE_REDIRECT_URI=https://taskhub-dev.trisilar.com/auth/callback`
-- Route the Cloudflare Tunnel hostname to `http://localhost:3000`.
+- Expose the local app through ngrok.
+- Protect the public ngrok URL with temporary Basic Auth before sharing.
+- Configure local preview env for the current ngrok URL when OAuth callback behavior is being tested:
+  - `APP_BASE_URL=https://<current-ngrok-host>`
+  - `GOOGLE_REDIRECT_URI=https://<current-ngrok-host>/auth/callback`
+- Write current URL and temporary credentials to a local-only handoff file outside git.
 - Verify local and tunneled `/healthz`.
+- For Paperclip demo use, prefer a reserved/static ngrok domain. If the URL is random, treat it as a manual per-run handoff only.
 
 Acceptance criteria:
 
 - Local server starts cleanly.
-- Tunnel routes preview hostname to the app.
+- ngrok routes the public demo URL to the app.
+- Temporary Basic Auth blocks unauthenticated access.
 - `GET /healthz` returns `200` through the tunnel.
 - No secrets are committed.
 - No production service is deployed.
 
-### V0.2-W1-06 - Cloudflare Access Email Allowlist
+### V0.2-W1-06 - Stable Cloudflare Access Email Allowlist
 
 **Alias:** W1.5
 
-**Status:** Pending
+**Status:** Deferred until domain/subdomain exists
 **Owner:** Dev / QA
 
 Tasks:
 
+- Confirm a Trisilar domain/subdomain for the stable preview hostname.
+- Create a Cloudflare named tunnel for the preview hostname.
 - Create Cloudflare Access application for the preview hostname.
 - Add approved teammate emails or a PM-approved group.
 - Verify anonymous users are blocked.
@@ -218,6 +228,7 @@ Acceptance criteria:
 Tasks:
 
 - Document service-token pattern for future Paperclip agent/API access.
+- If W1 demo uses ngrok, document that Paperclip requires either a reserved/static ngrok domain or a fresh manual URL handoff each run.
 - Keep live Paperclip behavior under W3 ownership.
 - Do not add new Paperclip runtime endpoints in W1.
 
@@ -256,8 +267,9 @@ Decision checkpoint:
 - Keep W1 runtime data in `APP_DATA_DIR`.
 - Do not implement W2 UI redesign work.
 - Do not implement new W3 Paperclip behavior.
-- Use Cloudflare Access before teammate preview.
-- Use ngrok only for short-lived troubleshooting/demo access.
+- Use temporary Basic Auth before sharing the ngrok demo URL.
+- Use Cloudflare Access before sharing a stable Cloudflare preview URL.
+- Use random tunnel URLs only for short-lived demo access; use a reserved/static domain for repeat Paperclip testing.
 - Repo changes require a branch/PR unless PM explicitly approves docs-only direct updates.
 
 ---
@@ -266,8 +278,8 @@ Decision checkpoint:
 
 | Phase | Expected Sessions | Notes |
 |---|---|---|
-| `V0.2-W1-05` | 1-2 | Alias W1.4; depends on Cloudflare account/DNS access and `cloudflared` install |
-| `V0.2-W1-06` | 1 | Alias W1.5; depends on allowlist emails/group and teammate availability |
+| `V0.2-W1-05` | 1 | Alias W1.4; no-domain ngrok demo path; depends on ngrok login and local runtime |
+| `V0.2-W1-06` | 1-2 | Alias W1.5; depends on domain/subdomain, Cloudflare Access, allowlist emails/group, and teammate availability |
 | `V0.2-W1-07` | 1 | Alias W1.6; documentation/pattern only; no live W3 behavior |
 | `V0.2-W1-08` | 1 | Alias W1.7; PM decision checkpoint if paid hosting becomes necessary |
 
@@ -277,11 +289,11 @@ Decision checkpoint:
 
 ```text
 Role: Dev
-Task: V0.2-W1-05 - Cloudflare Tunnel Local Runtime Setup
+Task: V0.2-W1-05 - No-Domain ngrok Temporary Demo Verification
 Alias: W1.4
 
 Context:
-W1 repo deploy-readiness and dev deployment config are merged to `dev`. PM selected Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path. Render remains the default paid hosted target and Railway remains the paid hosted alternate, but both are deferred until always-on runtime is justified.
+W1 repo deploy-readiness and dev deployment config are merged to `dev`. PM confirmed there is no Trisilar domain/subdomain available for Cloudflare named tunnel + Access yet. `trycloudflare` is not suitable for repeat Paperclip handoff because the URL is random. The current no-cost demo path is local runtime through ngrok with temporary Basic Auth. Render remains the default paid hosted target and Railway remains the paid hosted alternate, but both are deferred until always-on runtime is justified.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -290,18 +302,18 @@ Read first:
 - docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Steps:
-1. Confirm preview hostname, default `taskhub-dev.trisilar.com`, or record PM-approved alternate.
-2. Install or verify `cloudflared`.
-3. Run the app locally with stable `APP_DATA_DIR`.
-4. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the preview hostname.
-5. Create a Cloudflare Tunnel route from the preview hostname to `http://localhost:3000`.
-6. Add Cloudflare Access email allowlist before teammate preview.
-7. Verify local `/healthz`, tunneled `/healthz`, anonymous blocked access, approved teammate access, and non-destructive app load.
-8. Record remaining runtime blockers.
+1. Start the local ngrok demo launcher from the Desktop shortcut or equivalent local-only script.
+2. Confirm the local app starts with stable `APP_DATA_DIR`.
+3. Confirm the ngrok URL is protected by temporary Basic Auth before teammate preview.
+4. Verify local `/healthz` and tunneled `/healthz`.
+5. Verify basic non-destructive app load through the ngrok URL.
+6. If Paperclip needs a repeat endpoint, configure or request a reserved/static ngrok domain; otherwise record that the URL must be manually handed off each run.
+7. Record remaining runtime blockers for `V0.2-W1-06` Cloudflare Access once a domain/subdomain exists.
 
 Rules:
 - Do not deploy production.
 - Do not use paid Render/Railway unless PM changes the decision.
+- Do not treat the temporary ngrok URL as a production or release-grade access gate.
 - Do not commit secrets.
 - Do not implement W2 UI redesign or new W3 Paperclip behavior.
 - Preserve existing app behavior.
@@ -315,3 +327,4 @@ Rules:
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-08 | Created W1 phase ladder as a dedicated plan following project plan-document policy | Codex PM |
+| 2026-05-08 | Amended W1 no-cost preview path to use ngrok + temporary Basic Auth while no domain/subdomain is available; Cloudflare Access remains the stable gate once DNS is ready | Codex PM |

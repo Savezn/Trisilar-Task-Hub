@@ -67,7 +67,7 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 
 | Prompt | Canonical ID | Alias | Purpose |
 |---|---|---|---|
-| A | `V0.2-W1-05` | `W1.4` | Cloudflare Tunnel local runtime setup |
+| A | `V0.2-W1-05` | `W1.4` | No-domain ngrok temporary demo runtime |
 | B | `V0.2-W2-02` | `W2b` | Review Queue redesign and shared task drawer foundation |
 | C | `V0.2-W3-01` | W3 sequence 1 | Paperclip integration discovery and contract plan |
 
@@ -75,15 +75,15 @@ Use the canonical ID in the task title. Include the alias only for continuity.
 
 ---
 
-## Prompt A - V0.2-W1-05 Cloudflare Tunnel Local Runtime Setup
+## Prompt A - V0.2-W1-05 No-Domain ngrok Temporary Demo Runtime
 
 ```text
 Role: Dev
-Task: V0.2-W1-05 - Cloudflare Tunnel Local Runtime Setup
+Task: V0.2-W1-05 - No-Domain ngrok Temporary Demo Runtime
 Alias: W1.4
 
 Context:
-V0.2-W1-01 through V0.2-W1-03 are done, and V0.2-W1-04 selected Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w1-company-access` on the W1-owned feature branch.
+V0.2-W1-01 through V0.2-W1-03 are done. V0.2-W1-04 originally selected Cloudflare Tunnel + Cloudflare Access, but PM later confirmed no Trisilar domain/subdomain is available yet. The current no-domain demo path is ngrok + temporary Basic Auth. Cloudflare named tunnel + Access remains `V0.2-W1-06` after DNS is available. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w1-company-access` on the W1-owned feature branch only if a repo/doc/setup defect is discovered; otherwise runtime setup may use local-only Desktop scripts outside git.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -96,14 +96,13 @@ Read first:
 - README.md
 
 Goals:
-1. Confirm preview hostname, default `taskhub-dev.trisilar.com`, or record the PM-approved alternate.
-2. Install or verify `cloudflared`.
-3. Run the app locally with stable `APP_DATA_DIR`.
-4. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the preview hostname.
-5. Create a Cloudflare Tunnel route from the preview hostname to `http://localhost:3000`.
-6. Add Cloudflare Access email allowlist before teammate preview.
-7. Verify local `/healthz`, tunneled `/healthz`, anonymous blocked access, approved teammate access, and non-destructive app load.
-8. Record remaining runtime blockers.
+1. Start or verify the local ngrok demo launcher or equivalent local-only script.
+2. Run the app locally with stable `APP_DATA_DIR`.
+3. Confirm the public ngrok URL is protected by temporary Basic Auth before teammate preview.
+4. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the current ngrok URL when OAuth callback behavior is part of the demo.
+5. Verify local `/healthz`, tunneled `/healthz`, Basic Auth block, and non-destructive app load.
+6. For Paperclip repeat testing, configure/request a reserved/static ngrok domain; otherwise record that the URL must be manually handed off each run.
+7. Record remaining runtime blockers for `V0.2-W1-06`: domain/subdomain, Cloudflare named tunnel, Cloudflare Access allowlist, and approved teammate verification.
 
 Rules:
 - Start from `dev`.
@@ -112,6 +111,8 @@ Rules:
 - Do not implement W2 UI redesign or W3 Paperclip integration.
 - Do not commit secrets.
 - Do not deploy production or use paid Render/Railway unless PM changes the decision.
+- Do not commit Desktop launcher files, generated demo URL files, or credentials.
+- Do not treat the temporary ngrok URL as a production or release-grade access gate.
 - Preserve existing app behavior unless explicitly required.
 - Include attribution: Implemented by Dev agent name.
 ```
@@ -198,3 +199,4 @@ Rules:
 |---|---|---|
 | 2026-05-08 | Created durable W1/W2/W3 prompt registry and PM-owned Current Sprint rule | Codex PM |
 | 2026-05-08 | Added per-workstream Git worktree requirement | Codex PM |
+| 2026-05-08 | Updated Prompt A from Cloudflare Tunnel setup to no-domain ngrok temporary demo runtime, with Cloudflare Access deferred to W1-06 | Codex PM |
