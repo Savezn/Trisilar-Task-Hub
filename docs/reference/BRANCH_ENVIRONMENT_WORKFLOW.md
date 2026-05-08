@@ -4,7 +4,7 @@
 **Status:** Active for V0.2 W0
 **Owner:** Dev / PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-08 - **Updated by:** Codex Dev
+**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../plans/VERSION_0_2_PLAN.md`, `../../README.md`
 
 ---
@@ -26,6 +26,50 @@ This document defines the branch, environment, PR, and verification workflow req
 | `feature/w2-*` | UI redesign | Starts from `dev`. |
 | `feature/w3-*` | Paperclip integration | Starts from `dev`. |
 | `hotfix/*` | Emergency production fix | Starts from `main`; merge or cherry-pick back to `dev` after release. |
+
+Recommended V0.2 workstream branches:
+
+| Workstream | Required Branch | Owner Scope |
+|---|---|---|
+| W1 Company Access + Deployment | `feature/w1-company-access-deployment` | Deployment/access plan, deploy readiness, secrets boundary docs |
+| W2 Full UI Redesign | `feature/w2-*` phase branches | UI design discovery, design system, app shell/page redesign files |
+| W3 Paperclip Multi-Agent Integration | `feature/w3-paperclip-integration` | Integration contract, mock adapter, attribution/audit plan |
+
+Branch ownership rules:
+
+- W1/W2/W3 must not share one feature branch.
+- Each workstream branch starts from latest `dev`.
+- Parallel W1/W2/W3 agents must not run in the same working directory.
+- Each parallel workstream must use its own Git worktree folder checked out to its required feature branch.
+- A workstream agent may only commit files owned by its workstream unless PM explicitly approves a cross-workstream change.
+- If a task needs files owned by another workstream, stop and hand off to PM instead of editing across branches.
+- PM/integration work merges completed workstream branches into `dev`; agents do not merge sibling workstream branches into each other.
+
+Recommended local worktree folders:
+
+| Workstream | Worktree folder | Branch |
+|---|---|---|
+| PM / Integration | `trisilar-task-hub` | `dev` |
+| W1 Company Access + Deployment | `trisilar-task-hub-w1-company-access` | `feature/w1-company-access-deployment` |
+| W2 Full UI Redesign | `trisilar-task-hub-w2-ui-redesign` | active `feature/w2-*` phase branch |
+| W3 Paperclip Multi-Agent Integration | `trisilar-task-hub-w3-paperclip` | `feature/w3-paperclip-integration` |
+
+Create or attach worktrees from the main repo folder:
+
+```powershell
+git worktree add ..\trisilar-task-hub-w1-company-access feature/w1-company-access-deployment
+git worktree add ..\trisilar-task-hub-w2-ui-redesign feature/w2b-review-redesign
+git worktree add ..\trisilar-task-hub-w3-paperclip feature/w3-paperclip-integration
+git worktree list
+```
+
+Before starting any agent, run:
+
+```powershell
+git status --short --branch
+```
+
+Confirm the folder and branch match the assigned workstream. If they do not match, stop and switch to the correct worktree folder before editing.
 
 Flow:
 
@@ -56,6 +100,11 @@ Environment files:
 - Feature work starts from `dev` after W0.
 - Open PRs into `dev` for W1/W2/W3 workstreams.
 - Merge `dev` into `main` only after integration QA passes and PM approves.
+- During parallel W1/W2/W3 work, Dev and QA agents must not edit `CURRENT_SPRINT.md` directly.
+- Each workstream writes only to its owned plan/files/branch until PM checkpoint.
+- Each workstream must use its required feature branch; do not run W1/W2/W3 in the same branch.
+- PM is the only role that updates `CURRENT_SPRINT.md` after QA pass, PM decision, or integration checkpoint.
+- Durable workstream prompts live in `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`; preserve prompts for other workstreams.
 - Every PR must state:
   - owner agent
   - files changed

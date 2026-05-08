@@ -1,13 +1,13 @@
 # Version 0.2 Workstream Plan - Trisilar Task Hub
 
 **Doc Role:** Active version plan
-**Status:** Draft - W0 is next
+**Status:** Active - W2 full UI redesign re-scoped into W2a-W2f phases
 **Version:** V0.2
 **Planning Stage:** Pre-workstream setup
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely by establishing branch/environment workflow before company access, UI redesign, and Paperclip integration work.
 
 ---
@@ -16,6 +16,7 @@
 
 - Use as the main V0.2 planning file.
 - Start each session from `../../CURRENT_SPRINT.md`; read this file when the task is part of W0/W1/W2/W3.
+- Use `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` as the durable prompt registry for W1/W2/W3.
 - Update this file when PM changes V0.2 workstream scope, sequencing, or branch/environment rules.
 - Keep detailed QA history in `../logs/QA_LOG.md`, not in this plan.
 - Use `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md` for branch, environment, PR, and verification rules.
@@ -86,10 +87,10 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
-| W0 | Branch / Environment / CI Setup | Dev / PM | Next | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev | Pending W0 | Internal access, deployment target, env/secrets, teammate onboarding |
-| W2 | Full UI Redesign | Frontend Dev | Pending W0 | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | Pending W0 | Contract-first API/webhook bridge, mock adapter, real connector, attribution sync |
+| W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
+| W1 | Company Access + Deployment | Platform Dev | W1c setup merged / hosted runtime setup next | Internal access, deployment target, env/secrets, teammate onboarding |
+| W2 | Full UI Redesign | Frontend Dev | W2a accepted `b5f67fb`; W2b-W2f planned / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
+| W3 | Paperclip Multi-Agent Integration | Integration Dev | Done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` | Contract-first mock adapter, attribution/audit sync; live connector remains future work |
 
 ---
 
@@ -99,7 +100,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P0
 **Owner Role:** Dev / PM
-**Status:** Next
+**Status:** Done `9dbb47b` / QA Pass
 
 **Why:**
 - Parallel agent work needs a stable integration branch.
@@ -126,7 +127,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P0 after W0
 **Owner Role:** Platform Dev
-**Status:** Pending W0
+**Status:** W1c setup merged to `dev`; hosted runtime setup next
 
 **Scope:**
 - Internal access method.
@@ -139,7 +140,8 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P1 after W0
 **Owner Role:** Frontend Dev
-**Status:** Pending W0
+**Status:** W2a done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev`; W2b-W2f planned
+**Detailed Plan:** `VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`
 
 **Scope:**
 - Design system.
@@ -148,11 +150,28 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 - Desktop/mobile visual QA.
 - No server/API refactor unless explicitly required.
 
+**Phase Breakdown:**
+
+| Phase | Status | Scope |
+|---|---|---|
+| W2a | Accepted | Shell foundation, mobile nav baseline, Today redesign |
+| W2b | Planned next | Review Queue redesign and shared task drawer foundation |
+| W2c | Planned | Tasks inbox and cross-board task rows |
+| W2d | Planned | Boards monitor and team board views |
+| W2e | Planned | Calendar and Planner redesign |
+| W2f | Planned | Settings, OKR, and Weekly Focus polish |
+
+**PM Clarification:**
+
+W2a acceptance does not mean the full UI redesign is complete. Full W2 acceptance requires W2b-W2f implementation, QA, and PM acceptance against `docs/design/ui-design-v1-0/`.
+
+W2 phase labels intentionally use `W2a`-style IDs to stay inside the V0.2 workstream model while preserving the project habit of phase-by-phase work with dependencies, task lists, acceptance criteria, QA evidence, and PM signoff.
+
 ### W3 - Paperclip Multi-Agent Integration
 
 **Priority:** P1 after W0
 **Owner Role:** Integration Dev
-**Status:** Pending W0
+**Status:** Done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`
 
 **Scope:**
 - Integration contract.
@@ -171,6 +190,10 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 - UI redesign PRs must include desktop/mobile visual evidence and console error check.
 - Paperclip integration PRs must include contract/mock verification before live connector work.
 - Keep `CURRENT_SPRINT.md` short; put history in logs and multi-session plans in `docs/plans/`.
+- During parallel W1/W2/W3 work, only PM updates `CURRENT_SPRINT.md`; Dev/QA agents keep updates in their owned workstream docs/branches.
+- Durable W1/W2/W3 prompts live in `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` and must not be overwritten by a single workstream update.
+- W1/W2/W3 must use separate feature branches: `feature/w1-*`, `feature/w2-*`, and `feature/w3-*`; W2 subphases may use dedicated `feature/w2-*` phase branches such as `feature/w2b-review-redesign`.
+- W1/W2/W3 must run in separate Git worktree folders; do not run parallel agents in the same `trisilar-task-hub` working directory.
 
 ---
 
@@ -217,3 +240,8 @@ Rules:
 |---|---|---|
 | 2026-05-08 | Created V0.2 workstream plan after V0.1 Release Acceptance | Codex PM |
 | 2026-05-08 | Standardized plan document format with V0.1 archive plan | Codex PM |
+| 2026-05-08 | Added PM-owned Current Sprint rule for parallel workstreams | Codex PM |
+| 2026-05-08 | Added per-workstream Git worktree requirement | Codex PM |
+| 2026-05-08 | Accepted W3 Paperclip mock integration after QA pass at `1d1f638` | Codex PM |
+| 2026-05-08 | Merged accepted W2/W3 into `dev` for integration QA routing | Codex Dev |
+| 2026-05-08 | Accepted V0.2 W2/W3 integration on `dev` after QA pass at `dde7ab0` | Codex PM |

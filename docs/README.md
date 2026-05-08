@@ -15,6 +15,7 @@ This folder contains logs, plans, references, archives, and design artifacts. Th
 | `reference/` | Architecture analysis and durable technical references |
 | `adr/` | Architecture Decision Records and process decisions |
 | `archive/` | Historical plans retained for traceability |
+| `deployment/` | Deployment and hosted environment setup docs |
 | `design/` | UI redesign prototypes, static HTML, and design handoff files |
 | `logs/` | QA logs, completed work archive, bug fixes, and PM decisions |
 | `plans/` | Active and future multi-session planning documents |
@@ -67,7 +68,6 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `../.ai-instructions.md` | Universal first-read AI/project rules |
 | `../CONTRIBUTING.md` | Contribution, branch, worktree, commit, PR, and verification workflow |
 | `../TODO.md` | High-level roadmap index |
-| `../DEVELOPMENT_PLAN.md` | Roadmap and completed phase tracker |
 | `../MVP_PRD.md` | MVP product requirements |
 | `../CODEX.md` | Codex agent rules |
 | `../CLAUDE.md` | Claude agent rules |
@@ -79,15 +79,19 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 
 | File | Purpose |
 |---|---|
-| `reference/ARCHITECTURE_ANALYSIS.md` | Architecture analysis and refactor rationale |
 | `reference/ARCHITECTURE.md` | Current technical architecture reference |
 | `reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
 | `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
 | `reference/PROJECT_CONTEXT.md` | Stable product context and operating model |
+| `deployment/README.md` | Deployment docs index |
+| `deployment/DEPLOYMENT_SETUP.md` | V0.2 W1b deploy-readiness setup for hosted company access |
+| `deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2 W1c hosted dev environment setup handoff |
 | `testing/TEST_STRATEGY.md` | Verification policy and automated test-suite roadmap |
 | `adr/README.md` | ADR index and process |
 | `adr/ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` | Project conventions and AI workflow decision |
 | `archive/VERSION_0_1_PLAN.md` | Historical V0.1 modularization plan |
+| `archive/DEVELOPMENT_HISTORY.md` | Archived roadmap and completed phase tracker |
+| `archive/ARCHITECTURE_ANALYSIS_V0_1.md` | Archived V0.1 architecture analysis |
 | `design/ui-design-v1-0/` | UI redesign prototype artifact |
 | `logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
 | `logs/DECISION_LOG.md` | PM decisions and phase context |

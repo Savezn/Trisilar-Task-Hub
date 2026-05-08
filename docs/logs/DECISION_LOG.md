@@ -82,3 +82,9 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | P7-5 | Weekly Focus View | Done `5be2ea6` |
 
 ---
+
+## V0.2 W2 Full UI Redesign Scope Clarification
+
+| Date | Decision | Updated by |
+|---|---|---|
+| 2026-05-08 | Reclassified accepted `b5f67fb` work as W2a Shell Foundation + Today Redesign only. Full W2 UI Redesign remains open through W2b-W2f and must be accepted phase by phase against `docs/design/ui-design-v1-0/`. | Codex PM |

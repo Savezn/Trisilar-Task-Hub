@@ -39,7 +39,7 @@ Core outcomes:
 - OKR / Portfolio Layer Phase 7 completed.
 - Real preview regression and release acceptance passed.
 
-Historical details live in `docs/archive/VERSION_0_1_PLAN.md`, `DEVELOPMENT_PLAN.md`, and `docs/logs/QA_LOG.md`.
+Historical details live in `docs/archive/VERSION_0_1_PLAN.md`, `docs/archive/DEVELOPMENT_HISTORY.md`, and `docs/logs/QA_LOG.md`.
 
 ### V0.2 - Company Access, UI Redesign, Paperclip Integration
 
