@@ -1,0 +1,43 @@
+{
+  "contractVersion": "paperclip.taskhub.v0.2",
+  "requestId": "pc_req_large_evidence",
+  "source": {
+    "system": "paperclip",
+    "environment": "mock",
+    "workspaceId": "paperclip_workspace_id",
+    "threadId": "paperclip_thread_large"
+  },
+  "agent": {
+    "agentId": "agent_ops_01",
+    "agentName": "Paperclip Ops Agent",
+    "agentRole": "operations",
+    "runId": "run_large_evidence",
+    "parentRunId": null
+  },
+  "reviewSession": {
+    "title": "Paperclip handoff - evidence bounds",
+    "summary": "Fixture for bounded evidence handling.",
+    "transcript": "This fixture keeps transcript text short while sourceEvidence is long.",
+    "sourceUrl": "https://paperclip.local/runs/run_large_evidence",
+    "sourceCreatedAt": "2026-05-08T08:00:00.000Z"
+  },
+  "tasks": [
+    {
+      "externalTaskId": "pc_task_large_evidence",
+      "title": "Summarize long source evidence",
+      "description": "Evidence text should be bounded by the normalizer.",
+      "deadline": null,
+      "priority": "normal",
+      "confidence": 0.9,
+      "syncCalendar": false,
+      "syncGoogleTasks": false,
+      "sourceEvidence": [
+        {
+          "type": "transcript_excerpt",
+          "text": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz",
+          "sourceOffset": 0
+        }
+      ]
+    }
+  ]
+}

@@ -11,10 +11,33 @@ module.exports = function reviewRoutes({ store, diff, trello, friendlyError, cac
     return 500;
   }
 
+  function auditEvent(type, fields = {}) {
+    return { type, actor: "system", at: new Date().toISOString(), ...fields };
+  }
+
   async function pushTaskToTrello(sessionId, task) {
-    if (!task.targetListId) return { skipped: true, reason: "No targetListId" };
+    if (!task.targetListId) {
+      store.appendTaskAuditEvent?.(
+        sessionId,
+        task.id,
+        auditEvent("trello_push_failed", {
+          reason: "No targetListId",
+          retryable: false,
+        })
+      );
+      return { skipped: true, reason: "No targetListId" };
+    }
     try {
       let card;
+      store.appendTaskAuditEvent?.(
+        sessionId,
+        task.id,
+        auditEvent("trello_push_attempted", {
+          mode: task.diffStatus === "update_existing" && task.matchedCardId ? "update" : "create",
+          targetListId: task.targetListId,
+          matchedCardId: task.matchedCardId || null,
+        })
+      );
       if (task.diffStatus === "update_existing" && task.matchedCardId) {
         card = await trello.updateCard(task.matchedCardId, {
           name: task.title,
@@ -38,6 +61,14 @@ module.exports = function reviewRoutes({ store, diff, trello, friendlyError, cac
       return { ok: true, cardId: card.id };
     } catch (e) {
       console.error("[Trello push]", task.id, e.message);
+      store.appendTaskAuditEvent?.(
+        sessionId,
+        task.id,
+        auditEvent("trello_push_failed", {
+          error: friendlyError(e),
+          retryable: true,
+        })
+      );
       return { ok: false, error: friendlyError(e) };
     }
   }

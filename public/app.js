@@ -16,6 +16,7 @@ async function init() {
     if (gcalEl) gcalEl.style.display = "";
   }
 
+  setupShellPrimitives();
   renderSidebar();
   navigateTo(getPageFromPath(), { replace: true });
   updateReviewBadge().catch(() => {});
@@ -215,6 +216,56 @@ async function loadPlannerTrello() {
 }
 
 // ── Sidebar ───────────────────────────────────────────────────────────────────
+function setupShellPrimitives() {
+  // Implemented by Codex Dev: code-native icons and mobile nav shell.
+  const navIcons = {
+    today: "today",
+    review: "sparkles",
+    all: "inbox",
+    boards: "layout",
+    calendar: "calendar",
+    planner: "checkSquare",
+    okr: "target",
+    focus: "calendar",
+    settings: "settings",
+  };
+  document.querySelectorAll(".nav-item[data-page]").forEach(item => {
+    const slot = item.querySelector(".nav-icon");
+    if (slot && typeof icon === "function") {
+      slot.innerHTML = icon(navIcons[item.dataset.page] || "today");
+    }
+  });
+  const refreshBtn = $("topbar-refresh-btn");
+  if (refreshBtn && typeof icon === "function") {
+    refreshBtn.innerHTML = icon("refresh");
+    refreshBtn.setAttribute("aria-label", "Refresh current view");
+  }
+  setupMobileNavigation();
+}
+
+function setupMobileNavigation() {
+  if (window.__taskHubMobileNavReady) return;
+  window.__taskHubMobileNavReady = true;
+  const btn = $("mobile-nav-btn");
+  const overlay = $("mobile-nav-overlay");
+  if (!btn || !overlay) return;
+
+  btn.onclick = () => {
+    const open = !document.body.classList.contains("mobile-nav-open");
+    document.body.classList.toggle("mobile-nav-open", open);
+    btn.setAttribute("aria-expanded", String(open));
+  };
+  overlay.onclick = closeMobileNav;
+  document.querySelectorAll(".sidebar .nav-item").forEach(item => {
+    item.addEventListener("click", closeMobileNav);
+  });
+}
+
+function closeMobileNav() {
+  document.body.classList.remove("mobile-nav-open");
+  $("mobile-nav-btn")?.setAttribute("aria-expanded", "false");
+}
+
 function renderSidebar() {
   renderGroupsList();
   renderBoardsList();

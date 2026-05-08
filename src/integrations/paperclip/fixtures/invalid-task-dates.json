@@ -1,0 +1,32 @@
+{
+  "contractVersion": "paperclip.taskhub.v0.2",
+  "requestId": "pc_req_invalid_dates",
+  "source": {
+    "system": "paperclip",
+    "environment": "mock"
+  },
+  "agent": {
+    "agentId": "agent_strategy_01",
+    "agentName": "Paperclip Strategy Agent",
+    "agentRole": "strategy",
+    "runId": "run_invalid_dates",
+    "parentRunId": null
+  },
+  "reviewSession": {
+    "title": "Invalid dates fixture",
+    "summary": "Contains invalid source and task dates.",
+    "transcript": "",
+    "sourceUrl": "https://paperclip.local/runs/run_invalid_dates",
+    "sourceCreatedAt": "not-a-date"
+  },
+  "tasks": [
+    {
+      "externalTaskId": "pc_task_invalid_date",
+      "title": "Task with invalid deadline",
+      "deadline": "next Friday",
+      "priority": "high",
+      "syncCalendar": false,
+      "syncGoogleTasks": false
+    }
+  ]
+}
