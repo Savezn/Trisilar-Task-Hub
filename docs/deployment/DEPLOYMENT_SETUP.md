@@ -6,7 +6,7 @@
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex Dev
-**Related Docs:** `../../README.md`, `BRANCH_ENVIRONMENT_WORKFLOW.md`, `DEV_ENVIRONMENT_DEPLOYMENT.md`, `../plans/VERSION_0_2_PLAN.md`
+**Related Docs:** `../../README.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `DEV_ENVIRONMENT_DEPLOYMENT.md`, `../plans/VERSION_0_2_PLAN.md`
 
 ---
 

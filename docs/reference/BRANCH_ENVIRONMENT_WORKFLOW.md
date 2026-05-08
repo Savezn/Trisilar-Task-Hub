@@ -32,7 +32,7 @@ Recommended V0.2 workstream branches:
 | Workstream | Required Branch | Owner Scope |
 |---|---|---|
 | W1 Company Access + Deployment | `feature/w1-company-access-deployment` | Deployment/access plan, deploy readiness, secrets boundary docs |
-| W2 Full UI Redesign | `feature/w2-ui-redesign` | UI design discovery, design system, app shell/page redesign files |
+| W2 Full UI Redesign | `feature/w2-*` phase branches | UI design discovery, design system, app shell/page redesign files |
 | W3 Paperclip Multi-Agent Integration | `feature/w3-paperclip-integration` | Integration contract, mock adapter, attribution/audit plan |
 
 Branch ownership rules:
@@ -51,14 +51,14 @@ Recommended local worktree folders:
 |---|---|---|
 | PM / Integration | `trisilar-task-hub` | `dev` |
 | W1 Company Access + Deployment | `trisilar-task-hub-w1-company-access` | `feature/w1-company-access-deployment` |
-| W2 Full UI Redesign | `trisilar-task-hub-w2-ui-redesign` | `feature/w2-ui-redesign` |
+| W2 Full UI Redesign | `trisilar-task-hub-w2-ui-redesign` | active `feature/w2-*` phase branch |
 | W3 Paperclip Multi-Agent Integration | `trisilar-task-hub-w3-paperclip` | `feature/w3-paperclip-integration` |
 
 Create or attach worktrees from the main repo folder:
 
 ```powershell
 git worktree add ..\trisilar-task-hub-w1-company-access feature/w1-company-access-deployment
-git worktree add ..\trisilar-task-hub-w2-ui-redesign feature/w2-ui-redesign
+git worktree add ..\trisilar-task-hub-w2-ui-redesign feature/w2b-review-redesign
 git worktree add ..\trisilar-task-hub-w3-paperclip feature/w3-paperclip-integration
 git worktree list
 ```

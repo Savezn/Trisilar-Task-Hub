@@ -2,7 +2,7 @@
   "name": "trisilar-task-hub",
   "version": "1.0.0",
   "description": "Trisilar Task Hub — unified Trello & Google Calendar dashboard",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",

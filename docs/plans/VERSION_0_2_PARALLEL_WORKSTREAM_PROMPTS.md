@@ -35,7 +35,7 @@ Do not replace this registry with a single workstream's next action. Update one 
 | Workstream | Required Branch | Rule |
 |---|---|---|
 | W1 | `feature/w1-company-access-deployment` | Do not commit W2/W3 work here. |
-| W2 | `feature/w2-ui-redesign` | Do not commit W1/W3 work here. |
+| W2 | active `feature/w2-*` phase branch | Do not commit W1/W3 work here. |
 | W3 | `feature/w3-paperclip-integration` | Do not commit W1/W2 work here. |
 
 All three branches start from latest `dev`. Do not run multiple workstreams in one feature branch. PM/integration merges finished workstream branches into `dev`.
@@ -48,7 +48,7 @@ Parallel agents must use separate Git worktree folders. Do not run W1/W2/W3 in t
 |---|---|---|
 | PM / Integration | `trisilar-task-hub` | `dev` |
 | W1 | `trisilar-task-hub-w1-company-access` | `feature/w1-company-access-deployment` |
-| W2 | `trisilar-task-hub-w2-ui-redesign` | `feature/w2-ui-redesign` |
+| W2 | `trisilar-task-hub-w2-ui-redesign` | active `feature/w2-*` phase branch |
 | W3 | `trisilar-task-hub-w3-paperclip` | `feature/w3-paperclip-integration` |
 
 Agent start check:
@@ -94,36 +94,41 @@ Rules:
 
 ---
 
-## Prompt B - W2 Full UI Redesign
+## Prompt B - W2b Review Queue Redesign
 
 ```text
 Role: Dev
-Task: V0.2 W2 - Full UI Redesign Discovery and Implementation Plan
+Task: V0.2 W2b - Review Queue Redesign + Shared Task Drawer Foundation
 
 Context:
-V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w2-ui-redesign` on `feature/w2-ui-redesign`.
+V0.2 W2a shell/Today redesign was accepted at `b5f67fb`, but PM clarified this is not full W2 UI redesign completion. W2 is now phased as W2a-W2f in `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`. Work in the W2 worktree folder and implement W2b only.
 
 Read first:
+- CODEX.md
 - CURRENT_SPRINT.md
 - docs/plans/VERSION_0_2_PLAN.md
-- docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md
-- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
-- MVP_PRD.md
+- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
 - docs/design/ui-design-v1-0/README.md
+- docs/design/ui-design-v1-0/pages-review-cal-settings.jsx
+- docs/design/ui-design-v1-0/app.jsx
+- public/style.css
+- public/app.js
+- public/js/router.js
+- public/js/pages/review.js
 
 Goals:
-1. Audit current app shell/pages and existing design artifacts.
-2. Propose redesign scope, visual direction, and page rollout order.
-3. Identify responsive/desktop QA requirements.
-4. Make only targeted preparatory docs or prototype updates unless implementation scope is clear.
+1. Redesign Review Queue to match the `ui-design-v1-0` direction while preserving current review APIs and workflows.
+2. Introduce shared task row/detail drawer primitives only where needed by Review and future W2 phases.
+3. Preserve accepted W2a shell/Today behavior and W3 Paperclip mock behavior.
+4. Capture desktop/mobile visual QA evidence and run `npm.cmd run check:all`.
 
 Rules:
 - Start from `dev`.
-- Work only in the W2 worktree folder on `feature/w2-ui-redesign`.
+- Work only in the W2 worktree folder and a W2 phase branch under `feature/w2-*`, default `feature/w2b-review-redesign`.
 - Do not implement W1 deployment/access or W3 Paperclip integration.
-- Preserve core workflows.
-- Include desktop/mobile visual QA expectations.
-- Include attribution: Implemented by Dev agent name.
+- Do not rewrite to React/Vite unless PM explicitly approves.
+- Preserve route behavior and existing APIs.
+- Include attribution: Implemented by Codex Dev.
 ```
 
 ---

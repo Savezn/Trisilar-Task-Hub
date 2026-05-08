@@ -1,9 +1,9 @@
 # Trisilar Task Hub - Software Architecture Analysis
 
-**Doc Role:** Architecture reference
-**Status:** Reference; V0.1 modularization is complete
-**Last Updated:** 2026-05-08 · **Moved by:** Codex PM
-**Primary use:** Use this file before planning refactors, adding major features, or restructuring the app.
+**Doc Role:** Archived architecture analysis
+**Status:** Archived V0.1 reference; active architecture lives in `../reference/ARCHITECTURE.md`
+**Last Updated:** 2026-05-08 - **Moved by:** Codex PM
+**Primary use:** Historical V0.1 refactor rationale and older architecture notes.
 
 ---
 

@@ -1,8 +1,23 @@
-# Trisilar Task Hub — Development Plan
-**Doc Role:** Roadmap and historical progress tracker
-**Purpose:** Track implementation phases, completed milestones, and future planning context
+# Trisilar Task Hub - Development History
+**Doc Role:** Archived roadmap and historical progress tracker
+**Status:** Archived reference; use `../plans/` and `../../TODO.md` for active planning
+**Purpose:** Preserve completed milestones and older phase context
 **Based on:** `MVP_PRD.md`
-**Last Updated:** 2026-05-08 (V0.1 Release Acceptance passed · Updated by Codex PM)
+**Last Updated:** 2026-05-08 - Moved by Codex PM during documentation consolidation
+
+---
+
+## Archive Notice
+
+This file is retained for historical traceability. Do not use it as the active roadmap or next-action source.
+
+Use these files for active work:
+
+- `../../CURRENT_SPRINT.md`
+- `../../TODO.md`
+- `../plans/VERSION_0_2_PLAN.md`
+- `../logs/QA_LOG.md`
+- `../logs/DECISION_LOG.md`
 
 ---
 
@@ -949,6 +964,27 @@ Version 0.1 has transformed the monolithic app into a maintainable modular local
 - **Frontend:** page modules split under `public/js/pages/`
 - **Router:** URL path sync and direct route fallback are in place.
 - **Verification:** `check:all` and browser release acceptance passed.
+
+---
+
+## Milestone: Version 0.2 W2 Full UI Redesign Phase Ladder
+
+**Status:** Active planning update (2026-05-08)
+**Detailed plan:** `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`
+**Updated by:** Codex PM
+
+W2 follows the existing project phase-ladder pattern: each phase has a dependency, scoped tasks, acceptance criteria, QA evidence, and PM acceptance before the next full-redesign phase is treated as done.
+
+| Phase | Status | Scope | Gate |
+|---|---|---|---|
+| W2a | Accepted `b5f67fb` | Shell foundation, mobile nav baseline, Today redesign | Accepted as foundation only |
+| W2b | Planned next | Review Queue redesign and shared task drawer foundation | Review workflows + desktop/mobile visual QA |
+| W2c | Planned | Tasks inbox and cross-board rows | Search/filter/group/export + visual QA |
+| W2d | Planned | Boards monitor and team board views | Board/team modes + metadata health QA |
+| W2e | Planned | Calendar and Planner redesign | Calendar/Planner source distinction + mobile QA |
+| W2f | Planned | Settings, OKR, and Weekly Focus polish | All production routes visually aligned |
+
+W2 Full UI Redesign is not complete until W2f passes QA and PM acceptance.
 
 ---
 
