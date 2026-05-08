@@ -7,18 +7,38 @@ const express = require("express");
 function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cacheSet, cacheInvalidate, friendlyError, autoSyncToGCal, autoDeleteFromGCal, readConfig }) {
   const router = express.Router();
 
+  function trelloErrorStatus(e) {
+    const msg = String(e?.message || e || "").toLowerCase();
+    if (msg.includes("429") || msg.includes("rate limit") || msg.includes("too many requests")) return 429;
+    if (msg.includes("401") || msg.includes("unauthorized") || msg.includes("invalid key") || msg.includes("invalid token")) return 401;
+    return 500;
+  }
+
+  function sendTrelloError(res, e) {
+    const status = trelloErrorStatus(e);
+    if (status === 429) res.set("Retry-After", "60");
+    res.status(status).json({ error: friendlyError(e) });
+  }
+
   // ── Workspaces ────────────────────────────────────────────────────────────────
 
   router.get("/workspaces", async (req, res) => {
-    try { res.json(await trello.getWorkspaces()); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    try {
+      const hit = cacheGet("workspaces");
+      if (hit) return res.json(hit);
+      const workspaces = await trello.getWorkspaces();
+      cacheSet("workspaces", workspaces, 300_000);
+      res.json(workspaces);
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   // ── Boards ────────────────────────────────────────────────────────────────────
 
   router.get("/boards", async (req, res) => {
     try {
-      const boards = await trello.getBoards();
+      const hit = cacheGet("boards");
+      const boards = hit || await trello.getBoards();
+      if (!hit) cacheSet("boards", boards, 300_000);
       const config = readConfig();
       // If allowedWorkspaceIds is set, filter boards by workspace
       if (config.allowedWorkspaceIds && config.allowedWorkspaceIds.length > 0) {
@@ -27,19 +47,19 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
         ));
       }
       res.json(boards);
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   // ── Lists ─────────────────────────────────────────────────────────────────────
 
   router.get("/boards/:id/lists", async (req, res) => {
     try { res.json(await trello.getLists(req.params.id)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.post("/boards/:id/lists", async (req, res) => {
     try { res.json(await trello.createList(req.params.id, req.body.name)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   // P7-4: Board convention health check
@@ -65,14 +85,14 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       const result = { ok: missing.length === 0, missing };
       cacheSet(hKey, result, 5 * 60_000); // 5 min TTL (lists rarely change)
       res.json(result);
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   // ── Cards ─────────────────────────────────────────────────────────────────────
 
   router.get("/lists/:id/cards", async (req, res) => {
     try { res.json(await trello.getCards(req.params.id)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.get("/boards/:id/cards", async (req, res) => {
@@ -89,7 +109,7 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
         listName: listMap[card.idList] || "Unknown",
         boardId,
       })));
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   router.post("/cards", async (req, res) => {
@@ -99,7 +119,7 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       cacheInvalidate("all-cards");
       res.json(card);
       if (syncCalendar) autoSyncToGCal(card.id, { name, desc, due, start });
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   router.put("/cards/:id", async (req, res) => {
@@ -118,7 +138,7 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
           start: syncStart,
         });
       }
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   router.put("/cards/:id/move", async (req, res) => {
@@ -127,7 +147,7 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       cacheInvalidate("all-cards");
       res.json(card);
     }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.delete("/cards/:id", async (req, res) => {
@@ -136,7 +156,7 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       cacheInvalidate("all-cards");
       res.json({ ok: true });
       await autoDeleteFromGCal(req.params.id);
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   // ── All cards across all boards ───────────────────────────────────────────────
@@ -165,11 +185,13 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
 
       cacheSet("all-cards", result, 300_000); // 5 min TTL
       res.json(result);
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   router.post("/cache/clear", (req, res) => {
     cacheInvalidate("all-cards");
+    cacheInvalidate("boards");
+    cacheInvalidate("workspaces");
     res.json({ ok: true });
   });
 
@@ -201,68 +223,68 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
       }));
       cacheSet(cacheKey, result, 300_000); // 5 min TTL
       res.json(result);
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) { sendTrelloError(res, e); }
   });
 
   // ── Checklists ────────────────────────────────────────────────────────────────
 
   router.get("/cards/:id/checklists", async (req, res) => {
     try { res.json(await trello.getCardChecklists(req.params.id)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.post("/cards/:id/checklists", async (req, res) => {
     try { res.json(await trello.addChecklist(req.params.id, req.body.name)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.post("/checklists/:id/checkitems", async (req, res) => {
     try { res.json(await trello.addCheckItem(req.params.id, req.body.name)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.put("/cards/:cardId/checklists/:clId/checkitems/:itemId", async (req, res) => {
     try { res.json(await trello.updateCheckItem(req.params.cardId, req.params.clId, req.params.itemId, req.body.state)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.delete("/checklists/:id/checkitems/:itemId", async (req, res) => {
     try { await trello.deleteCheckItem(req.params.id, req.params.itemId); res.json({ ok: true }); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.delete("/checklists/:id", async (req, res) => {
     try { await trello.deleteChecklist(req.params.id); res.json({ ok: true }); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   // ── Labels ────────────────────────────────────────────────────────────────────
 
   router.get("/boards/:id/labels", async (req, res) => {
     try { res.json(await trello.getLabels(req.params.id)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.get("/boards/:id/members", async (req, res) => {
     try { res.json(await trello.getBoardMembers(req.params.id)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.get("/boards/:id/customFields", async (req, res) => {
     try { res.json(await trello.getBoardCustomFields(req.params.id)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   // ── Comments ──────────────────────────────────────────────────────────────────
 
   router.get("/cards/:id/comments", async (req, res) => {
     try { res.json(await trello.getComments(req.params.id)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   router.post("/cards/:id/comments", async (req, res) => {
     try { res.json(await trello.addComment(req.params.id, req.body.text)); }
-    catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    catch (e) { sendTrelloError(res, e); }
   });
 
   return router;
