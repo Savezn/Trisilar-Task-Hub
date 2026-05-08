@@ -175,6 +175,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 - During parallel W1/W2/W3 work, only PM updates `CURRENT_SPRINT.md`; Dev/QA agents keep updates in their owned workstream docs/branches.
 - Durable W1/W2/W3 prompts live in `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` and must not be overwritten by a single workstream update.
 - W1/W2/W3 must use separate feature branches: `feature/w1-company-access-deployment`, `feature/w2-ui-redesign`, and `feature/w3-paperclip-integration`.
+- W1/W2/W3 must run in separate Git worktree folders; do not run parallel agents in the same `trisilar-task-hub` working directory.
 
 ---
 
@@ -222,3 +223,4 @@ Rules:
 | 2026-05-08 | Created V0.2 workstream plan after V0.1 Release Acceptance | Codex PM |
 | 2026-05-08 | Standardized plan document format with V0.1 archive plan | Codex PM |
 | 2026-05-08 | Added PM-owned Current Sprint rule for parallel workstreams | Codex PM |
+| 2026-05-08 | Added per-workstream Git worktree requirement | Codex PM |

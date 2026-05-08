@@ -64,10 +64,19 @@ Required branches:
 - W2: `feature/w2-ui-redesign`
 - W3: `feature/w3-paperclip-integration`
 
+Required worktrees:
+
+- PM / Integration: `trisilar-task-hub` on `dev`
+- W1: `trisilar-task-hub-w1-company-access` on `feature/w1-company-access-deployment`
+- W2: `trisilar-task-hub-w2-ui-redesign` on `feature/w2-ui-redesign`
+- W3: `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`
+
 Parallel rule:
 
 - W1/W2/W3 Dev agents must not edit `CURRENT_SPRINT.md` directly.
 - W1/W2/W3 Dev agents must not share one feature branch.
+- W1/W2/W3 Dev agents must not run in the same working directory.
+- Before editing, each agent must run `git status --short --branch` and confirm the folder/branch match the assigned workstream.
 - QA agents report evidence in the workstream handoff/doc, not `CURRENT_SPRINT.md`.
 - PM is the only role that updates `CURRENT_SPRINT.md` after QA/decision checkpoints.
 - If a Dev/QA task needs a status change, leave a PM handoff note instead of editing the sprint snapshot.

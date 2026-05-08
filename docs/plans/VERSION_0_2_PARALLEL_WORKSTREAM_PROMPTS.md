@@ -40,6 +40,25 @@ Do not replace this registry with a single workstream's next action. Update one 
 
 All three branches start from latest `dev`. Do not run multiple workstreams in one feature branch. PM/integration merges finished workstream branches into `dev`.
 
+## Worktree Ownership
+
+Parallel agents must use separate Git worktree folders. Do not run W1/W2/W3 in the same `trisilar-task-hub` working directory.
+
+| Workstream | Worktree folder | Branch |
+|---|---|---|
+| PM / Integration | `trisilar-task-hub` | `dev` |
+| W1 | `trisilar-task-hub-w1-company-access` | `feature/w1-company-access-deployment` |
+| W2 | `trisilar-task-hub-w2-ui-redesign` | `feature/w2-ui-redesign` |
+| W3 | `trisilar-task-hub-w3-paperclip` | `feature/w3-paperclip-integration` |
+
+Agent start check:
+
+```powershell
+git status --short --branch
+```
+
+If the branch/folder does not match the prompt, stop before editing and move to the correct worktree.
+
 ---
 
 ## Prompt A - W1 Company Access + Deployment
@@ -49,7 +68,7 @@ Role: Dev
 Task: V0.2 W1 - Company Access + Deployment Plan
 
 Context:
-V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Start W1 from `dev`.
+V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w1-company-access` on `feature/w1-company-access-deployment`.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -66,6 +85,7 @@ Goals:
 
 Rules:
 - Start from `dev`.
+- Work only in the W1 worktree folder on `feature/w1-company-access-deployment`.
 - Do not implement W2 UI redesign or W3 Paperclip integration.
 - Do not commit secrets.
 - Preserve existing app behavior unless explicitly required.
@@ -81,7 +101,7 @@ Role: Dev
 Task: V0.2 W2 - Full UI Redesign Discovery and Implementation Plan
 
 Context:
-V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Create or switch to `feature/w2-ui-redesign` from latest `dev` before starting W2.
+V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w2-ui-redesign` on `feature/w2-ui-redesign`.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -99,7 +119,7 @@ Goals:
 
 Rules:
 - Start from `dev`.
-- Work only on `feature/w2-ui-redesign`.
+- Work only in the W2 worktree folder on `feature/w2-ui-redesign`.
 - Do not implement W1 deployment/access or W3 Paperclip integration.
 - Preserve core workflows.
 - Include desktop/mobile visual QA expectations.
@@ -115,7 +135,7 @@ Role: Dev
 Task: V0.2 W3 - Paperclip Multi-Agent Integration Discovery and Contract Plan
 
 Context:
-V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Create or switch to `feature/w3-paperclip-integration` from latest `dev` before starting W3.
+V0.2 W0 Branch / Environment / CI Setup passed QA at commit `9dbb47b`. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -132,7 +152,7 @@ Goals:
 
 Rules:
 - Start from `dev`.
-- Work only on `feature/w3-paperclip-integration`.
+- Work only in the W3 worktree folder on `feature/w3-paperclip-integration`.
 - Do not implement W1 deployment/access or W2 UI redesign.
 - Do not add live external calls before contract/mock verification.
 - Preserve existing app behavior.
@@ -146,3 +166,4 @@ Rules:
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-08 | Created durable W1/W2/W3 prompt registry and PM-owned Current Sprint rule | Codex PM |
+| 2026-05-08 | Added per-workstream Git worktree requirement | Codex PM |
