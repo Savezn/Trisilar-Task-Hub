@@ -13,8 +13,13 @@ Trisilar Task Hub is a local-first team command center for Trello, Google Calend
 
 ```powershell
 npm.cmd install
-npm.cmd run check:all
 node server.js
+```
+
+In a separate terminal, run:
+
+```powershell
+npm.cmd run check:all
 ```
 
 Open the app at `http://localhost:3000`.
@@ -33,6 +38,7 @@ Open the app at `http://localhost:3000`.
 | `GEMINI.md` | Gemini-specific project workflow rules |
 | `docs/README.md` | Reference, archive, and design artifact index |
 | `docs/plans/VERSION_0_2_PLAN.md` | Main V0.2 branch/workstream plan |
+| `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
 | `docs/logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
 | `docs/logs/DECISION_LOG.md` | PM decisions and phase context |
 

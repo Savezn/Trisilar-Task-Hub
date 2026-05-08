@@ -7,7 +7,7 @@
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely by establishing branch/environment workflow before company access, UI redesign, and Paperclip integration work.
 
 ---
@@ -18,6 +18,7 @@
 - Start each session from `../../CURRENT_SPRINT.md`; read this file when the task is part of W0/W1/W2/W3.
 - Update this file when PM changes V0.2 workstream scope, sequencing, or branch/environment rules.
 - Keep detailed QA history in `../logs/QA_LOG.md`, not in this plan.
+- Use `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md` for branch, environment, PR, and verification rules.
 
 ---
 
