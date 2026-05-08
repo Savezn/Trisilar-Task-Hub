@@ -19,6 +19,7 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | 2026-05-08 | Preserve reserved root filenames and standardize other docs | Agent tooling expects `CODEX.md`, `CLAUDE.md`, `GEMINI.md`, and root operating docs | Codex PM |
 | 2026-05-08 | Split logs/plans out of `CURRENT_SPRINT.md` | Reduces agent context cost and keeps current state readable | Codex PM |
 | 2026-05-08 | Plan V0.2 as parallel workstreams gated by W0 branch/environment setup | Lets agents work in parallel without colliding on integration/release flow | Codex PM |
+| 2026-05-08 | Accept V0.2 W3 Paperclip mock integration at `1d1f638` | QA passed contract/mock verification and confirmed no live Paperclip call or pre-approval Trello/Calendar side effect; local Trello 401 was environment-only | Codex PM |
 
 ---
 

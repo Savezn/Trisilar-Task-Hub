@@ -1,7 +1,7 @@
 # Version 0.2 Workstream Plan - Trisilar Task Hub
 
 **Doc Role:** Active version plan
-**Status:** Draft - W0 is next
+**Status:** Active - W2/W3 accepted, integration routing next
 **Version:** V0.2
 **Planning Stage:** Pre-workstream setup
 **Owner:** PM
@@ -87,10 +87,10 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
-| W0 | Branch / Environment / CI Setup | Dev / PM | Next | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev | Pending W0 | Internal access, deployment target, env/secrets, teammate onboarding |
-| W2 | Full UI Redesign | Frontend Dev | Pending W0 | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | Pending W0 | Contract-first API/webhook bridge, mock adapter, real connector, attribution sync |
+| W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
+| W1 | Company Access + Deployment | Platform Dev | Next | Internal access, deployment target, env/secrets, teammate onboarding |
+| W2 | Full UI Redesign | Frontend Dev | Done `b5f67fb` / QA Pass / PM Accepted | Design system, shell/nav, page-by-page redesign, responsive QA |
+| W3 | Paperclip Multi-Agent Integration | Integration Dev | Done `1d1f638` / QA Pass / PM Accepted | Contract-first mock adapter, attribution/audit sync; live connector remains future work |
 
 ---
 
@@ -100,7 +100,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P0
 **Owner Role:** Dev / PM
-**Status:** Next
+**Status:** Done `9dbb47b` / QA Pass
 
 **Why:**
 - Parallel agent work needs a stable integration branch.
@@ -140,7 +140,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P1 after W0
 **Owner Role:** Frontend Dev
-**Status:** Pending W0
+**Status:** Done `b5f67fb` / QA Pass / PM Accepted
 
 **Scope:**
 - Design system.
@@ -153,7 +153,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 
 **Priority:** P1 after W0
 **Owner Role:** Integration Dev
-**Status:** Pending W0
+**Status:** Done `1d1f638` / QA Pass / PM Accepted
 
 **Scope:**
 - Integration contract.
@@ -222,3 +222,4 @@ Rules:
 | 2026-05-08 | Created V0.2 workstream plan after V0.1 Release Acceptance | Codex PM |
 | 2026-05-08 | Standardized plan document format with V0.1 archive plan | Codex PM |
 | 2026-05-08 | Added PM-owned Current Sprint rule for parallel workstreams | Codex PM |
+| 2026-05-08 | Accepted W3 Paperclip mock integration after QA pass at `1d1f638` | Codex PM |
