@@ -34,6 +34,8 @@ function syncPagePath(page, { replace = false } = {}) {
 
 function navigateTo(page, options = {}) {
   try {
+    if (typeof closeMobileNav === "function") closeMobileNav();
+
     if (PAGE_PATHS[page] && options.updateUrl !== false) {
       syncPagePath(page, { replace: Boolean(options.replace) });
     }

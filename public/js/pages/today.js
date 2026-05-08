@@ -1,4 +1,5 @@
-// ── Today Page ────────────────────────────────────────────────────────────────
+// Today Page
+// Implemented by Codex Dev: W2 shell-compatible Today redesign.
 async function showTodayPage() {
   S.mode = "today";
   S.currentBoardId = null;
@@ -20,7 +21,6 @@ async function showTodayPage() {
     const todayStart    = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const tomorrowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
 
-    // P5-1 + P5-2: fetch sessions and calendar events in parallel
     const [sessions, calEvents] = await Promise.all([
       api.get("/api/reviews").catch(() => []),
       CAL.status?.connected
@@ -31,33 +31,55 @@ async function showTodayPage() {
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
     renderTodayPage(getAllowedCards(), dateStr, sessions, calEvents);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
+    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Error: ${esc(e.message)}</p></div>`;
   }
+}
+
+function relativeDue(isoString) {
+  if (!isoString) return "No due date";
+  const due = new Date(isoString);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate());
+  const days = Math.round((dueDay - today) / 86400000);
+  const time = due.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+
+  if (days === 0) return `Today ${time}`;
+  if (days === 1) return `Tomorrow ${time}`;
+  if (days === -1) return `Yesterday ${time}`;
+  if (days < 0) return `${Math.abs(days)}d overdue`;
+  if (days <= 7) return `In ${days}d ${time}`;
+  return formatThaiDateTime(isoString);
 }
 
 function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
   const content = $("board-content");
   const now = new Date();
   const todayStr = now.toDateString();
-
   const cards = allCards;
+  const byDue = (a, b) => new Date(a.due || 0) - new Date(b.due || 0);
 
-  const overdue   = cards.filter(c => c.due && new Date(c.due) < now && !c.dueComplete);
-  const dueToday  = cards.filter(c => c.due && !c.dueComplete && new Date(c.due).toDateString() === todayStr && new Date(c.due) >= now);
-  const upcoming  = cards.filter(c => {
-    if (!c.due || c.dueComplete) return false;
-    const d = new Date(c.due);
-    const diff = d - now;
-    return d.toDateString() !== todayStr && diff > 0 && diff < 7 * 86400000;
-  });
+  const overdue = cards
+    .filter(c => c.due && new Date(c.due) < now && !c.dueComplete)
+    .sort(byDue);
+  const dueToday = cards
+    .filter(c => c.due && !c.dueComplete && new Date(c.due).toDateString() === todayStr && new Date(c.due) >= now)
+    .sort(byDue);
+  const upcoming = cards
+    .filter(c => {
+      if (!c.due || c.dueComplete) return false;
+      const d = new Date(c.due);
+      const diff = d - now;
+      return d.toDateString() !== todayStr && diff > 0 && diff < 7 * 86400000;
+    })
+    .sort(byDue);
 
-  // P5-1: compute pending review tasks from live sessions
   const pendingTasks = (sessions || []).flatMap(s =>
     (s.tasks || []).filter(t => t.status === "pending").map(t => ({ ...t, _sessionId: s.id, _sessionTitle: s.title }))
   );
   const pendingCount = pendingTasks.length;
+  const activeReviewSessions = (sessions || []).filter(s => (s.tasks || []).some(t => t.status === "pending")).length;
 
-  // Group upcoming by date
   const upcomingByDate = {};
   upcoming.forEach(c => {
     const key = new Date(c.due).toDateString();
@@ -65,40 +87,85 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
     upcomingByDate[key].push(c);
   });
 
+  const totalAttention = overdue.length + dueToday.length + pendingCount;
+  const activeBoards = new Set([...overdue, ...dueToday].map(c => c.boardId || c.boardName).filter(Boolean)).size;
+  const hero = dueToday[0] || overdue[0] || upcoming[0] || null;
+
   const page = document.createElement("div");
   page.className = "today-page";
+  page.innerHTML = `
+    <div class="today-command-header">
+      <div>
+        <div class="today-kicker">${esc(dateStr)}</div>
+        <div class="today-title">Daily command center</div>
+        <div class="today-subtitle">${totalAttention} items need attention: ${overdue.length} overdue, ${dueToday.length} due today, ${pendingCount} pending review.</div>
+      </div>
+      <div class="today-header-actions">
+        <button class="btn btn-primary btn-sm" type="button" data-today-action="focus-quick-add">${typeof icon === "function" ? icon("plus") : ""}Quick add</button>
+      </div>
+    </div>
+  `;
 
-  // ── Stats summary row ──────────────────────────────────────────────
   const statsRow = document.createElement("div");
   statsRow.className = "today-stats-row";
   statsRow.innerHTML = `
     <div class="today-stat-card stat-overdue">
+      <div class="today-stat-head"><span class="today-stat-icon">${typeof icon === "function" ? icon("alert") : ""}</span>Overdue</div>
       <div class="today-stat-num">${overdue.length}</div>
-      <div class="today-stat-label">Overdue</div>
+      <div class="today-stat-label">${overdue.length ? "Oldest " + relativeDue(overdue[0].due) : "All caught up"}</div>
     </div>
     <div class="today-stat-card stat-today">
+      <div class="today-stat-head"><span class="today-stat-icon">${typeof icon === "function" ? icon("today") : ""}</span>Due Today</div>
       <div class="today-stat-num">${dueToday.length}</div>
-      <div class="today-stat-label">Due Today</div>
+      <div class="today-stat-label">${dueToday.length ? "Across " + activeBoards + " boards" : "Open day"}</div>
     </div>
     <div class="today-stat-card stat-upcoming">
+      <div class="today-stat-head"><span class="today-stat-icon">${typeof icon === "function" ? icon("clock") : ""}</span>Next 7 Days</div>
       <div class="today-stat-num">${upcoming.length}</div>
-      <div class="today-stat-label">Upcoming</div>
+      <div class="today-stat-label">Plan ahead without losing today</div>
     </div>
-    <div class="today-stat-card stat-review" style="cursor:pointer" onclick="navigateTo('review')" title="Go to Review Queue">
+    <button class="today-stat-card stat-review" type="button" data-today-action="review" title="Go to Review Queue">
+      <div class="today-stat-head"><span class="today-stat-icon">${typeof icon === "function" ? icon("sparkles") : ""}</span>Pending Review</div>
       <div class="today-stat-num">${pendingCount}</div>
-      <div class="today-stat-label">Pending Review</div>
-    </div>
+      <div class="today-stat-label">From ${activeReviewSessions} meeting${activeReviewSessions === 1 ? "" : "s"}</div>
+    </button>
   `;
   page.appendChild(statsRow);
 
-  // ── Section builder ────────────────────────────────────────────────
-  function buildSection(title, sectionClass, chipClass, chipLabel, taskList, emptyMsg) {
+  if (hero) {
+    const isHeroOverdue = overdue.some(c => c.id === hero.id);
+    const focus = document.createElement("div");
+    focus.className = "today-focus-card";
+    focus.innerHTML = `
+      <div class="today-focus-eyebrow">${typeof icon === "function" ? icon(isHeroOverdue ? "alert" : "target") : ""}${isHeroOverdue ? "Most overdue" : "Next up"} · ${esc(hero.boardName || "Trello")}</div>
+      <div class="today-focus-time">${esc(relativeDue(hero.due))}</div>
+      <div class="today-focus-title">${esc(hero.name)}</div>
+      <div class="today-focus-meta">
+        <span>${esc(hero.listName || "No list")}</span>
+        ${hero.dueComplete ? "<span>Done</span>" : ""}
+      </div>
+      <div class="today-focus-actions">
+        <button class="btn btn-primary btn-sm" type="button" data-today-card-open="${esc(hero.id)}">Open task</button>
+        <button class="btn btn-ghost btn-sm" type="button" data-today-card-done="${esc(hero.id)}">${typeof icon === "function" ? icon("check") : ""}Mark done</button>
+      </div>
+    `;
+    page.appendChild(focus);
+  }
+
+  const grid = document.createElement("div");
+  grid.className = "today-grid";
+  const left = document.createElement("div");
+  left.className = "today-left";
+  const right = document.createElement("div");
+  right.className = "today-right";
+
+  function buildSection(title, iconName, sectionClass, chipClass, chipLabel, taskList, emptyMsg) {
     const sec = document.createElement("div");
     sec.className = `today-section ${sectionClass}`;
     const header = document.createElement("div");
     header.className = "today-section-header";
     header.innerHTML = `
-      <span class="today-section-title">${title}</span>
+      <span class="today-section-title">${typeof icon === "function" ? icon(iconName) : ""}${title}</span>
       <span class="today-section-count">${taskList.length}</span>
     `;
     sec.appendChild(header);
@@ -113,28 +180,23 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
     return sec;
   }
 
-  page.appendChild(buildSection(
-    "⚠ Overdue", "section-overdue", "chip-overdue", "Overdue",
-    overdue, "No overdue tasks — great work!"
-  ));
-  page.appendChild(buildSection(
-    "◷ Due Today", "section-today", "chip-today", "Today",
-    dueToday, "Nothing due today yet"
-  ));
+  if (overdue.length) {
+    left.appendChild(buildSection("Overdue", "alert", "section-overdue", "chip-overdue", "Overdue", overdue, "No overdue tasks."));
+  }
+  left.appendChild(buildSection("Due Today", "today", "section-today", "chip-today", "Today", dueToday, "Nothing due today yet."));
 
-  // Upcoming (grouped by date)
   const upcomingSec = document.createElement("div");
   upcomingSec.className = "today-section section-upcoming";
   upcomingSec.innerHTML = `
     <div class="today-section-header">
-      <span class="today-section-title">Upcoming — next 7 days</span>
+      <span class="today-section-title">${typeof icon === "function" ? icon("clock") : ""}Upcoming · next 7 days</span>
       <span class="today-section-count">${upcoming.length}</span>
     </div>
   `;
   if (!upcoming.length) {
     const empty = document.createElement("div");
     empty.className = "today-section-empty";
-    empty.textContent = "No upcoming tasks in the next 7 days";
+    empty.textContent = "No upcoming tasks in the next 7 days.";
     upcomingSec.appendChild(empty);
   } else {
     Object.entries(upcomingByDate)
@@ -147,99 +209,140 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
         dateCards.forEach(card => upcomingSec.appendChild(buildTodayRow(card, "chip-upcoming", "Upcoming")));
       });
   }
-  page.appendChild(upcomingSec);
+  left.appendChild(upcomingSec);
 
-  // P5-1: Pending Review — live data from sessions
-  const reviewSec = document.createElement("div");
-  reviewSec.className = "today-section section-review";
-  reviewSec.innerHTML = `
-    <div class="today-section-header">
-      <span class="today-section-title">⬡ Pending Review — AI Meeting Tasks</span>
-      <span class="today-section-count">${pendingCount}</span>
-    </div>
-  `;
-  if (!pendingCount) {
-    const empty = document.createElement("div");
-    empty.className = "today-section-empty";
-    empty.textContent = "No meeting tasks waiting for review";
-    reviewSec.appendChild(empty);
-  } else {
-    const diffLabels  = { create_new: "New", update_existing: "Update", possible_duplicate: "Duplicate" };
-    const diffClasses = { create_new: "chip-done", update_existing: "chip-update", possible_duplicate: "chip-duplicate" };
-    pendingTasks.forEach(task => {
-      const row = document.createElement("div");
-      row.className = "today-task-row";
-      const diffStatus = task.diffStatus || "create_new";
-      row.innerHTML = `
-        <span class="chip ${diffClasses[diffStatus] || "chip-review"}" style="flex-shrink:0;font-size:10px">${diffLabels[diffStatus] || diffStatus}</span>
-        <span class="today-task-name">${esc(task.title)}</span>
-        <span class="today-task-board">${esc(task._sessionTitle || "")}</span>
-        <span class="today-task-due" style="color:var(--purple)">Review →</span>
-      `;
-      row.addEventListener("click", () => {
-        S.reviewExpanded.add(task._sessionId);
-        navigateTo("review");
-      });
-      reviewSec.appendChild(row);
-    });
-  }
-  page.appendChild(reviewSec);
-
-  // P5-2: Today's Calendar — only if GCal connected and events exist
-  if (calEvents && calEvents.length > 0) {
-    const calSec = document.createElement("div");
-    calSec.className = "today-section section-calendar";
-    calSec.innerHTML = `
-      <div class="today-section-header">
-        <span class="today-section-title">📅 Today's Calendar</span>
-        <span class="today-section-count">${calEvents.length}</span>
+  if (pendingCount) {
+    const firstSession = (sessions || []).find(s => (s.tasks || []).some(t => t.status === "pending"));
+    const reviewCard = document.createElement("div");
+    reviewCard.className = "today-review-card";
+    reviewCard.innerHTML = `
+      <div class="today-focus-eyebrow" style="color:var(--purple)">${typeof icon === "function" ? icon("sparkles") : ""}AI Review · ${pendingCount} task${pendingCount === 1 ? "" : "s"}</div>
+      <div class="today-review-card-title">${esc(firstSession?.title || "Meeting tasks waiting for review")}</div>
+      <div class="today-review-card-meta">
+        <span>${activeReviewSessions} active session${activeReviewSessions === 1 ? "" : "s"}</span>
+        <button class="btn btn-primary btn-sm" type="button" data-today-action="review">Review</button>
       </div>
     `;
-    calEvents.forEach(evt => {
-      const fmt = dt => new Date(dt).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
-      const timeStr = evt.start?.dateTime
-        ? `${fmt(evt.start.dateTime)} – ${fmt(evt.end?.dateTime || evt.start.dateTime)}`
-        : "All day";
-      const row = document.createElement("div");
-      row.className = "today-task-row";
-      row.innerHTML = `
-        <span class="today-cal-time">${esc(timeStr)}</span>
-        <span class="today-task-name">${esc(evt.summary || "(no title)")}</span>
-        <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();navigateTo('calendar')" title="Open Calendar">Open ↗</button>
-      `;
-      calSec.appendChild(row);
-    });
-    page.appendChild(calSec);
+    right.appendChild(reviewCard);
   }
 
-  // P5-3: Quick-add bar with inline board/list selector
-  const quickAdd = document.createElement("div");
-  quickAdd.className = "today-quick-add";
-  quickAdd.innerHTML = `
-    <div class="today-qa-input-row">
-      <input type="text" placeholder="+ Add a task for today..." id="today-quick-input"
-        onkeydown="if(event.key==='Enter')showTodayQuickSelector()">
-      <button class="btn btn-primary btn-sm" onclick="showTodayQuickSelector()">Add</button>
-    </div>
-    <div id="today-qa-selector" class="today-qa-selector hidden">
-      <select id="today-qa-board" class="today-qa-select" onchange="loadTodayQALists()">
-        <option value="">— Board —</option>
-        ${S.boards.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join("")}
-      </select>
-      <select id="today-qa-list" class="today-qa-select" disabled>
-        <option value="">— List —</option>
-      </select>
-      <button class="btn btn-primary btn-sm" onclick="confirmTodayQuickAdd(this)">✓ Add</button>
-      <button class="btn btn-ghost btn-sm" onclick="hideTodayQuickSelector()">✕</button>
-    </div>
-  `;
-  page.appendChild(quickAdd);
+  right.appendChild(buildQuickAddWidget());
+  right.appendChild(buildCalendarWidget(calEvents));
+
+  grid.appendChild(left);
+  grid.appendChild(right);
+  page.appendChild(grid);
 
   content.innerHTML = "";
   content.appendChild(page);
+  wireTodayActions(page, cards);
 }
 
-// P5-3 helpers ────────────────────────────────────────────────────────────────
+function buildQuickAddWidget() {
+  const quickAdd = document.createElement("div");
+  quickAdd.className = "today-widget";
+  quickAdd.innerHTML = `
+    <div class="today-widget-header">
+      <span class="today-widget-title">${typeof icon === "function" ? icon("plus") : ""}Quick add</span>
+    </div>
+    <div class="today-widget-body">
+      <div class="today-quick-add">
+        <div class="today-qa-input-row">
+          <input type="text" placeholder="+ Add a task for today..." id="today-quick-input"
+            onkeydown="if(event.key==='Enter')showTodayQuickSelector()">
+          <button class="btn btn-primary btn-sm" onclick="showTodayQuickSelector()">Add</button>
+        </div>
+        <div id="today-qa-selector" class="today-qa-selector hidden">
+          <select id="today-qa-board" class="today-qa-select" onchange="loadTodayQALists()">
+            <option value="">Board</option>
+            ${S.boards.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join("")}
+          </select>
+          <select id="today-qa-list" class="today-qa-select" disabled>
+            <option value="">List</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="confirmTodayQuickAdd(this)">${typeof icon === "function" ? icon("check") : ""}Add</button>
+          <button class="btn btn-ghost btn-sm" onclick="hideTodayQuickSelector()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  `;
+  return quickAdd;
+}
+
+function buildCalendarWidget(calEvents) {
+  const calWidget = document.createElement("div");
+  calWidget.className = "today-widget section-calendar";
+  const calCount = Array.isArray(calEvents) ? calEvents.length : 0;
+  calWidget.innerHTML = `
+    <div class="today-widget-header">
+      <span class="today-widget-title">${typeof icon === "function" ? icon("calendar") : ""}Today's Schedule</span>
+      <span class="today-section-count">${calEvents === null ? "Off" : calCount}</span>
+    </div>
+    <div class="today-widget-body"></div>
+  `;
+  const calBody = calWidget.querySelector(".today-widget-body");
+  if (calEvents === null) {
+    calBody.innerHTML = '<div class="today-section-empty">Google Calendar is not connected.</div>';
+  } else if (!calEvents.length) {
+    calBody.innerHTML = '<div class="today-section-empty">No calendar events today.</div>';
+  } else {
+    const list = document.createElement("div");
+    list.className = "today-calendar-list";
+    calEvents.forEach(evt => {
+      const fmt = dt => new Date(dt).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+      const timeStr = evt.start?.dateTime
+        ? `${fmt(evt.start.dateTime)} - ${fmt(evt.end?.dateTime || evt.start.dateTime)}`
+        : "All day";
+      const row = document.createElement("button");
+      row.type = "button";
+      row.className = "today-calendar-row";
+      row.innerHTML = `
+        <span class="today-cal-time">${esc(timeStr)}</span>
+        <span>
+          <span class="today-cal-title">${esc(evt.summary || "(no title)")}</span>
+          <span class="today-cal-source">Google Calendar</span>
+        </span>
+      `;
+      row.onclick = () => navigateTo("calendar");
+      list.appendChild(row);
+    });
+    calBody.appendChild(list);
+  }
+  return calWidget;
+}
+
+function wireTodayActions(page, cards) {
+  page.querySelectorAll("[data-today-action='review']").forEach(el => {
+    el.addEventListener("click", () => navigateTo("review"));
+  });
+  page.querySelector("[data-today-action='focus-quick-add']")?.addEventListener("click", () => {
+    $("today-quick-input")?.focus();
+  });
+  page.querySelectorAll("[data-today-card-open]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const card = cards.find(c => c.id === btn.dataset.todayCardOpen);
+      if (card) openEditAllTasks(card);
+    });
+  });
+  page.querySelectorAll("[data-today-card-done]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const card = cards.find(c => c.id === btn.dataset.todayCardDone);
+      if (!card) return;
+      btn.disabled = true;
+      try {
+        await api.put(`/api/cards/${card.id}`, { dueComplete: true });
+        S.allCardsCache = null;
+        toast("Marked as done ✓");
+        showTodayPage();
+      } catch (err) {
+        btn.disabled = false;
+        toast("Error: " + err.message, true);
+      }
+    });
+  });
+}
+
+// P5-3 helpers
 function showTodayQuickSelector() {
   const input = $("today-quick-input");
   if (!input || !input.value.trim()) return;
@@ -251,12 +354,16 @@ async function loadTodayQALists() {
   const listSel  = $("today-qa-list");
   if (!boardSel || !listSel) return;
   const boardId = boardSel.value;
-  if (!boardId) { listSel.disabled = true; return; }
-  listSel.innerHTML = '<option value="">Loading…</option>';
+  if (!boardId) {
+    listSel.disabled = true;
+    listSel.innerHTML = '<option value="">List</option>';
+    return;
+  }
+  listSel.innerHTML = '<option value="">Loading...</option>';
   listSel.disabled = true;
   try {
     const lists = await api.get(`/api/boards/${boardId}/lists`);
-    listSel.innerHTML = '<option value="">— List —</option>' +
+    listSel.innerHTML = '<option value="">List</option>' +
       lists.map(l => `<option value="${esc(l.id)}">${esc(l.name)}</option>`).join("");
     listSel.disabled = false;
   } catch (e) {
@@ -270,60 +377,65 @@ async function confirmTodayQuickAdd(btn) {
   if (!input || !listSel) return;
   const title  = input.value.trim();
   const listId = listSel.value;
-  if (!title)  return;
-  if (!listId) { toast("กรุณาเลือก List ก่อน", true); return; }
+  if (!title) return;
+  if (!listId) {
+    toast("Please choose a list first.", true);
+    return;
+  }
 
   btn.disabled = true;
-  btn.textContent = "…";
+  btn.textContent = "...";
   try {
     const due = new Date();
     due.setHours(23, 59, 0, 0);
     await api.post("/api/cards", { listId, name: title, due: due.toISOString() });
-    input.value = "";         // clear only after success
+    input.value = "";
     hideTodayQuickSelector();
     S.allCardsCache = null;
-    toast("เพิ่ม card แล้ว ✓");
+    toast("Card added ✓");
     await showTodayPage();
   } catch (e) {
     toast("Error: " + e.message, true);
     btn.disabled = false;
-    btn.textContent = "✓ Add";
+    btn.textContent = "Add";
   }
 }
 
 function hideTodayQuickSelector() {
   $("today-qa-selector")?.classList.add("hidden");
-  // input.value intentionally preserved — AC: dismiss keeps typed text
 }
 
 function buildTodayRow(card, chipClass, chipLabel) {
   const row = document.createElement("div");
   row.className = "today-task-row";
 
-  const dueText = card.due
-    ? formatThaiDateTime(card.due)
-    : "";
-
+  const dueText = card.due ? relativeDue(card.due) : "";
   const dueDateVal = card.due ? card.due.slice(0, 10) : "";
-  const isOverdue  = chipClass === "chip-overdue";
+  const isOverdue = chipClass === "chip-overdue";
 
   row.innerHTML = `
-    <span class="chip ${chipClass}" style="flex-shrink:0">${chipLabel}</span>
-    <span class="today-task-name">${esc(card.name)}</span>
-    <span class="today-task-board">${esc(card.boardName || "")}</span>
-    ${isOverdue
-      ? `<input type="date" class="today-date-picker" value="${dueDateVal}" title="Reschedule">`
-      : `<span class="today-task-due">${dueText}</span>`}
+    <div class="today-task-main">
+      <span class="chip ${chipClass}">${chipLabel}</span>
+      <span class="today-task-copy">
+        <span class="today-task-name">${esc(card.name)}</span>
+        <span class="today-task-meta-line">
+          <span class="today-task-board">${esc(card.boardName || "")}</span>
+          ${card.listName ? `<span>${esc(card.listName)}</span>` : ""}
+          ${isOverdue
+            ? `<input type="date" class="today-date-picker" value="${dueDateVal}" title="Reschedule">`
+            : `<span class="today-task-due">${esc(dueText)}</span>`}
+        </span>
+      </span>
+    </div>
     <div class="today-task-actions">
-      <button class="btn btn-success btn-xs" title="Mark done" data-action="done">✓</button>
-      <button class="btn btn-ghost btn-xs" title="Open card" data-action="open">↗</button>
+      <button class="btn btn-success btn-xs" type="button" title="Mark done" data-action="done">${typeof icon === "function" ? icon("check") : "Done"}</button>
+      <button class="btn btn-ghost btn-xs" type="button" title="Open card" data-action="open">${typeof icon === "function" ? icon("external") : "Open"}</button>
     </div>
   `;
 
-  // Inline date picker — reschedule overdue card
   const datePicker = row.querySelector(".today-date-picker");
   if (datePicker) {
-    datePicker.addEventListener("click",  e => e.stopPropagation());
+    datePicker.addEventListener("click", e => e.stopPropagation());
     datePicker.addEventListener("change", async e => {
       e.stopPropagation();
       const val = e.target.value;
@@ -339,13 +451,11 @@ function buildTodayRow(card, chipClass, chipLabel) {
     });
   }
 
-  // Click row → open card
   row.addEventListener("click", e => {
     if (e.target.closest(".today-task-actions") || e.target.closest(".today-date-picker")) return;
     openEditAllTasks(card);
   });
 
-  // Action buttons
   row.querySelector('[data-action="open"]').addEventListener("click", e => {
     e.stopPropagation();
     openEditAllTasks(card);
