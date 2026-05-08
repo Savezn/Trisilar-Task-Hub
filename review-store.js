@@ -24,6 +24,16 @@ function write(sessions) {
   fs.writeFileSync(getStoreFile(), JSON.stringify(sessions, null, 2));
 }
 
+function auditEvent(type, fields = {}) {
+  return { type, actor: "system", at: new Date().toISOString(), ...fields };
+}
+
+function appendEvent(target, event) {
+  if (!event) return;
+  if (!Array.isArray(target.auditTrail)) target.auditTrail = [];
+  target.auditTrail.push(event);
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 function getAllSessions() {
@@ -99,7 +109,16 @@ function updateTask(sessionId, taskId, updates) {
   const task = session.tasks.find(t => t.id === taskId);
   if (!task) throw new Error("Task not found");
   if (task.status !== "pending") throw new Error("Cannot edit processed task");
-  EDITABLE_FIELDS.forEach(k => { if (k in updates) task[k] = updates[k]; });
+  const changedFields = [];
+  EDITABLE_FIELDS.forEach(k => {
+    if (k in updates) {
+      task[k] = updates[k];
+      changedFields.push(k);
+    }
+  });
+  if (changedFields.length > 0) {
+    appendEvent(task, auditEvent("task_field_updated", { fields: changedFields }));
+  }
   write(sessions);
   return task;
 }
@@ -112,6 +131,7 @@ function approveTask(sessionId, taskId) {
   if (!task) throw new Error("Task not found");
   if (task.status === "approved") throw new Error("Task already approved");
   task.status = "approved";
+  appendEvent(task, auditEvent("task_approved"));
   write(sessions);
   return task;
 }
@@ -124,6 +144,7 @@ function rejectTask(sessionId, taskId) {
   if (!task) throw new Error("Task not found");
   if (task.status !== "pending") throw new Error("Task already processed");
   task.status = "rejected";
+  appendEvent(task, auditEvent("task_rejected"));
   write(sessions);
   return task;
 }
@@ -135,6 +156,27 @@ function setTaskTrelloCardId(sessionId, taskId, trelloCardId) {
   const task = session.tasks.find(t => t.id === taskId);
   if (!task) throw new Error("Task not found");
   task.trelloCardId = trelloCardId;
+  appendEvent(task, auditEvent("trello_push_succeeded", { trelloCardId }));
+  write(sessions);
+  return task;
+}
+
+function appendSessionAuditEvent(sessionId, event) {
+  const sessions = read();
+  const session  = sessions.find(s => s.id === sessionId);
+  if (!session) throw new Error("Session not found");
+  appendEvent(session, event);
+  write(sessions);
+  return session;
+}
+
+function appendTaskAuditEvent(sessionId, taskId, event) {
+  const sessions = read();
+  const session  = sessions.find(s => s.id === sessionId);
+  if (!session) throw new Error("Session not found");
+  const task = session.tasks.find(t => t.id === taskId);
+  if (!task) throw new Error("Task not found");
+  appendEvent(task, event);
   write(sessions);
   return task;
 }
@@ -159,5 +201,7 @@ module.exports = {
   approveTask,
   rejectTask,
   setTaskTrelloCardId,
+  appendSessionAuditEvent,
+  appendTaskAuditEvent,
   dismissSession,
 };

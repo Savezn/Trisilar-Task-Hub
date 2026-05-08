@@ -86,6 +86,9 @@ async function main() {
     assert.strictEqual(created.json.tasks[0].externalTaskId, valid.tasks[0].externalTaskId);
     assert.strictEqual(created.json.tasks[0].createdByAgent.agentId, valid.agent.agentId);
     assert.strictEqual(created.json.tasks[0].status, "pending");
+    assert(created.json.auditTrail.some(event => event.type === "paperclip_payload_received"));
+    assert(created.json.auditTrail.some(event => event.type === "review_session_created"));
+    assert(created.json.tasks[0].auditTrail.some(event => event.type === "task_diff_resolved"));
     pass("valid mock payload creates persisted review session");
 
     const fetched = await fetch(`${baseUrl}/api/reviews/${created.json.id}`);

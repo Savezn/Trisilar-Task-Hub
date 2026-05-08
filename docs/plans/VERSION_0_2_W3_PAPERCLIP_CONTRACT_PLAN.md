@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** Draft for PM / QA review
+**Status:** Mock adapter implemented for QA review
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -221,7 +221,7 @@ The mock adapter must pass before live connector work begins.
 
 ### Fixtures
 
-Add fixtures in a later implementation pass:
+Current fixtures:
 
 - `valid-paperclip-review-session.json`
 - `duplicate-request-id.json`
@@ -247,15 +247,16 @@ Add fixtures in a later implementation pass:
 
 ### Required Commands
 
-Documentation-only W3 discovery can skip runtime checks. Once mock adapter code is added, W3 QA should run:
+W3 mock adapter QA should run:
 
 ```powershell
 node server.js
 npm.cmd run check:all
-node scripts/verify-paperclip-mock.js
+npm.cmd run verify:paperclip-contract
+npm.cmd run verify:paperclip-mock
 ```
 
-The future `verify-paperclip-mock.js` should:
+`verify-paperclip-mock.js` must:
 
 - Reset or isolate `review-sessions.json` test data.
 - Submit mock fixtures through HTTP, not store internals.
@@ -269,23 +270,23 @@ The future `verify-paperclip-mock.js` should:
 ## Implementation Sequence
 
 1. Contract data definitions
-   - Add a pure validator/normalizer for Paperclip payloads.
-   - Add fixture files and unit-level validation checks.
-   - No server route or external calls yet.
+   - Complete: pure validator/normalizer for Paperclip payloads.
+   - Complete: fixture files and unit-level validation checks.
+   - No live Paperclip external calls are introduced.
 
 2. Mock route
-   - Add `POST /api/integrations/paperclip/mock/review-session`.
-   - Route accepts only `source.environment=mock`.
-   - Route calls the normalizer and then the existing review session creation flow.
+   - Complete: `POST /api/integrations/paperclip/mock/review-session`.
+   - Complete: route accepts only `source.environment=mock`.
+   - Complete: route calls the normalizer and then the existing review session creation flow.
 
 3. Idempotency and audit store
-   - Extend review store with backward-compatible `requestId`, `agent`, `externalSource`, and `auditTrail`.
-   - Add idempotency lookup by `requestId`.
+   - Complete: review store supports backward-compatible `requestId`, `agent`, `externalSource`, and `auditTrail`.
+   - Complete: idempotency lookup by `requestId`.
 
 4. Mock verification script
-   - Add `scripts/verify-paperclip-mock.js`.
-   - Exercise mock route and persisted output.
-   - Confirm no live external connector work.
+   - Complete: `scripts/verify-paperclip-mock.js`.
+   - Complete: mock route and persisted output are exercised through HTTP.
+   - Complete: no live external Paperclip connector work is performed.
 
 5. QA handoff
    - Provide fixture names, command outputs, and changed files.
@@ -327,4 +328,5 @@ The future `verify-paperclip-mock.js` should:
 
 | Date | Change | Updated by |
 |---|---|---|
+| 2026-05-08 | Implemented mock adapter route, idempotency/audit persistence, and mock verification | Codex Dev |
 | 2026-05-08 | Created W3 Paperclip integration discovery and contract plan | Codex Dev |
