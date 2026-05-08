@@ -2,6 +2,7 @@
 
 **Doc Role:** Gemini-specific agent operating rules
 **Status:** Active
+**Universal Rules:** Read `.ai-instructions.md` first; this file contains Gemini-specific extensions only.
 **Last Updated:** 2026-05-08 · **Updated by:** Codex PM
 
 This file defines the foundational rules for the `trisilar-task-hub` project, aligning with `CLAUDE.md`.

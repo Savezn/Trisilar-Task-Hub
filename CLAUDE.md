@@ -2,6 +2,7 @@
 
 **Doc Role:** Claude-specific agent operating rules
 **Status:** Active
+**Universal Rules:** Read `.ai-instructions.md` first; this file contains Claude-specific extensions only.
 **Last Updated:** 2026-05-08 · **Updated by:** Codex PM
 
 ## 1. Role Isolation (1 Role per Session)

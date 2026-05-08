@@ -2,6 +2,7 @@
 
 **Doc Role:** Codex-specific agent operating rules
 **Status:** Active
+**Universal Rules:** Read `.ai-instructions.md` first; this file contains Codex-specific extensions only.
 **Last Updated:** 2026-05-08 · **Updated by:** Codex PM
 
 This file is the Codex-specific companion to `CLAUDE.md`. It preserves the

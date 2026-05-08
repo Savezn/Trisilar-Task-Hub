@@ -13,10 +13,12 @@ This folder contains logs, plans, references, archives, and design artifacts. Th
 | Folder | Purpose |
 |---|---|
 | `reference/` | Architecture analysis and durable technical references |
+| `adr/` | Architecture Decision Records and process decisions |
 | `archive/` | Historical plans retained for traceability |
 | `design/` | UI redesign prototypes, static HTML, and design handoff files |
 | `logs/` | QA logs, completed work archive, bug fixes, and PM decisions |
 | `plans/` | Active and future multi-session planning documents |
+| `testing/` | Test strategy, verification policy, and automated test-suite roadmap |
 
 ---
 
@@ -26,6 +28,9 @@ This folder contains logs, plans, references, archives, and design artifacts. Th
 |---|---|---|
 | Reserved root docs | Keep established filename | `CURRENT_SPRINT.md` |
 | Agent rules | Keep established filename | `CODEX.md` |
+| Universal AI rules | Keep established filename | `.ai-instructions.md` |
+| Roadmap index | Keep established filename | `TODO.md` |
+| ADRs | `ADR_0000_SHORT_TITLE.md` | `ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` |
 | Reference/archive markdown | `UPPER_SNAKE_CASE.md` | `VERSION_0_2_PLAN.md` |
 | Design folders/files | `lower-kebab-case` | `ui-design-v1-0/` |
 | Folder indexes | `README.md` | `docs/README.md` |
@@ -59,6 +64,9 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | File | Purpose |
 |---|---|
 | `../CURRENT_SPRINT.md` | Current snapshot, active tasks, routing, next action |
+| `../.ai-instructions.md` | Universal first-read AI/project rules |
+| `../CONTRIBUTING.md` | Contribution, branch, worktree, commit, PR, and verification workflow |
+| `../TODO.md` | High-level roadmap index |
 | `../DEVELOPMENT_PLAN.md` | Roadmap and completed phase tracker |
 | `../MVP_PRD.md` | MVP product requirements |
 | `../CODEX.md` | Codex agent rules |
@@ -72,8 +80,13 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | File | Purpose |
 |---|---|
 | `reference/ARCHITECTURE_ANALYSIS.md` | Architecture analysis and refactor rationale |
+| `reference/ARCHITECTURE.md` | Current technical architecture reference |
 | `reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
 | `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
+| `reference/PROJECT_CONTEXT.md` | Stable product context and operating model |
+| `testing/TEST_STRATEGY.md` | Verification policy and automated test-suite roadmap |
+| `adr/README.md` | ADR index and process |
+| `adr/ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` | Project conventions and AI workflow decision |
 | `archive/VERSION_0_1_PLAN.md` | Historical V0.1 modularization plan |
 | `design/ui-design-v1-0/` | UI redesign prototype artifact |
 | `logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
