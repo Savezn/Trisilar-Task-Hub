@@ -45,8 +45,11 @@ Project file guidance:
 | `public/app.js` | Large file. Search first; read small ranges only. |
 | `public/style.css` | Large file. Search first; read small ranges only. |
 | `server.js` | Small enough to read fully when useful. |
+| `CURRENT_SPRINT.md` | OK to read fully; short active-state file. |
+| `docs/plans/V0_2_WORKSTREAM_PLAN.md` | Read for V0.2 branch/workstream context. |
+| `docs/logs/QA_LOG.md` | Read only when historical QA/completed work evidence is needed. |
+| `docs/logs/DECISION_LOG.md` | Read only for PM decision history or phase context. |
 | `DEVELOPMENT_PLAN.md` | Avoid unless PM syncing phase history or tracker. |
-| `CURRENT_SPRINT.md` | OK to read fully. |
 | `review-store.js` | OK to read fully. |
 | `task-diff.js` | OK to read fully. |
 
@@ -132,7 +135,7 @@ Required rule:
   in project documentation, add an attribution such as `Agent: Codex`,
   `Implemented by: Codex`, `Reviewed by: Codex`, or `Updated by: Codex`.
 - Add attribution in every necessary tracking or handoff document, including
-  `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, QA logs, release notes, task
+  `CURRENT_SPRINT.md`, `docs/logs/QA_LOG.md`, `DEVELOPMENT_PLAN.md`, release notes, task
   briefs, next-action prompts, and any newly created project rule documents.
 - If a table already has an owner/agent column, fill that column. If not, add a
   short note in the relevant row or section.
@@ -188,9 +191,12 @@ Rules:
 ### PM
 
 1. Read current sprint context first.
-2. Update only the requested tracker/planning sections.
-3. Keep the next action self-contained.
-4. Do not make code changes.
+2. Keep `CURRENT_SPRINT.md` limited to current snapshot, active tasks, routing, and next action.
+3. Put QA history/completed work in `docs/logs/QA_LOG.md`.
+4. Put major PM decisions in `docs/logs/DECISION_LOG.md`.
+5. Update `DEVELOPMENT_PLAN.md` only for roadmap/phase tracker changes.
+6. Keep the next action self-contained.
+7. Do not make code changes.
 
 ## 8. Handoff Format
 

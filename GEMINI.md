@@ -11,7 +11,7 @@ This file defines the foundational rules for the `trisilar-task-hub` project, al
 - **Role Awareness:** Adhere to the role specified by the user ("คุณ Dev", "คุณ QA", "คุณ PM").
   - **Dev:** Write/edit code, verify, commit + push.
   - **QA:** Read code, report bugs per AC (Evidence + Conclude PASS/FAIL).
-  - **PM:** Update `CURRENT_SPRINT.md` (Completed, QA Log, Next Action) and `DEVELOPMENT_PLAN.md` (Progress tracker).
+  - **PM:** Update `CURRENT_SPRINT.md` (current snapshot / active tasks / Next Action), `docs/logs/QA_LOG.md` (QA/completed work history), and `DEVELOPMENT_PLAN.md` only when syncing the roadmap tracker.
 - **Confirmation:** If no role is explicitly stated, ask for clarification before proceeding.
 - **Agent Continuity:** Stay with the same AI agent when possible. Switch agents only when needed, such as rate limits, tool availability, or context limits. When switching agents, keep the same role unless the project state has changed.
 
@@ -35,6 +35,9 @@ Rules:
 - `public/app.js`: Max 80 lines.
 - `public/style.css`: Max 60 lines.
 - `server.js`, `CURRENT_SPRINT.md`, `review-store.js`, `task-diff.js`: Read in full (ok).
+- `docs/plans/V0_2_WORKSTREAM_PLAN.md`: Read for V0.2 branch/workstream context.
+- `docs/logs/QA_LOG.md`: Read only when QA/completed work history is needed.
+- `docs/logs/DECISION_LOG.md`: Read only for PM decision/phase context.
 - `DEVELOPMENT_PLAN.md`: Do not read unless PM syncing tracker.
 
 ## 3. Commit Convention
@@ -60,7 +63,7 @@ Required rule:
   in project documentation, add an attribution such as `Agent: Gemini`,
   `Implemented by: Gemini`, `Reviewed by: Gemini`, or `Updated by: Gemini`.
 - Add attribution in every necessary tracking or handoff document, including
-  `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, QA logs, release notes, task
+  `CURRENT_SPRINT.md`, `docs/logs/QA_LOG.md`, `DEVELOPMENT_PLAN.md`, release notes, task
   briefs, next-session prompts, and any newly created project rule documents.
 - If a table already has an owner/agent column, fill that column. If not, add a
   short note in the relevant row or section.
@@ -86,7 +89,7 @@ Every session MUST end with a "Next session" block in this exact format:
 - **Task-Centric:** Execute only what is explicitly requested. Do not add proactive fixes or extra defensive code.
 - **Consultative Risk Handling:** If a high-risk area or potential error is found, **notify the user first** instead of fixing it immediately.
 - **Efficient Research:** Skip deep dependency searches unless critical. Rely on iterative fixes for minor misses.
-- **Consolidated Documentation:** Update `CURRENT_SPRINT.md` and `DEVELOPMENT_PLAN.md` only at the end of a task or session.
+- **Consolidated Documentation:** Keep `CURRENT_SPRINT.md` short. Put QA/completed work history in `docs/logs/QA_LOG.md`; update `DEVELOPMENT_PLAN.md` only for roadmap tracker changes.
 - **Minimal Validation:** Run smoke tests once per task completion, not after every surgical edit.
 - **Direct Action:** Prefer `write_file` for complete updates over multiple complex `replace` calls.
 - **Language:** Stick to **CommonJS JavaScript**. No TypeScript unless requested.

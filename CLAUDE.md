@@ -12,7 +12,7 @@ Each session has exactly ONE role. Do not switch roles mid-session.
 |---|---|---|
 | **Dev** | Write/edit code, commit | Run QA, update plans |
 | **QA** | Read code, report bugs | Fix code, update plans |
-| **PM** | Update CURRENT_SPRINT.md | Write code, run tests |
+| **PM** | Update current/planning/log docs | Write code, run tests |
 
 **How to know your role:** The user's opening message will say "คุณ Dev", "คุณ QA", or "คุณ PM".  
 If no role is stated, ask before proceeding.
@@ -36,8 +36,11 @@ Step 3: Edit only the targeted section
 | `public/app.js` | ~2858 | 80 lines |
 | `public/style.css` | ~2159 | 60 lines |
 | `server.js` | ~603 | read in full (ok) |
-| `DEVELOPMENT_PLAN.md` | ~870 | **do not read** unless PM syncing tracker |
-| `CURRENT_SPRINT.md` | ~100 | read in full (ok) |
+| `CURRENT_SPRINT.md` | short | read in full (ok) |
+| `docs/plans/V0_2_WORKSTREAM_PLAN.md` | short | read for V0.2 workstream context |
+| `docs/logs/QA_LOG.md` | historical | read only when QA/completed work history is needed |
+| `docs/logs/DECISION_LOG.md` | historical | read only for PM decision/phase context |
+| `DEVELOPMENT_PLAN.md` | long | **do not read** unless PM syncing tracker |
 | `review-store.js` | ~143 | read in full (ok) |
 | `task-diff.js` | ~98 | read in full (ok) |
 
@@ -57,7 +60,8 @@ Grep("app\.(get|post|put|delete).*route", "server.js")
 
 ## 3. Planning Reference
 
-- **Active work:** read `CURRENT_SPRINT.md` (always ok, ~100 lines)
+- **Active work:** read `CURRENT_SPRINT.md` (always ok; kept short)
+- **V0.2 planning:** read `docs/plans/V0_2_WORKSTREAM_PLAN.md`
 - **Phase history / full AC:** read `DEVELOPMENT_PLAN.md` only when necessary
 - **PM only:** update `DEVELOPMENT_PLAN.md` progress tracker when a full Phase completes
 
@@ -100,7 +104,7 @@ Required rule:
   in project documentation, add an attribution such as `Agent: Claude`,
   `Implemented by: Claude`, `Reviewed by: Claude`, or `Updated by: Claude`.
 - Add attribution in every necessary tracking or handoff document, including
-  `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, QA logs, release notes, task
+  `CURRENT_SPRINT.md`, `docs/logs/QA_LOG.md`, `DEVELOPMENT_PLAN.md`, release notes, task
   briefs, next-session prompts, and any newly created project rule documents.
 - If a table already has an owner/agent column, fill that column. If not, add a
   short note in the relevant row or section.
@@ -161,11 +165,12 @@ Rules:
 
 ### PM session
 1. `mark_chapter` with task name
-2. Read CURRENT_SPRINT.md tail + Grep server.js for context **in parallel**
-3. Edit CURRENT_SPRINT.md — 3 fixed targets every session:
-   - Add row to "Completed This Sprint"
-   - Add row to QA Log
-   - Replace Next Action section with new Dev brief
+2. Read `CURRENT_SPRINT.md` plus the specific log/plan file needed for context
+3. Edit only the relevant PM documents:
+   - `CURRENT_SPRINT.md` for current snapshot, active tasks, routing, next action
+   - `docs/logs/QA_LOG.md` for QA/completed work history
+   - `docs/logs/DECISION_LOG.md` for major PM decisions
+   - `DEVELOPMENT_PLAN.md` only for roadmap/progress tracker changes
 4. Commit + push
 5. End with **Dev next-session prompt** (see §7)
 

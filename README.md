@@ -1,7 +1,7 @@
 # Trisilar Task Hub
 
 **Status:** V0.1 release acceptance passed
-**Primary docs:** `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, `MVP_PRD.md`
+**Primary docs:** `CURRENT_SPRINT.md`, `docs/plans/V0_2_WORKSTREAM_PLAN.md`, `MVP_PRD.md`
 **Agent rules:** `CODEX.md`, `CLAUDE.md`, `GEMINI.md`
 **Updated by:** Codex PM
 
@@ -25,13 +25,16 @@ Open the app at `http://localhost:3000`.
 
 | File | Purpose |
 |---|---|
-| `CURRENT_SPRINT.md` | Active source of truth for current work, QA log, and next action prompts |
+| `CURRENT_SPRINT.md` | Short active-state file for current work and next action |
 | `DEVELOPMENT_PLAN.md` | Roadmap and historical progress tracker |
 | `MVP_PRD.md` | Product requirements and UX/product scope |
 | `CODEX.md` | Codex-specific project workflow rules |
 | `CLAUDE.md` | Claude-specific project workflow rules |
 | `GEMINI.md` | Gemini-specific project workflow rules |
 | `docs/README.md` | Reference, archive, and design artifact index |
+| `docs/plans/V0_2_WORKSTREAM_PLAN.md` | Main V0.2 branch/workstream plan |
+| `docs/logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
+| `docs/logs/DECISION_LOG.md` | PM decisions and phase context |
 
 ---
 
@@ -42,6 +45,8 @@ Open the app at `http://localhost:3000`.
 | `public/` | Frontend app, styles, plain script modules |
 | `src/` | Backend route/model/helper modules |
 | `scripts/` | Smoke, syntax, load-order, and verification scripts |
+| `docs/plans/` | Active and future planning documents |
+| `docs/logs/` | Append-only QA and decision logs |
 | `docs/reference/` | Architecture/reference materials |
 | `docs/archive/` | Historical plans no longer used as active prompts |
 | `docs/design/` | UI design prototypes and handoff artifacts |
@@ -55,6 +60,10 @@ Open the app at `http://localhost:3000`.
 - Use `UPPER_SNAKE_CASE.md` for reference/archive planning documents.
 - Use `lower-kebab-case` for design artifact folders and generated/static design files.
 - Move historical/reference docs under `docs/`.
+- Keep `CURRENT_SPRINT.md` short: current snapshot, active tasks, routing, next action only.
+- Put QA history, completed work, bug fixes, and deferred items in `docs/logs/QA_LOG.md`.
+- Put major PM decisions and phase context in `docs/logs/DECISION_LOG.md`.
+- Put multi-session plans in `docs/plans/`.
 - Edit Thai/emoji-heavy markdown with targeted UTF-8-safe patches.
 - Every Dev/QA/PM update must include agent attribution in the relevant doc.
 - `CURRENT_SPRINT.md` owns the next actionable prompt.

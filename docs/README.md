@@ -1,10 +1,10 @@
 # Trisilar Task Hub Docs
 
-**Status:** Reference index
+**Status:** Documentation index
 **Owner:** PM
 **Updated by:** Codex PM
 
-This folder contains non-active reference, archive, and design artifacts. Active operating documents stay in the project root.
+This folder contains logs, plans, references, archives, and design artifacts. The project root keeps only short active operating docs and reserved agent rule files.
 
 ---
 
@@ -15,6 +15,8 @@ This folder contains non-active reference, archive, and design artifacts. Active
 | `reference/` | Architecture analysis and durable technical references |
 | `archive/` | Historical plans retained for traceability |
 | `design/` | UI redesign prototypes, static HTML, and design handoff files |
+| `logs/` | QA logs, completed work archive, bug fixes, and PM decisions |
+| `plans/` | Active and future multi-session planning documents |
 
 ---
 
@@ -36,7 +38,7 @@ Do not rename reserved root docs unless all agent instructions and handoff promp
 
 | File | Purpose |
 |---|---|
-| `../CURRENT_SPRINT.md` | Current sprint, QA log, next action |
+| `../CURRENT_SPRINT.md` | Current snapshot, active tasks, routing, next action |
 | `../DEVELOPMENT_PLAN.md` | Roadmap and completed phase tracker |
 | `../MVP_PRD.md` | MVP product requirements |
 | `../CODEX.md` | Codex agent rules |
@@ -45,10 +47,14 @@ Do not rename reserved root docs unless all agent instructions and handoff promp
 
 ---
 
-## Reference Files
+## Document Index
 
 | File | Purpose |
 |---|---|
 | `reference/ARCHITECTURE_ANALYSIS.md` | Architecture analysis and refactor rationale |
+| `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
 | `archive/VERSION_0_1_PLAN.md` | Historical V0.1 modularization plan |
 | `design/ui-design-v1-0/` | UI redesign prototype artifact |
+| `logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
+| `logs/DECISION_LOG.md` | PM decisions and phase context |
+| `plans/V0_2_WORKSTREAM_PLAN.md` | V0.2 branch/workstream plan |
