@@ -7,7 +7,7 @@
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely while giving the small team a no-cost internal preview path before paid hosted deployment.
 
 ---
@@ -128,6 +128,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 **Priority:** P0 after W0
 **Owner Role:** Platform Dev / PM
 **Status:** W1.0-W1.2 done; W1.3 no-cost preview path accepted; W1.4 Cloudflare Tunnel setup next
+**Detailed Plan:** `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`
 
 **Scope:**
 - Internal access method.
@@ -294,3 +295,4 @@ Rules:
 | 2026-05-08 | Merged accepted W2/W3 into `dev` for integration QA routing | Codex Dev |
 | 2026-05-08 | Accepted V0.2 W2/W3 integration on `dev` after QA pass at `dde7ab0` | Codex PM |
 | 2026-05-08 | Rebaselined W1 into a phase ladder and selected Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path; deferred paid Render/Railway hosted dev | Codex PM |
+| 2026-05-08 | Added dedicated W1 workstream plan following project plan-document policy | Codex PM |
