@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 `V0.2-W1-06` stable access-gated preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. The temporary ngrok demo path can support a short two-person demo, but it does not replace the stable access gate unless PM explicitly records a demo-only waiver.
+V0.2 is not release-ready until W1 `V0.2-W1-06` stable access-gated preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate.
 
 ---
 
@@ -98,7 +98,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` ngrok no-domain demo active; `V0.2-W1-06` deferred pending domain/subdomain | Internal access, no-cost teammate preview, deferred paid hosted target, env/secrets, future agent access pattern |
+| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06` deferred pending domain/subdomain | Internal access, no-cost teammate preview, deferred paid hosted target, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03`-`V0.2-W2-06` planned / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
 | W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` | Contract-first mock adapter, attribution/audit sync; live connector remains future work |
 
@@ -116,7 +116,7 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | `V0.2-W1-02` | `W1.1` | Done | Repo deploy readiness |
 | `V0.2-W1-03` | `W1.2` / legacy `W1c setup` | Done / merged to `dev` | Dev deployment config |
 | `V0.2-W1-04` | `W1.3` | Accepted / amended | No-cost preview decision |
-| `V0.2-W1-05` | `W1.4` | Active | No-domain ngrok temporary demo runtime |
+| `V0.2-W1-05` | `W1.4` | Accepted demo-only | No-domain random ngrok manual demo runtime |
 | `V0.2-W1-06` | `W1.5` | Deferred | Stable Cloudflare Access teammate gate |
 | `V0.2-W1-07` | `W1.6` | Pending | Future Paperclip agent access pattern |
 | `V0.2-W1-08` | `W1.7` | Deferred | Paid hosted dev review |
@@ -177,7 +177,7 @@ Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them 
 
 **Priority:** P0 after W0
 **Owner Role:** Platform Dev / PM
-**Status:** `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` no-cost preview path accepted/amended; `V0.2-W1-05` no-domain ngrok demo active; `V0.2-W1-06` Cloudflare Access setup deferred until domain/subdomain exists
+**Status:** `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` no-cost preview path accepted/amended; `V0.2-W1-05` random ngrok manual demo accepted; `V0.2-W1-06` Cloudflare Access setup deferred until domain/subdomain exists
 **Detailed Plan:** `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`
 
 **Scope:**
@@ -191,7 +191,7 @@ Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them 
 
 **Current PM Decision:**
 
-W1 uses ngrok + temporary Basic Auth as the current no-domain demo path because no Trisilar domain/subdomain is available for Cloudflare named tunnel + Access. Render remains the default paid hosted target, Railway remains the paid hosted alternate, and both are deferred until the team needs an always-on cloud runtime. Cloudflare named tunnel + Cloudflare Access remains the stable W1 company access path after a domain/subdomain exists.
+W1 uses random ngrok URL + temporary Basic Auth as the current no-domain manual demo path because no Trisilar domain/subdomain is available for Cloudflare named tunnel + Access. Render remains the default paid hosted target, Railway remains the paid hosted alternate, and both are deferred until the team needs an always-on cloud runtime. Cloudflare named tunnel + Cloudflare Access remains the stable W1 company access path after a domain/subdomain exists.
 
 **Why:**
 
@@ -199,7 +199,7 @@ W1 uses ngrok + temporary Basic Auth as the current no-domain demo path because 
 - The team does not want paid deployment cost before preview value is proven.
 - The app still uses file-backed runtime state, so a local machine plus `APP_DATA_DIR` is acceptable for no-cost preview.
 - Cloudflare Access gives a cleaner durable path for both human email allowlists and future service-token access for Paperclip-style agents.
-- ngrok gives a no-cost short demo path now, but random URLs require manual handoff each run. Paperclip repeat testing should use a reserved/static ngrok domain.
+- ngrok gives a no-cost short demo path now, but random URLs require manual handoff each run. Paperclip repeat testing should use a reserved/static ngrok domain or stable Cloudflare hostname.
 
 **Phase Ladder:**
 
@@ -209,7 +209,7 @@ W1 uses ngrok + temporary Basic Auth as the current no-domain demo path because 
 | `V0.2-W1-02` | `W1.1` | Done | Repo deploy readiness | `APP_BASE_URL`, `GOOGLE_REDIRECT_URI`, `APP_DATA_DIR`, `/healthz`, placeholder env docs merged |
 | `V0.2-W1-03` | `W1.2` | Done | Dev deployment config | `render.yaml`, `railway.toml`, and deployment setup handoff merged to `dev` |
 | `V0.2-W1-04` | `W1.3` | Accepted / amended | No-cost preview decision | Paid Render/Railway deferred; no-domain ngrok demo selected until Cloudflare domain/subdomain exists |
-| `V0.2-W1-05` | `W1.4` | Active | No-domain ngrok temporary demo runtime | Local app exposed through ngrok with temporary Basic Auth and `/healthz` verified |
+| `V0.2-W1-05` | `W1.4` | Accepted demo-only | No-domain random ngrok manual demo runtime | QA verified Basic Auth, `/healthz`, app load, hosted callback, and local-only data path; PM accepted short manual teammate demo only |
 | `V0.2-W1-06` | `W1.5` | Deferred | Stable Cloudflare Access email allowlist | Domain/subdomain exists; anonymous access blocked; approved teammate email can access |
 | `V0.2-W1-07` | `W1.6` | Pending | Paperclip agent access prep | Service-token pattern documented for future agent/API access without implementing new W3 behavior |
 | `V0.2-W1-08` | `W1.7` | Deferred | Paid hosted dev review | Revisit Render/Railway only when always-on runtime, stronger dev/prod parity, or preview usage justifies cost |
@@ -219,7 +219,7 @@ W1 uses ngrok + temporary Basic Auth as the current no-domain demo path because 
 - The local machine hosting the tunnel must be treated as the dev runtime while preview is active.
 - Secrets stay in local `.env` or dashboard configuration only; never commit secrets.
 - `APP_DATA_DIR` should point to a stable local data directory for preview persistence.
-- Human users use temporary Basic Auth for the ngrok demo and Cloudflare Access email allowlist for the stable Cloudflare preview.
+- Human users use temporary Basic Auth for the random ngrok manual demo and Cloudflare Access email allowlist for the stable Cloudflare preview.
 - Future agent access should use Cloudflare Access service tokens, a reserved/static ngrok domain for demo-only repeat testing, or an equivalent service-auth pattern, aligned with W3 and not implemented early in W1.
 - Production deployment remains out of scope.
 
@@ -290,7 +290,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 | Workstream | Expected Sessions | Notes |
 |---|---|---|
 | W0 | 1-2 | Branch, environment docs, PR workflow |
-| W1 | 4-7 | Repo readiness is done; no-domain ngrok demo path is active; stable Cloudflare Access preview remains deferred until a domain/subdomain exists; paid hosted deployment is deferred |
+| W1 | 4-7 | Repo readiness is done; random ngrok manual demo path is accepted; stable Cloudflare Access preview remains deferred until a domain/subdomain exists; paid hosted deployment is deferred |
 | W2 | 4-8 | Depends on redesign depth and page count |
 | W3 | 3-6 | Contract/mock first, live connector second |
 
@@ -298,15 +298,15 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. If resuming W1 specifically, use this `V0.2-W1-05` handoff. Alias: W1.4.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. If resuming W1 specifically, use this `V0.2-W1-05` demo handoff. Alias: W1.4.
 
 ```text
-Role: Dev
-Task: V0.2-W1-05 - No-Domain ngrok Temporary Demo Verification
+Role: PM / User
+Task: V0.2-W1-05 - Run Manual Teammate Demo With Random ngrok URL
 Alias: W1.4
 
 Context:
-W1 repo deploy-readiness and dev deployment config are merged to `dev`. PM confirmed no Trisilar domain/subdomain is currently available for Cloudflare named tunnel + Access. The current no-cost demo path is local runtime through ngrok with temporary Basic Auth. Render remains the default paid hosted target and Railway remains the paid hosted alternate, but both are deferred until always-on runtime is justified.
+QA passed W1.4 no-domain ngrok temporary demo verification. PM accepted random ngrok URL usage for short manual teammate demo only. Paperclip stable endpoint remains deferred until a stable hostname is available. Render remains the default paid hosted target and Railway remains the paid hosted alternate, but both are deferred until always-on runtime is justified.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -315,19 +315,19 @@ Read first:
 - docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Steps:
-1. Start the local ngrok demo launcher from the Desktop shortcut or equivalent local-only script.
-2. Run the app locally with a stable `APP_DATA_DIR`.
-3. Confirm the ngrok URL is protected by temporary Basic Auth before teammate preview.
-4. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the current ngrok URL when OAuth callback behavior is in scope.
-5. Verify local `/healthz`, tunneled `/healthz`, Basic Auth block, and non-destructive app load.
-6. If Paperclip needs a repeat endpoint, configure or request a reserved/static ngrok domain; otherwise record that the URL must be manually handed off each run.
-7. Record remaining runtime blockers for `V0.2-W1-06` Cloudflare Access once a domain/subdomain exists.
+1. Open `C:\Users\User\Desktop\Trisilar-TaskHub-current-demo-url.txt` locally.
+2. Share the current URL, username, and password to the teammate out of band.
+3. Keep the launcher window open while the teammate previews the app.
+4. Ask teammate to verify Basic Auth prompt, app load, and basic non-destructive navigation.
+5. Do not ask teammate or Paperclip to store this random URL as a permanent endpoint.
+6. Stop the demo by pressing Enter in the launcher window after the demo.
+7. Record feedback without including the password.
 
 Rules:
 - Dev role only.
 - Do not deploy production.
 - Do not use paid Render/Railway unless PM explicitly changes the decision.
-- Do not treat the temporary ngrok URL as a production or release-grade access gate.
+- Do not treat the random ngrok URL as Paperclip automation or stable service integration.
 - Do not commit secrets.
 - Do not implement W2 UI redesign or new W3 Paperclip behavior.
 - Preserve existing app behavior.
@@ -352,3 +352,4 @@ Rules:
 | 2026-05-08 | Updated W1 release-gate language to canonical `V0.2-W1-05`/`V0.2-W1-06` naming policy | Codex PM |
 | 2026-05-08 | Accepted `V0.2-W2-02` Review Queue redesign and shared task drawer foundation at `d33d8f7`; routed W2 next to W2-02 integration into `dev`, then `V0.2-W2-03` Tasks Inbox | Codex PM |
 | 2026-05-08 | Amended W1 no-cost path to use ngrok + temporary Basic Auth while no domain/subdomain exists; Cloudflare Access remains the stable gate after DNS is available | Codex PM |
+| 2026-05-09 | Accepted `V0.2-W1-05` as random ngrok URL manual teammate demo only; Paperclip stable endpoint remains deferred until stable hostname exists | Codex PM |

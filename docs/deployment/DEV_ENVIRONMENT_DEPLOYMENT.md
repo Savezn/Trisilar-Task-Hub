@@ -1,7 +1,7 @@
 # Dev Environment Deployment - V0.2-W1-03 / V0.2-W1-05
 
 **Doc Role:** Dev deployment config and no-cost preview runtime handoff
-**Status:** `V0.2-W1-05` no-domain ngrok demo path active; `V0.2-W1-06` Cloudflare Access path blocked until domain/subdomain exists
+**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06` Cloudflare Access path blocked until domain/subdomain exists
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -14,13 +14,13 @@
 
 This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
-Current no-domain runtime decision: use ngrok + temporary Basic Auth for a short teammate demo while no Trisilar domain/subdomain is available. Cloudflare named tunnel + Cloudflare Access remains the stable access-gated path after DNS is available.
+Current no-domain runtime decision: use random ngrok URL + temporary Basic Auth for a short manual teammate demo while no Trisilar domain/subdomain is available. Cloudflare named tunnel + Cloudflare Access remains the stable access-gated path after DNS is available. Paperclip stable endpoint usage remains deferred until a stable hostname exists.
 
 ---
 
 ## Platform Decision
 
-Use ngrok + temporary Basic Auth as the current no-domain W1 teammate demo path. The app runs on a local/dev machine, ngrok exposes it through a public demo URL, and the Basic Auth proxy gates access before sharing.
+Use random ngrok URL + temporary Basic Auth as the current no-domain W1 teammate demo path. The app runs on a local/dev machine, ngrok exposes it through a public demo URL, and the Basic Auth proxy gates access before sharing. This path is accepted for manual demo only, not permanent Paperclip automation or stable service integration.
 
 Use Cloudflare Tunnel + Cloudflare Access as the durable no-cost teammate preview path once a domain/subdomain is available. At that point, `cloudflared` should expose the app through the dev hostname, and Cloudflare Access should gate human teammate access by email allowlist.
 
@@ -69,7 +69,7 @@ Rules:
 
 - Do not commit Desktop launcher files or generated handoff files.
 - Share the current URL and temporary password out of band.
-- Random ngrok URLs are acceptable for a one-off human demo.
+- Random ngrok URLs are accepted for a one-off human demo.
 - Paperclip or repeat multi-agent testing should use a reserved/static ngrok domain, or the endpoint must be updated manually every run.
 - The ngrok demo does not replace `V0.2-W1-06` stable Cloudflare Access verification.
 
@@ -204,6 +204,30 @@ After Trisilar configures the platform account, DNS, secrets, and Cloudflare Acc
 
 ---
 
+## 2026-05-09 W1.4 QA / PM Acceptance
+
+Reviewed by Codex QA and accepted by Codex PM as a demo-only runtime path.
+
+QA evidence:
+
+- Anonymous/no-auth access through ngrok returned `401`.
+- Authenticated `GET /healthz` through ngrok returned `200`.
+- Authenticated `GET /` loaded Task Hub content.
+- `/api/calendar/status` returned `redirectUri` matching the current ngrok URL + `/auth/callback`.
+- `APP_DATA_DIR` is stable and local-only: `C:\Users\User\AppData\Local\TrisilarTaskHub\demo-data`.
+- Git status showed no repo changes.
+- No production deployment, paid Render/Railway use, W2 UI redesign, or new W3 Paperclip behavior was observed.
+
+PM acceptance:
+
+- `V0.2-W1-05` is accepted as a short manual teammate demo path only.
+- Use the current local handoff file: `C:\Users\User\Desktop\Trisilar-TaskHub-current-demo-url.txt`.
+- Keep Basic Auth enabled and share URL/password out of band only.
+- Do not use the random ngrok URL for permanent Paperclip automation or stable service integration.
+- Keep `V0.2-W1-06` Cloudflare Access / stable hostname gate deferred until a domain/subdomain exists.
+
+---
+
 ## 2026-05-08 ngrok Demo Launcher Evidence
 
 Runtime setup by Codex Dev for the no-domain temporary demo path.
@@ -220,7 +244,7 @@ What was verified locally:
 
 Current conclusion:
 
-- `V0.2-W1-05` can support a short two-person demo without paid hosting or a domain.
+- `V0.2-W1-05` can support a short two-person manual demo without paid hosting or a domain.
 - For Paperclip repeat testing, use a reserved/static ngrok domain or update Paperclip with the current URL each run.
 - `V0.2-W1-06` remains blocked until a domain/subdomain and Cloudflare Access policy are available.
 

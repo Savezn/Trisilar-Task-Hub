@@ -29,10 +29,10 @@ For the prepared `V0.2-W1-03` dev deployment config and `V0.2-W1-05` no-domain n
 
 No-cost preview target:
 
-- ngrok + temporary Basic Auth is the current W1 no-domain demo path because no Trisilar domain/subdomain is available.
+- random ngrok URL + temporary Basic Auth is the accepted W1 no-domain manual demo path because no Trisilar domain/subdomain is available.
 - The app runs on a local/dev machine and is exposed through ngrok.
 - Temporary Basic Auth protects the demo URL before teammate access.
-- Random ngrok URLs are acceptable for short human demos; repeat Paperclip testing should use a reserved/static ngrok domain or receive a fresh URL handoff each run.
+- Random ngrok URLs are accepted for short manual human demos only; repeat Paperclip testing should use a reserved/static ngrok domain or stable Cloudflare hostname.
 - Cloudflare named tunnel + Cloudflare Access remains the stable no-cost preview path once a domain/subdomain is available.
 - This avoids paid hosted deployment until preview usage proves an always-on cloud runtime is needed.
 
@@ -151,7 +151,7 @@ Use this only while no domain/subdomain is available:
 - For OAuth callback testing, set `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` to the current ngrok URL.
 - For Paperclip repeat testing, use a reserved/static ngrok domain. A random ngrok URL requires a fresh manual Paperclip endpoint update every run.
 
-The temporary ngrok demo does not satisfy the stable `V0.2-W1-06` Cloudflare Access release gate unless PM explicitly accepts it as a demo-only waiver.
+The temporary random ngrok demo is accepted for `V0.2-W1-05` manual teammate demo only. It does not satisfy the stable `V0.2-W1-06` Cloudflare Access release gate and must not be used as permanent Paperclip automation or stable service integration.
 
 ---
 

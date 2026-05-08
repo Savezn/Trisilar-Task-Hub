@@ -67,7 +67,7 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 
 | Prompt | Canonical ID | Alias | Purpose |
 |---|---|---|---|
-| A | `V0.2-W1-05` | `W1.4` | No-domain ngrok temporary demo runtime |
+| A | `V0.2-W1-05` | `W1.4` | Random ngrok manual teammate demo handoff |
 | B | `V0.2-W2-02` | `W2b` | Review Queue redesign and shared task drawer foundation |
 | C | `V0.2-W3-01` | W3 sequence 1 | Paperclip integration discovery and contract plan |
 
@@ -75,15 +75,15 @@ Use the canonical ID in the task title. Include the alias only for continuity.
 
 ---
 
-## Prompt A - V0.2-W1-05 No-Domain ngrok Temporary Demo Runtime
+## Prompt A - V0.2-W1-05 Random ngrok Manual Teammate Demo Handoff
 
 ```text
-Role: Dev
-Task: V0.2-W1-05 - No-Domain ngrok Temporary Demo Runtime
+Role: PM / User
+Task: V0.2-W1-05 - Run Manual Teammate Demo With Random ngrok URL
 Alias: W1.4
 
 Context:
-V0.2-W1-01 through V0.2-W1-03 are done. V0.2-W1-04 originally selected Cloudflare Tunnel + Cloudflare Access, but PM later confirmed no Trisilar domain/subdomain is available yet. The current no-domain demo path is ngrok + temporary Basic Auth. Cloudflare named tunnel + Access remains `V0.2-W1-06` after DNS is available. The `dev` branch exists and is the integration baseline. Work in `trisilar-task-hub-w1-company-access` on the W1-owned feature branch only if a repo/doc/setup defect is discovered; otherwise runtime setup may use local-only Desktop scripts outside git.
+V0.2-W1-01 through V0.2-W1-03 are done. V0.2-W1-05 passed QA and is accepted by PM as random ngrok URL manual demo only. Cloudflare named tunnel + Access remains `V0.2-W1-06` after DNS is available. Paperclip stable endpoint remains deferred until a stable hostname exists.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -96,25 +96,25 @@ Read first:
 - README.md
 
 Goals:
-1. Start or verify the local ngrok demo launcher or equivalent local-only script.
-2. Run the app locally with stable `APP_DATA_DIR`.
-3. Confirm the public ngrok URL is protected by temporary Basic Auth before teammate preview.
-4. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the current ngrok URL when OAuth callback behavior is part of the demo.
-5. Verify local `/healthz`, tunneled `/healthz`, Basic Auth block, and non-destructive app load.
-6. For Paperclip repeat testing, configure/request a reserved/static ngrok domain; otherwise record that the URL must be manually handed off each run.
-7. Record remaining runtime blockers for `V0.2-W1-06`: domain/subdomain, Cloudflare named tunnel, Cloudflare Access allowlist, and approved teammate verification.
+1. Open `C:\Users\User\Desktop\Trisilar-TaskHub-current-demo-url.txt` locally.
+2. Share current URL, username, and password to the teammate out of band.
+3. Keep the launcher window open while the teammate previews the app.
+4. Ask teammate to verify Basic Auth prompt, app load, and basic non-destructive navigation.
+5. Do not ask teammate or Paperclip to store the random URL as a permanent endpoint.
+6. Stop the demo by pressing Enter in the launcher window after the demo.
+7. Record feedback without including the password.
 
 Rules:
 - Start from `dev`.
-- Work only in the W1 worktree folder and W1-owned feature branch.
+- Runtime handoff may use the local Desktop files outside git.
 - Use `V0.2-W1-05` as the primary task ID; `W1.4` is an alias only.
 - Do not implement W2 UI redesign or W3 Paperclip integration.
 - Do not commit secrets.
 - Do not deploy production or use paid Render/Railway unless PM changes the decision.
 - Do not commit Desktop launcher files, generated demo URL files, or credentials.
-- Do not treat the temporary ngrok URL as a production or release-grade access gate.
+- Do not treat the random ngrok URL as a production endpoint, Paperclip automation endpoint, or release-grade access gate.
 - Preserve existing app behavior unless explicitly required.
-- Include attribution: Implemented by Dev agent name.
+- Include attribution: Accepted by Codex PM.
 ```
 
 ---
@@ -200,3 +200,4 @@ Rules:
 | 2026-05-08 | Created durable W1/W2/W3 prompt registry and PM-owned Current Sprint rule | Codex PM |
 | 2026-05-08 | Added per-workstream Git worktree requirement | Codex PM |
 | 2026-05-08 | Updated Prompt A from Cloudflare Tunnel setup to no-domain ngrok temporary demo runtime, with Cloudflare Access deferred to W1-06 | Codex PM |
+| 2026-05-09 | Updated Prompt A to manual teammate demo handoff after W1.4 QA pass and PM demo-only acceptance | Codex PM |

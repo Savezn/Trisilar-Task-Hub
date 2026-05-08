@@ -48,7 +48,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | Level | Version / Track | Status | Outcome | Release Gate |
 |---|---|---|---|---|
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
-| L1 | V0.2 Access Foundation | Active | Teammates can access a no-cost preview app safely with environment, persistence, and access-control boundaries; current no-domain demo uses ngrok + temporary Basic Auth | `V0.2-W1-06` stable access-gated preview verified, or PM explicitly accepts an ngrok demo-only waiver; no secrets committed |
+| L1 | V0.2 Access Foundation | Active / W1.4 demo accepted | Teammates can access a no-cost preview app safely with environment, persistence, and access-control boundaries; current no-domain demo uses random ngrok URL + temporary Basic Auth | `V0.2-W1-06` stable access-gated preview verified before release-grade access; W1.4 random ngrok is accepted for manual demo only; no secrets committed |
 | L2 | V0.2 Full UI Redesign | Active | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted |
 | L3 | V0.2 Paperclip Foundation | Accepted mock / live future | Paperclip task handoff has a contract, mock adapter, attribution, and audit trail without uncontrolled side effects | Contract/mock verification passed; live connector remains separately gated |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
@@ -62,7 +62,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 
 ### L1 - V0.2 Access Foundation
 
-**Status:** Active / `V0.2-W1-05` no-domain ngrok demo path is active; `V0.2-W1-06` Cloudflare Access gate is deferred until a domain/subdomain exists.
+**Status:** Active / `V0.2-W1-05` random ngrok manual demo path is accepted; `V0.2-W1-06` Cloudflare Access gate is deferred until a domain/subdomain exists.
 
 **Goal:**
 Provide a safe no-cost preview environment before wider teammate access.
@@ -70,7 +70,7 @@ Provide a safe no-cost preview environment before wider teammate access.
 **Must include:**
 
 - Local/dev machine running the app from the `dev` baseline.
-- Temporary ngrok route while no domain/subdomain is available.
+- Random ngrok route while no domain/subdomain is available.
 - Cloudflare Tunnel route for the PM-approved preview hostname once a domain/subdomain exists.
 - Local or dashboard-managed dev-only secrets; no secret values in git.
 - Stable `APP_DATA_DIR` for file-backed runtime data.
@@ -84,7 +84,7 @@ Provide a safe no-cost preview environment before wider teammate access.
 - Local and tunneled `GET /healthz` pass.
 - Anonymous access is blocked by the active access gate.
 - Approved teammate access works.
-- PM accepts `V0.2-W1-06` stable access-gated preview evidence, or records that the ngrok path is demo-only and not a release-grade substitute.
+- PM accepts `V0.2-W1-06` stable access-gated preview evidence before release-grade access. `V0.2-W1-05` random ngrok is already accepted for short manual teammate demo only.
 
 ### L2 - V0.2 Full UI Redesign
 
@@ -140,7 +140,7 @@ Promote only a coherent internal preview release, not partial work labeled as do
 
 **Release candidate gate:**
 
-- W1 `V0.2-W1-06` stable access-gated no-cost preview evidence accepted, unless PM explicitly records an ngrok demo-only waiver for a non-release demo.
+- W1 `V0.2-W1-06` stable access-gated no-cost preview evidence accepted for release-grade access. `V0.2-W1-05` random ngrok acceptance covers manual demo only.
 - W2 full UI redesign accepted through `V0.2-W2-06` (`W2f`).
 - W3 mock integration remains passing.
 - `npm.cmd run check:all` passes with `node server.js` running.
@@ -204,7 +204,7 @@ Merge accepted V0.2-W2-02 into dev
 -> V0.2-W2-03 Tasks Inbox
 ```
 
-W1 `V0.2-W1-05`/`V0.2-W1-06` access setup remains important. The current W1 demo path is ngrok + temporary Basic Auth because no domain/subdomain exists; stable Cloudflare Access remains the release-grade gate when DNS is available. PM has currently prioritized correcting the W2 ladder and closing full UI redesign scope before claiming V0.2 release readiness.
+W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. `V0.2-W1-06` access setup remains important for stable/release-grade access: Cloudflare Access remains the gate when DNS is available. PM has currently prioritized the manual demo handoff before resuming the W2 ladder.
 
 ---
 
@@ -216,3 +216,4 @@ W1 `V0.2-W1-05`/`V0.2-W1-06` access setup remains important. The current W1 demo
 | 2026-05-08 | Updated L1 W1 access language to canonical `V0.2-W1-05`/`V0.2-W1-06` no-cost preview structure | Codex PM |
 | 2026-05-08 | Accepted `V0.2-W2-02` at `d33d8f7` and routed L2 to W2-02 integration into `dev` before `V0.2-W2-03` starts | Codex PM |
 | 2026-05-08 | Updated L1 to reflect no-domain ngrok + temporary Basic Auth demo path while keeping Cloudflare Access as the stable release-grade gate | Codex PM |
+| 2026-05-09 | Accepted W1.4 random ngrok URL path for manual teammate demo only; stable Paperclip/service endpoint remains deferred | Codex PM |
