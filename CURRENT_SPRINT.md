@@ -43,6 +43,7 @@
 | Need | Read |
 |---|---|
 | Current task and next action | `CURRENT_SPRINT.md` |
+| Project-wide ladder and release gates | `docs/plans/PROJECT_LADDER.md` |
 | Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | W2 full UI redesign phase plan | `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` |
@@ -94,7 +95,7 @@ Parallel rule:
 
 ## Next Action - W2b Review Queue Redesign
 
-Accepted W2a (`b5f67fb`) is now treated as shell foundation and Today redesign only. Full W2 UI redesign remains open through W2b-W2f. The next planned role is W2b Dev to redesign Review Queue against `docs/design/ui-design-v1-0/` while preserving W2a/W3 behavior.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted W2a (`b5f67fb`) is treated as shell foundation and Today redesign only. Full W2 UI redesign remains open through W2b-W2f. The next planned role is W2b Dev to redesign Review Queue against `docs/design/ui-design-v1-0/` while preserving W2a/W3 behavior.
 
 ```text
 Role: Dev

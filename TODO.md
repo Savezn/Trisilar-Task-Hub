@@ -15,6 +15,7 @@ This file tracks the broad roadmap. It does not replace `CURRENT_SPRINT.md`, ver
 | Need | Use |
 |---|---|
 | Current active task and next prompt | `CURRENT_SPRINT.md` |
+| Project-wide ladder and release gates | `docs/plans/PROJECT_LADDER.md` |
 | Version scope and workstreams | `docs/plans/VERSION_0_2_PLAN.md` |
 | Parallel W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | QA history | `docs/logs/QA_LOG.md` |
@@ -25,6 +26,8 @@ This file tracks the broad roadmap. It does not replace `CURRENT_SPRINT.md`, ver
 ---
 
 ## Current Roadmap
+
+Use `docs/plans/PROJECT_LADDER.md` as the current project-wide ladder. The summary below is an index only.
 
 ### V0.1 - MVP Release Acceptance
 
@@ -43,7 +46,7 @@ Historical details live in `docs/archive/VERSION_0_1_PLAN.md`, `docs/archive/DEV
 
 ### V0.2 - Company Access, UI Redesign, Paperclip Integration
 
-Status: Active planning and parallel workstream setup.
+Status: Active. W2 full UI redesign is re-scoped into W2a-W2f, and V0.2 should not be treated as release-ready until W1 hosted runtime, W2 full UI, and W3 mock/integration gates are accepted.
 
 Workstreams:
 
@@ -57,6 +60,19 @@ Workstreams:
 | W5 V0.2 Release | Promote from `dev` to `main` after acceptance | Planned |
 
 Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
+
+### Project Ladder Summary
+
+| Level | Track | Status |
+|---|---|---|
+| L0 | V0.1 Local MVP | Complete |
+| L1 | V0.2 Access Foundation | Active |
+| L2 | V0.2 Full UI Redesign | Active |
+| L3 | V0.2 Paperclip Foundation | Mock accepted / live future |
+| L4 | V0.2 Integration Release | Planned |
+| L5 | V0.3 Reliability Hardening | Planned |
+| L6 | V0.4 Live AI Operations | Planned |
+| L7 | V0.5 Team Operating System | Future |
 
 ---
 

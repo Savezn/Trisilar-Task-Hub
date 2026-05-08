@@ -7,7 +7,7 @@
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely while giving the small team a no-cost internal preview path before paid hosted deployment.
 
 ---
@@ -15,6 +15,7 @@
 ## How to Use This Document
 
 - Use as the main V0.2 planning file.
+- Use `PROJECT_LADDER.md` for project-wide release sequencing beyond V0.2.
 - Start each session from `../../CURRENT_SPRINT.md`; read this file when the task is part of W0/W1/W2/W3.
 - Use `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` as the durable prompt registry for W1/W2/W3.
 - Update this file when PM changes V0.2 workstream scope, sequencing, or branch/environment rules.
@@ -33,6 +34,15 @@ Goals:
 2. Redesign the full web app UI while preserving existing workflows.
 3. Connect Trisilar Task Hub to the Paperclip multi-agent system.
 4. Establish a `dev` integration environment and PR flow into production.
+
+Project ladder position:
+
+```text
+L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
+-> L4 V0.2 Integration Release
+```
+
+V0.2 is not release-ready until W1 hosted runtime evidence, W2 full UI redesign acceptance through W2f, and W3 mock/integration verification are all accepted.
 
 ---
 

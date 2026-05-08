@@ -96,5 +96,6 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `design/ui-design-v1-0/` | UI redesign prototype artifact |
 | `logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
 | `logs/DECISION_LOG.md` | PM decisions and phase context |
+| `plans/PROJECT_LADDER.md` | Project-wide roadmap ladder and release gates |
 | `plans/VERSION_0_2_PLAN.md` | V0.2 branch/workstream plan |
 | `plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md` | V0.2 W1 company access and no-cost preview phase ladder |
