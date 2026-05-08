@@ -3,12 +3,23 @@ const {
   toReviewSessionInput,
   validatePaperclipPayload,
 } = require("../integrations/paperclip/contract");
+const {
+  connectPaperclipConnection,
+  disconnectPaperclipConnection,
+  publicPaperclipConnection,
+  rotatePaperclipSecret,
+} = require("../integrations/paperclip/connection-config");
 
 module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
   const router = express.Router();
 
   function auditEvent(type, fields = {}) {
     return { type, actor: "system", at: new Date().toISOString(), ...fields };
+  }
+
+  function sendConnectionError(res, error) {
+    const status = Number.isInteger(error.statusCode) ? error.statusCode : 500;
+    return res.status(status).json({ error: status === 500 ? friendlyError(error) : error.message });
   }
 
   async function resolveDiffs(sessionInput) {
@@ -89,6 +100,38 @@ module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
       return res.status(201).json(updated);
     } catch (e) {
       return res.status(500).json({ error: friendlyError(e) });
+    }
+  });
+
+  router.get("/integrations/paperclip/connection", (_req, res) => {
+    try {
+      return res.json(publicPaperclipConnection());
+    } catch (e) {
+      return sendConnectionError(res, e);
+    }
+  });
+
+  router.post("/integrations/paperclip/connection/connect", (req, res) => {
+    try {
+      return res.json(connectPaperclipConnection(req.body));
+    } catch (e) {
+      return sendConnectionError(res, e);
+    }
+  });
+
+  router.post("/integrations/paperclip/connection/disconnect", (_req, res) => {
+    try {
+      return res.json(disconnectPaperclipConnection());
+    } catch (e) {
+      return sendConnectionError(res, e);
+    }
+  });
+
+  router.post("/integrations/paperclip/connection/rotate-secret", (req, res) => {
+    try {
+      return res.json(rotatePaperclipSecret(req.body));
+    } catch (e) {
+      return sendConnectionError(res, e);
     }
   });
 

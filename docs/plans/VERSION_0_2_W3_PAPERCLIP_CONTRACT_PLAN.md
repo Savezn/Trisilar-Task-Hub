@@ -351,6 +351,7 @@ Details:
 - `V0.2-W3-01` completed pure validator/normalizer logic, fixture files, unit-level validation checks, `POST /api/integrations/paperclip/mock/review-session`, backward-compatible review-store attribution fields, idempotency lookup by `requestId`, and `scripts/verify-paperclip-mock.js`.
 - `V0.2-W3-01` introduced no live Paperclip external calls.
 - `V0.2-W3-02` should add authenticated `POST /api/integrations/paperclip/webhook`, reuse the same normalizer and audit path, and stay blocked until the Paperclip server is online, the Paperclip health/readiness path is confirmed, and Paperclip owner confirms service-token plus webhook-signing support.
+- Web-managed Paperclip connection settings were implemented as a prerequisite gate and must remain the source of runtime enable/disable state and secret rotation; do not hardcode live Paperclip values.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
 ---
@@ -386,6 +387,9 @@ Details:
 
 | Date | Change | Updated by |
 |---|---|---|
+| 2026-05-08 | Implemented Paperclip connection settings gate, runtime config persistence, and HTTP verification without live webhook calls | Codex Dev |
+| 2026-05-08 | Added web-managed Paperclip connection requirement: Settings UI connect/disconnect/rotate gate before live webhook; no hardcoded live config | Codex PM |
+| 2026-05-08 | Answered PM/Paperclip owner live connector readiness questions; kept live implementation blocked pending W1 access/security readiness | Codex PM / Paperclip Owner |
 | 2026-05-08 | Implemented mock adapter route, idempotency/audit persistence, and mock verification | Codex Dev |
 | 2026-05-08 | Created W3 Paperclip integration discovery and contract plan | Codex Dev |
 | 2026-05-12 | Added runtime topology gate for DigitalOcean-hosted Task Hub; historical Paperclip localhost blocker later superseded by hosted Paperclip confirmation | Codex PM |

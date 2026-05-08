@@ -9,6 +9,7 @@
     "smoke": "node scripts/smoke-test.js",
     "verify": "node scripts/verify-frontend.js",
     "verify:paperclip-contract": "node scripts/verify-paperclip-contract.js",
+    "verify:paperclip-connection": "node scripts/verify-paperclip-connection.js",
     "verify:paperclip-mock": "node scripts/verify-paperclip-mock.js",
     "check:all": "node scripts/verify-frontend.js && npm run smoke",
     "test": "echo \"Error: no test specified\" && exit 1"
