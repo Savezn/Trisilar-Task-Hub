@@ -47,5 +47,6 @@ Every final handoff for repository work should include:
 - `docs/reference/PROJECT_CONTEXT.md`
 - `docs/reference/ARCHITECTURE.md`
 - `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md`
+- `docs/reference/FILE_ORGANIZATION.md`
 - `docs/testing/TEST_STRATEGY.md`
 - `docs/adr/README.md`
