@@ -1,4 +1,4 @@
-# Deployment Setup - V0.2 W1b
+# Deployment Setup - V0.2-W1-02
 
 **Doc Role:** Deploy-readiness reference for company access
 **Status:** Ready for QA review
@@ -14,9 +14,9 @@
 
 This document describes how to configure Trisilar Task Hub for a hosted dev or production environment without deploying production yet.
 
-For the prepared W1c dev-only service path, see `DEV_ENVIRONMENT_DEPLOYMENT.md`.
+For the prepared `V0.2-W1-03` dev deployment config and `V0.2-W1-05` no-cost preview handoff, see `DEV_ENVIRONMENT_DEPLOYMENT.md`.
 
-W1b keeps the app as a long-running Node/Express service and adds deploy-readiness only:
+`V0.2-W1-02` keeps the app as a long-running Node/Express service and adds deploy-readiness only. Legacy label: W1b.
 
 - hosted OAuth callback configuration
 - persistent runtime JSON location
@@ -173,7 +173,7 @@ Manual checks:
 
 ## Non-Goals
 
-- Do not deploy production in W1b.
+- Do not deploy production in W1.
 - Do not implement W2 UI redesign.
 - Do not implement W3 Paperclip integration.
 - Do not add per-user RBAC or personal OAuth.

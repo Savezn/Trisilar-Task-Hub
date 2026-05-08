@@ -16,9 +16,9 @@
 | V0.1 Release Acceptance | Pass | `docs/logs/QA_LOG.md` R34 |
 | P9 open bugs | None currently open | `docs/logs/QA_LOG.md` |
 | V0.2 W0 Branch / Environment / CI Setup | QA Pass `9dbb47b` | Implemented by Codex Dev; Reviewed by Codex QA |
-| V0.2 W1b Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md` |
-| V0.2 W1c Dev Environment Deployment Setup | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
-| V0.2 W2 Full UI Redesign | W2a PM Accepted `b5f67fb` / remaining W2b-W2f planned | W2a implemented by Codex Dev; reviewed by Codex QA; phased full redesign plan updated by Codex PM |
+| V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
+| V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
+| V0.2 W2 Full UI Redesign | `V0.2-W2-01` accepted (`W2a`, `b5f67fb`) / `V0.2-W2-02`-`V0.2-W2-06` planned | `V0.2-W2-01` implemented by Codex Dev; reviewed by Codex QA; phased full redesign plan updated by Codex PM |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
@@ -31,8 +31,8 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | W1c setup merged / hosted runtime setup next | Dev |
-| W2 | Full UI Redesign | W2a accepted; W2b-W2f planned; full redesign not complete | Dev |
+| W1 | Company Access + Deployment | `V0.2-W1-05` Cloudflare Tunnel local runtime setup next; `V0.2-W1-06` Access gate pending | Dev |
+| W2 | Full UI Redesign | `V0.2-W2-01` accepted; `V0.2-W2-02`-`V0.2-W2-06` planned; full redesign not complete | Dev |
 | W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | PM complete |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
@@ -47,8 +47,8 @@
 | Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | W2 full UI redesign phase plan | `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` |
-| W1 deploy-readiness setup | `docs/deployment/DEPLOYMENT_SETUP.md` |
-| W1 dev environment runtime setup | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
+| W1 deploy-readiness setup (`V0.2-W1-02`) | `docs/deployment/DEPLOYMENT_SETUP.md` |
+| W1 dev deployment config / no-cost preview handoff (`V0.2-W1-03` to `V0.2-W1-05`) | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
 | QA history and completed work archive | `docs/logs/QA_LOG.md` |
 | PM decisions and phase context | `docs/logs/DECISION_LOG.md` |
 | Product/UX scope | `MVP_PRD.md` |
@@ -69,15 +69,15 @@
 
 Required branches:
 
-- W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
-- W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
-- W2: `feature/w2-*` phase branches; next default `feature/w2b-review-redesign`
+- `V0.2-W1-02` / legacy W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
+- `V0.2-W1-03` / legacy W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
+- W2: `feature/w2-*` phase branches; next default `feature/w2-02-review-redesign`
 - W3: `feature/w3-paperclip-integration`
 
 Required worktrees:
 
 - PM / Integration: `trisilar-task-hub` on `dev`
-- W1c: runtime setup uses hosted platform dashboards and no repo branch unless a fix is discovered
+- `V0.2-W1-05`: Cloudflare Tunnel runtime setup uses the W1 worktree or Cloudflare/local runtime tools; repo branch only if a docs/setup defect is discovered
 - W2: `trisilar-task-hub-w2-ui-redesign` on the active `feature/w2-*` phase branch
 - W3: `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`
 
@@ -93,16 +93,16 @@ Parallel rule:
 
 ---
 
-## Next Action - W2b Review Queue Redesign
+## Next Action - V0.2-W2-02 Review Queue Redesign
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted W2a (`b5f67fb`) is treated as shell foundation and Today redesign only. Full W2 UI redesign remains open through W2b-W2f. The next planned role is W2b Dev to redesign Review Queue against `docs/design/ui-design-v1-0/` while preserving W2a/W3 behavior.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted `V0.2-W2-01` (`W2a`, `b5f67fb`) is treated as shell foundation and Today redesign only. Full W2 UI redesign remains open through `V0.2-W2-02`-`V0.2-W2-06` (`W2b`-`W2f`). The next planned role is `V0.2-W2-02` Dev to redesign Review Queue against `docs/design/ui-design-v1-0/` while preserving `V0.2-W2-01` and W3 behavior.
 
 ```text
 Role: Dev
-Task: V0.2 W2b - Review Queue Redesign + Shared Task Drawer Foundation
+Task: V0.2-W2-02 - Review Queue Redesign + Shared Task Drawer Foundation
 
 Context:
-V0.2 W2a shell/Today redesign was accepted at `b5f67fb`, but PM has clarified this is not full W2 UI redesign completion. W2 is now phased as W2a-W2f in `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`. Implement W2b only.
+`V0.2-W2-01` (`W2a`) shell/Today redesign was accepted at `b5f67fb`, but PM has clarified this is not full W2 UI redesign completion. W2 is now phased as `V0.2-W2-01`-`V0.2-W2-06` in `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`; old `W2a`-`W2f` labels are aliases only. Implement `V0.2-W2-02` only.
 
 Read first:
 - CODEX.md
@@ -121,10 +121,10 @@ Redesign Review Queue to match the `ui-design-v1-0` direction while preserving c
 
 Steps:
 1. Confirm branch/worktree before editing.
-2. Preserve accepted W2a shell/Today behavior and W3 Paperclip mock behavior.
-3. Use a W2 phase branch under `feature/w2-*`, default `feature/w2b-review-redesign`.
+2. Preserve accepted `V0.2-W2-01` shell/Today behavior and W3 Paperclip mock behavior.
+3. Use a W2 phase branch under `feature/w2-*`, default `feature/w2-02-review-redesign`.
 4. Redesign `/review` using the prototype's review card, confidence, diff, target-field, sync-toggle, and bulk-action patterns where compatible with the static JS app.
-5. Add or extend shared UI primitives only when they support W2b and later W2 pages.
+5. Add or extend shared UI primitives only when they support `V0.2-W2-02` and later W2 pages.
 6. Preserve review create/edit/approve/reject/bulk APIs and existing route behavior.
 7. Capture desktop/mobile visual QA evidence for Review and any shared drawer primitives.
 8. Run `npm.cmd run check:all`.
@@ -137,4 +137,4 @@ Rules:
 - Include attribution: Implemented by Codex Dev.
 ```
 
-**Attribution:** V0.2 W2a/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. W1b/W1c implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W2a and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.
+**Attribution:** V0.2 `V0.2-W2-01`/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. `V0.2-W1-02`/`V0.2-W1-03` implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W1 phase naming updated by Codex PM to latest canonical policy. `V0.2-W2-01` and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.

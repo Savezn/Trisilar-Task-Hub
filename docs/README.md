@@ -85,8 +85,8 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
 | `reference/PROJECT_CONTEXT.md` | Stable product context and operating model |
 | `deployment/README.md` | Deployment docs index |
-| `deployment/DEPLOYMENT_SETUP.md` | V0.2 W1b deploy-readiness setup for hosted company access |
-| `deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2 W1c hosted dev environment setup handoff |
+| `deployment/DEPLOYMENT_SETUP.md` | V0.2-W1-02 deploy-readiness setup for company access; legacy label W1b |
+| `deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config and V0.2-W1-05 no-cost preview handoff |
 | `testing/TEST_STRATEGY.md` | Verification policy and automated test-suite roadmap |
 | `adr/README.md` | ADR index and process |
 | `adr/ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` | Project conventions and AI workflow decision |

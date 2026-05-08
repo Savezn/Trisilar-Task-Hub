@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 hosted runtime evidence, W2 full UI redesign acceptance through W2f, and W3 mock/integration verification are all accepted.
+V0.2 is not release-ready until W1 `V0.2-W1-06` access-gated no-cost preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted.
 
 ---
 
@@ -114,7 +114,7 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 |---|---|---|---|
 | `V0.2-W1-01` | `W1.0` | Done / PM accepted | Platform and access decision |
 | `V0.2-W1-02` | `W1.1` | Done | Repo deploy readiness |
-| `V0.2-W1-03` | `W1.2` / `W1c setup` | Done / merged to `dev` | Dev deployment config |
+| `V0.2-W1-03` | `W1.2` / legacy `W1c setup` | Done / merged to `dev` | Dev deployment config |
 | `V0.2-W1-04` | `W1.3` | Accepted | No-cost preview decision |
 | `V0.2-W1-05` | `W1.4` | Next | Cloudflare Tunnel local runtime setup |
 | `V0.2-W1-06` | `W1.5` | Pending | Cloudflare Access teammate gate |
@@ -206,7 +206,7 @@ W1 uses Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview pa
 |---|---|---|---|---|
 | `V0.2-W1-01` | `W1.0` | Done | Platform/access decision | Render/Railway/Vercel tradeoff reviewed; Cloudflare Access selected as default gate |
 | `V0.2-W1-02` | `W1.1` | Done | Repo deploy readiness | `APP_BASE_URL`, `GOOGLE_REDIRECT_URI`, `APP_DATA_DIR`, `/healthz`, placeholder env docs merged |
-| `V0.2-W1-03` | `W1.2` | Done | Dev deployment config | `render.yaml`, `railway.toml`, and hosted dev setup handoff merged to `dev` |
+| `V0.2-W1-03` | `W1.2` | Done | Dev deployment config | `render.yaml`, `railway.toml`, and deployment setup handoff merged to `dev` |
 | `V0.2-W1-04` | `W1.3` | Accepted | No-cost preview decision | Cloudflare Tunnel + Cloudflare Access selected for W1 teammate preview; paid Render/Railway deferred |
 | `V0.2-W1-05` | `W1.4` | Next | Cloudflare Tunnel local runtime | Local app served through `taskhub-dev.trisilar.com` or confirmed dev hostname via `cloudflared` |
 | `V0.2-W1-06` | `W1.5` | Pending | Cloudflare Access email allowlist | Anonymous access blocked; approved teammate email can access |
@@ -279,7 +279,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 - During parallel W1/W2/W3 work, only PM updates `CURRENT_SPRINT.md`; Dev/QA agents keep updates in their owned workstream docs/branches.
 - Durable W1/W2/W3 prompts live in `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` and must not be overwritten by a single workstream update.
 - New V0.2 prompts and reports must use canonical task IDs such as `V0.2-W1-05`, `V0.2-W2-02`, or `V0.2-W3-01` first; old labels are aliases only.
-- W1/W2/W3 must use separate feature branches: `feature/w1-*`, `feature/w2-*`, and `feature/w3-*`; W2 subphases may use dedicated `feature/w2-*` phase branches such as `feature/w2b-review-redesign`.
+- W1/W2/W3 must use separate feature branches: `feature/w1-*`, `feature/w2-*`, and `feature/w3-*`; W2 subphases may use dedicated `feature/w2-*` phase branches such as `feature/w2-02-review-redesign`.
 - W1/W2/W3 must run in separate Git worktree folders; do not run parallel agents in the same `trisilar-task-hub` working directory.
 
 ---
@@ -348,3 +348,4 @@ Rules:
 | 2026-05-08 | Accepted V0.2 W2/W3 integration on `dev` after QA pass at `dde7ab0` | Codex PM |
 | 2026-05-08 | Rebaselined W1 into a phase ladder and selected Cloudflare Tunnel + Cloudflare Access as the no-cost teammate preview path; deferred paid Render/Railway hosted dev | Codex PM |
 | 2026-05-08 | Added dedicated W1 workstream plan following project plan-document policy | Codex PM |
+| 2026-05-08 | Updated W1 release-gate language to canonical `V0.2-W1-05`/`V0.2-W1-06` naming policy | Codex PM |

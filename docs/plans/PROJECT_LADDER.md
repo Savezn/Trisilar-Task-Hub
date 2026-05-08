@@ -48,8 +48,8 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | Level | Version / Track | Status | Outcome | Release Gate |
 |---|---|---|---|---|
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
-| L1 | V0.2 Access Foundation | Active | Teammates can access a hosted dev app safely with environment, persistence, and access-control boundaries | Hosted dev runtime verified; no secrets committed |
-| L2 | V0.2 Full UI Redesign | Active | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | W2a-W2f QA/PM accepted |
+| L1 | V0.2 Access Foundation | Active | Teammates can access a no-cost preview app safely with environment, persistence, and access-control boundaries | `V0.2-W1-06` access-gated preview verified; no secrets committed |
+| L2 | V0.2 Full UI Redesign | Active | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted |
 | L3 | V0.2 Paperclip Foundation | Accepted mock / live future | Paperclip task handoff has a contract, mock adapter, attribution, and audit trail without uncontrolled side effects | Contract/mock verification passed; live connector remains separately gated |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
 | L5 | V0.3 Reliability Hardening | Planned | Automated tests, deterministic fixtures, browser regression, CI gate, backend structure hardening | Test strategy implemented enough to reduce manual QA risk |
@@ -62,51 +62,52 @@ Do not expand into a heavy project-management platform. Each ladder level should
 
 ### L1 - V0.2 Access Foundation
 
-**Status:** Active / W1c hosted runtime setup remains.
+**Status:** Active / `V0.2-W1-05` Cloudflare Tunnel local runtime setup is next.
 
 **Goal:**
-Provide a safe hosted dev environment before wider teammate preview.
+Provide a safe no-cost preview environment before wider teammate access.
 
 **Must include:**
 
-- Hosted dev service connected from `dev`.
-- Dev-only secrets configured in platform dashboard.
-- Persistent storage for file-backed runtime data.
-- `APP_BASE_URL` and OAuth redirect URI configured.
-- Cloudflare Access or equivalent teammate access gate.
-- Non-destructive hosted app smoke.
+- Local/dev machine running the app from the `dev` baseline.
+- Cloudflare Tunnel route for the PM-approved preview hostname.
+- Local or dashboard-managed dev-only secrets; no secret values in git.
+- Stable `APP_DATA_DIR` for file-backed runtime data.
+- `APP_BASE_URL` and OAuth redirect URI configured for the preview hostname.
+- Cloudflare Access email allowlist before teammate preview.
+- Non-destructive preview app smoke.
 
 **Done when:**
 
-- Hosted `GET /healthz` passes.
+- Local and tunneled `GET /healthz` pass.
 - Anonymous access is blocked.
 - Approved teammate access works.
-- PM accepts W1 hosted runtime evidence.
+- PM accepts `V0.2-W1-06` access-gated preview evidence.
 
 ### L2 - V0.2 Full UI Redesign
 
-**Status:** Active; W2a accepted, W2b-W2f remain.
+**Status:** Active; `V0.2-W2-01` (`W2a`) accepted, `V0.2-W2-02`-`V0.2-W2-06` remain.
 
 **Goal:**
 Make the whole app feel like one coherent command center, not a mix of old screens and one redesigned page.
 
 **Required ladder:**
 
-| Phase | Status | Outcome |
-|---|---|---|
-| W2a | Accepted | Shell foundation, mobile nav baseline, Today redesign |
-| W2b | Next | Review Queue redesign and shared task drawer foundation |
-| W2c | Planned | Tasks inbox and cross-board task rows |
-| W2d | Planned | Boards monitor and team board views |
-| W2e | Planned | Calendar and Planner redesign |
-| W2f | Planned | Settings, OKR, and Weekly Focus polish |
+| Canonical ID | Alias | Status | Outcome |
+|---|---|---|---|
+| `V0.2-W2-01` | `W2a` | Accepted | Shell foundation, mobile nav baseline, Today redesign |
+| `V0.2-W2-02` | `W2b` | Next | Review Queue redesign and shared task drawer foundation |
+| `V0.2-W2-03` | `W2c` | Planned | Tasks inbox and cross-board task rows |
+| `V0.2-W2-04` | `W2d` | Planned | Boards monitor and team board views |
+| `V0.2-W2-05` | `W2e` | Planned | Calendar and Planner redesign |
+| `V0.2-W2-06` | `W2f` | Planned | Settings, OKR, and Weekly Focus polish |
 
 **Done when:**
 
 - Every production route has desktop/mobile visual QA evidence.
 - Existing live workflows still work or are verified with controlled responses when credentials are unavailable.
 - No mobile page-level horizontal overflow remains.
-- PM accepts W2f and explicitly marks Full UI Redesign complete.
+- PM accepts `V0.2-W2-06` (`W2f`) and explicitly marks Full UI Redesign complete.
 
 ### L3 - V0.2 Paperclip Foundation
 
@@ -137,8 +138,8 @@ Promote only a coherent internal preview release, not partial work labeled as do
 
 **Release candidate gate:**
 
-- W1 hosted dev evidence accepted.
-- W2 full UI redesign accepted through W2f.
+- W1 `V0.2-W1-06` access-gated no-cost preview evidence accepted.
+- W2 full UI redesign accepted through `V0.2-W2-06` (`W2f`).
 - W3 mock integration remains passing.
 - `npm.cmd run check:all` passes with `node server.js` running.
 - Paperclip contract/mock verification passes.
@@ -183,7 +184,7 @@ Focus:
 
 - Do not merge partial W2 visual work to `main` as "full redesign."
 - Do not start live Paperclip calls before approval gates, attribution, and no-side-effect checks are preserved.
-- Do not treat W1 deployment docs as hosted runtime verification.
+- Do not treat W1 deployment docs or repo readiness as runtime/access verification.
 - Do not add broad platform features that make the tool heavier for a small team.
 - Do not use `main` as an integration branch.
 - Do not skip QA after behavior-changing Dev work.
@@ -195,13 +196,13 @@ Focus:
 Current recommended next implementation path:
 
 ```text
-W2b Review Queue Redesign
--> QA W2b
--> PM W2b acceptance
--> W2c Tasks Inbox
+V0.2-W2-02 Review Queue Redesign
+-> QA V0.2-W2-02
+-> PM V0.2-W2-02 acceptance
+-> V0.2-W2-03 Tasks Inbox
 ```
 
-W1 hosted runtime setup remains important, but PM has currently prioritized correcting the W2 ladder and closing full UI redesign scope before claiming V0.2 release readiness.
+W1 `V0.2-W1-05`/`V0.2-W1-06` access setup remains important, but PM has currently prioritized correcting the W2 ladder and closing full UI redesign scope before claiming V0.2 release readiness.
 
 ---
 
@@ -210,3 +211,4 @@ W1 hosted runtime setup remains important, but PM has currently prioritized corr
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-08 | Created project-wide ladder after W2 scope clarification and V0.2 doc consolidation | Codex PM |
+| 2026-05-08 | Updated L1 W1 access language to canonical `V0.2-W1-05`/`V0.2-W1-06` no-cost preview structure | Codex PM |

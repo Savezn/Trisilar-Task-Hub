@@ -10,8 +10,8 @@ Deployment and hosted environment documents live here so deployment setup is not
 
 | File | Purpose |
 |---|---|
-| `DEPLOYMENT_SETUP.md` | V0.2 W1b deploy-readiness setup for Render/Railway, access gate, env vars, and persistent state |
-| `DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2 W1c hosted dev environment setup handoff |
+| `DEPLOYMENT_SETUP.md` | V0.2-W1-02 deploy-readiness setup for Render/Railway, access gate, env vars, and persistent state; legacy label W1b |
+| `DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config and V0.2-W1-05 no-cost preview handoff |
 
 Related docs:
 

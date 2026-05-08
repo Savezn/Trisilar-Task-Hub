@@ -1,7 +1,7 @@
-# Dev Environment Deployment - V0.2 W1c
+# Dev Environment Deployment - V0.2-W1-03 / V0.2-W1-05
 
-**Doc Role:** Hosted dev environment setup handoff
-**Status:** Runtime setup blocked on Trisilar platform/DNS/Access configuration
+**Doc Role:** Dev deployment config and no-cost preview runtime handoff
+**Status:** `V0.2-W1-05` runtime setup blocked on Cloudflare/DNS/local secret configuration
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -12,7 +12,7 @@
 
 ## Purpose
 
-This document records the W1c dev environment deployment path only. It prepares the hosted dev service from branch `dev`, documents env var names without secret values, and keeps production untouched.
+This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
 ---
 
@@ -20,7 +20,7 @@ This document records the W1c dev environment deployment path only. It prepares 
 
 Use Cloudflare Tunnel + Cloudflare Access as the no-cost W1 teammate preview path. The app runs on a local/dev machine, `cloudflared` exposes it through the dev hostname, and Cloudflare Access gates human teammate access by email allowlist.
 
-Keep Render as the default paid hosted dev service because W1b approved Render as the default long-running Node/Express host with persistent disk support. Paid Render setup is deferred until always-on runtime is justified.
+Keep Render as the default paid hosted dev service because `V0.2-W1-02` approved Render as the default long-running Node/Express host with persistent disk support. Paid Render setup is deferred until always-on runtime is justified.
 
 Use Railway only if Trisilar account availability makes Railway faster operationally or PM chooses it as the paid hosted alternate. The alternate Railway config is included, but it is not the W1 no-cost preview path.
 
@@ -33,7 +33,7 @@ Use Railway only if Trisilar account availability makes Railway faster operation
 | `render.yaml` | Render Blueprint for the dev web service on branch `dev` with `/healthz`, `APP_DATA_DIR`, and placeholder secret slots |
 | `railway.toml` | Railway alternate service config with the same build/start/health check shape |
 
-No production service is configured in W1c. Paid hosted dev service creation is deferred while W1 uses the Cloudflare Tunnel preview path.
+No production service is configured in W1. Paid hosted dev service creation is deferred while W1 uses the Cloudflare Tunnel preview path.
 
 ---
 
@@ -133,7 +133,7 @@ Do not rely on the Render or Railway platform URL as access control.
 
 ## Local Verification Completed
 
-W1c was verified locally before platform setup:
+`V0.2-W1-03` was verified locally before platform/runtime setup:
 
 ```powershell
 node server.js
@@ -189,8 +189,8 @@ What was checked from the local workstation:
 
 Current conclusion:
 
-- Repo-side W1c configuration is ready.
-- Hosted runtime setup is blocked until a Trisilar-controlled platform account/workspace, DNS, secret values, and Cloudflare Access policy are configured.
+- Repo-side `V0.2-W1-03` configuration is ready.
+- `V0.2-W1-05`/`V0.2-W1-06` runtime setup is blocked until Cloudflare Tunnel/DNS, local secret values, and Cloudflare Access policy are configured.
 - No production deployment was attempted.
 - No secrets were committed.
 
@@ -198,12 +198,12 @@ Current conclusion:
 
 ## Current Runtime Blockers
 
-W1c cannot complete hosted verification from the repo alone. These Trisilar runtime items are required:
+`V0.2-W1-05` cannot complete preview verification from the repo alone. These Trisilar runtime items are required:
 
-- Confirm Render account/workspace access, or choose Railway explicitly.
-- Install/authenticate the selected platform CLI or complete setup through the selected platform dashboard.
-- Connect the GitHub repo service from branch `dev`.
-- Configure dev-only Trello and Google credentials in the platform dashboard.
+- Confirm preview hostname, default `taskhub-dev.trisilar.com`, or record a PM-approved alternate.
+- Install or authenticate `cloudflared` on the local/dev machine.
+- Run the app locally from the `dev` baseline with stable `APP_DATA_DIR`.
+- Configure dev-only Trello and Google credentials locally or in a secure runtime dashboard; do not put values in chat or git.
 - Configure the dev Google OAuth redirect URI.
 - Configure DNS for the dev hostname; `taskhub-dev.trisilar.com` did not resolve during this Codex Dev attempt.
 - Configure Cloudflare Access email allowlist.
@@ -218,4 +218,4 @@ W1c cannot complete hosted verification from the repo alone. These Trisilar runt
 - No committed secrets.
 - No W2 UI redesign.
 - No W3 Paperclip integration.
-- No behavior changes beyond dev environment deployment configuration.
+- No behavior changes beyond W1 dev deployment/no-cost preview configuration.
