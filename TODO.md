@@ -72,6 +72,19 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 
 ---
 
+## Enterprise-Grade Hardening Backlog
+
+These items are not blockers for the current W2b/W1 runtime work. They are the next quality bar after V0.2 core access, redesign, and Paperclip integration stabilize.
+
+| Area | Gap | Recommended path |
+|---|---|---|
+| Automated test suite | Current coverage is mostly smoke and structural verification. Unit, integration, and browser regression tests are not yet systematic. | Expand from `docs/testing/TEST_STRATEGY.md`: route tests, Trello model tests, deterministic fixtures, browser navigation regression, and CI gates. |
+| Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |
+| Deployment/runtime setup | Dev/prod deployment docs exist, but hosted runtime setup still needs actual platform configuration, secrets, persistent storage, and access gate verification. | Continue W1 runtime setup from `docs/deployment/` and verify hosted dev before production promotion. |
+| Historical document encoding | Some archive/log files still contain mojibake from earlier encoding corruption. | Run a separate UTF-8 repair task on archive/log docs only; use targeted edits and preserve historical meaning. |
+
+---
+
 ## Roadmap Rules
 
 - Do not put detailed QA evidence in this file.
