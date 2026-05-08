@@ -288,7 +288,11 @@ function buildCalGrid(year, month, events, trelloCards = []) {
 }
 
 // ── Calendar Setup (OAuth) ────────────────────────────────────────────────────
-function openCalSetup()  { $("cal-setup-modal").classList.remove("hidden"); }
+function openCalSetup()  {
+  const redirectEl = $("setup-redirect-uri");
+  if (redirectEl) redirectEl.textContent = CAL.status?.redirectUri || `${window.location.origin}/auth/callback`;
+  $("cal-setup-modal").classList.remove("hidden");
+}
 function closeCalSetup() { $("cal-setup-modal").classList.add("hidden"); }
 
 async function startGoogleAuth() {

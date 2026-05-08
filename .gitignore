@@ -9,6 +9,7 @@ node_modules/
 # Runtime data files (generated at startup)
 review-sessions.json
 card-events.json
+.data/
 
 # Claude Code session data
 .claude/

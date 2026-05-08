@@ -1,10 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 const { google } = require("googleapis");
+const { getAppBaseUrl, getDataFilePath, getGoogleRedirectUri } = require("./runtime");
 
 // ── Constants ─────────────────────────────────────────────────────────────────
-const REDIRECT_URI = "http://localhost:3000/auth/callback";
-const CARD_EVENTS_FILE = path.join(__dirname, "../../card-events.json");
+const CARD_EVENTS_FILE = getDataFilePath("card-events.json");
 
 // ── Internal Helpers ──────────────────────────────────────────────────────────
 
@@ -37,7 +37,7 @@ function getOAuth2Client() {
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    REDIRECT_URI
+    getGoogleRedirectUri()
   );
 }
 
@@ -127,7 +127,9 @@ function updateEnvKey(key, value) {
 }
 
 module.exports = {
+  getAppBaseUrl,
   getCalendarId,
+  getGoogleRedirectUri,
   getOAuth2Client,
   getCalendarClient,
   getTasksClient,

@@ -1,8 +1,8 @@
 const fs   = require("fs");
-const path = require("path");
 const { randomUUID } = require("crypto");
+const { getDataFilePath } = require("./src/utils/runtime");
 
-const STORE_FILE = path.join(__dirname, "review-sessions.json");
+const STORE_FILE = getDataFilePath("review-sessions.json");
 
 // All file operations are synchronous, so Node's single-threaded event loop
 // guarantees read-modify-write cycles are never interleaved. No external lock needed.

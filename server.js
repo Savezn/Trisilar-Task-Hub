@@ -12,7 +12,9 @@ const { friendlyError } = require("./src/utils/errors");
 const { todayBangkok } = require("./src/utils/date");
 const { readConfig, writeConfig } = require("./src/utils/config");
 const { 
+  getAppBaseUrl,
   getCalendarId, 
+  getGoogleRedirectUri,
   getOAuth2Client, 
   getCalendarClient, 
   getTasksClient, 
@@ -37,8 +39,12 @@ app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
 app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate, autoSyncToGCal }));
 app.use("/api", makeGoogleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }));
 
+app.get("/healthz", (_req, res) => {
+  res.json({ ok: true });
+});
+
 // Root-level mounts (auth, etc)
-app.use(makeCalendarRoutes({ getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, friendlyError }));
+app.use(makeCalendarRoutes({ getAppBaseUrl, getCalendarClient, getCalendarId, getGoogleRedirectUri, getOAuth2Client, updateEnvKey, friendlyError }));
 
 // Wrap buildCfNames to inject trello dependency automatically for routes
 const buildCfNamesInjected = (boardId, cfCache) => buildCfNames(boardId, cfCache, trello);

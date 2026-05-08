@@ -1,7 +1,7 @@
 const fs = require("fs");
-const path = require("path");
+const { getDataFilePath } = require("./runtime");
 
-const CONFIG_FILE = path.join(__dirname, "../../bu-config.json");
+const CONFIG_FILE = getDataFilePath("bu-config.json");
 const DEFAULT_CONFIG = { groups: [], hiddenBoards: [], allowedWorkspaceIds: [] };
 
 /**
