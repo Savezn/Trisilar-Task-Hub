@@ -82,6 +82,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | P7-4 - Project Board Convention Validator | QA Pass | `b345e65` |
 | P7-5 - Weekly Focus View | QA Pass | `5be2ea6` |
 | P9-6 - Trello-backed preview regression | QA Recheck Pass | `e1b4801` |
+| V0.1 Release Acceptance Test | QA Pass | QA only |
 ---
 
 ## Active Tasks
@@ -92,7 +93,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 ---
 
 ### V0.1 Modularization Progress
-**Priority:** 🔴 High (in progress)
+**Priority:** ✅ Done
 **Goal:** แยก monolith `server.js` + `app.js` → module files โดยไม่ break functionality
 
 | Phase | Task | Status |
@@ -118,6 +119,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | Ph6-2 | Frontend module hardening review | Done `e85e384` |
 | Ph6-3 | Frontend module load-order and dependency audit | Done `0b00854` |
 | Ph6-4 | Frontend verification script consolidation | ✅ Done `903e137` |
+| Release Acceptance | V0.1 Release Acceptance Test | ✅ Pass (QA only, 2026-05-08) |
 
 ---
 
@@ -170,6 +172,7 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 | 2026-05-08 | R31 | Pass | P7-4 Project Board Convention Validator pass; list group aliases, metadata hygiene counts, combined convention badge, board/card open paths verified; check:all passed with temporary server; Reviewed by Codex QA; Updated by Codex PM |
 | 2026-05-08 | R32 | Pass | P7-5 Weekly Focus View pass; action lanes, priority/due-soon queue, Review AI path, edit modal path, and check:all verified with temporary server; Reviewed by Codex QA; Updated by Codex PM |
 | 2026-05-08 | R33 | Pass | P9-6 Trello-backed preview regression QA Recheck pass; Trello endpoints return 200 in normal runtime, 429 mapping verified, boards/workspaces cache verified, desktop preview renders Today/All/Boards/OKR/Weekly Focus/Settings with 0 console errors; Reviewed by Codex QA; Updated by Codex PM |
+| 2026-05-08 | R34 | Pass | V0.1 Release Acceptance Test pass; check:all passed, direct routes/sidebar navigation/back-forward verified, Phase 7 surfaces rendered, console errors 0, no white-screen observed; Reviewed by Codex QA; Updated by Codex PM |
 
 ## Deferred (ยังไม่ทำ)
 
@@ -203,110 +206,65 @@ Phase 8 เสร็จสมบูรณ์ (2026-05-06) — Post-MVP Enhanceme
 
 ---
 
-## Next Action - QA
+## Next Action - PM
 
 ---
 
-### V0.1 Release Acceptance Test
+### V0.1 Release Closeout + Next Milestone Decision
 
 **Context:**
-Phase 7 is closed and P9-6 Trello-backed preview regression passed QA Recheck.
-Latest Dev Fix commit: `e1b4801`
+V0.1 Release Acceptance Test passed.
+Latest runtime fix: `e1b4801`
 Reviewed by: Codex QA
 
 **Goal:**
-Verify V0.1 is stable after modularization, hardening, routing, Phase 7 OKR/Portfolio work, and P9-6 preview regression fix.
+Close V0.1 formally, decide whether to tag a `v0.1.0` release, and choose the next milestone before opening a new Dev session.
 
 **What to do:**
-1. Run `npm.cmd run check:all` with a running local server.
-2. Browser preview desktop width.
-3. Verify direct paths render matching pages:
-   - `/`
-   - `/today`
-   - `/review`
-   - `/all`
-   - `/boards`
-   - `/calendar`
-   - `/okr`
-   - `/focus`
-   - `/settings`
-4. Verify sidebar navigation updates URL path and renders matching page:
-   - Today
-   - Review
-   - All Tasks
-   - Boards Monitor
-   - Calendar
-   - OKR
-   - Weekly Focus
-   - Settings
-5. Verify browser back/forward works.
-6. Verify Phase 7 surfaces render:
-   - OKR/Portfolio filters and progress view
-   - Boards Monitor convention validator
-   - Weekly Focus action lanes
-7. Verify at least one existing card can open in the Task Hub edit modal from:
-   - All Tasks
-   - Boards Monitor or Weekly Focus
-8. Verify no uncaught browser console errors during navigation.
-9. Verify mobile-width behavior does not white-screen.
+1. Review `CURRENT_SPRINT.md`, `DEVELOPMENT_PLAN.md`, and `MVP_PRD.md` for stale V0.1 status.
+2. Decide whether to create release tag `v0.1.0`.
+3. Decide next milestone:
+   - P9 maintenance backlog cleanup
+   - P8/P10 post-MVP polish
+   - New V0.2 scope
+4. If docs need updates, update only the necessary status/roadmap sections.
+5. If tagging release, run:
+   - `git tag -a v0.1.0 -m "V0.1 release"`
+   - `git push origin v0.1.0`
+6. Replace Next Action with the chosen Dev/QA/PM prompt.
 
 **Rules:**
-- QA only: do not edit files.
-- Grep first, targeted reads for large files.
-- Report PASS / FAIL with evidence.
-- Include attribution: Reviewed by QA agent name.
+- PM only unless a release tag is explicitly approved.
+- Keep docs targeted and UTF-8 safe.
+- Do not rewrite Thai/emoji-heavy markdown broadly.
+- Include attribution: Updated by PM agent name.
 
-**Copy-paste prompt for QA session:**
+**Copy-paste prompt for PM session:**
 ```
-Role: QA
-Task: V0.1 Release Acceptance Test
+Role: PM
+Task: V0.1 Release Closeout + Next Milestone Decision
 
 Context:
-Phase 7 is closed and P9-6 Trello-backed preview regression passed QA Recheck.
-Latest Dev Fix commit: e1b4801
+V0.1 Release Acceptance Test passed.
+Latest runtime fix: e1b4801
 Reviewed by: Codex QA
 
 Goal:
-Verify V0.1 is stable after modularization, hardening, routing, Phase 7 OKR/Portfolio work, and P9-6 preview regression fix.
+Close V0.1 formally, decide whether to tag v0.1.0, and choose the next milestone before opening a new Dev session.
 
 Steps:
-1. Run npm.cmd run check:all with a running local server.
-2. Browser preview desktop width.
-3. Verify direct paths render matching pages:
-   - /
-   - /today
-   - /review
-   - /all
-   - /boards
-   - /calendar
-   - /okr
-   - /focus
-   - /settings
-4. Verify sidebar navigation updates URL path and renders matching page:
-   - Today
-   - Review
-   - All Tasks
-   - Boards Monitor
-   - Calendar
-   - OKR
-   - Weekly Focus
-   - Settings
-5. Verify browser back/forward works.
-6. Verify Phase 7 surfaces render:
-   - OKR/Portfolio filters and progress view
-   - Boards Monitor convention validator
-   - Weekly Focus action lanes
-7. Verify at least one existing card can open in the Task Hub edit modal from:
-   - All Tasks
-   - Boards Monitor or Weekly Focus
-8. Verify no uncaught browser console errors during navigation.
-9. Verify mobile-width behavior does not white-screen.
+1. Review CURRENT_SPRINT.md, DEVELOPMENT_PLAN.md, and MVP_PRD.md for stale V0.1 status.
+2. Decide whether to create release tag v0.1.0.
+3. Decide next milestone: P9 maintenance backlog cleanup, P8/P10 post-MVP polish, or V0.2 scope.
+4. If docs need updates, update only necessary status/roadmap sections.
+5. If tagging release, ask for explicit approval before creating/pushing the tag.
+6. Replace Next Action with the chosen Dev/QA/PM prompt.
 
 Rules:
-- QA only: do not edit files.
-- Grep first, targeted reads for large files.
-- Report PASS / FAIL with evidence.
-- Include attribution: Reviewed by QA agent name.
+- PM only unless release tag is explicitly approved.
+- Keep docs targeted and UTF-8 safe.
+- Do not rewrite Thai/emoji-heavy markdown broadly.
+- Include attribution: Updated by PM agent name.
 ```
 
 ---
@@ -344,4 +302,4 @@ Rules:
 | P7 OKR / Portfolio Layer | ✅ Done (2026-05-08) |
 | P8 Post-MVP Enhancements | ✅ Done (2026-05-06) |
 | **P9 Maintenance & Iteration** | **⬜ Ongoing** |
-| **V0.1 Modularization** | **✅ Done (Router-1 + Ph6-4 complete)** |
+| **V0.1 Modularization** | **✅ Done (Release Acceptance passed)** |
