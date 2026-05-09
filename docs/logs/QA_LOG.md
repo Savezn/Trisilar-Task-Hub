@@ -64,6 +64,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.2-W2-03 - Tasks Inbox + Cross-board Rows | QA Recheck Pass / PM Accepted | `ea807fd` |
 | V0.2-W2-04 - Boards Monitor + Team Board Views Integration | Integration QA Pass / PM Accepted | `dev@0b77aed` |
 | V0.2-W2-05 - Calendar + Planner Integration | Integration QA Pass / PM Accepted | `dev@3fca059` |
+| V0.2-W2-06 - Settings + OKR + Weekly Focus Polish | QA Recheck Pass / PM Accepted | `d83614d` |
 
 ---
 
@@ -114,6 +115,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-09 | R40 | Pass | `V0.2-W2-03` Tasks Inbox + Cross-board Rows QA Recheck pass at `ea807fd`; `check:all`, Paperclip contract/mock verification, Tasks populated/search/filter/label/owner/group/export/open-edit/inline rename/mark done workflows, mobile Tasks overflow 0, unclipped rows, mobile nav, Today smoke, Review drawer smoke, and console checks passed. Controlled API responses were used for populated visual/workflow QA to avoid local Trello credential dependency; Reviewed by Codex QA Recheck; Accepted by Codex PM |
 | 2026-05-09 | R41 | Pass | `V0.2-W2-04` Boards Monitor + Team Board Views integration QA pass on `dev@0b77aed`; accepted Boards redesign/drawer regression plus Today, Review, Tasks, and W3 Paperclip contract/mock regression remained stable; Reviewed by Codex Integration QA; Accepted by Codex PM |
 | 2026-05-09 | R42 | Pass | `V0.2-W2-05` Calendar + Planner integration QA pass on `dev@3fca059`; `check:all`, Paperclip contract/mock verification, Calendar create/edit/delete controlled API paths, Planner Google Tasks add/complete, Trello due list rendering, disconnected states, Today/Review/Tasks/Boards regression smoke, mobile overflow 0 for Calendar, Planner, Today, Review, Tasks, and Boards, and console/page error checks passed. Controlled API responses were used for populated Calendar/Planner workflow QA to avoid local credential sensitivity; Reviewed by Codex Integration QA; Accepted by Codex PM |
+| 2026-05-09 | R43 | Pass | `V0.2-W2-06` Settings + OKR + Weekly Focus Polish QA Recheck pass at `d83614d`; `check:all`, Paperclip contract/mock verification, Settings hidden board/team/group/workspace save paths, disconnected integration surfaces, OKR detail/filter behavior, Weekly Focus owner filter and Review Queue navigation, Review drawer smoke, final W2 mobile overflow 0 for Settings, OKR, Focus, Today, Review, Tasks, Boards, Calendar, and Planner, and console/page error checks passed. Controlled API responses were used for populated browser QA to avoid local credential sensitivity; Reviewed by Codex QA Recheck; Accepted by Codex PM |
 
 ---
 

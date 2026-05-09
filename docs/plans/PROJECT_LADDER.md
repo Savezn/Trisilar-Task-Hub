@@ -49,7 +49,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 |---|---|---|---|---|
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
 | L1 | V0.2 Access Foundation | Active / W1.4 demo accepted | Teammates can access a no-cost preview app safely with environment, persistence, and access-control boundaries; current no-domain demo uses random ngrok URL + temporary Basic Auth | `V0.2-W1-06` stable access-gated preview verified before release-grade access; W1.4 random ngrok is accepted for manual demo only; no secrets committed |
-| L2 | V0.2 Full UI Redesign | Active | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted |
+| L2 | V0.2 Full UI Redesign | Active - W2-06 accepted, integration pending | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted and integrated on `dev` |
 | L3 | V0.2 Paperclip Foundation | Accepted mock / live future | Paperclip task handoff has a contract, mock adapter, attribution, and audit trail without uncontrolled side effects | Contract/mock verification passed; live connector remains separately gated |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
 | L5 | V0.3 Reliability Hardening | Planned | Automated tests, deterministic fixtures, browser regression, CI gate, backend structure hardening | Test strategy implemented enough to reduce manual QA risk |
@@ -88,7 +88,7 @@ Provide a safe no-cost preview environment before wider teammate access.
 
 ### L2 - V0.2 Full UI Redesign
 
-**Status:** Active; `V0.2-W2-01` (`W2a`), `V0.2-W2-02` (`W2b`), and `V0.2-W2-03` (`W2c`) accepted, `V0.2-W2-04`-`V0.2-W2-06` remain.
+**Status:** Active; `V0.2-W2-01` (`W2a`) through `V0.2-W2-06` (`W2f`) are QA/PM accepted. `V0.2-W2-06` remains pending integration into `dev` and Integration QA/PM acceptance.
 
 **Goal:**
 Make the whole app feel like one coherent command center, not a mix of old screens and one redesigned page.
@@ -102,14 +102,14 @@ Make the whole app feel like one coherent command center, not a mix of old scree
 | `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
 | `V0.2-W2-04` | `W2d` | Next after W2-03 integration | Boards monitor and team board views |
 | `V0.2-W2-05` | `W2e` | Planned | Calendar and Planner redesign |
-| `V0.2-W2-06` | `W2f` | Planned | Settings, OKR, and Weekly Focus polish |
+| `V0.2-W2-06` | `W2f` | Accepted `d83614d` / pending integration | Settings, OKR, and Weekly Focus polish |
 
 **Done when:**
 
 - Every production route has desktop/mobile visual QA evidence.
 - Existing live workflows still work or are verified with controlled responses when credentials are unavailable.
 - No mobile page-level horizontal overflow remains.
-- PM accepts `V0.2-W2-06` (`W2f`) and explicitly marks Full UI Redesign complete.
+- PM accepts `V0.2-W2-06` (`W2f`) and Integration QA/PM accepts the merged `dev` state.
 
 ### L3 - V0.2 Paperclip Foundation
 
@@ -141,7 +141,7 @@ Promote only a coherent internal preview release, not partial work labeled as do
 **Release candidate gate:**
 
 - W1 `V0.2-W1-06` stable access-gated no-cost preview evidence accepted for release-grade access. `V0.2-W1-05` random ngrok acceptance covers manual demo only.
-- W2 full UI redesign accepted through `V0.2-W2-06` (`W2f`).
+- W2 full UI redesign accepted through `V0.2-W2-06` (`W2f`) and integrated on `dev`.
 - W3 mock integration remains passing.
 - `npm.cmd run check:all` passes with `node server.js` running.
 - Paperclip contract/mock verification passes.

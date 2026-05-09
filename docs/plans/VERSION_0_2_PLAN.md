@@ -99,7 +99,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
 | W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06` deferred pending domain/subdomain | Internal access, no-cost teammate preview, deferred paid hosted target, env/secrets, future agent access pattern |
-| W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` planned next / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
+| W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` accepted `d83614d` and pending integration | Design system, shell/nav, page-by-page redesign, responsive QA |
 | W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` | Contract-first mock adapter, attribution/audit sync; live connector remains future work |
 
 ---
@@ -130,7 +130,7 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
 | `V0.2-W2-04` | `W2d` | Accepted `47ebd84` / integrated on `dev@0b77aed` | Boards Monitor and team board views |
 | `V0.2-W2-05` | `W2e` | Accepted `4638df7` / integrated on `dev@3fca059` | Calendar and Planner redesign |
-| `V0.2-W2-06` | `W2f` | Planned next | Settings, OKR, and Weekly Focus polish |
+| `V0.2-W2-06` | `W2f` | Accepted `d83614d` / pending integration | Settings, OKR, and Weekly Focus polish |
 
 ### W3 - Paperclip Multi-Agent Integration
 
@@ -227,7 +227,7 @@ W1 uses random ngrok URL + temporary Basic Auth as the current no-domain manual 
 
 **Priority:** P1 after W0
 **Owner Role:** Frontend Dev
-**Status:** `V0.2-W2-01` done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W2-02` done `d33d8f7` / QA Recheck Pass / PM Accepted; `V0.2-W2-03` done `ea807fd` / QA Recheck Pass / PM Accepted; `V0.2-W2-04` done `47ebd84` / integrated on `dev@0b77aed`; `V0.2-W2-05` done `4638df7` / integrated on `dev@3fca059`; `V0.2-W2-06` planned next
+**Status:** `V0.2-W2-01` done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W2-02` done `d33d8f7` / QA Recheck Pass / PM Accepted; `V0.2-W2-03` done `ea807fd` / QA Recheck Pass / PM Accepted; `V0.2-W2-04` done `47ebd84` / integrated on `dev@0b77aed`; `V0.2-W2-05` done `4638df7` / integrated on `dev@3fca059`; `V0.2-W2-06` accepted `d83614d` / pending integration into `dev`
 **Detailed Plan:** `VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`
 
 **Scope:**
@@ -246,11 +246,11 @@ W1 uses random ngrok URL + temporary Basic Auth as the current no-domain manual 
 | `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
 | `V0.2-W2-04` | `W2d` | Accepted `47ebd84` / integrated on `dev@0b77aed` | Boards monitor and team board views |
 | `V0.2-W2-05` | `W2e` | Accepted `4638df7` / integrated on `dev@3fca059` | Calendar and Planner redesign |
-| `V0.2-W2-06` | `W2f` | Planned next | Settings, OKR, and Weekly Focus polish |
+| `V0.2-W2-06` | `W2f` | Accepted `d83614d` / pending integration | Settings, OKR, and Weekly Focus polish |
 
 **PM Clarification:**
 
-`V0.2-W2-01` through `V0.2-W2-05` acceptance does not mean the full UI redesign is complete. Full W2 acceptance still requires `V0.2-W2-06` implementation, QA, and PM acceptance against `docs/design/ui-design-v1-0/`.
+`V0.2-W2-01` through `V0.2-W2-06` feature acceptance means the planned W2 feature scope has passed QA/PM. Full W2 integration still requires merging accepted `V0.2-W2-06` into `dev` and passing Integration QA/PM acceptance against `docs/design/ui-design-v1-0/`.
 
 Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
@@ -356,3 +356,4 @@ Rules:
 | 2026-05-09 | Accepted `V0.2-W2-03` Tasks Inbox + Cross-board Rows at `ea807fd`; routed W2 next to W2-03 integration into `dev`, then `V0.2-W2-04` Boards Monitor + Team Board Views | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-04` Boards Monitor + Team Board Views at `47ebd84` and accepted its integration on `dev@0b77aed`; routed W2 next to `V0.2-W2-05` Calendar + Planner | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-05` Calendar + Planner at `4638df7` and accepted its integration on `dev@3fca059`; routed W2 next to final phase `V0.2-W2-06` Settings + OKR + Weekly Focus Polish | Codex PM |
+| 2026-05-09 | Accepted `V0.2-W2-06` Settings + OKR + Weekly Focus Polish at `d83614d`; routed next to Dev Integration into `dev` | Codex PM |
