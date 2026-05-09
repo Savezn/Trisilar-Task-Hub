@@ -36,6 +36,7 @@ function getAllowedCards() {
 
 
 // ── Planner Page ──────────────────────────────────────────────────────────────
+// V0.2-W2-05 Planner redesign implemented by Codex Dev.
 async function showPlannerPage() {
   S.mode = "planner";
   S.currentBoardId = null;
@@ -47,17 +48,37 @@ async function showPlannerPage() {
   const dateStr = formatThaiDateTime(new Date().toISOString(), false);
 
   $("board-content").innerHTML = `
-    <div class="planner-wrap">
-      <div class="planner-date">${dateStr}</div>
-
-      <div class="planner-section">
-        <div class="planner-section-title">📝 Google Tasks — วันนี้</div>
-        <div id="planner-gtasks-body"><div class="planner-loading">กำลังโหลด…</div></div>
+    <div class="planner-page">
+      <div class="planner-command-panel">
+        <div class="planner-command-copy">
+          <div class="planner-kicker">${icon("checkSquare")} Daily planner</div>
+          <h1 class="planner-title">Daily Planner</h1>
+          <p class="planner-subtitle">Plan today from Google Tasks and Trello deadlines without mixing the source systems.</p>
+          <div class="planner-date">${dateStr}</div>
+        </div>
+        <div class="planner-command-stats" aria-label="Planner summary">
+          <div class="planner-stat-card"><span>Google Tasks</span><strong id="planner-gtasks-count">...</strong></div>
+          <div class="planner-stat-card is-warning"><span>Due today</span><strong id="planner-today-count">...</strong></div>
+          <div class="planner-stat-card"><span>Due tomorrow</span><strong id="planner-tomorrow-count">...</strong></div>
+        </div>
       </div>
 
-      <div class="planner-section">
-        <div class="planner-section-title">📋 Trello — Due Today &amp; Tomorrow</div>
-        <div id="planner-trello-body"><div class="planner-loading">กำลังโหลด…</div></div>
+      <div class="planner-grid">
+        <section class="planner-section planner-panel-google">
+          <div class="planner-section-title">
+            <span>${icon("checkSquare")} Google Tasks</span>
+            <em id="planner-gtasks-state">Loading</em>
+          </div>
+          <div id="planner-gtasks-body"><div class="planner-loading">Loading Google Tasks...</div></div>
+        </section>
+
+        <section class="planner-section planner-panel-trello">
+          <div class="planner-section-title">
+            <span>${icon("calendar")} Trello deadlines</span>
+            <em>Today and tomorrow</em>
+          </div>
+          <div id="planner-trello-body"><div class="planner-loading">Loading Trello deadlines...</div></div>
+        </section>
       </div>
     </div>
   `;
@@ -71,16 +92,23 @@ async function loadPlannerGTasks() {
   try {
     const status = await api.get("/api/google-tasks/status");
     if (!status.connected) {
+      if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = "Off";
+      if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Disconnected";
       body.innerHTML = `
         <div class="planner-connect-state">
-          <p>เชื่อมต่อ Google Tasks เพื่อดู to-do list ประจำวัน</p>
-          <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Google →</button>
+          <strong>Google Tasks is disconnected</strong>
+          <p>Connect Google to add and complete daily tasks from the Planner.</p>
+          <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Google</button>
         </div>`;
       return;
     }
     const tasks = await api.get("/api/google-tasks/today");
+    if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = tasks.length;
+    if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Connected";
     renderPlannerGTasks(tasks);
   } catch (e) {
+    if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = "!";
+    if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Error";
     body.innerHTML = `<div class="planner-error">Error: ${esc(e.message)}</div>`;
   }
 }
@@ -91,7 +119,7 @@ function renderPlannerGTasks(tasks) {
 
   let listHtml = "";
   if (tasks.length === 0) {
-    listHtml = `<div class="planner-empty">ไม่มี task วันนี้ 🎉</div>`;
+    listHtml = `<div class="planner-empty">No Google Tasks due today.</div>`;
   } else {
     listHtml = `<div class="planner-task-list">` +
       tasks.map(t => `
@@ -99,6 +127,7 @@ function renderPlannerGTasks(tasks) {
           <input type="checkbox" class="planner-checkbox"
             onchange="plannerCompleteTask('${esc(t.id)}',this)">
           <span class="planner-task-title">${esc(t.title)}</span>
+          <span class="planner-source-pill">Google</span>
         </div>`).join("") +
     `</div>`;
   }
@@ -106,9 +135,9 @@ function renderPlannerGTasks(tasks) {
   body.innerHTML = listHtml + `
     <div class="planner-add-row">
       <input type="text" id="planner-add-input" class="planner-add-input"
-        placeholder="+ เพิ่ม task สำหรับวันนี้..."
+        placeholder="Add a Google Task for today..."
         onkeydown="if(event.key==='Enter')plannerAddTask()">
-      <button class="btn btn-sm planner-add-btn" onclick="plannerAddTask()">Add</button>
+      <button class="btn btn-sm planner-add-btn" onclick="plannerAddTask()">${icon("plus")} Add</button>
     </div>`;
 }
 
@@ -123,7 +152,11 @@ async function plannerCompleteTask(taskId, checkbox) {
         row.remove();
         const list = $("planner-gtasks-body")?.querySelector(".planner-task-list");
         if (list && !list.querySelector(".planner-task-row")) {
-          list.innerHTML = `<div class="planner-empty">ไม่มี task วันนี้ 🎉</div>`;
+          list.innerHTML = `<div class="planner-empty">No Google Tasks due today.</div>`;
+        }
+        if ($("planner-gtasks-count")) {
+          const remaining = $("planner-gtasks-body")?.querySelectorAll(".planner-task-row").length ?? 0;
+          $("planner-gtasks-count").textContent = remaining;
         }
       }, 350);
     }
@@ -155,8 +188,10 @@ async function plannerAddTask() {
       row.innerHTML = `
         <input type="checkbox" class="planner-checkbox"
           onchange="plannerCompleteTask('${esc(task.id)}',this)">
-        <span class="planner-task-title">${esc(task.title)}</span>`;
+        <span class="planner-task-title">${esc(task.title)}</span>
+        <span class="planner-source-pill">Google</span>`;
       list.appendChild(row);
+      if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = list.querySelectorAll(".planner-task-row").length;
     } else {
       await loadPlannerGTasks();
     }
@@ -177,7 +212,9 @@ async function loadPlannerTrello() {
     try {
       S.allCardsCache = await api.get("/api/all-cards");
     } catch (e) {
-      body.innerHTML = `<div class="planner-error">ไม่สามารถโหลด Trello cards ได้</div>`;
+      if ($("planner-today-count")) $("planner-today-count").textContent = "!";
+      if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = "!";
+      body.innerHTML = `<div class="planner-error">Unable to load Trello cards.</div>`;
       return;
     }
   }
@@ -190,9 +227,11 @@ async function loadPlannerTrello() {
 
   const todayCards    = cards.filter(c => c.due && new Date(c.due) >= todayStart    && new Date(c.due) < tomorrowStart);
   const tomorrowCards = cards.filter(c => c.due && new Date(c.due) >= tomorrowStart && new Date(c.due) < dayAfterStart);
+  if ($("planner-today-count")) $("planner-today-count").textContent = todayCards.length;
+  if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = tomorrowCards.length;
 
   if (!todayCards.length && !tomorrowCards.length) {
-    body.innerHTML = `<div class="planner-empty">ไม่มี Trello card ที่ due วันนี้หรือพรุ่งนี้ 🎉</div>`;
+    body.innerHTML = `<div class="planner-empty">No Trello cards due today or tomorrow.</div>`;
     return;
   }
 
@@ -205,12 +244,12 @@ async function loadPlannerTrello() {
 
   let html = "";
   if (todayCards.length) {
-    html += `<div class="planner-sub-label">วันนี้</div>`;
-    html += todayCards.map(c => cardRow(c, "วันนี้", "chip-danger")).join("");
+    html += `<div class="planner-sub-label">Today</div>`;
+    html += todayCards.map(c => cardRow(c, "Today", "chip-danger")).join("");
   }
   if (tomorrowCards.length) {
-    html += `<div class="planner-sub-label">พรุ่งนี้</div>`;
-    html += tomorrowCards.map(c => cardRow(c, "พรุ่งนี้", "chip-warning")).join("");
+    html += `<div class="planner-sub-label">Tomorrow</div>`;
+    html += tomorrowCards.map(c => cardRow(c, "Tomorrow", "chip-warning")).join("");
   }
   body.innerHTML = html;
 }

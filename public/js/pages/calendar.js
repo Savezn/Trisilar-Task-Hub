@@ -1,5 +1,6 @@
 // Calendar page module
 // Implemented by: Codex Dev (2026-05-07)
+// V0.2-W2-05 Calendar redesign implemented by Codex Dev.
 
 const CAL = {
   status: null,
@@ -24,11 +25,24 @@ async function showCalendar() {
 
     if (!CAL.status?.connected) {
       $("board-content").innerHTML = `
-        <div class="cal-connect-state">
-          <div class="empty-icon">📅</div>
-          <h3>Connect Google Calendar</h3>
-          <p>เชื่อมต่อ Google Calendar เพื่อดูและจัดการ events ใน Trisilar calendar</p>
-          <button class="btn btn-primary" onclick="openCalSetup()" style="margin-top:8px">Connect Google Calendar →</button>
+        <div class="calendar-view calendar-disconnected">
+          <div class="calendar-command-panel">
+            <div class="calendar-command-copy">
+              <div class="calendar-kicker">${icon("calendar")} Calendar view</div>
+              <h1 class="calendar-title">Calendar</h1>
+              <p class="calendar-subtitle">Connect Google Calendar to manage events. Trello deadlines stay available through the task and planner views.</p>
+            </div>
+            <div class="calendar-command-stats" aria-label="Calendar connection state">
+              <div class="calendar-stat-card is-muted"><span>Status</span><strong>Offline</strong></div>
+              <div class="calendar-stat-card"><span>Redirect</span><strong>Ready</strong></div>
+            </div>
+          </div>
+          <div class="cal-connect-state">
+            <div class="empty-icon">${icon("calendar")}</div>
+            <h3>Connect Google Calendar</h3>
+            <p>Google Calendar is disconnected. Connect it to create, edit, and delete schedule events from Task Hub.</p>
+            <button class="btn btn-primary" onclick="openCalSetup()">Connect Google Calendar</button>
+          </div>
         </div>`;
       return;
     }
@@ -51,6 +65,7 @@ async function renderCalendar() {
     }
 
     const { currentYear: y, currentMonth: m } = CAL;
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     const start = new Date(y, m, 1).toISOString();
     const end   = new Date(y, m + 1, 0, 23, 59, 59).toISOString();
 
@@ -70,25 +85,55 @@ async function renderCalendar() {
       return;
     }
 
+    const monthPrefix = `${y}-${String(m + 1).padStart(2, "0")}`;
+    const monthLabel = `${monthNames[m]} ${y}`;
+    const now = new Date();
+    const trelloDueThisMonth = CAL.trelloCards.filter(c => c.due?.startsWith(monthPrefix));
+    const trelloOverdue = trelloDueThisMonth.filter(c => !c.dueComplete && new Date(c.due) < now);
+    const agendaItems = buildCalendarAgendaItems(CAL.events, CAL.trelloCards, y, m);
+
     content.innerHTML = "";
     const view = document.createElement("div");
     view.className = "calendar-view";
 
-    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const header = document.createElement("div");
+    header.className = "calendar-command-panel";
+    header.innerHTML = `
+      <div class="calendar-command-copy">
+        <div class="calendar-kicker">${icon("calendar")} Calendar view</div>
+        <h1 class="calendar-title">${monthLabel}</h1>
+        <p class="calendar-subtitle">Google events and Trello deadlines are shown together while keeping their source and action paths separate.</p>
+      </div>
+      <div class="calendar-command-stats" aria-label="Calendar summary">
+        <div class="calendar-stat-card"><span>Google events</span><strong>${CAL.events.length}</strong></div>
+        <div class="calendar-stat-card is-warning"><span>Trello deadlines</span><strong>${trelloDueThisMonth.length}</strong></div>
+        <div class="calendar-stat-card is-danger"><span>Overdue</span><strong>${trelloOverdue.length}</strong></div>
+        <div class="calendar-stat-card is-muted"><span>Boards shown</span><strong>${CAL.selectedBoardIds.length}</strong></div>
+      </div>
+    `;
+    view.appendChild(header);
+
     const topbar = document.createElement("div");
-    topbar.className = "cal-topbar";
+    topbar.className = "cal-topbar calendar-toolbar";
     topbar.innerHTML = `
-      <button class="cal-nav-btn" id="cal-prev">‹</button>
-      <span class="cal-month-label">${monthNames[m]} ${y}</span>
-      <button class="cal-nav-btn" id="cal-next">›</button>
-      <button class="cal-today-btn" id="cal-go-today">Today</button>
-      <button class="btn btn-primary cal-add-btn" id="cal-add">+ New Event</button>
+      <div class="cal-nav-group">
+        <button class="cal-nav-btn" id="cal-prev" title="Previous month">&lt;</button>
+        <span class="cal-month-label">${monthLabel}</span>
+        <button class="cal-nav-btn" id="cal-next" title="Next month">&gt;</button>
+        <button class="cal-today-btn" id="cal-go-today">Today</button>
+      </div>
+      <div class="calendar-source-legend" aria-label="Calendar sources">
+        <span><i class="source-dot is-google"></i>Google event</span>
+        <span><i class="source-dot is-trello"></i>Trello due</span>
+        <span><i class="source-dot is-overdue"></i>Overdue</span>
+      </div>
+      <button class="btn btn-primary cal-add-btn" id="cal-add">${icon("plus")} New event</button>
     `;
     view.appendChild(topbar);
 
     const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
     const selectorRow = document.createElement("div");
-    selectorRow.className = "cal-board-selector";
+    selectorRow.className = "cal-board-selector calendar-source-strip";
     const selectorLabel = document.createElement("span");
     selectorLabel.className = "cal-selector-label";
     selectorLabel.textContent = "Show boards:";
@@ -121,13 +166,17 @@ async function renderCalendar() {
     selectorRow.appendChild(noneBtn);
     view.appendChild(selectorRow);
 
+    const scheduleLayout = document.createElement("div");
+    scheduleLayout.className = "calendar-schedule-layout";
+
     const gridWrap = document.createElement("div");
     gridWrap.className = "cal-grid-wrap";
     gridWrap.appendChild(buildCalGrid(y, m, CAL.events, CAL.trelloCards));
-    view.appendChild(gridWrap);
+    scheduleLayout.appendChild(gridWrap);
+    scheduleLayout.appendChild(buildCalendarAgenda(agendaItems));
+    view.appendChild(scheduleLayout);
 
     // P6-2: empty state banner when no events for this month
-    const monthPrefix = `${y}-${String(m + 1).padStart(2, "0")}`;
     const hasTrelloThisMonth = CAL.trelloCards.some(c => c.due?.startsWith(monthPrefix));
     if (!CAL.events.length && !hasTrelloThisMonth) {
       const calEmpty = document.createElement("div");
@@ -149,6 +198,72 @@ async function renderCalendar() {
     content.innerHTML = `<div class="empty-state"><div class="empty-icon">!</div><h3>Calendar render error</h3><p>${esc(e.message)}</p></div>`;
     toast("Calendar render error: " + e.message, true);
   }
+}
+
+function buildCalendarAgendaItems(events, trelloCards, year, month) {
+  const monthPrefix = `${year}-${String(month + 1).padStart(2, "0")}`;
+  const items = [];
+
+  events.forEach(ev => {
+    const dateStr = ev.start?.date || ev.start?.dateTime?.slice(0, 10);
+    if (!dateStr || !dateStr.startsWith(monthPrefix)) return;
+    items.push({
+      date: dateStr,
+      type: "google",
+      title: ev.summary || "(No title)",
+      meta: ev.start?.dateTime ? new Date(ev.start.dateTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : "All day",
+      actionLabel: "Edit event",
+    });
+  });
+
+  trelloCards.forEach(card => {
+    if (!card.due?.startsWith(monthPrefix)) return;
+    const overdue = !card.dueComplete && new Date(card.due) < new Date();
+    items.push({
+      date: card.due.slice(0, 10),
+      type: overdue ? "overdue" : "trello",
+      title: card.name,
+      meta: `${card.boardName || card.boardId || "Board"} / ${card.listName || "List"}`,
+      actionLabel: "Open card",
+    });
+  });
+
+  return items.sort((a, b) => a.date.localeCompare(b.date)).slice(0, 8);
+}
+
+function buildCalendarAgenda(items) {
+  const panel = document.createElement("aside");
+  panel.className = "calendar-agenda-panel";
+  if (!items.length) {
+    panel.innerHTML = `
+      <div class="calendar-agenda-head">
+        <span>Agenda</span>
+        <strong>0</strong>
+      </div>
+      <div class="calendar-agenda-empty">No Google events or Trello deadlines in this month.</div>
+    `;
+    return panel;
+  }
+
+  panel.innerHTML = `
+    <div class="calendar-agenda-head">
+      <span>Agenda</span>
+      <strong>${items.length}</strong>
+    </div>
+    <div class="calendar-agenda-list">
+      ${items.map(item => `
+        <div class="calendar-agenda-item is-${esc(item.type)}">
+          <div class="calendar-agenda-date">${esc(item.date.slice(5))}</div>
+          <div class="calendar-agenda-copy">
+            <strong>${esc(item.title)}</strong>
+            <span>${esc(item.meta)}</span>
+          </div>
+          <em>${esc(item.actionLabel)}</em>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  return panel;
 }
 
 function buildCalGrid(year, month, events, trelloCards = []) {
@@ -239,7 +354,7 @@ function buildCalGrid(year, month, events, trelloCards = []) {
 
       if (item.type === "gcal") {
         const ev = item.data;
-        chip.className = "cal-event-chip" + (ev.start?.date ? " all-day" : "");
+        chip.className = "cal-event-chip gcal" + (ev.start?.date ? " all-day" : "");
         const timeStr = ev.start?.dateTime
           ? new Date(ev.start.dateTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) + " "
           : "";
@@ -255,7 +370,7 @@ function buildCalGrid(year, month, events, trelloCards = []) {
         const overdue = !card.dueComplete && new Date(card.due) < today;
         if (overdue) chip.classList.add("trello-overdue");
         if (card.dueComplete) chip.classList.add("trello-done");
-        chip.textContent = "📌 " + card.name;
+        chip.textContent = "Due " + card.name;
         chip.title = `[${card.boardName || card.boardId}] ${card.name}`;
         chip.onclick = e => { e.stopPropagation(); openEditAllTasks(card); };
 
@@ -264,7 +379,7 @@ function buildCalGrid(year, month, events, trelloCards = []) {
         const color = boardColorMap[card.boardId] || "#6366f1";
         chip.className = "cal-event-chip trello-start";
         chip.style.setProperty("--trello-color", color);
-        chip.textContent = "▶ " + card.name;
+        chip.textContent = "Start " + card.name;
         chip.title = `Start: [${card.boardName || card.boardId}] ${card.name}`;
         chip.onclick = e => { e.stopPropagation(); openEditAllTasks(card); };
       }
