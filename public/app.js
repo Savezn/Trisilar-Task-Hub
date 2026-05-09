@@ -759,6 +759,7 @@ function labelColor(color) {
   return MAP[color] || "#b3bac5";
 }
 
+// V0.2-W2-06 Weekly Focus polish implemented by Codex Dev.
 // ── Weekly Focus View (P7-5) ──────────────────────────────────────────────────
 async function showWeeklyFocusPage() {
   S.mode = "focus";
@@ -910,12 +911,19 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
       `<option value="${esc(m.id)}"${S.focusOwner === m.id ? " selected" : ""}>${esc(m.fullName || m.username || m.id)}</option>`
     ).join("");
 
+    const weekRange = `${formatThaiDateTime(weekStart, false)} - ${formatThaiDateTime(weekEnd, false)}`;
+    const selectedOwner = S.focusOwner
+      ? allMembers.find(m => m.id === S.focusOwner)
+      : null;
+    const ownerLabel = selectedOwner
+      ? selectedOwner.fullName || selectedOwner.username || selectedOwner.id
+      : "Everyone";
     const pendingBadgeHtml = pendingCount
-      ? `<span class="focus-pending-badge">📋 ${pendingCount} pending review</span>`
+      ? `<span class="focus-pending-badge">${pendingCount} pending review</span>`
       : "";
 
     const laneHtml = lanes.map(({ key, label, hint, cards, showReviewAction }) => `
-      <div class="focus-day-group">
+      <div class="focus-day-group is-${key}">
         <div class="focus-day-header">
           <span class="focus-day-label">${esc(label)}</span>
           <span class="focus-day-count">${cards.length}</span>
@@ -938,27 +946,35 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
 
     const emptyHtml = !activeCards.length && !doneCount && !pendingCount
       ? `<div class="empty-state" style="padding:48px">
-          <div class="empty-icon">🗓</div>
+          <div class="empty-icon">${icon("calendar")}</div>
           <h3>No weekly focus work</h3>
           <p>${S.focusOwner ? "No assigned active work for this owner." : "No active work or pending review items found."}</p>
         </div>`
       : "";
 
     content.innerHTML = `
-      <div class="focus-wrap">
+      <div class="focus-wrap focus-page">
+        <section class="focus-command-panel">
+          <div class="focus-command-copy">
+            <div class="focus-kicker">Weekly operating view</div>
+            <h2 class="focus-command-title">Weekly Focus</h2>
+            <p class="focus-command-subtitle">${esc(weekRange)}. Prioritized from due dates, labels, review status, and blocked signals.</p>
+          </div>
+          <div class="focus-command-stats">
+            <div class="focus-stat"><span class="focus-stat-num">${doNowCount}</span><span class="focus-stat-label">Do Now</span></div>
+            <div class="focus-stat"><span class="focus-stat-num" style="color:var(--warning)">${reviewAiCount}</span><span class="focus-stat-label">AI / Agent</span></div>
+            <div class="focus-stat"><span class="focus-stat-num" style="color:var(--purple,#8b5cf6)">${pendingCount}</span><span class="focus-stat-label">Pending review</span></div>
+            <div class="focus-stat"><span class="focus-stat-num" style="color:var(--success)">${doneCount}</span><span class="focus-stat-label">Done this week</span></div>
+          </div>
+        </section>
         <div class="focus-toolbar">
           ${allMembers.length ? `
             <span class="at-chip-label">Owner:</span>
             <select class="at-select" id="focus-owner-sel">
               <option value="">Everyone</option>${ownerOpts}
             </select>` : ""}
+          <span class="focus-owner-summary">Showing ${esc(ownerLabel)}</span>
           ${pendingBadgeHtml}
-        </div>
-        <div class="focus-summary">
-          <div class="focus-stat"><span class="focus-stat-num">${doNowCount}</span><span class="focus-stat-label">Do Now</span></div>
-          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--warning)">${reviewAiCount}</span><span class="focus-stat-label">AI / Agent</span></div>
-          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--purple,#8b5cf6)">${pendingCount}</span><span class="focus-stat-label">Pending review</span></div>
-          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--success)">${doneCount}</span><span class="focus-stat-label">Done this week</span></div>
         </div>
         <div class="focus-task-list">
           ${laneHtml}${emptyHtml}
