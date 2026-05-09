@@ -1,7 +1,7 @@
 # V0.2 W2 UI Redesign Discovery and Implementation Plan
 
 **Doc Role:** W2-owned discovery, scope, rollout, and QA plan
-**Status:** PM updated - W2-03 accepted; phased full UI redesign continues
+**Status:** PM updated - W2-05 integrated; W2-06 planned next
 **Workstream:** V0.2 W2 - Full UI Redesign
 **Branch Baseline:** `dev` after W0 QA pass at `9dbb47b`
 **Created:** 2026-05-08
@@ -127,15 +127,15 @@ W2 is now managed as a sequence of implementation phases. Each phase should keep
 | `V0.2-W2-01` | `W2a` | Shell Foundation + Today Redesign | Accepted at `b5f67fb` / merged to `dev` | Shell, mobile nav, Today | `pages-shell.jsx`, shared tokens, Today command center | Accepted as foundation only, not full redesign |
 | `V0.2-W2-02` | `W2b` | Review Queue + Shared Task Drawer | Accepted at `d33d8f7` | `/review`, shared review task cards, task detail/edit drawer foundation | `pages-review-cal-settings.jsx`, `TaskDrawer`, review task patterns | QA/Recheck passed Review create/edit/approve/reject/bulk, drawer close paths, mobile overflow, Today smoke, and W3 smoke |
 | `V0.2-W2-03` | `W2c` | Tasks Inbox + Cross-board Rows | Accepted at `ea807fd` | `/all`, task filters, grouping, CSV export, card open/edit | `pages-tasks-boards.jsx`, reusable `TaskRow`, filters, board tags | QA Recheck passed Tasks populated/filtered/empty states, search/filter/group/export, edit flows, mark done, mobile overflow 0, Today smoke, Review smoke, and W3 smoke |
-| `V0.2-W2-04` | `W2d` | Boards Monitor + Team Board Views | Planned next after W2-03 integration | `/boards`, board/team modes, health/convention surfaces, board open behavior | `pages-tasks-boards.jsx`, board/team cards and dense monitor layouts | Boards monitor is redesigned without losing metadata health and label/team workflows |
-| `V0.2-W2-05` | `W2e` | Calendar + Planner | Planned | `/calendar`, `/planner`, Google Calendar status/events, Google Tasks add/complete, Trello due lists | `pages-review-cal-settings.jsx`, calendar/planner surface direction | Calendar and Planner distinguish event/task sources and pass mobile responsive checks |
-| `V0.2-W2-06` | `W2f` | Settings + OKR + Weekly Focus Polish | Planned | `/settings`, `/okr`, `/focus`, integration controls, BU groups, workspace visibility | `pages-review-cal-settings.jsx`, settings cards, page system tokens | Remaining pages inherit the same shell/tokens and no longer look like legacy screens |
+| `V0.2-W2-04` | `W2d` | Boards Monitor + Team Board Views | Accepted at `47ebd84` / integrated on `dev@0b77aed` | `/boards`, board/team modes, health/convention surfaces, board open behavior | `pages-tasks-boards.jsx`, board/team cards and dense monitor layouts | Boards monitor is redesigned without losing metadata health and label/team workflows |
+| `V0.2-W2-05` | `W2e` | Calendar + Planner | Accepted at `4638df7` / integrated on `dev@3fca059` | `/calendar`, `/planner`, Google Calendar status/events, Google Tasks add/complete, Trello due lists | `pages-review-cal-settings.jsx`, calendar/planner surface direction | Calendar and Planner distinguish event/task sources and pass mobile responsive checks |
+| `V0.2-W2-06` | `W2f` | Settings + OKR + Weekly Focus Polish | Planned next | `/settings`, `/okr`, `/focus`, integration controls, BU groups, workspace visibility | `pages-review-cal-settings.jsx`, settings cards, page system tokens | Remaining pages inherit the same shell/tokens and no longer look like legacy screens |
 
 Project phase-ladder alignment:
 
 - Use canonical IDs such as `V0.2-W2-02` first. Keep `W2a`, `W2b`, ... as aliases only.
 - Treat each W2 subphase like prior project phases: dependency, scoped task list, acceptance criteria, Dev -> QA -> PM flow, and explicit next handoff.
-- W2 implementation branches must remain under the existing `feature/w2-*` branch family. The current accepted W2-03 branch is `feature/w2-03-tasks-redesign`; the next implementation branch after W2-03 integration should use `feature/w2-04-boards-redesign` unless PM chooses a more specific W2-04 name.
+- W2 implementation branches must remain under the existing `feature/w2-*` branch family. The next implementation branch after W2-05 integration should use `feature/w2-06-settings-okr-focus-redesign` unless PM chooses a more specific W2-06 name.
 - Do not merge W2 phase work to `main` directly. Each phase goes `feature/w2-* -> dev -> QA -> PM`.
 
 Phase rules:
@@ -143,7 +143,9 @@ Phase rules:
 - `V0.2-W2-01` remains accepted and should not be reopened unless a regression is found.
 - `V0.2-W2-02` is accepted at `d33d8f7` as Review Queue redesign and shared task drawer foundation only. Alias: `W2b`.
 - `V0.2-W2-03` is accepted at `ea807fd` as Tasks Inbox + Cross-board Rows only. Alias: `W2c`.
-- `V0.2-W2-04` should be the next Dev implementation phase after W2-03 integration into `dev`, because Boards Monitor + Team Board Views are the next unreworked high-use surface. Alias: `W2d`.
+- `V0.2-W2-04` is accepted at `47ebd84` and integrated on `dev@0b77aed` as Boards Monitor + Team Board Views only. Alias: `W2d`.
+- `V0.2-W2-05` is accepted at `4638df7` and integrated on `dev@3fca059` as Calendar + Planner only. Alias: `W2e`.
+- `V0.2-W2-06` should be the next Dev implementation phase from updated `dev`, because Settings, OKR, and Weekly Focus are the remaining production routes outside the accepted W2 visual system. Alias: `W2f`.
 - Every phase must include screenshots for desktop and mobile, plus at least one populated state and one empty/error/disconnected state where applicable.
 - QA must compare changed pages against `docs/design/ui-design-v1-0/` and state any accepted visual deviations.
 - PM must update `CURRENT_SPRINT.md`, this plan, and decision logs after each phase acceptance.
@@ -192,6 +194,7 @@ Phase rules:
 
 **Alias:** W2d
 **Depends on:** `V0.2-W2-03` accepted.
+**Status:** Accepted by Codex PM at `47ebd84`; integrated on `dev@0b77aed` after Integration QA/PM acceptance.
 
 **Tasks:**
 
@@ -200,14 +203,15 @@ Phase rules:
 
 **AC:**
 
-- [ ] Board monitor and team board views preserve current navigation and open-card behavior.
-- [ ] Metadata health and convention warning states remain visible and scannable.
-- [ ] Desktop and mobile Boards screenshots cover board mode, team mode, and empty/error states.
+- [x] Board monitor and team board views preserve current navigation and open-card behavior.
+- [x] Metadata health and convention warning states remain visible and scannable.
+- [x] Desktop and mobile Boards screenshots cover board mode, team mode, and empty/error states.
 
 ### V0.2-W2-05 - Calendar + Planner
 
 **Alias:** W2e
 **Depends on:** `V0.2-W2-04` accepted, unless PM explicitly splits Calendar and Planner for risk.
+**Status:** Accepted by Codex PM at `4638df7`; integrated on `dev@3fca059` after Integration QA/PM acceptance.
 
 **Tasks:**
 
@@ -217,14 +221,15 @@ Phase rules:
 
 **AC:**
 
-- [ ] Calendar event create/edit/delete paths still work where credentials are available or controlled responses are used.
-- [ ] Planner Google Tasks add/complete and Trello due list rendering are not regressed.
-- [ ] Mobile Calendar and Planner have no page-level horizontal overflow.
+- [x] Calendar event create/edit/delete paths still work where credentials are available or controlled responses are used.
+- [x] Planner Google Tasks add/complete and Trello due list rendering are not regressed.
+- [x] Mobile Calendar and Planner have no page-level horizontal overflow.
 
 ### V0.2-W2-06 - Settings + OKR + Weekly Focus Polish
 
 **Alias:** W2f
 **Depends on:** `V0.2-W2-05` accepted.
+**Status:** Planned next from updated `dev@3fca059`.
 
 **Tasks:**
 
@@ -245,11 +250,12 @@ Phase rules:
 
 Recommended next implementation PR:
 
-1. Merge accepted `V0.2-W2-03` from `feature/w2-03-tasks-redesign` into `dev`.
-2. Preserve accepted `V0.2-W2-01` shell/Today behavior, `V0.2-W2-02` Review/drawer behavior, `V0.2-W2-03` Tasks behavior, and W3 Paperclip mock behavior.
-3. Run `npm.cmd run check:all`, Paperclip contract/mock verification, and focused browser smoke for `/all`, `/today`, and `/review`.
-4. Do not start `V0.2-W2-04` in the same integration task.
-5. After Integration QA/PM acceptance on `dev`, start `V0.2-W2-04` from updated `dev`.
+1. Start `V0.2-W2-06` from updated `dev@3fca059`.
+2. Create `feature/w2-06-settings-okr-focus-redesign` in the W2 worktree.
+3. Preserve accepted `V0.2-W2-01` through `V0.2-W2-05` behavior and W3 Paperclip mock behavior.
+4. Redesign `/settings`, `/okr`, and `/focus` only.
+5. Run `npm.cmd run check:all`, Paperclip contract/mock verification, focused browser smoke for Settings/OKR/Weekly Focus, and regression smoke for Today, Review, Tasks, Boards, Calendar, Planner, and W3.
+6. Do not merge W2 to `main` or mark W2 complete until `V0.2-W2-06` QA/PM acceptance and integration QA pass.
 
 Phase handoff requirements:
 
@@ -313,9 +319,9 @@ Recommended next Dev task:
 
 ```text
 Role: Dev
-Task: V0.2-W2-03 Integration - Merge Accepted Tasks Redesign Into dev
+Task: V0.2-W2-06 - Settings + OKR + Weekly Focus Polish
 
-Start from updated `dev`. Merge accepted `V0.2-W2-03` only from `feature/w2-03-tasks-redesign` after PM acceptance at `ea807fd`. Do not begin `V0.2-W2-04` in the same task.
+Start from updated `dev@3fca059`. Create `feature/w2-06-settings-okr-focus-redesign` using the latest naming policy and implement only the final planned W2 UI redesign phase.
 
 Read first:
 - CODEX.md
@@ -323,33 +329,32 @@ Read first:
 - docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
 - docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
 - docs/plans/VERSION_0_2_PLAN.md
+- docs/design/ui-design-v1-0/README.md
+- docs/design/ui-design-v1-0/pages-review-cal-settings.jsx
 - public/style.css
 - public/app.js
 - public/js/router.js
 - public/js/utils.js
-- public/js/pages/all-tasks.js
-- public/js/pages/today.js
-- public/js/pages/review.js
+- public/js/pages/settings.js
+- public/js/pages/okr.js
 
 Goal:
-Integrate accepted `V0.2-W2-03` Tasks Inbox + Cross-board Rows into `dev` without changing product scope.
+Redesign Settings, OKR, and Weekly Focus to match the accepted W2 shell/page system while preserving existing route behavior, APIs, integration controls, workspace visibility, hidden boards, monitor teams, BU groups, OKR surfaces, and Weekly Focus workflows.
 
 Rules:
 - Do not implement W1 deployment/access.
 - Do not implement new W3 Paperclip behavior.
 - Do not rewrite to React/Vite.
-- Do not start `V0.2-W2-04`.
+- Do not expand OKR or Weekly Focus strategy scope.
 - Preserve route behavior and existing APIs.
-- Preserve accepted `V0.2-W2-01` shell/Today behavior.
-- Preserve accepted `V0.2-W2-02` Review Queue and drawer behavior.
-- Preserve accepted `V0.2-W2-03` Tasks Inbox behavior.
-- Include attribution: Integrated by Codex Dev.
+- Preserve accepted `V0.2-W2-01` through `V0.2-W2-05` behavior.
+- Include attribution: Implemented by Codex Dev.
 
 Verify:
 - `npm.cmd run check:all`
 - `npm.cmd run verify:paperclip-contract`
 - `npm.cmd run verify:paperclip-mock`
-- `/all` Tasks search/filter/group/export/open/edit/mark done smoke with controlled or live data.
-- `V0.2-W2-01` Today smoke and `V0.2-W2-02` Review/drawer smoke.
-- Mobile overflow smoke for Tasks, Today, and Review.
+- `/settings` save flows and disconnected/integration states.
+- `/okr` and `/focus` render and remain visually consistent with the W2 shell.
+- Mobile overflow smoke for Settings, OKR, Weekly Focus, Today, Review, Tasks, Boards, Calendar, and Planner.
 ```

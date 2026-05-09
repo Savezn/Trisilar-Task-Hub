@@ -1,6 +1,6 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2 W1 Manual Teammate Demo Handoff
+**Phase:** V0.2 W2 Full UI Redesign - W2-06 Next
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-09 - **Updated by:** Codex PM
@@ -19,7 +19,7 @@
 | V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
 | V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
 | V0.2-W1-05 ngrok Random URL Demo | QA Pass / PM Accepted as demo-only path | Reviewed by Codex QA; Accepted by Codex PM; current URL/credentials remain local-only in Desktop handoff file |
-| V0.2 W2 Full UI Redesign | `V0.2-W2-01` accepted (`W2a`, `b5f67fb`); `V0.2-W2-02` accepted (`W2b`, `d33d8f7`); `V0.2-W2-03` accepted (`W2c`, `ea807fd`) / `V0.2-W2-04`-`V0.2-W2-06` planned | `V0.2-W2-03` implemented by Codex Dev, reviewed by Codex QA Recheck, accepted by Codex PM; full redesign still open through `V0.2-W2-06` |
+| V0.2 W2 Full UI Redesign | `V0.2-W2-01` through `V0.2-W2-05` accepted and integrated through `dev@3fca059`; `V0.2-W2-06` planned next | `V0.2-W2-05` integration QA passed on `dev@3fca059` and is accepted by Codex PM; full redesign still open until `V0.2-W2-06` passes QA/PM |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
@@ -33,7 +33,7 @@
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06` stable Cloudflare Access gate deferred until domain/subdomain exists | PM / User |
-| W2 | Full UI Redesign | `V0.2-W2-01`, `V0.2-W2-02`, and `V0.2-W2-03` accepted; `V0.2-W2-04`-`V0.2-W2-06` planned; full redesign not complete | Dev Integration |
+| W2 | Full UI Redesign | `V0.2-W2-01`-`V0.2-W2-05` accepted and integrated on `dev`; `V0.2-W2-06` remains the final planned W2 phase; full redesign not complete | Dev |
 | W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | PM complete |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
@@ -72,7 +72,7 @@ Required branches:
 
 - `V0.2-W1-02` / legacy W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
 - `V0.2-W1-03` / legacy W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
-- W2: `feature/w2-*` phase branches; next integration branch `feature/w2-03-tasks-redesign`, then next implementation branch `feature/w2-04-boards-redesign`
+- W2: `feature/w2-*` phase branches; next implementation branch `feature/w2-06-settings-okr-focus-redesign`
 - W3: `feature/w3-paperclip-integration`
 
 Required worktrees:
@@ -94,16 +94,18 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W2-03 Integration Into dev
+## Next Action - V0.2-W2-06 Settings + OKR + Weekly Focus Polish
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted `V0.2-W2-01` (`W2a`, `b5f67fb`) is shell foundation and Today redesign only. Accepted `V0.2-W2-02` (`W2b`, `d33d8f7`) is Review Queue redesign and shared task drawer foundation only. Accepted `V0.2-W2-03` (`W2c`, `ea807fd`) is Tasks Inbox + Cross-board Rows only. Full W2 UI redesign remains open through `V0.2-W2-04`-`V0.2-W2-06` (`W2d`-`W2f`). The next planned role is Dev integration to merge accepted `feature/w2-03-tasks-redesign` into `dev`; after Integration QA/PM pass, start `V0.2-W2-04` from updated `dev`.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted `V0.2-W2-01` (`W2a`, `b5f67fb`) is shell foundation and Today redesign only. Accepted `V0.2-W2-02` (`W2b`, `d33d8f7`) is Review Queue redesign and shared task drawer foundation only. Accepted `V0.2-W2-03` (`W2c`, `ea807fd`) is Tasks Inbox + Cross-board Rows only. Accepted `V0.2-W2-04` (`W2d`, `47ebd84`, integrated `dev@0b77aed`) is Boards Monitor + Team Board Views only. Accepted `V0.2-W2-05` (`W2e`, `4638df7`, integrated `dev@3fca059`) is Calendar + Planner only. Full W2 UI redesign remains open until `V0.2-W2-06` (`W2f`) passes QA/PM acceptance.
+
+The next planned role is Dev to start `V0.2-W2-06` from updated `dev@3fca059` and create the next W2 phase branch.
 
 ```text
 Role: Dev
-Task: V0.2-W2-03 Integration - Merge Accepted Tasks Redesign Into dev
+Task: V0.2-W2-06 - Settings + OKR + Weekly Focus Polish
 
 Context:
-`V0.2-W2-03` (`W2c`) Tasks Inbox + Cross-board Rows passed QA Recheck and was accepted by PM at `ea807fd`. Merge only accepted W2-03 into `dev`; do not merge W1 runtime/access work or any unaccepted W2 future phase work.
+`V0.2-W2-01` through `V0.2-W2-05` are accepted and integrated on `dev` through `3fca059`. Start from updated `dev`, create `feature/w2-06-settings-okr-focus-redesign`, and implement only the final planned W2 UI redesign phase. This phase covers `/settings`, `/okr`, and `/focus`; it should normalize the remaining legacy surfaces to the accepted W2 shell/tokens without expanding strategy scope.
 
 Read first:
 - CODEX.md
@@ -111,26 +113,35 @@ Read first:
 - docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
 - docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
 - docs/plans/VERSION_0_2_PLAN.md
+- docs/design/ui-design-v1-0/README.md
+- docs/design/ui-design-v1-0/pages-review-cal-settings.jsx
+- public/index.html
+- public/style.css
+- public/app.js
+- public/js/router.js
+- public/js/pages/settings.js
+- public/js/pages/okr.js
 
 Goal:
-Integrate accepted `V0.2-W2-03` from `feature/w2-03-tasks-redesign` into `dev` without changing product scope.
+Redesign Settings, OKR, and Weekly Focus to match the accepted W2 visual system while preserving existing routes, APIs, integration controls, BU groups, workspace visibility, hidden boards, OKR views, and Weekly Focus workflows.
 
 Steps:
-1. Confirm `dev` and `feature/w2-03-tasks-redesign` branch graph.
-2. Merge `feature/w2-03-tasks-redesign` into `dev`.
-3. Resolve only integration conflicts, preserving accepted W2-01, W2-02, W2-03, and W3 behavior.
-4. Run `node server.js` and `npm.cmd run check:all`.
-5. Run `npm.cmd run verify:paperclip-contract` and `npm.cmd run verify:paperclip-mock`.
-6. Smoke `/all` Tasks Inbox workflows, mobile overflow, W2-01 Today, W2-02 Review drawer, and W3 Paperclip mock regression.
-7. Push `dev`.
+1. In the W2 worktree, update from `origin/dev` and confirm the branch starts from `dev@3fca059` or newer.
+2. Create `feature/w2-06-settings-okr-focus-redesign` using the latest naming policy.
+3. Redesign `/settings` as the operational control center for integrations, workspace visibility, hidden boards, monitor teams, and BU groups.
+4. Normalize `/okr` and `/focus` to the W2 page system without adding new portfolio/strategy behavior.
+5. Preserve accepted W2-01 through W2-05 behavior and W3 Paperclip mock behavior.
+6. Capture desktop/mobile visual evidence for Settings, OKR, and Weekly Focus, including populated and empty/error/disconnected states where applicable.
+7. Run `node server.js`, `npm.cmd run check:all`, `npm.cmd run verify:paperclip-contract`, and `npm.cmd run verify:paperclip-mock`.
+8. Smoke Today, Review, Tasks, Boards, Calendar, Planner, and W3 regression after the changes.
 
 Rules:
 - Do not implement W1 deployment/access.
 - Do not implement new W3 Paperclip behavior.
 - Do not rewrite to React/Vite unless PM explicitly approves.
-- Do not start `V0.2-W2-04` in the same integration task.
 - Preserve route behavior and existing APIs.
-- Include attribution: Integrated by Codex Dev.
+- Keep W2-06 scoped to Settings, OKR, and Weekly Focus polish.
+- Include attribution: Implemented by Codex Dev.
 ```
 
-**Attribution:** `V0.2-W2-03` implemented by Codex Dev, reviewed by Codex QA Recheck, and accepted by Codex PM at `ea807fd`. `V0.2-W2-02` implemented by Codex Dev, reviewed by Codex QA/Recheck, and accepted by Codex PM at `d33d8f7`. V0.2 `V0.2-W2-01`/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. `V0.2-W1-02`/`V0.2-W1-03` implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W1 phase naming and no-domain ngrok demo decision updated by Codex PM to latest canonical policy.
+**Attribution:** `V0.2-W2-05` implemented by Codex Dev, reviewed by Codex QA Recheck, accepted by Codex PM at `4638df7`, integrated by Codex Dev, and integration-QA accepted by Codex PM on `dev@3fca059`. `V0.2-W2-04` implemented by Codex Dev, reviewed by Codex QA Recheck, accepted by Codex PM at `47ebd84`, and integrated on `dev@0b77aed`. Earlier W2 phases remain accepted as documented. W2 full UI redesign phased plan updated by Codex PM.

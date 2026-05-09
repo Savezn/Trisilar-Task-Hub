@@ -5,7 +5,7 @@
 **Version:** V0.2
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-09 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`
 
 ---
@@ -70,6 +70,7 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | A | `V0.2-W1-05` | `W1.4` | Random ngrok manual teammate demo handoff |
 | B | `V0.2-W2-02` | `W2b` | Review Queue redesign and shared task drawer foundation |
 | C | `V0.2-W3-01` | W3 sequence 1 | Paperclip integration discovery and contract plan |
+| D | `V0.2-W2-06` | `W2f` | Settings, OKR, and Weekly Focus polish |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -193,6 +194,59 @@ Rules:
 
 ---
 
+## Prompt D - V0.2-W2-06 Settings + OKR + Weekly Focus Polish
+
+```text
+Role: Dev
+Task: V0.2-W2-06 - Settings + OKR + Weekly Focus Polish
+Alias: W2f
+
+Context:
+V0.2-W2-01 through V0.2-W2-05 are accepted and integrated on dev through `3fca059`. Work in `trisilar-task-hub-w2-ui-redesign`, update from `origin/dev`, and create `feature/w2-06-settings-okr-focus-redesign`. This is the final planned W2 UI redesign phase; do not mark W2 complete until QA and PM acceptance pass.
+
+Read first:
+- CODEX.md
+- CURRENT_SPRINT.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
+- docs/design/ui-design-v1-0/README.md
+- docs/design/ui-design-v1-0/pages-review-cal-settings.jsx
+- public/index.html
+- public/style.css
+- public/app.js
+- public/js/router.js
+- public/js/utils.js
+- public/js/pages/settings.js
+- public/js/pages/okr.js
+
+Goals:
+1. Redesign `/settings` as the operational control center for integrations, workspace visibility, hidden boards, monitor teams, and BU groups.
+2. Normalize `/okr` and `/focus` to the accepted W2 shell/page system without expanding strategy scope.
+3. Preserve accepted W2-01 through W2-05 behavior and W3 Paperclip mock behavior.
+4. Capture desktop/mobile visual QA evidence for Settings, OKR, and Weekly Focus.
+
+Rules:
+- Start from latest `dev`.
+- Work only in the W2 worktree folder and `feature/w2-06-settings-okr-focus-redesign`.
+- Use `V0.2-W2-06` as the primary task ID; `W2f` is an alias only.
+- Do not implement W1 deployment/access or new W3 Paperclip behavior.
+- Do not rewrite to React/Vite unless PM explicitly approves.
+- Do not expand OKR or Weekly Focus strategy scope.
+- Preserve route behavior and existing APIs.
+- Include attribution: Implemented by Codex Dev.
+
+Verify:
+- `node server.js`
+- `npm.cmd run check:all`
+- `npm.cmd run verify:paperclip-contract`
+- `npm.cmd run verify:paperclip-mock`
+- Browser/Playwright QA for `/settings`, `/okr`, `/focus` desktop/mobile, including mobile overflow.
+- Regression smoke for Today, Review, Tasks, Boards, Calendar, Planner, and W3 Paperclip mock behavior.
+```
+
+---
+
 ## Change Attribution
 
 | Date | Change | Updated by |
@@ -201,3 +255,4 @@ Rules:
 | 2026-05-08 | Added per-workstream Git worktree requirement | Codex PM |
 | 2026-05-08 | Updated Prompt A from Cloudflare Tunnel setup to no-domain ngrok temporary demo runtime, with Cloudflare Access deferred to W1-06 | Codex PM |
 | 2026-05-09 | Updated Prompt A to manual teammate demo handoff after W1.4 QA pass and PM demo-only acceptance | Codex PM |
+| 2026-05-09 | Added Prompt D for `V0.2-W2-06` after `V0.2-W2-05` integration QA/PM acceptance on `dev@3fca059` | Codex PM |

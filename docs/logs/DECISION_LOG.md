@@ -99,6 +99,8 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | 2026-05-08 | Reclassified accepted `b5f67fb` work as `V0.2-W2-01` (`W2a`) Shell Foundation + Today Redesign only. Full W2 UI Redesign remains open through `V0.2-W2-02`-`V0.2-W2-06` (`W2b`-`W2f`) and must be accepted phase by phase against `docs/design/ui-design-v1-0/`. | Codex PM |
 | 2026-05-08 | Accepted `V0.2-W2-02` (`W2b`) Review Queue + Shared Task Drawer at `d33d8f7`. Full W2 UI Redesign remains open through `V0.2-W2-03`-`V0.2-W2-06` (`W2c`-`W2f`). | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-03` (`W2c`) Tasks Inbox + Cross-board Rows at `ea807fd`. Full W2 UI Redesign remains open through `V0.2-W2-04`-`V0.2-W2-06` (`W2d`-`W2f`). | Codex PM |
+| 2026-05-09 | Accepted `V0.2-W2-04` (`W2d`) Boards Monitor + Team Board Views at `47ebd84` and accepted integration on `dev@0b77aed`. Full W2 UI Redesign remains open through `V0.2-W2-05`-`V0.2-W2-06` (`W2e`-`W2f`). | Codex PM |
+| 2026-05-09 | Accepted `V0.2-W2-05` (`W2e`) Calendar + Planner at `4638df7` and accepted integration on `dev@3fca059`. Full W2 UI Redesign remains open until final phase `V0.2-W2-06` (`W2f`) Settings + OKR + Weekly Focus Polish passes QA/PM. | Codex PM |
 
 ---
 

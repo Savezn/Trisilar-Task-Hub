@@ -62,6 +62,8 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.2-W2-02 - Review Queue Redesign + Shared Task Drawer Foundation | QA Recheck Pass / PM Accepted | `d33d8f7` |
 | V0.2-W1-05 - Random ngrok URL Manual Demo Path | QA Pass / PM Accepted demo-only | Runtime-only |
 | V0.2-W2-03 - Tasks Inbox + Cross-board Rows | QA Recheck Pass / PM Accepted | `ea807fd` |
+| V0.2-W2-04 - Boards Monitor + Team Board Views Integration | Integration QA Pass / PM Accepted | `dev@0b77aed` |
+| V0.2-W2-05 - Calendar + Planner Integration | Integration QA Pass / PM Accepted | `dev@3fca059` |
 
 ---
 
@@ -110,6 +112,8 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-08 | R38 | Pass | `V0.2-W2-02` Review Queue redesign QA Recheck pass at `d33d8f7`; drawer opens, title edit persists, header/footer Close works, backdrop click closes, Escape closes, approve/reject/bulk workflows pass, processed rows are read-only, mobile Review overflow is 0, Today controlled smoke passes, W3 Paperclip contract/mock verification passes. Local Trello `401 invalid key` is credential/env noise, not a W2 regression; Reviewed by Codex QA; Accepted by Codex PM |
 | 2026-05-09 | R39 | Pass | `V0.2-W1-05` random ngrok URL manual demo path pass; no-auth `/healthz` through ngrok returned 401, authenticated `/healthz` and app load returned 200, `redirectUri` matched the current ngrok callback, `APP_DATA_DIR` was local-only, git status was clean, and no production deploy/paid host/W2/W3 changes were observed; Reviewed by Codex QA; Accepted by Codex PM as demo-only |
 | 2026-05-09 | R40 | Pass | `V0.2-W2-03` Tasks Inbox + Cross-board Rows QA Recheck pass at `ea807fd`; `check:all`, Paperclip contract/mock verification, Tasks populated/search/filter/label/owner/group/export/open-edit/inline rename/mark done workflows, mobile Tasks overflow 0, unclipped rows, mobile nav, Today smoke, Review drawer smoke, and console checks passed. Controlled API responses were used for populated visual/workflow QA to avoid local Trello credential dependency; Reviewed by Codex QA Recheck; Accepted by Codex PM |
+| 2026-05-09 | R41 | Pass | `V0.2-W2-04` Boards Monitor + Team Board Views integration QA pass on `dev@0b77aed`; accepted Boards redesign/drawer regression plus Today, Review, Tasks, and W3 Paperclip contract/mock regression remained stable; Reviewed by Codex Integration QA; Accepted by Codex PM |
+| 2026-05-09 | R42 | Pass | `V0.2-W2-05` Calendar + Planner integration QA pass on `dev@3fca059`; `check:all`, Paperclip contract/mock verification, Calendar create/edit/delete controlled API paths, Planner Google Tasks add/complete, Trello due list rendering, disconnected states, Today/Review/Tasks/Boards regression smoke, mobile overflow 0 for Calendar, Planner, Today, Review, Tasks, and Boards, and console/page error checks passed. Controlled API responses were used for populated Calendar/Planner workflow QA to avoid local credential sensitivity; Reviewed by Codex Integration QA; Accepted by Codex PM |
 
 ---
 
