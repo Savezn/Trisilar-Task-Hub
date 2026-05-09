@@ -5721,3 +5721,644 @@ a { text-decoration: none; }
     width: 100%;
   }
 }
+
+/* V0.2-W2-05 Calendar + Planner redesign - Implemented by Codex Dev. */
+.calendar-view,
+.planner-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  overflow: visible;
+  padding-bottom: 48px;
+  width: 100%;
+}
+
+.calendar-command-panel,
+.planner-command-panel {
+  align-items: stretch;
+  background:
+    radial-gradient(circle at 94% 0%, rgba(79, 70, 229, 0.10), transparent 30%),
+    var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  padding: 22px;
+}
+
+.calendar-command-copy,
+.planner-command-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  justify-content: center;
+  min-width: 0;
+}
+
+.calendar-kicker,
+.planner-kicker {
+  align-items: center;
+  color: var(--accent, #4f46e5);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 8px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.calendar-kicker svg,
+.planner-kicker svg,
+.calendar-toolbar svg,
+.planner-section-title svg,
+.planner-add-btn svg,
+.cal-connect-state .empty-icon svg {
+  fill: none;
+  height: 15px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  width: 15px;
+}
+
+.calendar-title,
+.planner-title {
+  color: var(--ink, #0f172a);
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.calendar-subtitle,
+.planner-subtitle {
+  color: var(--ink-3, #64748b);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 660px;
+}
+
+.calendar-command-stats,
+.planner-command-stats {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.planner-command-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.calendar-stat-card,
+.planner-stat-card {
+  background: rgba(255, 255, 255, 0.80);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 12px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.calendar-stat-card span,
+.planner-stat-card span {
+  color: var(--ink-4, #94a3b8);
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.calendar-stat-card strong,
+.planner-stat-card strong {
+  color: var(--ink, #0f172a);
+  display: block;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+  margin-top: 8px;
+}
+
+.calendar-stat-card.is-warning strong,
+.planner-stat-card.is-warning strong { color: var(--warning, #d97706); }
+.calendar-stat-card.is-danger strong { color: var(--danger, #dc2626); }
+.calendar-stat-card.is-muted strong { color: var(--purple, #7c3aed); }
+
+.calendar-toolbar,
+.calendar-source-strip {
+  align-items: center;
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 12px;
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+  width: 100%;
+}
+
+.cal-nav-group,
+.calendar-source-legend {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cal-nav-btn,
+.cal-today-btn {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 9px;
+  color: var(--ink-3, #64748b);
+  font-size: 13px;
+  font-weight: 800;
+  min-height: 34px;
+  padding: 7px 11px;
+}
+
+.cal-nav-btn:hover,
+.cal-today-btn:hover {
+  background: var(--accent, #4f46e5);
+  border-color: var(--accent, #4f46e5);
+  color: #fff;
+}
+
+.cal-month-label {
+  color: var(--ink, #0f172a);
+  font-size: 14px;
+  font-weight: 800;
+  min-width: 144px;
+  text-align: center;
+}
+
+.calendar-source-legend {
+  color: var(--ink-3, #64748b);
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+.calendar-source-legend span {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.source-dot {
+  border-radius: 3px;
+  display: inline-block;
+  height: 9px;
+  width: 9px;
+}
+
+.source-dot.is-google { background: var(--accent, #4f46e5); }
+.source-dot.is-trello { background: var(--warning, #d97706); }
+.source-dot.is-overdue { background: var(--danger, #dc2626); }
+
+.cal-add-btn {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+  margin-left: 0;
+}
+
+.calendar-source-strip {
+  padding: 10px;
+}
+
+.calendar-schedule-layout {
+  align-items: stretch;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.34fr);
+  min-width: 0;
+}
+
+.cal-grid-wrap {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+  min-width: 0;
+  overflow: auto;
+}
+
+.cal-grid {
+  border: 0;
+  border-radius: 0;
+  min-width: 720px;
+}
+
+.cal-dow {
+  background: var(--bg, #f8fafc);
+  color: var(--ink-4, #94a3b8);
+  letter-spacing: 0;
+}
+
+.cal-cell {
+  min-width: 0;
+}
+
+.cal-cell:hover {
+  background: color-mix(in srgb, var(--accent, #4f46e5) 5%, #fff);
+}
+
+.cal-event-chip {
+  border-radius: 5px;
+  font-weight: 800;
+}
+
+.cal-event-chip.gcal {
+  background: var(--accent, #4f46e5);
+}
+
+.cal-event-chip.gcal.all-day {
+  background: #14b8a6;
+}
+
+.cal-event-chip.trello-due {
+  background: var(--warning, #d97706);
+}
+
+.cal-event-chip.trello-start {
+  background: #fff;
+}
+
+.calendar-agenda-panel {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+  min-width: 0;
+  overflow: hidden;
+}
+
+.calendar-agenda-head {
+  align-items: center;
+  background: var(--bg, #f8fafc);
+  border-bottom: 1px solid var(--line, #e5e7eb);
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 14px;
+}
+
+.calendar-agenda-head span {
+  color: var(--ink-4, #94a3b8);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.calendar-agenda-head strong {
+  color: var(--ink, #0f172a);
+}
+
+.calendar-agenda-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-agenda-item {
+  align-items: start;
+  border-bottom: 1px solid var(--line, #e5e7eb);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 44px minmax(0, 1fr);
+  padding: 12px 14px;
+}
+
+.calendar-agenda-item:last-child {
+  border-bottom: 0;
+}
+
+.calendar-agenda-item em {
+  color: var(--ink-4, #94a3b8);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  grid-column: 2;
+}
+
+.calendar-agenda-date {
+  background: var(--accent-soft, #eef2ff);
+  border-radius: 9px;
+  color: var(--accent, #4f46e5);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 6px 4px;
+  text-align: center;
+}
+
+.calendar-agenda-item.is-trello .calendar-agenda-date { background: #fff7ed; color: var(--warning, #d97706); }
+.calendar-agenda-item.is-overdue .calendar-agenda-date { background: #fef2f2; color: var(--danger, #dc2626); }
+
+.calendar-agenda-copy {
+  min-width: 0;
+}
+
+.calendar-agenda-copy strong {
+  color: var(--ink, #0f172a);
+  display: block;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-agenda-copy span,
+.calendar-agenda-empty {
+  color: var(--ink-3, #64748b);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.calendar-agenda-empty {
+  padding: 18px 14px;
+}
+
+.cal-connect-state {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+  min-height: 320px;
+  padding: 28px;
+}
+
+.cal-connect-state .empty-icon {
+  align-items: center;
+  background: var(--accent-soft, #eef2ff);
+  border-radius: 14px;
+  color: var(--accent, #4f46e5);
+  display: inline-flex;
+  height: 52px;
+  justify-content: center;
+  width: 52px;
+}
+
+.planner-date {
+  color: var(--ink-3, #64748b);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.planner-grid {
+  align-items: start;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-width: 0;
+}
+
+.planner-section {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
+  min-width: 0;
+  overflow: hidden;
+}
+
+.planner-section-title {
+  align-items: center;
+  background: var(--bg, #f8fafc);
+  border-bottom: 1px solid var(--line, #e5e7eb);
+  display: flex;
+  justify-content: space-between;
+  letter-spacing: 0;
+  padding: 12px 14px;
+}
+
+.planner-section-title span {
+  align-items: center;
+  color: var(--ink, #0f172a);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 8px;
+  min-width: 0;
+  text-transform: uppercase;
+}
+
+.planner-section-title em {
+  color: var(--ink-4, #94a3b8);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.planner-loading,
+.planner-empty,
+.planner-error,
+.planner-connect-state {
+  color: var(--ink-3, #64748b);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 18px 16px;
+}
+
+.planner-connect-state strong {
+  color: var(--ink, #0f172a);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.planner-task-row,
+.planner-trello-row {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 11px 14px;
+}
+
+.planner-task-row {
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+}
+
+.planner-trello-row {
+  grid-template-columns: auto minmax(0, 1fr) minmax(120px, auto);
+}
+
+.planner-task-title,
+.planner-trello-title {
+  color: var(--ink, #0f172a);
+  font-size: 13px;
+  font-weight: 800;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planner-trello-meta {
+  color: var(--ink-4, #94a3b8);
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 0;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planner-source-pill {
+  background: var(--accent-soft, #eef2ff);
+  border-radius: 999px;
+  color: var(--accent, #4f46e5);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 7px;
+}
+
+.planner-add-row {
+  align-items: center;
+  background: var(--bg, #f8fafc);
+  border-top: 1px solid var(--line, #e5e7eb);
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 14px;
+}
+
+.planner-add-input {
+  background: #fff;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 10px;
+  color: var(--ink, #0f172a);
+  flex: 1;
+  font-size: 13px;
+  min-height: 36px;
+  min-width: 0;
+  padding: 8px 10px;
+}
+
+.planner-add-input:focus {
+  border-color: var(--accent, #4f46e5);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.10);
+}
+
+.planner-add-btn {
+  align-items: center;
+  display: inline-flex;
+  gap: 5px;
+  opacity: 1;
+}
+
+.planner-sub-label {
+  color: var(--ink-4, #94a3b8);
+  letter-spacing: 0;
+}
+
+@media (max-width: 1040px) {
+  .calendar-command-panel,
+  .planner-command-panel,
+  .calendar-schedule-layout,
+  .planner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .calendar-command-panel,
+  .planner-command-panel {
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .calendar-command-stats,
+  .planner-command-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .calendar-toolbar,
+  .calendar-source-strip {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cal-nav-group,
+  .calendar-source-legend,
+  .cal-add-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .cal-nav-group {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 38px auto;
+  }
+
+  .calendar-source-legend {
+    justify-content: flex-start;
+  }
+
+  .cal-grid {
+    min-width: 0;
+  }
+
+  .cal-cell {
+    min-height: 86px;
+    padding: 4px;
+  }
+
+  .cal-event-chip {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+
+  .planner-trello-row {
+    align-items: start;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .planner-trello-meta {
+    grid-column: 2;
+    text-align: left;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 460px) {
+  .calendar-command-stats,
+  .planner-command-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .cal-nav-group {
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+  }
+
+  .cal-today-btn {
+    grid-column: 1 / -1;
+  }
+
+  .calendar-source-legend {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .planner-add-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .planner-add-btn {
+    justify-content: center;
+    width: 100%;
+  }
+}
