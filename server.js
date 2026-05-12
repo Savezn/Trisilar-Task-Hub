@@ -81,4 +81,11 @@ app.get([
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀  http://localhost:${PORT}`));
+const HOST = process.env.HOST;
+const displayHost = HOST || "localhost";
+
+if (HOST) {
+  app.listen(PORT, HOST, () => console.log(`🚀  http://${displayHost}:${PORT}`));
+} else {
+  app.listen(PORT, () => console.log(`🚀  http://${displayHost}:${PORT}`));
+}

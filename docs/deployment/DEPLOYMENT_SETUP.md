@@ -131,6 +131,7 @@ Configure these in the platform dashboard only. Do not commit real values.
 | `GOOGLE_REDIRECT_URI` | Current ngrok callback for temporary demo, then `https://taskhub-dev.trisilar.com/auth/callback` after domain exists | `https://taskhub.trisilar.com/auth/callback` | Must match Google OAuth console. |
 | `APP_BASE_URL` | Current ngrok URL for temporary demo, then `https://taskhub-dev.trisilar.com` after domain exists | `https://taskhub.trisilar.com` | Used for OAuth callback messaging. |
 | `APP_DATA_DIR` | Dev persistent disk path | Production persistent disk path | Stores runtime JSON files. |
+| `HOST` | `127.0.0.1` for private Droplet bind, blank for platform default | Platform-specific | Optional bind host. Leave blank for local/platform default behavior. |
 | `PORT` | Platform-managed | Platform-managed | The app already reads `process.env.PORT`. |
 
 `GEMINI_API_KEY` is not required for the web dashboard unless the CLI agent path is deployed.
@@ -166,6 +167,7 @@ Required server-only environment variable names:
 - `GOOGLE_REFRESH_TOKEN`
 - `TRELLO_API_KEY`
 - `TRELLO_TOKEN`
+- `HOST`
 
 Rules:
 
