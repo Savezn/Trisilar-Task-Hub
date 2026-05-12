@@ -2,7 +2,7 @@
 
 **Doc Role:** Append-only PM decision log
 **Status:** Active log
-**Last Updated:** 2026-05-09 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
 
 Use this file for major PM decisions that affect planning, workflow, branch strategy, document structure, or multi-agent coordination.
 
@@ -24,6 +24,8 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | 2026-05-08 | Use Cloudflare Tunnel + Cloudflare Access as W1 no-cost teammate preview path | The current team is two users, does not want paid deploy cost yet, and needs a cleaner future path for Paperclip agent/service-token access than ngrok; Render remains paid hosted default and Railway remains paid hosted alternate when always-on runtime is justified | Codex PM |
 | 2026-05-08 | Use ngrok + temporary Basic Auth as the W1 no-domain demo path until a Trisilar domain/subdomain exists | No domain/subdomain is currently available for Cloudflare named tunnel + Access. `trycloudflare` was technically viable but random URLs are poor for repeat teammate/Paperclip handoff. ngrok is available locally, supports short demos now, and can later use a reserved/static domain for repeat Paperclip testing. This does not replace the stable Cloudflare Access release gate. | Codex PM |
 | 2026-05-09 | Accept `V0.2-W1-05` random ngrok URL as manual teammate demo path only | QA verified Basic Auth, `/healthz`, app load, hosted callback, local-only `APP_DATA_DIR`, and clean git status. PM accepts this for short manual teammate demo only; Paperclip automation and stable service integration remain deferred until a stable hostname exists. | Codex PM |
+| 2026-05-12 | Rebaseline W1 next runtime path to DigitalOcean hosted dev/demo behind Cloudflare | A Cloudflare-managed domain is available, random ngrok remains demo-only, and localhost runtime shuts down with the local machine. A DigitalOcean Droplet gives a low-cost always-on Node/Express host with persistent `APP_DATA_DIR`, while Cloudflare remains the DNS/security/access front door. Render remains a managed paid option and Railway remains the managed alternate if PM reselects them. | Codex PM |
+| 2026-05-12 | Record Paperclip localhost on Noffy's machine as a W3 live-connector runtime blocker | Paperclip currently runs on localhost on another teammate's machine. Task Hub can move to a stable Cloudflare hostname first, but W3 live integration needs either Paperclip calling Task Hub through service-auth or Paperclip exposed through a stable tunnel/hosted runtime before Task Hub can call it reliably. | Codex PM |
 | 2026-05-08 | Create project-wide ladder in `docs/plans/PROJECT_LADDER.md` | Separates release sequencing from `CURRENT_SPRINT.md` and keeps `TODO.md` as an index while clarifying V0.2 cannot release until access, full UI, and Paperclip gates are accepted | Codex PM |
 | 2026-05-08 | Lead W2 phase planning with canonical IDs `V0.2-W2-01`-`V0.2-W2-06`; keep `W2a`-`W2f` as aliases only | Aligns W2 phase structure with the latest dev naming policy so Dev, QA, PM prompts, commits, and PR notes use stable canonical task IDs | Codex PM |
 | 2026-05-08 | Accept `V0.2-W2-02` Review Queue redesign at `d33d8f7` | QA Recheck passed drawer click handling regression, Review create/edit/approve/reject/bulk workflows, processed read-only rows, mobile overflow 0, Today controlled smoke, and W3 Paperclip contract/mock regression; local Trello 401 was credential/env noise | Codex PM |

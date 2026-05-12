@@ -5,7 +5,7 @@
 **Version:** V0.2
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-09 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`
 
 ---
@@ -71,6 +71,7 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | B | `V0.2-W2-02` | `W2b` | Review Queue redesign and shared task drawer foundation |
 | C | `V0.2-W3-01` | W3 sequence 1 | Paperclip integration discovery and contract plan |
 | D | `V0.2-W2-06` | `W2f` | Settings, OKR, and Weekly Focus polish |
+| E | `V0.2-W1-08` | `W1.7` | DigitalOcean hosted dev/demo runtime behind Cloudflare |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -84,7 +85,7 @@ Task: V0.2-W1-05 - Run Manual Teammate Demo With Random ngrok URL
 Alias: W1.4
 
 Context:
-V0.2-W1-01 through V0.2-W1-03 are done. V0.2-W1-05 passed QA and is accepted by PM as random ngrok URL manual demo only. Cloudflare named tunnel + Access remains `V0.2-W1-06` after DNS is available. Paperclip stable endpoint remains deferred until a stable hostname exists.
+V0.2-W1-01 through V0.2-W1-03 are done. V0.2-W1-05 passed QA and is accepted by PM as random ngrok URL manual demo only. This prompt is for manual demo fallback only. The next stable runtime path is `V0.2-W1-08` DigitalOcean hosted dev/demo behind Cloudflare. Paperclip stable endpoint remains deferred until a stable hostname/auth topology exists.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -247,6 +248,56 @@ Verify:
 
 ---
 
+## Prompt E - V0.2-W1-08 DigitalOcean Hosted Dev/Demo Runtime
+
+```text
+Role: DevOps / Dev
+Task: V0.2-W1-08 - DigitalOcean Hosted Dev/Demo Runtime Setup
+Alias: W1.7
+
+Context:
+V0.2-W1-05 passed teammate demo and remains accepted as manual demo-only access. PM confirmed there is a Cloudflare-managed domain and wants the next W1 path to be DigitalOcean hosted dev/demo behind Cloudflare. Paperclip currently runs on localhost on Noffy's machine, so W3 live integration remains blocked until Paperclip has a stable reachable hostname or Paperclip calls Task Hub through an approved service-auth path.
+
+Read first:
+- CODEX.md
+- CURRENT_SPRINT.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md
+- docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
+- docs/deployment/DEPLOYMENT_SETUP.md
+- docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
+
+Goals:
+1. Set up or prepare Task Hub dev/demo runtime on DigitalOcean from branch `dev`.
+2. Put Cloudflare in front for DNS/security/access before teammate preview.
+3. Keep server secrets out of git and chat.
+4. Record Paperclip runtime state without implementing new W3 behavior.
+
+Steps:
+1. Confirm Cloudflare domain and hostnames, default `taskhub-dev.<domain>` and optional `paperclip-dev.<domain>`.
+2. Confirm DigitalOcean account access and create/select one dev-only Droplet.
+3. Pull latest `dev` on the Droplet.
+4. Configure server-only env values, `APP_DATA_DIR`, `APP_BASE_URL`, and `GOOGLE_REDIRECT_URI`.
+5. Configure Cloudflare route to the Droplet using Tunnel preferred, or proxied DNS + reverse proxy if selected.
+6. Configure Cloudflare Access email allowlist before teammate preview.
+7. Verify `/healthz`, anonymous block, approved teammate access, non-destructive app load, and runtime file persistence.
+8. Record whether Paperclip is localhost-only on Noffy's machine, exposed by Cloudflare Tunnel, or hosted.
+
+Rules:
+- Start from latest `dev`.
+- Use `V0.2-W1-08` as the primary task ID; `W1.7` is an alias only.
+- Do not deploy production.
+- Do not merge to main.
+- Do not commit secrets or generated runtime data.
+- Do not implement W2 UI redesign.
+- Do not implement new W3 Paperclip behavior.
+- Repo changes only if setup defects are found, and those changes must go through PR.
+- Include attribution: Runtime setup by Codex DevOps/Dev.
+```
+
+---
+
 ## Change Attribution
 
 | Date | Change | Updated by |
@@ -256,3 +307,4 @@ Verify:
 | 2026-05-08 | Updated Prompt A from Cloudflare Tunnel setup to no-domain ngrok temporary demo runtime, with Cloudflare Access deferred to W1-06 | Codex PM |
 | 2026-05-09 | Updated Prompt A to manual teammate demo handoff after W1.4 QA pass and PM demo-only acceptance | Codex PM |
 | 2026-05-09 | Added Prompt D for `V0.2-W2-06` after `V0.2-W2-05` integration QA/PM acceptance on `dev@3fca059` | Codex PM |
+| 2026-05-12 | Added Prompt E for DigitalOcean hosted dev/demo behind Cloudflare and Paperclip localhost runtime blocker | Codex PM |

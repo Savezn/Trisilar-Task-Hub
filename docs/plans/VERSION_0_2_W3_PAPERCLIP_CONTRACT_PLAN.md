@@ -1,11 +1,11 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter implemented for QA review
+**Status:** `V0.2-W3-01` mock adapter accepted; live connector blocked by runtime/auth topology
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-08 - **Updated by:** Codex Dev
+**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../../MVP_PRD.md`
 
 ---
@@ -29,6 +29,16 @@ Out of scope:
 - Changes to existing Trello, Google Calendar, Google Tasks, or current app behavior.
 
 Implemented by: Codex Dev
+
+PM runtime clarification:
+
+- Task Hub is moving toward a stable hosted dev/demo URL on DigitalOcean behind Cloudflare.
+- Paperclip currently runs on localhost on Noffy's machine.
+- `V0.2-W3-02` live webhook work must not start until the integration direction is confirmed:
+  - If Paperclip calls Task Hub, Task Hub needs a stable Cloudflare hostname and service-auth policy.
+  - If Task Hub calls or polls Paperclip, Paperclip also needs a stable reachable hostname, such as a Cloudflare Tunnel on Noffy's machine or a hosted Paperclip runtime.
+- Do not treat the old random ngrok Task Hub URL as a Paperclip endpoint.
+- Do not add live Paperclip calls in W1 or W2.
 
 ---
 
@@ -79,9 +89,31 @@ Initial route options:
   - Reads a contract payload and creates a review session using existing review session semantics.
 - `POST /api/integrations/paperclip/webhook`
   - Future live route.
-  - Must stay disabled until W3 mock verification and W1 access/auth decisions are complete.
+  - Must stay disabled until W3 mock verification, W1 Task Hub access/auth decisions, and Paperclip runtime reachability are complete.
 
 The mock route should be the only route implemented before live connector work. The future webhook route should be documented but not wired to external calls until PM/QA approve the mock contract.
+
+### Runtime Topology Gate
+
+Current known topology:
+
+```text
+Task Hub target:
+  DigitalOcean Droplet + Cloudflare hostname + Cloudflare Access/service-token policy
+
+Paperclip current state:
+  localhost on Noffy's machine
+```
+
+Supported live-connector paths:
+
+| Path | Requirement | W3 implication |
+|---|---|---|
+| Paperclip calls Task Hub webhook | Stable Task Hub hostname and service-auth header/token policy | W3 can implement inbound webhook without Task Hub calling Paperclip |
+| Task Hub calls/polls Paperclip | Stable Paperclip hostname from Cloudflare Tunnel or hosted Paperclip runtime | W3 remains blocked until Noffy's local Paperclip is reachable beyond localhost |
+| Both services on one DigitalOcean Droplet | PM/owner approval to move Paperclip runtime | W3 can use local/internal routing plus Cloudflare for external access |
+
+Cloudflare Access email login is suitable for human UI access only. Agent/API calls should use service tokens, signed webhook headers, or another machine-auth scheme approved by PM and Paperclip owner.
 
 ---
 
@@ -272,14 +304,14 @@ npm.cmd run verify:paperclip-mock
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
-| `V0.2-W3-02` | W3 sequence 2 | Future | Live webhook route after W1 access/security readiness |
+| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after W1 access/security readiness and stable Paperclip/Task Hub runtime topology |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Source signature/replay protection once Paperclip auth details are known |
 
 Details:
 
 - `V0.2-W3-01` completed pure validator/normalizer logic, fixture files, unit-level validation checks, `POST /api/integrations/paperclip/mock/review-session`, backward-compatible review-store attribution fields, idempotency lookup by `requestId`, and `scripts/verify-paperclip-mock.js`.
 - `V0.2-W3-01` introduced no live Paperclip external calls.
-- `V0.2-W3-02` should add authenticated `POST /api/integrations/paperclip/webhook`, reuse the same normalizer and audit path, and stay blocked until W1 provides a protected reachable URL and secret path.
+- `V0.2-W3-02` should add authenticated `POST /api/integrations/paperclip/webhook`, reuse the same normalizer and audit path, and stay blocked until W1 provides a protected reachable Task Hub URL and the Paperclip runtime/auth direction is confirmed.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
 ---
@@ -289,6 +321,8 @@ Details:
 - What stable Paperclip identifiers are available: workspace id, thread id, run id, agent id, task id?
 - Will Paperclip call Task Hub by webhook, or will Task Hub poll Paperclip?
 - What auth/signature scheme will Paperclip support for live webhooks?
+- Can Noffy expose the current localhost Paperclip through Cloudflare Tunnel, or will Paperclip move to a hosted runtime?
+- If Paperclip stays local, who owns uptime, restart, and tunnel health for demo/integration windows?
 - Should Paperclip payloads include raw transcript text, source artifact links, or both?
 - What reviewer identity should be recorded before W1 multi-user access exists?
 - Should approved Trello cards receive a Paperclip attribution comment, label, or custom field after mock verification?
@@ -315,3 +349,4 @@ Details:
 |---|---|---|
 | 2026-05-08 | Implemented mock adapter route, idempotency/audit persistence, and mock verification | Codex Dev |
 | 2026-05-08 | Created W3 Paperclip integration discovery and contract plan | Codex Dev |
+| 2026-05-12 | Added runtime topology gate for DigitalOcean-hosted Task Hub and Paperclip localhost on Noffy's machine | Codex PM |

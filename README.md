@@ -45,8 +45,8 @@ Open the app at `http://localhost:3000`.
 | `docs/reference/ARCHITECTURE.md` | Current technical architecture reference |
 | `docs/reference/FILE_ORGANIZATION.md` | File placement rules for future files |
 | `docs/deployment/README.md` | Deployment documentation index |
-| `docs/deployment/DEPLOYMENT_SETUP.md` | W1b deploy-readiness setup for Render/Railway, temporary ngrok demo, stable Cloudflare Access gate, env vars, and persistent state |
-| `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` | W1c dev environment setup handoff for Render default, Railway alternate, no-domain ngrok demo, Cloudflare Access, and blockers |
+| `docs/deployment/DEPLOYMENT_SETUP.md` | W1 deploy-readiness setup for DigitalOcean/Cloudflare hosted dev, Render/Railway managed alternates, temporary ngrok demo, env vars, and persistent state |
+| `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` | W1 dev environment setup handoff for ngrok demo, DigitalOcean hosted dev/demo, Cloudflare Access, and Paperclip runtime blockers |
 | `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
 | `docs/testing/TEST_STRATEGY.md` | Automated/manual verification policy and test-suite roadmap |
 | `docs/adr/README.md` | Architecture Decision Records index and process |
