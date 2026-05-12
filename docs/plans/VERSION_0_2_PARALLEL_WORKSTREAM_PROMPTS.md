@@ -71,7 +71,7 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | B | `V0.2-W2-02` | `W2b` | Review Queue redesign and shared task drawer foundation |
 | C | `V0.2-W3-01` | W3 sequence 1 | Paperclip integration discovery and contract plan |
 | D | `V0.2-W2-06` | `W2f` | Settings, OKR, and Weekly Focus polish |
-| E | `V0.2-W1-08` | `W1.7` | DigitalOcean hosted dev/demo runtime behind Cloudflare |
+| E | `V0.2-W1-08` | `W1.7` | DigitalOcean hosted dev/demo runtime behind Cloudflare for Task Hub + Paperclip |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -85,7 +85,7 @@ Task: V0.2-W1-05 - Run Manual Teammate Demo With Random ngrok URL
 Alias: W1.4
 
 Context:
-V0.2-W1-01 through V0.2-W1-03 are done. V0.2-W1-05 passed QA and is accepted by PM as random ngrok URL manual demo only. This prompt is for manual demo fallback only. The next stable runtime path is `V0.2-W1-08` DigitalOcean hosted dev/demo behind Cloudflare. Paperclip stable endpoint remains deferred until a stable hostname/auth topology exists.
+V0.2-W1-01 through V0.2-W1-03 are done. V0.2-W1-05 passed QA and is accepted by PM as random ngrok URL manual demo only. This prompt is for manual demo fallback only. The next stable runtime path is `V0.2-W1-08` DigitalOcean hosted dev/demo behind Cloudflare for Task Hub + Paperclip.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -256,7 +256,7 @@ Task: V0.2-W1-08 - DigitalOcean Hosted Dev/Demo Runtime Setup
 Alias: W1.7
 
 Context:
-V0.2-W1-05 passed teammate demo and remains accepted as manual demo-only access. PM confirmed there is a Cloudflare-managed domain and wants the next W1 path to be DigitalOcean hosted dev/demo behind Cloudflare. Paperclip currently runs on localhost on Noffy's machine, so W3 live integration remains blocked until Paperclip has a stable reachable hostname or Paperclip calls Task Hub through an approved service-auth path.
+V0.2-W1-05 passed teammate demo and remains accepted as manual demo-only access. PM confirmed there is a Cloudflare-managed domain and selected DigitalOcean hosted dev/demo behind Cloudflare for Task Hub and Paperclip. Paperclip currently runs on localhost on Noffy's machine and must migrate to DigitalOcean before W3 live integration proceeds.
 
 Read first:
 - CODEX.md
@@ -270,19 +270,21 @@ Read first:
 
 Goals:
 1. Set up or prepare Task Hub dev/demo runtime on DigitalOcean from branch `dev`.
-2. Put Cloudflare in front for DNS/security/access before teammate preview.
-3. Keep server secrets out of git and chat.
-4. Record Paperclip runtime state without implementing new W3 behavior.
+2. Set up or prepare Paperclip dev/demo runtime on DigitalOcean from the Paperclip owner-approved deploy source.
+3. Put Cloudflare in front for DNS/security/access before teammate preview.
+4. Keep server secrets out of git and chat.
+5. Record Paperclip migration without implementing new W3 behavior.
 
 Steps:
-1. Confirm Cloudflare domain and hostnames, default `taskhub-dev.<domain>` and optional `paperclip-dev.<domain>`.
-2. Confirm DigitalOcean account access and create/select one dev-only Droplet.
-3. Pull latest `dev` on the Droplet.
-4. Configure server-only env values, `APP_DATA_DIR`, `APP_BASE_URL`, and `GOOGLE_REDIRECT_URI`.
-5. Configure Cloudflare route to the Droplet using Tunnel preferred, or proxied DNS + reverse proxy if selected.
-6. Configure Cloudflare Access email allowlist before teammate preview.
-7. Verify `/healthz`, anonymous block, approved teammate access, non-destructive app load, and runtime file persistence.
-8. Record whether Paperclip is localhost-only on Noffy's machine, exposed by Cloudflare Tunnel, or hosted.
+1. Confirm Cloudflare domain and hostnames, default `taskhub-dev.<domain>` and `paperclip-dev.<domain>`.
+2. Confirm DigitalOcean account access and create/select one dev-only Droplet or approved DO runtime layout for both services.
+3. Pull latest Task Hub `dev` on the Droplet.
+4. Coordinate Paperclip deploy source, runtime command, env vars, and health/load check with Noffy/Paperclip owner.
+5. Configure server-only env values, `APP_DATA_DIR`, `APP_BASE_URL`, and `GOOGLE_REDIRECT_URI`.
+6. Configure Cloudflare routes for both services using Tunnel preferred, or proxied DNS + reverse proxy if selected.
+7. Configure Cloudflare Access email allowlist before teammate preview.
+8. Verify Task Hub `/healthz`, Paperclip health/load path, anonymous block, approved teammate access, non-destructive app load, and runtime file persistence.
+9. Record Paperclip migration from Noffy's localhost to DigitalOcean.
 
 Rules:
 - Start from latest `dev`.
@@ -308,3 +310,4 @@ Rules:
 | 2026-05-09 | Updated Prompt A to manual teammate demo handoff after W1.4 QA pass and PM demo-only acceptance | Codex PM |
 | 2026-05-09 | Added Prompt D for `V0.2-W2-06` after `V0.2-W2-05` integration QA/PM acceptance on `dev@3fca059` | Codex PM |
 | 2026-05-12 | Added Prompt E for DigitalOcean hosted dev/demo behind Cloudflare and Paperclip localhost runtime blocker | Codex PM |
+| 2026-05-12 | Updated Prompt E so Paperclip deploys to DigitalOcean with Task Hub before W3 live connector work proceeds | Codex PM |

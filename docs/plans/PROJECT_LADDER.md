@@ -48,7 +48,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | Level | Version / Track | Status | Outcome | Release Gate |
 |---|---|---|---|---|
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
-| L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; DigitalOcean + Cloudflare next | Teammates can access a stable dev/demo app safely with environment, persistence, and access-control boundaries; random ngrok remains manual-demo-only | `V0.2-W1-06` Cloudflare Access gate and `V0.2-W1-08` hosted dev/demo runtime verified before release-grade access; no secrets committed |
+| L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; DigitalOcean + Cloudflare next | Teammates can access stable dev/demo Task Hub and Paperclip services safely with environment, persistence, and access-control boundaries; random ngrok remains manual-demo-only | `V0.2-W1-06` Cloudflare Access gate and `V0.2-W1-08` hosted dev/demo runtime verified before release-grade access; no secrets committed |
 | L2 | V0.2 Full UI Redesign | Active | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted |
 | L3 | V0.2 Paperclip Foundation | Accepted mock / live future | Paperclip task handoff has a contract, mock adapter, attribution, and audit trail without uncontrolled side effects | Contract/mock verification passed; live connector remains separately gated |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
@@ -62,7 +62,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 
 ### L1 - V0.2 Access Foundation
 
-**Status:** Active / `V0.2-W1-05` random ngrok manual demo path is accepted; next path is DigitalOcean hosted dev/demo behind Cloudflare.
+**Status:** Active / `V0.2-W1-05` random ngrok manual demo path is accepted; next path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub + Paperclip.
 
 **Goal:**
 Provide a safe dev/demo preview environment before wider teammate access.
@@ -71,7 +71,8 @@ Provide a safe dev/demo preview environment before wider teammate access.
 
 - Local/dev machine running the app from the `dev` baseline for manual demo fallback.
 - Random ngrok route for short manual demos only.
-- DigitalOcean hosted dev/demo runtime running from the `dev` baseline.
+- DigitalOcean hosted dev/demo runtime running Task Hub from the `dev` baseline.
+- DigitalOcean hosted dev/demo runtime running Paperclip from the Paperclip owner-approved deploy source.
 - Cloudflare route for the PM-approved preview hostname.
 - Local or dashboard-managed dev-only secrets; no secret values in git.
 - Stable `APP_DATA_DIR` for file-backed runtime data.
@@ -131,7 +132,7 @@ Allow AI-agent output to enter Task Hub through a contract-first review path.
 - No Trello/Calendar side effect before approval.
 
 **Next live step:**
-Live Paperclip connector should be planned only after W1 access boundaries are stable and the Paperclip runtime direction is confirmed. Paperclip currently runs on localhost on Noffy's machine, so Task Hub cannot call it reliably until Noffy exposes Paperclip through a stable Cloudflare Tunnel/hostname or moves Paperclip to hosted runtime. If Paperclip calls Task Hub instead, W3 needs the stable Task Hub hostname and service-auth policy first.
+Live Paperclip connector should be planned only after W1 access boundaries are stable and Paperclip is deployed to DigitalOcean. Paperclip currently runs on localhost on Noffy's machine, but the selected target is hosted Paperclip behind Cloudflare. W3 needs stable Task Hub and Paperclip hostnames plus service-auth before live connector work proceeds.
 
 ### L4 - V0.2 Integration Release
 
@@ -142,7 +143,7 @@ Promote only a coherent internal preview release, not partial work labeled as do
 
 **Release candidate gate:**
 
-- W1 `V0.2-W1-06` Cloudflare Access evidence and `V0.2-W1-08` DigitalOcean hosted dev/demo evidence accepted for release-grade access. `V0.2-W1-05` random ngrok acceptance covers manual demo only.
+- W1 `V0.2-W1-06` Cloudflare Access evidence and `V0.2-W1-08` DigitalOcean hosted dev/demo evidence for Task Hub + Paperclip accepted for release-grade access. `V0.2-W1-05` random ngrok acceptance covers manual demo only.
 - W2 full UI redesign accepted through `V0.2-W2-06` (`W2f`).
 - W3 mock integration remains passing.
 - `npm.cmd run check:all` passes with `node server.js` running.
@@ -200,13 +201,13 @@ Focus:
 Current recommended next implementation path:
 
 ```text
-V0.2-W1-08 DigitalOcean hosted dev/demo setup
+V0.2-W1-08 DigitalOcean hosted dev/demo setup for Task Hub + Paperclip
 -> V0.2-W1-06 Cloudflare Access gate verification
 -> V0.2-W1-07 Paperclip service-auth/topology decision
 -> resume V0.2-W2-06 or W3 live connector only after PM routes it
 ```
 
-W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. The next W1 path is DigitalOcean hosted dev/demo behind Cloudflare. Paperclip currently runs on localhost on Noffy's machine, so W3 live integration needs either a stable Paperclip hostname or an inbound webhook model where Paperclip calls Task Hub through the stable Task Hub endpoint.
+W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. The next W1 path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub + Paperclip. Paperclip currently runs on localhost on Noffy's machine, but PM selected DigitalOcean migration before W3 live integration.
 
 ---
 
@@ -220,4 +221,5 @@ W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. The next W1 p
 | 2026-05-08 | Updated L1 to reflect no-domain ngrok + temporary Basic Auth demo path while keeping Cloudflare Access as the stable release-grade gate | Codex PM |
 | 2026-05-09 | Accepted W1.4 random ngrok URL path for manual teammate demo only; stable Paperclip/service endpoint remains deferred | Codex PM |
 | 2026-05-12 | Rebaselined L1 to DigitalOcean hosted dev/demo behind Cloudflare and recorded Paperclip localhost on Noffy's machine as an L3 live-connector blocker | Codex PM |
+| 2026-05-12 | Updated L1/L3 so Paperclip deploys to DigitalOcean with Task Hub before W3 live connector work proceeds | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-03` at `ea807fd` and routed L2 to W2-03 integration into `dev` before `V0.2-W2-04` starts | Codex PM |

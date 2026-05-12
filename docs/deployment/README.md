@@ -10,8 +10,8 @@ Deployment and hosted environment documents live here so deployment setup is not
 
 | File | Purpose |
 |---|---|
-| `DEPLOYMENT_SETUP.md` | V0.2-W1-02 deploy-readiness setup for DigitalOcean/Cloudflare hosted dev, Render/Railway managed alternates, temporary ngrok demo, env vars, and persistent state; legacy label W1b |
-| `DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config, V0.2-W1-05 ngrok demo handoff, and V0.2-W1-06/V0.2-W1-08 Cloudflare + DigitalOcean runtime plan |
+| `DEPLOYMENT_SETUP.md` | V0.2-W1-02 deploy-readiness setup for DigitalOcean/Cloudflare hosted dev for Task Hub + Paperclip, Render/Railway managed alternates, temporary ngrok demo, env vars, and persistent state; legacy label W1b |
+| `DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config, V0.2-W1-05 ngrok demo handoff, and V0.2-W1-06/V0.2-W1-08 Cloudflare + DigitalOcean runtime plan for Task Hub + Paperclip |
 
 Related docs:
 

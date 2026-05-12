@@ -8,7 +8,7 @@
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-12 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
-**Theme:** Enable parallel agents safely while moving from manual demo access toward a stable Cloudflare-protected hosted dev/demo runtime.
+**Theme:** Enable parallel agents safely while moving from manual demo access toward stable Cloudflare-protected hosted dev/demo runtime for Task Hub and Paperclip.
 
 ---
 
@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. The next W1 runtime path is DigitalOcean hosted dev/demo behind Cloudflare. Paperclip currently runs on localhost on Noffy's machine, so W3 live connector work still needs a stable reachable Paperclip endpoint or a confirmed one-way webhook model where Paperclip calls Task Hub.
+V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. The next W1 runtime path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub and Paperclip. Paperclip currently runs on localhost on Noffy's machine, but PM decision is to deploy Paperclip to DigitalOcean before W3 live connector work proceeds.
 
 ---
 
@@ -98,9 +98,9 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
+| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo for Task Hub + Paperclip | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` planned next / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; live connector blocked by runtime/auth topology | Contract-first mock adapter, attribution/audit sync; live connector waits for stable Task Hub endpoint and stable Paperclip endpoint or confirmed webhook direction |
+| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; live connector blocked until Task Hub + Paperclip are deployed on stable DigitalOcean/Cloudflare runtime and service auth is confirmed | Contract-first mock adapter, attribution/audit sync; live connector waits for stable hosted runtime and auth |
 
 ---
 
@@ -118,8 +118,8 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | `V0.2-W1-04` | `W1.3` | Accepted / amended | Preview/runtime decision |
 | `V0.2-W1-05` | `W1.4` | Accepted demo-only | No-domain random ngrok manual demo runtime |
 | `V0.2-W1-06` | `W1.5` | Pending | Stable Cloudflare hostname + Access teammate gate |
-| `V0.2-W1-07` | `W1.6` | Pending | Future Paperclip agent/API access pattern and Paperclip localhost blocker |
-| `V0.2-W1-08` | `W1.7` | Next candidate | DigitalOcean hosted dev/demo runtime |
+| `V0.2-W1-07` | `W1.6` | Pending | Future Paperclip agent/API access pattern for hosted Task Hub + Paperclip |
+| `V0.2-W1-08` | `W1.7` | Next candidate | DigitalOcean hosted dev/demo runtime for Task Hub + Paperclip |
 
 ### W2 - Full UI Redesign
 
@@ -137,7 +137,7 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Done `1d1f638` | Contract definitions, mock adapter route, idempotency/audit persistence, and mock verification |
-| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after W1 access/security readiness and stable Paperclip/Task Hub runtime topology |
+| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after Task Hub and Paperclip are deployed on stable DigitalOcean/Cloudflare dev runtime and service auth is confirmed |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Source signature and replay protection after Paperclip auth details are known |
 
 Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them in chat, normalize the next PM update to the canonical `V0.2-W3-XX` form.
@@ -177,13 +177,13 @@ Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them 
 
 **Priority:** P0 after W0
 **Owner Role:** Platform Dev / PM
-**Status:** `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` preview path accepted/amended; `V0.2-W1-05` random ngrok manual demo accepted; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo
+**Status:** `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` preview path accepted/amended; `V0.2-W1-05` random ngrok manual demo accepted; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo for Task Hub + Paperclip
 **Detailed Plan:** `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`
 
 **Scope:**
 - Internal access method.
 - Demo-only teammate preview path.
-- DigitalOcean hosted dev/demo runtime candidate.
+- DigitalOcean hosted dev/demo runtime candidate for Task Hub + Paperclip.
 - Managed hosted deployment target notes, deferred unless PM reselects Render/Railway.
 - Environment variables and secrets.
 - Teammate onboarding path.
@@ -192,7 +192,7 @@ Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them 
 
 **Current PM Decision:**
 
-W1 keeps random ngrok URL + temporary Basic Auth as the accepted manual demo-only path. PM now confirmed a Cloudflare-managed domain exists and is evaluating DigitalOcean Droplet as the next always-on dev/demo runtime. Cloudflare remains the front door for DNS, access control, HTTPS/proxy, and future service-token access. Render remains the previously approved managed hosted target and Railway remains the managed alternate, but neither is the next planned path unless PM reselects them.
+W1 keeps random ngrok URL + temporary Basic Auth as the accepted manual demo-only path. PM now confirmed a Cloudflare-managed domain exists and selected DigitalOcean as the next always-on dev/demo runtime for Task Hub and Paperclip. Cloudflare remains the front door for DNS, access control, HTTPS/proxy, and future service-token access. Render remains the previously approved managed hosted target and Railway remains the managed alternate, but neither is the next planned path unless PM reselects them.
 
 **Why:**
 
@@ -209,11 +209,11 @@ W1 keeps random ngrok URL + temporary Basic Auth as the accepted manual demo-onl
 | `V0.2-W1-01` | `W1.0` | Done | Platform/access decision | Render/Railway/Vercel tradeoff reviewed; Cloudflare Access selected as default gate |
 | `V0.2-W1-02` | `W1.1` | Done | Repo deploy readiness | `APP_BASE_URL`, `GOOGLE_REDIRECT_URI`, `APP_DATA_DIR`, `/healthz`, placeholder env docs merged |
 | `V0.2-W1-03` | `W1.2` | Done | Dev deployment config | `render.yaml`, `railway.toml`, and deployment setup handoff merged to `dev` |
-| `V0.2-W1-04` | `W1.3` | Accepted / amended | Preview/runtime decision | Random ngrok accepted for manual demo; DigitalOcean + Cloudflare selected for next hosted dev/demo evaluation |
+| `V0.2-W1-04` | `W1.3` | Accepted / amended | Preview/runtime decision | Random ngrok accepted for manual demo; DigitalOcean + Cloudflare selected for next hosted dev/demo runtime |
 | `V0.2-W1-05` | `W1.4` | Accepted demo-only | No-domain random ngrok manual demo runtime | QA verified Basic Auth, `/healthz`, app load, hosted callback, and local-only data path; PM accepted short manual teammate demo only |
 | `V0.2-W1-06` | `W1.5` | Pending | Stable Cloudflare hostname + Access email allowlist | Task Hub hostname confirmed; anonymous access blocked; approved teammate email can access |
-| `V0.2-W1-07` | `W1.6` | Pending | Paperclip agent/API access prep | Service-token pattern documented; Paperclip localhost-on-Noffy dependency recorded without implementing new W3 behavior |
-| `V0.2-W1-08` | `W1.7` | Next candidate | DigitalOcean hosted dev/demo runtime | Droplet, persistent `APP_DATA_DIR`, Cloudflare route, `/healthz`, access gate, and non-destructive app load verified |
+| `V0.2-W1-07` | `W1.6` | Pending | Paperclip agent/API access prep | Service-token pattern documented for hosted Paperclip -> hosted Task Hub integration without implementing new W3 behavior |
+| `V0.2-W1-08` | `W1.7` | Next candidate | DigitalOcean hosted dev/demo runtime for Task Hub + Paperclip | Runtime, persistent Task Hub `APP_DATA_DIR`, Cloudflare routes, health checks, access gate, and non-destructive app load verified |
 
 **No-Cost Preview Rules:**
 
@@ -269,10 +269,9 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 **Current runtime clarification:**
 
-- Task Hub is moving toward a stable hosted dev/demo URL through DigitalOcean + Cloudflare.
-- Paperclip currently runs on localhost on Noffy's machine, so Task Hub cannot call Paperclip as a stable service unless Noffy exposes Paperclip through a Cloudflare Tunnel or Paperclip moves to hosted runtime.
-- If Paperclip calls Task Hub by webhook, W3 can proceed after Task Hub has a stable Cloudflare hostname and a service-auth path.
-- If Task Hub must call or poll Paperclip, W3 stays blocked until Paperclip also has a stable reachable hostname.
+- Task Hub and Paperclip are moving toward stable hosted dev/demo URLs through DigitalOcean + Cloudflare.
+- Paperclip currently runs on localhost on Noffy's machine, but PM decision is to migrate Paperclip to DigitalOcean before live W3 work.
+- W3 can proceed after Task Hub and Paperclip hostnames plus service-auth are verified.
 
 ---
 
@@ -298,7 +297,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 | Workstream | Expected Sessions | Notes |
 |---|---|---|
 | W0 | 1-2 | Branch, environment docs, PR workflow |
-| W1 | 4-8 | Repo readiness is done; random ngrok manual demo path is accepted; next path is DigitalOcean hosted dev/demo behind Cloudflare; Paperclip localhost remains a live-integration blocker |
+| W1 | 4-8 | Repo readiness is done; random ngrok manual demo path is accepted; next path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub + Paperclip |
 | W2 | 4-8 | Depends on redesign depth and page count |
 | W3 | 3-6 | Contract/mock first, live connector second |
 
@@ -314,7 +313,7 @@ Task: V0.2-W1-08 - DigitalOcean Hosted Dev/Demo Runtime Setup
 Alias: W1.7
 
 Context:
-QA passed W1.4 no-domain ngrok temporary demo verification and PM accepted it as demo-only. PM now confirmed a Cloudflare-managed domain exists and is evaluating DigitalOcean Droplet as the next always-on hosted dev/demo runtime. Paperclip currently runs on localhost on Noffy's machine, so live W3 integration remains blocked until Paperclip has a stable reachable hostname or webhook direction/auth are confirmed.
+QA passed W1.4 no-domain ngrok temporary demo verification and PM accepted it as demo-only. PM now confirmed a Cloudflare-managed domain exists and selected DigitalOcean as the next always-on hosted dev/demo runtime for Task Hub and Paperclip. Paperclip currently runs on localhost on Noffy's machine and must migrate to DigitalOcean before live W3 integration proceeds.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -323,13 +322,14 @@ Read first:
 - docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Steps:
-1. Confirm Cloudflare domain and desired hostnames, default `taskhub-dev.<domain>` and optional `paperclip-dev.<domain>`.
-2. Confirm DigitalOcean account access and create/select one dev-only Droplet.
-3. Pull `dev`, configure server-only env values, and set persistent `APP_DATA_DIR`.
-4. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the Cloudflare Task Hub hostname.
-5. Configure Cloudflare routing and Access email allowlist before teammate preview.
-6. Verify `/healthz`, anonymous block, approved teammate access, non-destructive app load, and runtime persistence.
-7. Record that Paperclip is still localhost on Noffy's machine unless a separate Paperclip tunnel/hosted runtime is confirmed.
+1. Confirm Cloudflare domain and hostnames, default `taskhub-dev.<domain>` and `paperclip-dev.<domain>`.
+2. Confirm DigitalOcean account access and create/select one dev-only Droplet or approved DO runtime layout for both services.
+3. Pull Task Hub `dev`, configure server-only env values, and set persistent `APP_DATA_DIR`.
+4. Coordinate Paperclip deploy source, runtime command, env vars, and health/load check with Noffy/Paperclip owner.
+5. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the Cloudflare Task Hub hostname.
+6. Configure Cloudflare routing and Access email allowlist before teammate preview.
+7. Verify Task Hub `/healthz`, Paperclip health/load path, anonymous block, approved teammate access, non-destructive app load, and runtime persistence.
+8. Record Paperclip migration from Noffy's localhost to DigitalOcean and route W1.6 service-auth planning.
 
 Rules:
 - Do not deploy production.
@@ -359,8 +359,9 @@ Rules:
 | 2026-05-08 | Updated W1 release-gate language to canonical `V0.2-W1-05`/`V0.2-W1-06` naming policy | Codex PM |
 | 2026-05-08 | Accepted `V0.2-W2-02` Review Queue redesign and shared task drawer foundation at `d33d8f7`; routed W2 next to W2-02 integration into `dev`, then `V0.2-W2-03` Tasks Inbox | Codex PM |
 | 2026-05-08 | Amended W1 no-cost path to use ngrok + temporary Basic Auth while no domain/subdomain exists; Cloudflare Access remains the stable gate after DNS is available | Codex PM |
-| 2026-05-09 | Accepted `V0.2-W1-05` as random ngrok URL manual teammate demo only; Paperclip stable endpoint remains deferred until stable hostname exists | Codex PM |
+| 2026-05-09 | Accepted `V0.2-W1-05` as random ngrok URL manual teammate demo only; random ngrok remains unsuitable for permanent Paperclip automation | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-03` Tasks Inbox + Cross-board Rows at `ea807fd`; routed W2 next to W2-03 integration into `dev`, then `V0.2-W2-04` Boards Monitor + Team Board Views | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-04` Boards Monitor + Team Board Views at `47ebd84` and accepted its integration on `dev@0b77aed`; routed W2 next to `V0.2-W2-05` Calendar + Planner | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-05` Calendar + Planner at `4638df7` and accepted its integration on `dev@3fca059`; routed W2 next to final phase `V0.2-W2-06` Settings + OKR + Weekly Focus Polish | Codex PM |
 | 2026-05-12 | Rebaselined W1 next runtime path to DigitalOcean hosted dev/demo behind Cloudflare and recorded Paperclip localhost on Noffy's machine as a W3 live-integration blocker | Codex PM |
+| 2026-05-12 | Updated V0.2 W1/W3 plan so Paperclip will deploy to DigitalOcean with Task Hub before W3 live connector work proceeds | Codex PM |

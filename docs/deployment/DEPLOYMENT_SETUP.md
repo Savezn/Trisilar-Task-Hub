@@ -1,7 +1,7 @@
 # Deployment Setup - V0.2-W1-02
 
 **Doc Role:** Deploy-readiness reference for company access
-**Status:** Active - deploy-readiness reference plus DigitalOcean/Cloudflare hosted dev path
+**Status:** Active - deploy-readiness reference plus DigitalOcean/Cloudflare hosted dev path for Task Hub + Paperclip
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -37,7 +37,7 @@ Demo/current preview target:
 
 Next hosted dev/demo target:
 
-- DigitalOcean Droplet is the preferred next hosted dev/demo runtime candidate.
+- DigitalOcean is the preferred next hosted dev/demo runtime for Task Hub + Paperclip.
 - Cloudflare remains the DNS/security front door, with Cloudflare Access for human teammate access.
 - Use Cloudflare Tunnel on the Droplet when possible so app ports do not need to be exposed directly.
 - If using proxied DNS instead of Tunnel, put Nginx/Caddy or equivalent reverse proxy on the Droplet and expose only 80/443.
@@ -138,7 +138,7 @@ Configure these in the platform dashboard only. Do not commit real values.
 
 ## DigitalOcean Droplet Setup
 
-Use this for the next W1 hosted dev/demo runtime if PM confirms the DigitalOcean path.
+Use this for the next W1 hosted dev/demo runtime. PM decision is to host both Task Hub and Paperclip on DigitalOcean behind Cloudflare.
 
 | Setting | Value |
 |---|---|
@@ -146,10 +146,12 @@ Use this for the next W1 hosted dev/demo runtime if PM confirms the DigitalOcean
 | Source branch | `dev` |
 | Runtime | Node 20+ |
 | Process manager | PM2, systemd, or equivalent |
-| App bind | `localhost:<taskhub-port>` behind Cloudflare Tunnel or reverse proxy |
+| Task Hub bind | `localhost:<taskhub-port>` behind Cloudflare Tunnel or reverse proxy |
+| Paperclip bind | `localhost:<paperclip-port>` behind Cloudflare Tunnel or reverse proxy |
 | Health check path | `/healthz` |
 | Persistent state | Server directory assigned to `APP_DATA_DIR` |
-| Proposed hostname | `taskhub-dev.<cloudflare-domain>` |
+| Proposed Task Hub hostname | `taskhub-dev.<cloudflare-domain>` |
+| Proposed Paperclip hostname | `paperclip-dev.<cloudflare-domain>` |
 | OAuth callback | `https://taskhub-dev.<cloudflare-domain>/auth/callback` |
 
 Required server-only environment variable names:
@@ -170,7 +172,8 @@ Rules:
 - Keep this dev/demo runtime separate from any future production service.
 - Confirm backup/export handling for `APP_DATA_DIR` before relying on the Droplet for important state.
 - Put Cloudflare Access in front before teammate preview.
-- Keep Paperclip live integration blocked unless Paperclip has a stable reachable endpoint or calls Task Hub through an approved service-auth path.
+- Coordinate Paperclip deploy source, runtime command, env vars, and health/load check with Noffy/Paperclip owner.
+- Keep W3 live integration blocked until Task Hub + Paperclip hosted URLs and service-auth are verified.
 
 ---
 
@@ -214,7 +217,7 @@ Rules:
 - Do not rely on obscured platform URLs as access control.
 - QA must verify anonymous access is blocked before any production use.
 - Agent/API calls should not depend on interactive email login. Use Cloudflare Access service tokens, signed webhook headers, or an approved machine-auth pattern.
-- If Paperclip remains on Noffy's localhost, Paperclip needs its own stable tunnel/hostname before Task Hub can call it reliably.
+- Paperclip should migrate from Noffy's localhost to DigitalOcean before W3 live connector work proceeds.
 
 ---
 
