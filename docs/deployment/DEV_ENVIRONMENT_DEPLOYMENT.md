@@ -1,7 +1,7 @@
 # Dev Environment Deployment - V0.2-W1-03 / V0.2-W1-05
 
 **Doc Role:** Dev deployment config and no-cost preview runtime handoff
-**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; next path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub + Paperclip
+**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; next path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -14,7 +14,7 @@
 
 This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
-Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo path only. The next W1 path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub and Paperclip. Paperclip currently runs on localhost on Noffy's machine, but PM decision is to migrate Paperclip to DigitalOcean before W3 live connector work proceeds.
+Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo path only. The next W1 path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner; W3 live connector work still needs hosted URL/health and service-auth verification.
 
 ---
 
@@ -22,7 +22,7 @@ Current runtime decision: keep random ngrok URL + temporary Basic Auth as the ac
 
 Use random ngrok URL + temporary Basic Auth as the current W1 manual teammate demo path. The app runs on a local/dev machine, ngrok exposes it through a public demo URL, and the Basic Auth proxy gates access before sharing. This path is accepted for manual demo only, not permanent Paperclip automation or stable service integration.
 
-Use DigitalOcean + Cloudflare as the next stable dev/demo runtime. Cloudflare should own DNS/security/access, and the DigitalOcean runtime should run Task Hub from `dev` with persistent `APP_DATA_DIR` plus the Paperclip service from the Paperclip owner-approved deploy source. Cloudflare Tunnel is preferred when possible; proxied DNS plus reverse proxy is acceptable if PM/DevOps choose it.
+Use DigitalOcean + Cloudflare as the next stable dev/demo runtime. Cloudflare should own DNS/security/access, and the DigitalOcean runtime should run Task Hub from `dev` with persistent `APP_DATA_DIR`. Paperclip is already hosted by the Paperclip owner; record its hosted URL, health/readiness path, and service-auth requirements before W3 live work. Cloudflare Tunnel is preferred when possible; proxied DNS plus reverse proxy is acceptable if PM/DevOps choose it.
 
 Keep Render as the previously approved managed hosted dev service because `V0.2-W1-02` approved Render as a long-running Node/Express host with persistent disk support. Render setup is deferred unless PM reselects it.
 
@@ -82,7 +82,7 @@ Run the app on the DigitalOcean runtime and expose it through Cloudflare:
 | Setting | Value |
 |---|---|
 | Task Hub local bind | `http://localhost:<taskhub-port>` |
-| Paperclip local bind | `http://localhost:<paperclip-port>` |
+| Hosted Paperclip dependency | Confirm current Cloudflare URL and health/readiness path with Paperclip owner |
 | Connector | `cloudflared` Tunnel preferred; proxied DNS + reverse proxy acceptable |
 | Dev hostname | `taskhub-dev.<cloudflare-domain>` or PM-confirmed equivalent |
 | Access gate | Cloudflare Access email allowlist |
@@ -95,6 +95,8 @@ Rules:
 - Keep the runtime host online during teammate preview.
 - Store dev secrets in server-only `.env` or approved runtime secret storage only.
 - Do not commit secrets or generated runtime data.
+- Prepare Cloudflare hostname/routing and Access allowlist before exposing the hosted preview.
+- Run Task Hub on a private/local bind first; do not use a raw Droplet IP or unprotected port as the teammate preview URL.
 - Verify anonymous access is blocked before sharing the URL.
 - Use Cloudflare Access before sharing a stable hostname.
 
@@ -102,18 +104,18 @@ Rules:
 
 ## DigitalOcean Dev/Demo Runtime
 
-Use this path for `V0.2-W1-08`. PM decision is to host Task Hub and Paperclip on DigitalOcean behind Cloudflare.
+Use this path for `V0.2-W1-08`. PM decision is to host Task Hub on DigitalOcean behind Cloudflare. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
 
 | Setting | Value |
 |---|---|
 | Runtime role | Dev/demo only |
 | Task Hub source branch | `dev` |
-| Paperclip source | Confirm with Noffy/Paperclip owner |
+| Paperclip source | Already hosted; confirm URL/health/auth with Paperclip owner |
 | Runtime | Node 20+ |
 | Process manager | PM2, systemd, or equivalent |
 | Task Hub bind target | `localhost:<taskhub-port>` |
-| Paperclip bind target | `localhost:<paperclip-port>` |
-| Cloudflare routes | `taskhub-dev.<cloudflare-domain>` and `paperclip-dev.<cloudflare-domain>` to the DigitalOcean runtime |
+| Paperclip dependency | Hosted Cloudflare URL supplied by Paperclip owner |
+| Cloudflare routes | `taskhub-dev.<cloudflare-domain>` to the Task Hub runtime; Paperclip route is owner-managed |
 | Access gate | Cloudflare Access email allowlist |
 | Service auth | Cloudflare Access service token or signed webhook headers for future agent/API access |
 | `APP_BASE_URL` | `https://taskhub-dev.<cloudflare-domain>` |
@@ -122,8 +124,9 @@ Use this path for `V0.2-W1-08`. PM decision is to host Task Hub and Paperclip on
 
 Verification:
 
+- Cloudflare hostname/routing and Access policy are prepared before public teammate preview.
 - Task Hub `GET /healthz` returns `200` from the Cloudflare hostname.
-- Paperclip health/readiness or basic load path passes from its Cloudflare hostname.
+- Paperclip health/readiness or basic load path is verified or recorded from the Paperclip owner.
 - Anonymous browser access is blocked by Cloudflare Access.
 - Approved teammate access passes Cloudflare Access and loads the app.
 - Runtime JSON files persist under `APP_DATA_DIR` after app restart.
@@ -133,11 +136,10 @@ Verification:
 
 Paperclip note:
 
-- Paperclip currently runs on localhost on Noffy's machine.
-- PM decision is to migrate Paperclip to DigitalOcean for the W3 live target.
+- Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
 - If Paperclip calls Task Hub, configure hosted Paperclip to use the stable Task Hub hostname plus service-auth.
 - If Task Hub must call Paperclip, configure Task Hub to use the stable hosted Paperclip hostname.
-- Do not mark W3 live integration ready while Paperclip is localhost-only.
+- Do not mark W3 live integration ready until Task Hub hosting and service-auth with hosted Paperclip are verified.
 
 ---
 
@@ -238,13 +240,13 @@ Observed local results:
 After Trisilar configures the platform account, DNS, secrets, and Cloudflare Access:
 
 - DigitalOcean Task Hub runtime from branch `dev` succeeds, or PM explicitly reselects Render/Railway.
-- DigitalOcean Paperclip runtime succeeds from the Paperclip owner-approved deploy source.
+- Hosted Paperclip URL/health evidence is recorded from the Paperclip owner.
 - `GET /healthz` returns `200` through the hosted service.
 - Anonymous access to the dev URL is blocked by Cloudflare Access.
 - Approved teammate access passes Cloudflare Access.
 - The app loads without destructive writes.
 - Runtime JSON files are written under the configured persistent disk or volume.
-- Paperclip migration from Noffy's localhost to DigitalOcean is recorded.
+- Hosted Paperclip dependency and service-auth requirements are recorded.
 
 ---
 
@@ -331,16 +333,18 @@ Historical conclusion:
 The current ngrok demo path is available for short-lived preview, but stable Cloudflare/DigitalOcean access cannot complete from the repo alone. These Trisilar runtime items are required for `V0.2-W1-06` / `V0.2-W1-08`:
 
 - Confirm Cloudflare domain and preview hostname, default `taskhub-dev.<cloudflare-domain>`, or record a PM-approved alternate.
-- Confirm DigitalOcean account access and runtime details for Task Hub + Paperclip.
+- Confirm DigitalOcean account access and runtime details for Task Hub.
+- Prepare Cloudflare Access policy before exposing Task Hub to teammates.
 - Install or authenticate `cloudflared` on the Droplet if using Cloudflare Tunnel.
 - Run the app from the `dev` baseline with stable `APP_DATA_DIR`.
-- Coordinate Paperclip deploy source, runtime command, env vars, and health/load check with Noffy/Paperclip owner.
+- Bind Task Hub privately first and avoid using raw Droplet IP/ports for preview access.
+- Record hosted Paperclip base URL, health/readiness path, and service-auth requirements with the Paperclip owner.
 - Configure dev-only Trello and Google credentials on the server or in a secure runtime dashboard; do not put values in chat or git.
 - Configure the dev Google OAuth redirect URI.
 - Configure DNS/Tunnel for the dev hostname.
 - Configure Cloudflare Access email allowlist.
 - Run anonymous-blocked and approved-teammate access verification.
-- Confirm Paperclip migration from Noffy's localhost to DigitalOcean.
+- Confirm hosted Paperclip remains reachable through Cloudflare.
 
 For repeat Paperclip demo use before stable Cloudflare/DigitalOcean verification, configure a reserved/static ngrok domain or explicitly update Paperclip with the current manual URL for that run. Random URLs remain unsuitable for permanent automation.
 

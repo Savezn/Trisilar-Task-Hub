@@ -19,7 +19,7 @@
 | V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
 | V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
 | V0.2-W1-05 ngrok Random URL Demo | QA Pass / PM Accepted as demo-only path | Reviewed by Codex QA; Accepted by Codex PM; current URL/credentials remain local-only in Desktop handoff file |
-| V0.2 W1 runtime rebaseline | Pending PM/DevOps setup | Next path is DigitalOcean hosted dev/demo behind Cloudflare for both Task Hub and Paperclip; Paperclip currently runs on localhost on Noffy's machine until migrated |
+| V0.2 W1 runtime rebaseline | Pending PM/DevOps setup | Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner; remaining W1 runtime path is Task Hub hosted dev/demo behind Cloudflare plus service-auth verification |
 | V0.2 W2 Full UI Redesign | `V0.2-W2-01` through `V0.2-W2-05` accepted and integrated through `dev@3fca059`; `V0.2-W2-06` planned next | `V0.2-W2-05` integration QA passed on `dev@3fca059` and is accepted by Codex PM; full redesign still open until `V0.2-W2-06` passes QA/PM |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
@@ -33,9 +33,9 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo for Task Hub + Paperclip | DevOps / Dev |
+| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo for Task Hub; hosted Paperclip endpoint must be recorded for service-auth | DevOps / Dev |
 | W2 | Full UI Redesign | `V0.2-W2-01`-`V0.2-W2-05` accepted and integrated on `dev`; `V0.2-W2-06` remains the final planned W2 phase; full redesign not complete | Dev |
-| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Task Hub + Paperclip are on stable DigitalOcean/Cloudflare runtime and service auth is confirmed | PM / Paperclip owner |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Task Hub has a stable DigitalOcean/Cloudflare runtime and service auth with hosted Paperclip is confirmed | PM / Paperclip owner |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -80,7 +80,7 @@ Required worktrees:
 
 - PM / Integration: `trisilar-task-hub` on `dev`
 - `V0.2-W1-05`: ngrok temporary demo runtime uses local runtime tools; repo branch only if a docs/setup defect is discovered
-- `V0.2-W1-08`: DigitalOcean hosted dev/demo setup uses latest `dev`, server-only secrets, and Cloudflare front door for Task Hub + Paperclip; repo changes only if setup defects are found
+- `V0.2-W1-08`: DigitalOcean hosted dev/demo setup uses latest `dev`, server-only secrets, and Cloudflare front door for Task Hub; repo changes only if setup defects are found
 - W2: `trisilar-task-hub-w2-ui-redesign` on the active `feature/w2-*` phase branch
 - W3: `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`
 
@@ -98,9 +98,9 @@ Parallel rule:
 
 ## Next Action - V0.2-W1-08 DigitalOcean Hosted Dev/Demo Runtime Setup
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W1-05` (`W1.4`) remains accepted as demo-only random ngrok access. PM now decided the next W1 runtime step is DigitalOcean hosted dev/demo behind Cloudflare for both Task Hub and Paperclip. This does not replace production deployment, does not implement W3 live Paperclip behavior, and does not merge to `main`.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W1-05` (`W1.4`) remains accepted as demo-only random ngrok access. PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. The next W1 runtime step is Task Hub hosted dev/demo on DigitalOcean behind Cloudflare. This does not replace production deployment, does not implement W3 live Paperclip behavior, and does not merge to `main`.
 
-Paperclip currently runs on localhost on Noffy's machine, but the target is to migrate Paperclip to DigitalOcean. W3 live connector work remains blocked until the hosted Task Hub and hosted Paperclip URLs plus service-auth path are verified.
+W3 live connector work remains blocked until the hosted Task Hub URL, hosted Paperclip URL, health/readiness path, and service-auth path are verified together.
 
 ```text
 Role: DevOps / Dev
@@ -108,7 +108,7 @@ Task: V0.2-W1-08 - DigitalOcean Hosted Dev/Demo Runtime Setup
 Alias: W1.7
 
 Context:
-`V0.2-W1-05` passed teammate demo and remains accepted as manual demo-only access. PM confirmed there is a Cloudflare-managed domain and wants the next path to be DigitalOcean hosted dev/demo behind Cloudflare for Task Hub and Paperclip. Paperclip currently runs on localhost on Noffy's machine until migration.
+`V0.2-W1-05` passed teammate demo and remains accepted as manual demo-only access. PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. The remaining W1 runtime work is to put Task Hub on DigitalOcean behind Cloudflare and verify service-auth readiness against the hosted Paperclip endpoint.
 
 Read first:
 - CODEX.md
@@ -121,18 +121,19 @@ Read first:
 - docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Goal:
-Set up or prepare hosted dev/demo runtime on DigitalOcean behind Cloudflare for Task Hub and Paperclip without deploying production.
+Set up or prepare hosted dev/demo runtime on DigitalOcean behind Cloudflare for Task Hub without deploying production.
 
 Steps:
-1. Confirm Cloudflare domain and hostnames, default `taskhub-dev.<domain>` and `paperclip-dev.<domain>`.
-2. Confirm DigitalOcean account access and create/select one dev-only Droplet or approved DO runtime layout for both services.
-3. Pull the latest Task Hub `dev` branch on the Droplet and coordinate Paperclip deploy source with Noffy/Paperclip owner.
-4. Configure server-only dev secrets and `APP_DATA_DIR`; do not put values in chat or git.
-5. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the Task Hub Cloudflare hostname.
-6. Configure Cloudflare routing for both Task Hub and Paperclip with Tunnel preferred, or proxied DNS + reverse proxy if selected.
-7. Put Cloudflare Access email allowlist in front of human UI routes before teammate preview.
-8. Verify Task Hub `/healthz`, Paperclip health/load path, anonymous block, approved teammate access, non-destructive app load, and runtime file persistence.
-9. Record Paperclip migration from Noffy's localhost to DigitalOcean and route W3 service-auth planning next.
+1. Confirm Cloudflare domain and Task Hub hostname, default `taskhub-dev.<domain>`, plus the already-hosted Paperclip hostname from the Paperclip owner.
+2. Prepare the Cloudflare Access application and email allowlist for the Task Hub hostname before any public teammate preview.
+3. Confirm DigitalOcean account access and create/select one dev-only Droplet or approved DO runtime layout for Task Hub.
+4. Pull the latest Task Hub `dev` branch on the Droplet and run it on a private/local bind only.
+5. Configure server-only dev secrets and `APP_DATA_DIR`; do not put values in chat or git.
+6. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the Task Hub Cloudflare hostname.
+7. Connect the Task Hub hostname through Cloudflare routing with Tunnel preferred, or proxied DNS + reverse proxy if selected.
+8. Verify Cloudflare Access blocks anonymous access before sharing any URL.
+9. Verify Task Hub `/healthz`, approved teammate access, non-destructive app load, and runtime file persistence through the Cloudflare hostname.
+10. Record the hosted Paperclip URL/health evidence supplied by the Paperclip owner and route W1.6 service-auth planning next.
 
 Rules:
 - Do not deploy production.
@@ -144,4 +145,4 @@ Rules:
 - Include attribution: Runtime setup by Codex DevOps/Dev.
 ```
 
-**Attribution:** W1 runtime rebaseline recorded by Codex PM. W1.4 demo confirmed by teammate and accepted by Codex PM. Paperclip-on-DigitalOcean decision recorded by Codex PM.
+**Attribution:** W1 runtime rebaseline recorded by Codex PM. W1.4 demo confirmed by teammate and accepted by Codex PM. Paperclip-on-DigitalOcean status confirmed by PM and recorded by Codex PM.
