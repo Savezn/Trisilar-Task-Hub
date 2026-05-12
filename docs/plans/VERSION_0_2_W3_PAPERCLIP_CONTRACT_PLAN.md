@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter accepted; live connector blocked until Paperclip is deployed to DigitalOcean and service auth is confirmed
+**Status:** `V0.2-W3-01` mock adapter accepted; live connector blocked until Task Hub is hosted and service auth with hosted Paperclip is confirmed
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -33,8 +33,8 @@ Implemented by: Codex Dev
 PM runtime clarification:
 
 - Task Hub is moving toward a stable hosted dev/demo URL on DigitalOcean behind Cloudflare.
-- Paperclip currently runs on localhost on Noffy's machine, but PM decision is to deploy Paperclip to DigitalOcean as the W3 live target.
-- `V0.2-W3-02` live webhook work must not start until Task Hub and Paperclip both have stable DigitalOcean/Cloudflare dev hostnames and service-auth is confirmed.
+- Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
+- `V0.2-W3-02` live webhook work must not start until Task Hub has a stable DigitalOcean/Cloudflare dev hostname and service-auth with hosted Paperclip is confirmed.
 - Do not treat the old random ngrok Task Hub URL as a Paperclip endpoint.
 - Do not add live Paperclip calls in W1 or W2.
 
@@ -100,7 +100,7 @@ Task Hub target:
   DigitalOcean Droplet + Cloudflare hostname + Cloudflare Access/service-token policy
 
 Paperclip target:
-  DigitalOcean runtime + Cloudflare hostname + service-auth policy
+  Existing DigitalOcean runtime + Cloudflare hostname + service-auth policy
 ```
 
 Selected live-connector path:
@@ -108,8 +108,8 @@ Selected live-connector path:
 | Path | Requirement | W3 implication |
 |---|---|---|
 | Paperclip calls Task Hub webhook | Stable Task Hub hostname and service-auth header/token policy | Preferred first live path because it preserves Task Hub as the human review boundary |
-| Task Hub calls/polls Paperclip | Stable Paperclip hostname on DigitalOcean | Allowed only if W3 design confirms polling is needed |
-| Both services on one DigitalOcean runtime | PM/owner approval, process isolation, env separation, and Cloudflare routes | Selected W1 runtime direction; W3 still owns live connector code |
+| Task Hub calls/polls Paperclip | Hosted Paperclip hostname and auth policy from Paperclip owner | Allowed only if W3 design confirms polling is needed |
+| Both services on one DigitalOcean account/runtime family | PM/owner approval, process isolation, env separation, and Cloudflare routes | Acceptable topology, but W3 still owns live connector code |
 
 Cloudflare Access email login is suitable for human UI access only. Agent/API calls should use service tokens, signed webhook headers, or another machine-auth scheme approved by PM and Paperclip owner.
 
@@ -302,14 +302,14 @@ npm.cmd run verify:paperclip-mock
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
-| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after Task Hub and Paperclip are deployed on stable DigitalOcean/Cloudflare dev runtime and service auth is confirmed |
+| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after Task Hub is deployed on stable DigitalOcean/Cloudflare dev runtime and service auth with hosted Paperclip is confirmed |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Source signature/replay protection once Paperclip auth details are known |
 
 Details:
 
 - `V0.2-W3-01` completed pure validator/normalizer logic, fixture files, unit-level validation checks, `POST /api/integrations/paperclip/mock/review-session`, backward-compatible review-store attribution fields, idempotency lookup by `requestId`, and `scripts/verify-paperclip-mock.js`.
 - `V0.2-W3-01` introduced no live Paperclip external calls.
-- `V0.2-W3-02` should add authenticated `POST /api/integrations/paperclip/webhook`, reuse the same normalizer and audit path, and stay blocked until W1 provides protected reachable Task Hub and Paperclip dev URLs on DigitalOcean/Cloudflare and the service-auth scheme is confirmed.
+- `V0.2-W3-02` should add authenticated `POST /api/integrations/paperclip/webhook`, reuse the same normalizer and audit path, and stay blocked until W1 provides a protected reachable Task Hub dev URL on DigitalOcean/Cloudflare, the hosted Paperclip URL/health path is recorded, and the service-auth scheme is confirmed.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
 ---
@@ -319,9 +319,8 @@ Details:
 - What stable Paperclip identifiers are available: workspace id, thread id, run id, agent id, task id?
 - Will Paperclip call Task Hub by webhook, or will Task Hub poll Paperclip?
 - What auth/signature scheme will Paperclip support for live webhooks?
-- What Paperclip repo/branch/build/start command should be deployed to DigitalOcean?
-- What Paperclip health or readiness endpoint should W1.7 verify?
-- What env vars and secrets does Paperclip need on DigitalOcean, and who owns configuring them without putting values in chat or git?
+- What hosted Paperclip base URL and health/readiness endpoint should W1.7 record?
+- What auth/signature scheme is currently available on the hosted Paperclip runtime?
 - Will Paperclip call Task Hub by webhook first, or does W3 still need a Task Hub -> Paperclip call/poll path?
 - Should Paperclip payloads include raw transcript text, source artifact links, or both?
 - What reviewer identity should be recorded before W1 multi-user access exists?
@@ -349,5 +348,5 @@ Details:
 |---|---|---|
 | 2026-05-08 | Implemented mock adapter route, idempotency/audit persistence, and mock verification | Codex Dev |
 | 2026-05-08 | Created W3 Paperclip integration discovery and contract plan | Codex Dev |
-| 2026-05-12 | Added runtime topology gate for DigitalOcean-hosted Task Hub and Paperclip localhost on Noffy's machine | Codex PM |
-| 2026-05-12 | Updated W3 gate to require Paperclip deployment on DigitalOcean before live connector work | Codex PM |
+| 2026-05-12 | Added runtime topology gate for DigitalOcean-hosted Task Hub; historical Paperclip localhost blocker later superseded by hosted Paperclip confirmation | Codex PM |
+| 2026-05-12 | Updated W3 gate after PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare; live work now waits on Task Hub hosting plus service-auth verification | Codex PM |

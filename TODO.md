@@ -46,16 +46,16 @@ Historical details live in `docs/archive/VERSION_0_1_PLAN.md`, `docs/archive/DEV
 
 ### V0.2 - Company Access, UI Redesign, Paperclip Integration
 
-Status: Active. W2 full UI redesign is re-scoped into `V0.2-W2-01`-`V0.2-W2-06` (`W2a`-`W2f` aliases), and V0.2 should not be treated as release-ready until W1 Cloudflare-protected hosted dev/demo access, W2 full UI, and W3 mock/integration gates are accepted. `V0.2-W1-05` random ngrok + temporary Basic Auth is accepted for short manual teammate demo only. The next W1 path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub + Paperclip.
+Status: Active. W2 full UI redesign is re-scoped into `V0.2-W2-01`-`V0.2-W2-06` (`W2a`-`W2f` aliases), and V0.2 should not be treated as release-ready until W1 Cloudflare-protected hosted dev/demo access, W2 full UI, and W3 mock/integration gates are accepted. `V0.2-W1-05` random ngrok + temporary Basic Auth is accepted for short manual teammate demo only. Paperclip is already hosted on DigitalOcean behind Cloudflare by its owner. The next W1 path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub.
 
 Workstreams:
 
 | Workstream | Goal | Status |
 |---|---|---|
 | W0 Branch / Environment / CI Setup | Establish `dev`, branch model, worktree workflow | Done |
-| W1 Company Access + Deployment | Make Trisilar teammates able to access stable Task Hub + Paperclip dev/demo services safely | `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare + DigitalOcean |
+| W1 Company Access + Deployment | Make Trisilar teammates able to access stable Task Hub dev/demo safely | `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare + DigitalOcean |
 | W2 Full UI Redesign | Redesign the full app UI with a durable design system | Active / Next |
-| W3 Paperclip Multi-Agent Integration | Connect Task Hub to the Paperclip multi-agent system | Mock accepted; live blocked until Paperclip is deployed to DigitalOcean and service auth is verified |
+| W3 Paperclip Multi-Agent Integration | Connect Task Hub to the Paperclip multi-agent system | Mock accepted; live blocked until Task Hub is hosted and service auth with hosted Paperclip is verified |
 | W4 Integration QA | Merge workstreams into `dev` and verify combined behavior | Planned |
 | W5 V0.2 Release | Promote from `dev` to `main` after acceptance | Planned |
 
@@ -96,7 +96,7 @@ These items are not blockers for the current `V0.2-W2-02`/W1 runtime work. They 
 |---|---|---|
 | Automated test suite | Current coverage is mostly smoke and structural verification. Unit, integration, and browser regression tests are not yet systematic. | Expand from `docs/testing/TEST_STRATEGY.md`: route tests, Trello model tests, deterministic fixtures, browser navigation regression, and CI gates. |
 | Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |
-| Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only; stable release-grade access now needs DigitalOcean hosted dev/demo setup for Task Hub + Paperclip, Cloudflare routing/Access, secrets kept outside git, stable Task Hub `APP_DATA_DIR`, and Paperclip service-auth topology recorded. | Complete `V0.2-W1-08` and `V0.2-W1-06` from `docs/plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md` before production promotion. |
+| Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only; stable release-grade access now needs DigitalOcean hosted dev/demo setup for Task Hub, Cloudflare routing/Access, secrets kept outside git, stable Task Hub `APP_DATA_DIR`, and hosted Paperclip service-auth topology recorded. | Complete `V0.2-W1-08` and `V0.2-W1-06` from `docs/plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md` before production promotion. |
 | Historical document encoding | Some archive/log files still contain mojibake from earlier encoding corruption. | Run a separate UTF-8 repair task on archive/log docs only; use targeted edits and preserve historical meaning. |
 
 ---
