@@ -118,6 +118,7 @@ Use this path for `V0.2-W1-08`. PM decision is to host Task Hub on DigitalOcean 
 | Cloudflare routes | `taskhub-dev.<cloudflare-domain>` to the Task Hub runtime; Paperclip route is owner-managed |
 | Access gate | Cloudflare Access email allowlist |
 | Service auth | Cloudflare Access service token or signed webhook headers for future agent/API access |
+| `HOST` | `127.0.0.1` on the Droplet before Cloudflare route is connected |
 | `APP_BASE_URL` | `https://taskhub-dev.<cloudflare-domain>` |
 | `GOOGLE_REDIRECT_URI` | `https://taskhub-dev.<cloudflare-domain>/auth/callback` |
 | `APP_DATA_DIR` | Persistent server directory |
@@ -188,6 +189,7 @@ Required Railway variable names:
 - `APP_BASE_URL`
 - `GOOGLE_REDIRECT_URI`
 - `APP_DATA_DIR`
+- `HOST`
 - `GOOGLE_CALENDAR_ID`
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
