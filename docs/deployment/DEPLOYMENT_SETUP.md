@@ -1,7 +1,7 @@
 # Deployment Setup - V0.2-W1-02
 
 **Doc Role:** Deploy-readiness reference for company access
-**Status:** Active - deploy-readiness reference plus accepted DigitalOcean/Cloudflare hosted dev/demo path for Task Hub; service-auth topology planned / QA pending
+**Status:** Active - deploy-readiness reference plus accepted DigitalOcean/Cloudflare hosted dev/demo path for Task Hub; service-auth topology accepted
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -222,7 +222,7 @@ Rules:
 - Do not rely on obscured platform URLs as access control.
 - QA must verify anonymous access is blocked before any production use.
 - Agent/API calls should not depend on interactive email login. Use Cloudflare Access service tokens, signed webhook headers, or an approved machine-auth pattern.
-- Paperclip is already hosted on DigitalOcean behind Cloudflare; W3 live connector work still needs W1-07 service-auth QA/PM acceptance and Paperclip owner inputs.
+- Paperclip is already hosted on DigitalOcean behind Cloudflare; W3 live connector work still needs Paperclip owner inputs.
 
 ---
 
@@ -275,7 +275,7 @@ Rules:
 - Configure Cloudflare Access service token values in the Paperclip runtime only.
 - Configure webhook signing secret in both runtime dashboards/server env only.
 - Do not expose service-token headers or signing secrets to browser JavaScript.
-- Do not implement or enable the live W3 webhook until W1-07 passes QA/PM and Paperclip owner confirms the remaining inputs.
+- Do not implement or enable the live W3 webhook until Paperclip owner confirms the remaining inputs.
 
 ---
 

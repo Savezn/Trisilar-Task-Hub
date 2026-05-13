@@ -392,6 +392,42 @@ Rules:
 
 ---
 
+## Prompt H - Paperclip Owner Inputs for W3 Live Connector
+
+```text
+Role: PM / Paperclip Owner
+Task: Confirm Paperclip Inputs for W3 Live Connector
+
+Context:
+V0.2-W1-05 remains accepted as manual demo-only access. PR #9 merged to `dev` at `91ee327`, and PM accepted `V0.2-W1-06` plus `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. PR #11 merged to `dev` at `fa87ac4`, and PM accepted `V0.2-W1-07` service-auth topology. W3 live connector work remains blocked until Paperclip owner inputs are confirmed.
+
+Read first:
+- CODEX.md
+- CURRENT_SPRINT.md
+- docs/adr/ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md
+- docs/plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md
+- docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
+
+Steps:
+1. Confirm exact Paperclip health/readiness path for `https://paperclip.trisila.online`.
+2. Confirm Paperclip runtime can send Cloudflare Access service-token headers.
+3. Confirm Paperclip runtime can compute HMAC-SHA256 signatures over the raw request body or agreed canonical payload.
+4. Confirm Paperclip environment/source identifiers for `PAPERCLIP_ALLOWED_SOURCE_ID` and `PAPERCLIP_ALLOWED_ENVIRONMENT`.
+5. Confirm which Paperclip run/workspace/thread identifiers map to W3 contract fields.
+6. Do not send token or signing-secret values in chat or docs.
+7. After inputs are confirmed, route W3 live connector planning.
+
+Rules:
+- Do not deploy production.
+- Do not merge to main.
+- Do not commit secrets or generated runtime data.
+- Do not implement W2 UI redesign.
+- Do not implement new W3 Paperclip behavior.
+- Include attribution: W1-07 reviewed by Codex QA / PM; accepted by Codex PM.
+```
+
+---
+
 ## Change Attribution
 
 | Date | Change | Updated by |
@@ -406,3 +442,4 @@ Rules:
 | 2026-05-13 | Updated Prompt E from DevOps setup to QA recheck after Task Hub was configured on DigitalOcean behind Cloudflare Access at `taskhub.trisila.online` | Codex PM |
 | 2026-05-13 | Added Prompt F for `V0.2-W1-07` service-auth planning after PM accepted W1-06/W1-08 as dev/demo runtime complete | Codex PM |
 | 2026-05-13 | Added Prompt G for QA/PM review of W1-07 service-auth topology before W3 live connector planning | Codex PM / Dev |
+| 2026-05-13 | Added Prompt H after PR #11 merge and PM acceptance of `V0.2-W1-07`; W3 live connector remains blocked until Paperclip owner inputs are confirmed | Codex PM |

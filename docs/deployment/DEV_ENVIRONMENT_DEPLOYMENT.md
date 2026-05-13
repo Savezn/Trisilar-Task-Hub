@@ -1,7 +1,7 @@
 # Dev Environment Deployment - V0.2-W1-03 / V0.2-W1-05
 
 **Doc Role:** Dev deployment config and no-cost preview runtime handoff
-**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; DigitalOcean hosted dev/demo runtime for Task Hub is QA Pass / PM Accepted; service-auth topology planned / QA pending
+**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; DigitalOcean hosted dev/demo runtime for Task Hub is QA Pass / PM Accepted; service-auth topology accepted
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -14,7 +14,7 @@
 
 This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
-Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo fallback only. Task Hub is now accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access at `https://taskhub.trisila.online`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner; W3 live connector work still needs W1-07 service-auth QA/PM acceptance and Paperclip owner inputs.
+Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo fallback only. Task Hub is now accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access at `https://taskhub.trisila.online`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner; W3 live connector work still needs Paperclip owner inputs.
 
 ---
 
@@ -140,7 +140,7 @@ Paperclip note:
 - Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
 - First live direction is Paperclip calls Task Hub by webhook.
 - Configure hosted Paperclip to call the stable Task Hub hostname with Cloudflare Access service-token headers plus signed webhook headers.
-- Do not mark W3 live integration ready until W1-07 service-auth topology passes QA/PM and the Paperclip owner confirms remaining inputs.
+- Do not mark W3 live integration ready until the Paperclip owner confirms remaining inputs.
 
 ---
 
@@ -394,7 +394,7 @@ The random ngrok demo path remains available only as a short-lived fallback. The
 Remaining blockers:
 
 - Record hosted Paperclip health/readiness evidence from the Paperclip owner.
-- QA/PM accept `V0.2-W1-07` service-auth planning for hosted Paperclip -> hosted Task Hub before W3 live connector work.
+- Confirm Paperclip owner inputs before W3 live connector work.
 
 ---
 
