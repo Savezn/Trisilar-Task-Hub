@@ -61,6 +61,16 @@ async function postJson(url, body) {
   return { status: res.status, json };
 }
 
+async function deleteJson(url, body) {
+  const res = await fetch(url, {
+    method: "DELETE",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json();
+  return { status: res.status, json };
+}
+
 function pass(label) {
   console.log(`PASS ${label}`);
 }
@@ -182,6 +192,69 @@ async function main() {
     assert.strictEqual(relatedStatus[0].externalTaskId, "pc_task_001");
     pass("Docs helpers filter, sort, and resolve related Review Queue task status");
 
+    const createdFromDoc = await postJson(`${baseUrl}/api/integrations/paperclip/mock/docs/review-task`, {
+      artifactId: "doc_weekly_marketing_sync",
+      title: "Review campaign brief evidence",
+      excerpt: `${"Review evidence. ".repeat(90)}Confirm owner and next action.`,
+      owner: "PM",
+      priority: "high",
+    });
+    assert.strictEqual(createdFromDoc.status, 201);
+    assert.strictEqual(createdFromDoc.json.source, "paperclip_docs_mock");
+    assert.strictEqual(createdFromDoc.json.tasks.length, 1);
+    assert.strictEqual(createdFromDoc.json.tasks[0].status, "pending");
+    assert.strictEqual(createdFromDoc.json.tasks[0].syncCalendar, false);
+    assert.strictEqual(createdFromDoc.json.tasks[0].syncGoogleTasks, false);
+    assert.strictEqual(createdFromDoc.json.tasks[0].targetListId, "");
+    assert.strictEqual(createdFromDoc.json.tasks[0].paperclipDocument.artifactId, "doc_weekly_marketing_sync");
+    assert.strictEqual(createdFromDoc.json.tasks[0].paperclipDocument.agentRunId, "run_docs_20260513_001");
+    assert(createdFromDoc.json.tasks[0].sourceEvidence[0].text.length <= 1000);
+    assert(createdFromDoc.json.tasks[0].auditTrail.some(event => event.type === "paperclip_doc_review_task_created"));
+    pass("mock docs can create a pending Review Queue task from bounded document excerpt");
+
+    const attachment = await postJson(`${baseUrl}/api/integrations/paperclip/mock/docs/doc_child_agent_execution_notes/attachments`, {
+      requestId: created.json.requestId,
+      externalTaskId: created.json.tasks[0].externalTaskId,
+      title: created.json.tasks[0].title,
+      relationship: "manual_reference",
+      anchorText: "Manual QA link",
+    });
+    assert.strictEqual(attachment.status, 200);
+    assert(attachment.json.linkedTasks.some(link =>
+      link.requestId === created.json.requestId &&
+      link.externalTaskId === created.json.tasks[0].externalTaskId &&
+      link.relationship === "manual_reference"
+    ));
+
+    const statusUpdate = await postJson(`${baseUrl}/api/integrations/paperclip/mock/docs/doc_child_agent_execution_notes/status`, {
+      reviewStatus: "reviewed",
+    });
+    assert.strictEqual(statusUpdate.status, 200);
+    assert.strictEqual(statusUpdate.json.reviewStatus, "reviewed");
+
+    const invalidStatus = await postJson(`${baseUrl}/api/integrations/paperclip/mock/docs/doc_child_agent_execution_notes/status`, {
+      reviewStatus: "done",
+    });
+    assert.strictEqual(invalidStatus.status, 400);
+
+    const docsAfterAttach = await (await fetch(`${baseUrl}/api/integrations/paperclip/mock/docs`)).json();
+    const childDocWithState = docsAfterAttach.documents.find(doc => doc.artifactId === "doc_child_agent_execution_notes");
+    assert.strictEqual(childDocWithState.reviewStatus, "reviewed");
+    assert(childDocWithState.linkedTasks.some(link => link.relationship === "manual_reference"));
+    assert(childDocWithState.workflowAuditTrail.some(event => event.type === "paperclip_doc_link_attached"));
+    assert(childDocWithState.workflowAuditTrail.some(event => event.type === "paperclip_doc_status_changed"));
+
+    const detach = await deleteJson(`${baseUrl}/api/integrations/paperclip/mock/docs/doc_child_agent_execution_notes/attachments`, {
+      requestId: created.json.requestId,
+      externalTaskId: created.json.tasks[0].externalTaskId,
+    });
+    assert.strictEqual(detach.status, 200);
+    assert(!detach.json.linkedTasks.some(link => link.relationship === "manual_reference"));
+
+    const fixtureAfterDetach = readFixture();
+    assert(!JSON.stringify(fixtureAfterDetach).includes("manual_reference"));
+    pass("mock docs attach, detach, and document review status persist locally without mutating fixtures");
+
     const linkedDoc = body.documents.find(doc => (doc.linkedTasks || []).some(link =>
       link.requestId === created.json.requestId &&
       link.externalTaskId === created.json.tasks[0].externalTaskId
@@ -212,6 +285,10 @@ async function main() {
     assert(docsPage.includes("docs-sort-select"));
     assert(docsPage.includes("renderDocsMetadataPanel"));
     assert(docsPage.includes("renderDocsRelatedTaskStatus"));
+    assert(docsPage.includes("createDocsReviewTask"));
+    assert(docsPage.includes("attachDocsTaskLink"));
+    assert(docsPage.includes("detachDocsTaskLink"));
+    assert(docsPage.includes("updateDocsReviewStatus"));
     pass("Docs page renders linked task affordances");
 
     const reviewPage = fs.readFileSync(path.join(__dirname, "..", "public", "js", "pages", "review.js"), "utf8");

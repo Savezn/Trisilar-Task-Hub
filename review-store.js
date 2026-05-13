@@ -86,6 +86,7 @@ function createSession(data) {
     ...("agentRationale" in t ? { agentRationale: t.agentRationale } : {}),
     ...("sourceEvidence" in t ? { sourceEvidence: t.sourceEvidence } : {}),
     ...("createdByAgent" in t ? { createdByAgent: t.createdByAgent } : {}),
+    ...("paperclipDocument" in t ? { paperclipDocument: t.paperclipDocument } : {}),
     ...("auditTrail" in t ? { auditTrail: Array.isArray(t.auditTrail) ? t.auditTrail : [] } : {}),
   }));
   sessions.push(session);

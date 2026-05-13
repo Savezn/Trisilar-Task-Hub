@@ -6729,6 +6729,13 @@ a { text-decoration: none; }
   font-size: 13px;
   margin: 0 0 10px;
 }
+.docs-linked-task-row {
+  align-items: stretch;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin-top: 8px;
+}
 .docs-linked-task {
   align-items: flex-start;
   background: var(--list-bg);
@@ -6738,7 +6745,6 @@ a { text-decoration: none; }
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 8px;
   padding: 10px 12px;
   text-align: left;
   width: 100%;
@@ -6752,6 +6758,65 @@ a { text-decoration: none; }
 .docs-linked-task small {
   color: var(--text-muted);
   font-size: 11px;
+}
+.docs-workflow-panel {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+}
+.docs-workflow-head {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.docs-workflow-head h3 {
+  color: var(--text);
+  font-size: 13px;
+  margin: 0;
+}
+.docs-workflow-head label {
+  align-items: center;
+  color: var(--text-muted);
+  display: flex;
+  font-size: 11px;
+  font-weight: 700;
+  gap: 8px;
+  text-transform: uppercase;
+}
+.docs-workflow-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.docs-workflow-box {
+  background: var(--list-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+.docs-workflow-label {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+.docs-workflow-input,
+.docs-workflow-select,
+.docs-workflow-textarea {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  min-width: 0;
+  padding: 9px 10px;
+  width: 100%;
+}
+.docs-workflow-textarea {
+  min-height: 96px;
+  resize: vertical;
 }
 .docs-content {
   color: var(--text);
@@ -6819,6 +6884,8 @@ a { text-decoration: none; }
   .docs-grid { grid-template-columns: 1fr; }
   .docs-metadata-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .docs-related-status-row { grid-template-columns: 1fr; }
+  .docs-linked-task-row,
+  .docs-workflow-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 560px) {

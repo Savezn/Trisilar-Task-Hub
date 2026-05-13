@@ -9,6 +9,13 @@ const {
   normalizePaperclipDocsPayload,
 } = require("../integrations/paperclip/documents-contract");
 const {
+  attachDocumentTask,
+  buildDocsReviewSessionInput,
+  detachDocumentTask,
+  mergeDocsWorkflowState,
+  setDocumentReviewStatus,
+} = require("../integrations/paperclip/docs-workflow");
+const {
   connectPaperclipConnection,
   disconnectPaperclipConnection,
   publicPaperclipConnection,
@@ -26,6 +33,27 @@ module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
   function sendConnectionError(res, error) {
     const status = Number.isInteger(error.statusCode) ? error.statusCode : 500;
     return res.status(status).json({ error: status === 500 ? friendlyError(error) : error.message });
+  }
+
+  function sendWorkflowError(res, error) {
+    const status = Number.isInteger(error.statusCode) ? error.statusCode : 500;
+    return res.status(status).json({ error: status === 500 ? friendlyError(error) : error.message });
+  }
+
+  function loadMockDocsPayload() {
+    const fixture = JSON.parse(fs.readFileSync(docsFixturePath, "utf8"));
+    return mergeDocsWorkflowState(normalizePaperclipDocsPayload(fixture));
+  }
+
+  function findMockDocOrThrow(artifactId) {
+    const payload = loadMockDocsPayload();
+    const doc = payload.documents.find(item => item.artifactId === artifactId);
+    if (!doc) {
+      const error = new Error("Document artifact not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    return { payload, doc };
   }
 
   async function resolveDiffs(sessionInput) {
@@ -111,11 +139,67 @@ module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
 
   router.get("/integrations/paperclip/mock/docs", (_req, res) => {
     try {
-      const fixture = JSON.parse(fs.readFileSync(docsFixturePath, "utf8"));
-      const docs = normalizePaperclipDocsPayload(fixture);
-      return res.json(docs);
+      return res.json(loadMockDocsPayload());
     } catch (e) {
       return res.status(500).json({ error: friendlyError(e) });
+    }
+  });
+
+  router.post("/integrations/paperclip/mock/docs/review-task", (req, res) => {
+    try {
+      const { payload, doc } = findMockDocOrThrow(req.body?.artifactId);
+      const sessionInput = buildDocsReviewSessionInput({
+        doc,
+        source: payload.source,
+        body: req.body || {},
+      });
+      const session = store.createSession(sessionInput);
+      const task = session.tasks[0];
+      if (task) {
+        attachDocumentTask(doc.artifactId, {
+          requestId: session.requestId,
+          externalTaskId: task.externalTaskId,
+          title: task.title,
+          relationship: "created_from_doc",
+          anchorText: req.body?.excerpt || doc.summary || "",
+        });
+      }
+      return res.status(201).json(session);
+    } catch (e) {
+      return sendWorkflowError(res, e);
+    }
+  });
+
+  router.post("/integrations/paperclip/mock/docs/:artifactId/attachments", (req, res) => {
+    try {
+      findMockDocOrThrow(req.params.artifactId);
+      attachDocumentTask(req.params.artifactId, req.body || {});
+      const updated = findMockDocOrThrow(req.params.artifactId).doc;
+      return res.json(updated);
+    } catch (e) {
+      return sendWorkflowError(res, e);
+    }
+  });
+
+  router.delete("/integrations/paperclip/mock/docs/:artifactId/attachments", (req, res) => {
+    try {
+      findMockDocOrThrow(req.params.artifactId);
+      detachDocumentTask(req.params.artifactId, req.body || {});
+      const updated = findMockDocOrThrow(req.params.artifactId).doc;
+      return res.json(updated);
+    } catch (e) {
+      return sendWorkflowError(res, e);
+    }
+  });
+
+  router.post("/integrations/paperclip/mock/docs/:artifactId/status", (req, res) => {
+    try {
+      findMockDocOrThrow(req.params.artifactId);
+      setDocumentReviewStatus(req.params.artifactId, req.body?.reviewStatus);
+      const updated = findMockDocOrThrow(req.params.artifactId).doc;
+      return res.json(updated);
+    } catch (e) {
+      return sendWorkflowError(res, e);
     }
   });
 

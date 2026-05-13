@@ -1,5 +1,6 @@
 // V0.2-W3-02a - Paperclip Docs Viewer Foundation.
 // V0.2-W3-02c - Paperclip Docs usability hardening.
+// V0.2-W3-02d - Paperclip Docs-to-Review workflow.
 // Implemented by: Codex Dev.
 async function showDocsPage() {
   S.mode = "docs";
@@ -252,7 +253,8 @@ function renderDocsViewer(doc, source, reviewSessions = []) {
     </div>
     ${renderDocsMetadataPanel(doc, source, relatedStatuses)}
     ${renderDocsRelatedTaskStatus(relatedStatuses)}
-    ${renderDocsLinkedTasks(relatedStatuses)}
+      ${renderDocsLinkedTasks(doc, relatedStatuses)}
+    ${renderDocsWorkflowPanel(doc, reviewSessions)}
     <div class="docs-content">${renderDocsMarkdown(doc.content?.text || "")}</div>
     ${renderDocsEvidence(doc.sourceEvidence || [])}
   `;
@@ -311,19 +313,149 @@ function docsTaskStatusClass(status) {
   return "chip-source";
 }
 
-function renderDocsLinkedTasks(relatedStatuses) {
+function renderDocsLinkedTasks(doc, relatedStatuses) {
   if (!relatedStatuses.length) return "";
   return `
     <div class="docs-linked-tasks">
       <h3>Linked Review Queue Tasks</h3>
       ${relatedStatuses.map(task => `
-        <button type="button" class="docs-linked-task" onclick='openLinkedReviewTask(${JSON.stringify(task).replace(/'/g, "&apos;")})'>
-          <span>${esc(task.title || task.externalTaskId)}</span>
-          <small>${esc(task.relationship || "supports")} - ${esc(task.externalTaskId || task.requestId)} - ${esc(formatDocsLabel(task.status))}</small>
-        </button>
+        <div class="docs-linked-task-row">
+          <button type="button" class="docs-linked-task" onclick='openLinkedReviewTask(${JSON.stringify(task).replace(/'/g, "&apos;")})'>
+            <span>${esc(task.title || task.externalTaskId)}</span>
+            <small>${esc(task.relationship || "supports")} - ${esc(task.externalTaskId || task.requestId)} - ${esc(formatDocsLabel(task.status))}</small>
+          </button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick='detachDocsTaskLink(${JSON.stringify(doc.artifactId)}, ${JSON.stringify(task).replace(/'/g, "&apos;")})'>Detach</button>
+        </div>
       `).join("")}
     </div>
   `;
+}
+
+function renderDocsWorkflowPanel(doc, reviewSessions = []) {
+  const excerpt = doc.summary || (doc.content?.text || "").slice(0, 420);
+  const statusOptions = ["new", "reviewed", "needs_follow_up", "archived"]
+    .map(status => renderDocsOption(status, formatDocsLabel(status), doc.reviewStatus || "new"))
+    .join("");
+  const taskOptions = getDocsReviewTaskOptions(reviewSessions)
+    .map(option => `<option value="${esc(encodeURIComponent(JSON.stringify(option)))}">${esc(option.label)}</option>`)
+    .join("");
+  return `
+    <div class="docs-workflow-panel">
+      <div class="docs-workflow-head">
+        <h3>Docs-to-Review Workflow</h3>
+        <label>
+          <span>Status</span>
+          <select class="docs-select" onchange="updateDocsReviewStatus('${esc(doc.artifactId)}', this.value)">
+            ${statusOptions}
+          </select>
+        </label>
+      </div>
+      <div class="docs-workflow-grid">
+        <div class="docs-workflow-box">
+          <label class="docs-workflow-label" for="docs-review-title-${esc(doc.artifactId)}">Create pending Review Queue task</label>
+          <input id="docs-review-title-${esc(doc.artifactId)}" class="docs-workflow-input" type="text" value="${esc(`Review ${doc.title}`)}">
+          <textarea id="docs-review-excerpt-${esc(doc.artifactId)}" class="docs-workflow-textarea">${esc(excerpt)}</textarea>
+          <button type="button" class="btn btn-primary btn-sm" onclick="createDocsReviewTask('${esc(doc.artifactId)}')">${icon("plus")} Create pending task</button>
+        </div>
+        <div class="docs-workflow-box">
+          <label class="docs-workflow-label" for="docs-attach-select-${esc(doc.artifactId)}">Attach existing Review Queue task</label>
+          <select id="docs-attach-select-${esc(doc.artifactId)}" class="docs-workflow-select">
+            <option value="">Select local Review Queue task</option>
+            ${taskOptions}
+          </select>
+          <input id="docs-attach-anchor-${esc(doc.artifactId)}" class="docs-workflow-input" type="text" value="${esc(doc.title)}" placeholder="Anchor text">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="attachDocsTaskLink('${esc(doc.artifactId)}')">${icon("gitMerge")} Attach task</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function getDocsReviewTaskOptions(reviewSessions = []) {
+  return (Array.isArray(reviewSessions) ? reviewSessions : []).flatMap(session =>
+    (session.tasks || []).map(task => ({
+      requestId: session.requestId || "",
+      externalTaskId: task.externalTaskId || "",
+      title: task.title || task.externalTaskId || "Review task",
+      relationship: "manual_reference",
+      sessionTitle: session.title || "",
+      label: `${session.title || "Review session"} / ${task.title || task.externalTaskId || "Task"}`,
+    })).filter(option => option.requestId && option.externalTaskId)
+  );
+}
+
+async function refreshDocsPage() {
+  const [payload, reviewSessions] = await Promise.all([
+    api.get("/api/integrations/paperclip/mock/docs"),
+    api.get("/api/reviews").catch(() => []),
+  ]);
+  S.docsPayload = payload;
+  S.docsReviewSessions = Array.isArray(reviewSessions) ? reviewSessions : [];
+  renderDocsPage(payload, S.docsReviewSessions);
+}
+
+async function createDocsReviewTask(artifactId) {
+  const title = $(`docs-review-title-${artifactId}`)?.value || "";
+  const excerpt = $(`docs-review-excerpt-${artifactId}`)?.value || "";
+  try {
+    const session = await api.post("/api/integrations/paperclip/mock/docs/review-task", {
+      artifactId,
+      title,
+      excerpt,
+    });
+    const task = (session.tasks || [])[0];
+    if (task) {
+      S.pendingReviewTaskLink = {
+        requestId: session.requestId || "",
+        externalTaskId: task.externalTaskId || "",
+      };
+    }
+    toast("Pending Review Queue task created");
+    await refreshDocsPage();
+  } catch (error) {
+    toast("Failed to create Review Queue task: " + error.message, true);
+  }
+}
+
+async function attachDocsTaskLink(artifactId) {
+  const selected = $(`docs-attach-select-${artifactId}`)?.value || "";
+  if (!selected) {
+    toast("Select a Review Queue task to attach", true);
+    return;
+  }
+  try {
+    const link = JSON.parse(decodeURIComponent(selected));
+    link.anchorText = $(`docs-attach-anchor-${artifactId}`)?.value || link.title || "";
+    await api.post(`/api/integrations/paperclip/mock/docs/${artifactId}/attachments`, link);
+    toast("Document link attached");
+    await refreshDocsPage();
+  } catch (error) {
+    toast("Failed to attach document link: " + error.message, true);
+  }
+}
+
+async function detachDocsTaskLink(artifactId, link) {
+  if (!artifactId || !link?.requestId || !link?.externalTaskId) return;
+  try {
+    await api.req("DELETE", `/api/integrations/paperclip/mock/docs/${artifactId}/attachments`, {
+      requestId: link.requestId,
+      externalTaskId: link.externalTaskId,
+    });
+    toast("Document link detached");
+    await refreshDocsPage();
+  } catch (error) {
+    toast("Failed to detach document link: " + error.message, true);
+  }
+}
+
+async function updateDocsReviewStatus(artifactId, reviewStatus) {
+  try {
+    await api.post(`/api/integrations/paperclip/mock/docs/${artifactId}/status`, { reviewStatus });
+    toast("Document status updated");
+    await refreshDocsPage();
+  } catch (error) {
+    toast("Failed to update document status: " + error.message, true);
+  }
 }
 
 function openLinkedReviewTask(link) {
