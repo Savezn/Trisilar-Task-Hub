@@ -3,7 +3,7 @@
 **Doc Role:** Active version plan
 **Status:** Active - canonical task IDs adopted; old W1/W2/W3 short labels kept as aliases
 **Version:** V0.2
-**Planning Stage:** W2-06 accepted; integration into dev next
+**Planning Stage:** W2-06 integrated and PM accepted on dev
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-13 - **Updated by:** Codex PM
@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W2-06` is QA Recheck Pass / PM Accepted at `bd3e441` and now needs integration into `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner, but Paperclip runtime verification is held while the Paperclip server is offline. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. W3 live connector work still needs Paperclip owner inputs before implementation planning.
+V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner, but Paperclip runtime verification is held while the Paperclip server is offline. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. W3 live connector work still needs Paperclip owner inputs before implementation planning.
 
 ---
 
@@ -99,7 +99,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
 | W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while server is offline | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
-| W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` accepted `bd3e441` / pending integration | Design system, shell/nav, page-by-page redesign, responsive QA |
+| W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948` | Design system, shell/nav, page-by-page redesign, responsive QA |
 | W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed | Contract-first mock adapter, attribution/audit sync; live connector waits for stable hosted runtime and auth |
 
 ---
@@ -130,7 +130,7 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
 | `V0.2-W2-04` | `W2d` | Accepted `47ebd84` / integrated on `dev@0b77aed` | Boards Monitor and team board views |
 | `V0.2-W2-05` | `W2e` | Accepted `4638df7` / integrated on `dev@3fca059` | Calendar and Planner redesign |
-| `V0.2-W2-06` | `W2f` | QA Recheck Pass / PM Accepted `bd3e441`; pending integration | Settings, OKR, and Weekly Focus polish |
+| `V0.2-W2-06` | `W2f` | Integrated / PM Accepted on `origin/dev@523c948` | Settings, OKR, and Weekly Focus polish |
 
 ### W3 - Paperclip Multi-Agent Integration
 
@@ -228,7 +228,7 @@ W1 keeps random ngrok URL + temporary Basic Auth as the accepted manual demo-onl
 
 **Priority:** P1 after W0
 **Owner Role:** Frontend Dev
-**Status:** `V0.2-W2-01` done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W2-02` done `d33d8f7` / QA Recheck Pass / PM Accepted; `V0.2-W2-03` done `ea807fd` / QA Recheck Pass / PM Accepted; `V0.2-W2-04` done `47ebd84` / integrated on `dev@0b77aed`; `V0.2-W2-05` done `4638df7` / integrated on `dev@3fca059`; `V0.2-W2-06` done `bd3e441` / QA Recheck Pass / PM Accepted / pending integration into `dev`
+**Status:** `V0.2-W2-01` done `b5f67fb` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W2-02` done `d33d8f7` / QA Recheck Pass / PM Accepted; `V0.2-W2-03` done `ea807fd` / QA Recheck Pass / PM Accepted; `V0.2-W2-04` done `47ebd84` / integrated on `dev@0b77aed`; `V0.2-W2-05` done `4638df7` / integrated on `dev@3fca059`; `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`
 **Detailed Plan:** `VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`
 
 **Scope:**
@@ -247,11 +247,11 @@ W1 keeps random ngrok URL + temporary Basic Auth as the accepted manual demo-onl
 | `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
 | `V0.2-W2-04` | `W2d` | Accepted `47ebd84` / integrated on `dev@0b77aed` | Boards monitor and team board views |
 | `V0.2-W2-05` | `W2e` | Accepted `4638df7` / integrated on `dev@3fca059` | Calendar and Planner redesign |
-| `V0.2-W2-06` | `W2f` | Accepted `bd3e441` / pending integration | Settings, OKR, and Weekly Focus polish |
+| `V0.2-W2-06` | `W2f` | Integrated / PM accepted on `origin/dev@523c948` | Settings, OKR, and Weekly Focus polish |
 
 **PM Clarification:**
 
-`V0.2-W2-06` is feature-scope accepted at `bd3e441` after QA Recheck. Full integrated W2 completion still requires merge into `dev`, Integration QA, and PM acceptance on the integrated `dev` line.
+`V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948` after Dev Integration and W2-only Integration QA. The integrated W2 full UI redesign line is complete.
 
 Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
@@ -305,38 +305,20 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. W1 Task Hub runtime is accepted and should not be reopened. W1 Paperclip runtime verification is held while the Paperclip server is offline. `V0.2-W2-06` is accepted at `bd3e441`; the current non-blocked route is W2-06 integration into `dev`.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. Do not route W1 deployment/access work or W3 Paperclip work from this W2 handoff.
 
 ```text
-Role: Dev Integration
-Task: V0.2-W2-06 Integration - Merge Accepted Settings/OKR/Focus Polish Into dev
+Role: PM
+Task: V0.2-W2-06 W2 Workstream Hold / Complete
 Alias: W2f
 
 Context:
-`V0.2-W2-06` passed QA Recheck and is PM accepted at `feature/w2-06-settings-okr-focus-redesign@bd3e441`. Merge the accepted branch into updated `dev` and verify the integrated line. W1 runtime is accepted and should not be reopened. W3 live connector remains blocked while Paperclip owner inputs are unavailable.
-
-Read first:
-- CURRENT_SPRINT.md
-- docs/plans/VERSION_0_2_PLAN.md
-- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
-- docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md
-
-Steps:
-1. Start from latest `dev` in the W2 worktree.
-2. Merge accepted `feature/w2-06-settings-okr-focus-redesign` including `bd3e441`.
-3. Preserve Settings save paths, integration status, OKR behavior, Weekly Focus behavior, W1 accepted runtime docs, and W3 mock behavior.
-4. Run `npm.cmd run check:all`, Paperclip contract/mock verification, focused browser smoke for Settings/OKR/Weekly Focus, and regression smoke for Today, Review, Tasks, Boards, Calendar, and Planner.
-5. Confirm mobile/mobile-small overflow remains 0 and unexpected console/page errors are 0.
-6. Route to Integration QA after merge and verification.
+`V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`. This completes W2 full UI redesign on `dev`.
 
 Rules:
-- Do not deploy production.
-- Do not expose secrets, Cloudflare tokens, or Trello/Google credential values.
-- Do not implement W1 runtime changes.
-- Do not implement new W3 Paperclip behavior.
-- Do not start post-W2 work in the same task.
-- Preserve existing app behavior.
-- Include attribution: Integrated by Codex Dev.
+- Do not start W1 deployment/access work from this W2 handoff.
+- Do not start W3 Paperclip work from this W2 handoff.
+- Do not start new W2 implementation unless PM opens a new W2-only phase.
 ```
 
 ---
@@ -369,3 +351,4 @@ Rules:
 | 2026-05-13 | Accepted `V0.2-W1-07` after PR #11 QA/PM pass and merge at `fa87ac4`; routed next gate to Paperclip owner input confirmation before W3 live connector planning | Codex PM |
 | 2026-05-13 | Held W1 Paperclip runtime verification because the Paperclip server is offline; kept Task Hub runtime accepted and routed non-blocked work to `V0.2-W2-06` | Codex PM |
 | 2026-05-13 | Accepted `V0.2-W2-06` Settings + OKR + Weekly Focus Polish at `bd3e441`; routed next to Dev Integration into `dev` | Codex PM |
+| 2026-05-13 | Accepted `V0.2-W2-06` integration on `origin/dev@523c948`; marked W2 full UI redesign complete on the integrated `dev` line | Codex PM |

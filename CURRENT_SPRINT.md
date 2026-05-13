@@ -1,6 +1,6 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2-W2-06 PM Acceptance / Integration Routing
+**Phase:** V0.2-W2-06 Integration PM Acceptance
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-13 - **Updated by:** Codex PM
@@ -20,7 +20,7 @@
 | V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
 | V0.2-W1-05 ngrok Random URL Demo | QA Pass / PM Accepted as demo-only path | Reviewed by Codex QA; Accepted by Codex PM; current URL/credentials remain local-only in Desktop handoff file |
 | V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. `V0.2-W1-06` and `V0.2-W1-08` are accepted as dev/demo runtime complete, not production/release-grade. |
-| V0.2 W2 Full UI Redesign | `V0.2-W2-06` QA Recheck Pass / PM Accepted at `bd3e441`; pending integration into `dev` | Settings, OKR, and Weekly Focus polish passed `check:all`, Paperclip contract/mock regression, controlled browser workflows, responsive overflow 0, and W2 route smoke; full integrated W2 line still requires Dev Integration, Integration QA, and PM acceptance on `dev` |
+| V0.2 W2 Full UI Redesign | `V0.2-W2-06` integrated on `origin/dev@523c948` / PM Accepted | Settings, OKR, and Weekly Focus polish passed feature QA, Dev Integration, and Integration QA on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
@@ -34,7 +34,7 @@
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while Paperclip server is offline | Hold / PM |
-| W2 | Full UI Redesign | `V0.2-W2-06` feature-scope accepted at `bd3e441`; pending merge into `dev` and integration QA/PM before full integrated W2 completion | Dev Integration |
+| W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Paperclip owner inputs are confirmed after Paperclip server is online | Blocked |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
@@ -73,7 +73,7 @@ Required branches:
 
 - `V0.2-W1-02` / legacy W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
 - `V0.2-W1-03` / legacy W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
-- W2: `feature/w2-*` phase branches; active accepted branch `feature/w2-06-settings-okr-focus-redesign` pending integration into `dev`
+- W2: `feature/w2-*` phase branches; `feature/w2-06-settings-okr-focus-redesign` integrated into `origin/dev@523c948` and PM accepted
 - W3: `feature/w3-paperclip-integration`
 
 Required worktrees:
@@ -96,50 +96,24 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W2-06 Integration
+## Next Action - W2 Hold / Complete
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish has passed QA Recheck and is PM accepted at `bd3e441` on `feature/w2-06-settings-okr-focus-redesign`. This is feature-scope acceptance only. The accepted branch must now merge into updated `dev`, then pass Integration QA before W2 can be marked complete on the integrated line.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated on `origin/dev@523c948` and PM accepted. This completes the W2 full UI redesign line on `dev`.
 
-QA evidence on 2026-05-13: branch and commit verified; `npm.cmd run check:all`, `npm.cmd run verify:paperclip-contract`, and `npm.cmd run verify:paperclip-mock` passed. Browser QA for `/settings`, `/okr`, and `/focus` passed desktop/mobile/mobile-small with overflow 0, unexpected console errors 0, and page errors 0. Controlled workflows verified Settings config saves, OKR drilldown/back, Weekly Focus Review navigation, and W2 route smoke for Today, Review, Tasks, Boards, Calendar, and Planner. Local Trello 401s were credential/env noise.
-
-W1 runtime and service-auth planning remain accepted for dev/demo. Paperclip runtime verification is held because the Paperclip server is currently offline, so W3 live connector work remains blocked until Paperclip owner confirms the remaining runtime/auth inputs after the server is online. Do not reopen W1 runtime work or implement W3 live behavior during W2 integration.
+Integration QA evidence on 2026-05-13: clean detached worktree at `origin/dev@523c948`; `npm.cmd run check:all` passed; W2 browser smoke passed for `/settings`, `/okr`, `/focus`, `/today`, `/review`, `/all`, `/boards`, `/calendar`, and `/planner` across desktop/mobile/mobile-small; max horizontal overflow 0; console/page errors 0; Settings save paths, OKR drilldown/back, Weekly Focus owner filter, and Weekly Focus -> Review navigation passed with controlled W2 API responses. W1 deployment/access and W3 Paperclip behavior were intentionally not tested in this W2-only Integration QA pass.
 
 ```text
-Role: Dev Integration
-Task: V0.2-W2-06 Integration - Merge Accepted Settings/OKR/Focus Polish Into dev
-Alias: W2f
+Role: PM
+Task: V0.2-W2-06 W2 Workstream Hold / Complete
 
-Context:
-`V0.2-W2-06` passed QA Recheck and is PM accepted at `feature/w2-06-settings-okr-focus-redesign@bd3e441`. Merge this accepted W2 feature branch into updated `dev` and verify the integrated line. Do not start any post-W2 work in this task.
-
-Read first:
-- CODEX.md
-- CURRENT_SPRINT.md
-- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
-- docs/plans/VERSION_0_2_PLAN.md
-- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
-
-Goal:
-Merge accepted Settings, OKR, and Weekly Focus polish into `dev` while preserving accepted W1, W2, and W3 behavior.
-
-Steps:
-1. Start from updated `dev`.
-2. Merge accepted `feature/w2-06-settings-okr-focus-redesign` including PM acceptance commit `bd3e441`.
-3. Preserve accepted W1 runtime/service-auth docs and do not reopen W1.
-4. Preserve W3 mock behavior and do not implement live Paperclip behavior.
-5. Run `npm.cmd run check:all`, `npm.cmd run verify:paperclip-contract`, and `npm.cmd run verify:paperclip-mock`.
-6. Run focused browser smoke for `/settings`, `/okr`, `/focus`, plus regression smoke for `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, and W3 mock.
-7. Confirm mobile/mobile-small horizontal overflow remains 0 and unexpected console/page errors are 0.
-8. Route to Integration QA.
+Status:
+W2 full UI redesign is complete on origin/dev@523c948.
 
 Rules:
-- Do not deploy production.
-- Do not merge to main.
-- Do not expose secrets, Cloudflare tokens, or Trello/Google credential values.
-- Do not implement W1 runtime changes.
-- Do not implement new W3 Paperclip behavior or live connector work.
-- Do not start post-W2 or W2-07 work in this task.
-- Include attribution: Integrated by Codex Dev.
+- Do not start W1 deployment/access work from this W2 handoff.
+- Do not start W3 Paperclip work from this W2 handoff.
+- Do not start new W2 implementation unless PM opens a new W2-only phase.
+- If more W2 work is requested, define a new W2-only task with fresh scope and QA criteria.
 ```
 
-**Attribution:** `V0.2-W2-06` accepted by Codex PM at `bd3e441` after Codex QA Recheck pass. Next role is Dev Integration.
+**Attribution:** `V0.2-W2-06` integrated by Codex Dev and accepted by Codex PM on `origin/dev@523c948` after Codex Integration QA pass.

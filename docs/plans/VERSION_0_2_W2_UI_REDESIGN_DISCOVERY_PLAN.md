@@ -1,7 +1,7 @@
 # V0.2 W2 UI Redesign Discovery and Implementation Plan
 
 **Doc Role:** W2-owned discovery, scope, rollout, and QA plan
-**Status:** PM accepted W2-06 at `bd3e441`; integration into `dev` next
+**Status:** W2-06 integrated and PM accepted on `origin/dev@523c948`; W2 complete on `dev`
 **Workstream:** V0.2 W2 - Full UI Redesign
 **Branch Baseline:** `dev` after W0 QA pass at `9dbb47b`
 **Created:** 2026-05-08
@@ -21,7 +21,7 @@ PM clarification after `V0.2-W2-01` acceptance:
 - The accepted `b5f67fb` work is `V0.2-W2-01` (alias W2a): shell foundation, mobile navigation baseline, and Today redesign.
 - `V0.2-W2-01` does not complete the full UI redesign promised by the original W2 title.
 - Full W2 acceptance now requires the remaining phased work below, with visual QA against `docs/design/ui-design-v1-0/` and production workflow regression evidence.
-- Do not mark W2 Full UI Redesign complete until all W2 phases are accepted by PM.
+- W2 Full UI Redesign is complete after `V0.2-W2-06` Integration QA and PM acceptance on `origin/dev@523c948`.
 
 ---
 
@@ -129,7 +129,7 @@ W2 is now managed as a sequence of implementation phases. Each phase should keep
 | `V0.2-W2-03` | `W2c` | Tasks Inbox + Cross-board Rows | Accepted at `ea807fd` | `/all`, task filters, grouping, CSV export, card open/edit | `pages-tasks-boards.jsx`, reusable `TaskRow`, filters, board tags | QA Recheck passed Tasks populated/filtered/empty states, search/filter/group/export, edit flows, mark done, mobile overflow 0, Today smoke, Review smoke, and W3 smoke |
 | `V0.2-W2-04` | `W2d` | Boards Monitor + Team Board Views | Accepted at `47ebd84` / integrated on `dev@0b77aed` | `/boards`, board/team modes, health/convention surfaces, board open behavior | `pages-tasks-boards.jsx`, board/team cards and dense monitor layouts | Boards monitor is redesigned without losing metadata health and label/team workflows |
 | `V0.2-W2-05` | `W2e` | Calendar + Planner | Accepted at `4638df7` / integrated on `dev@3fca059` | `/calendar`, `/planner`, Google Calendar status/events, Google Tasks add/complete, Trello due lists | `pages-review-cal-settings.jsx`, calendar/planner surface direction | Calendar and Planner distinguish event/task sources and pass mobile responsive checks |
-| `V0.2-W2-06` | `W2f` | Settings + OKR + Weekly Focus Polish | Accepted at `bd3e441` / pending integration | `/settings`, `/okr`, `/focus`, integration controls, BU groups, workspace visibility | `pages-review-cal-settings.jsx`, settings cards, page system tokens | Settings, OKR, and Weekly Focus match W2 shell/page system and preserve workflows |
+| `V0.2-W2-06` | `W2f` | Settings + OKR + Weekly Focus Polish | Integrated / PM accepted on `origin/dev@523c948` | `/settings`, `/okr`, `/focus`, integration controls, BU groups, workspace visibility | `pages-review-cal-settings.jsx`, settings cards, page system tokens | Settings, OKR, and Weekly Focus match W2 shell/page system and preserve workflows |
 
 Project phase-ladder alignment:
 
@@ -145,7 +145,7 @@ Phase rules:
 - `V0.2-W2-03` is accepted at `ea807fd` as Tasks Inbox + Cross-board Rows only. Alias: `W2c`.
 - `V0.2-W2-04` is accepted at `47ebd84` and integrated on `dev@0b77aed` as Boards Monitor + Team Board Views only. Alias: `W2d`.
 - `V0.2-W2-05` is accepted at `4638df7` and integrated on `dev@3fca059` as Calendar + Planner only. Alias: `W2e`.
-- `V0.2-W2-06` is accepted at `bd3e441` as Settings + OKR + Weekly Focus Polish only. Alias: `W2f`.
+- `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948` as Settings + OKR + Weekly Focus Polish. Alias: `W2f`.
 - Every phase must include screenshots for desktop and mobile, plus at least one populated state and one empty/error/disconnected state where applicable.
 - QA must compare changed pages against `docs/design/ui-design-v1-0/` and state any accepted visual deviations.
 - PM must update `CURRENT_SPRINT.md`, this plan, and decision logs after each phase acceptance.
@@ -229,7 +229,7 @@ Phase rules:
 
 **Alias:** W2f
 **Depends on:** `V0.2-W2-05` accepted.
-**Status:** QA Recheck Pass / Accepted by Codex PM at `bd3e441`; pending integration into `dev`.
+**Status:** Integrated / Accepted by Codex PM on `origin/dev@523c948`.
 
 **Tasks:**
 
@@ -242,7 +242,7 @@ Phase rules:
 - [x] Settings save flows and integration status surfaces still work.
 - [x] OKR and Weekly Focus remain accessible and visually consistent with the redesigned shell.
 - [x] Final W2 visual QA covers every production route: `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, and `/settings`.
-- [x] PM accepted `V0.2-W2-06` at `bd3e441`; W2 still requires integration into `dev` and Integration QA/PM acceptance before the integrated W2 line is complete.
+- [x] PM accepted `V0.2-W2-06` integration on `origin/dev@523c948`; integrated W2 line is complete.
 
 ---
 
@@ -255,13 +255,13 @@ Recommended next integration PR:
 3. Preserve accepted `V0.2-W2-01` through `V0.2-W2-06` behavior and W3 Paperclip mock behavior.
 4. Run `npm.cmd run check:all`, Paperclip contract/mock verification, focused browser smoke for Settings/OKR/Weekly Focus, and regression smoke for Today, Review, Tasks, Boards, Calendar, Planner, and W3.
 5. Do not start post-W2 work in the integration task.
-6. Do not merge W2 to `main` or mark the integrated W2 line complete until W2-06 integration QA/PM acceptance passes on `dev`.
+6. Do not merge W2 to `main` from this W2 handoff; `V0.2-W2-06` integration QA/PM acceptance has passed on `origin/dev@523c948`.
 
 Phase handoff requirements:
 
 - Dev handoff must list changed files, preserved APIs, screenshots, and verification commands.
 - QA must validate changed-page workflows and smoke `V0.2-W2-01` Today plus W3 Paperclip routes when relevant.
-- PM acceptance must name the canonical phase accepted, not generic W2 completion, until `V0.2-W2-06` is complete.
+- PM acceptance must name `V0.2-W2-06` and `origin/dev@523c948` when referring to the integrated W2 completion point.
 
 ---
 

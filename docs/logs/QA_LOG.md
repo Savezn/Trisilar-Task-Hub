@@ -64,7 +64,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.2-W2-03 - Tasks Inbox + Cross-board Rows | QA Recheck Pass / PM Accepted | `ea807fd` |
 | V0.2-W2-04 - Boards Monitor + Team Board Views Integration | Integration QA Pass / PM Accepted | `dev@0b77aed` |
 | V0.2-W2-05 - Calendar + Planner Integration | Integration QA Pass / PM Accepted | `dev@3fca059` |
-| V0.2-W2-06 - Settings + OKR + Weekly Focus Polish | QA Recheck Pass / PM Accepted | `bd3e441` |
+| V0.2-W2-06 - Settings + OKR + Weekly Focus Polish | Integration QA Pass / PM Accepted | `origin/dev@523c948` |
 
 ---
 
@@ -119,6 +119,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-13 | R44 | Pass / PM Accepted | `V0.2-W1-06`/`V0.2-W1-08` hosted dev/demo runtime QA pass: PR #9 merged to `dev` at `91ee327`; `taskhub-dashboard.service` active/enabled; private bind `127.0.0.1:3000`; raw public `157.230.251.209:3000` unreachable; Cloudflare Access anonymous block verified; approved-user browser path loaded Task Hub without the earlier `/api/boards` or `/api/all-cards` `401`; local `/healthz`, `/api/boards`, and `/api/all-cards` returned `200`; hosted callback and `APP_DATA_DIR` persistence verified; no production deploy, main merge, W2 UI redesign, new W3 Paperclip behavior, or committed secrets observed. Reviewed by Codex QA; Accepted by Codex PM |
 | 2026-05-13 | R45 | Pass / PM Accepted | `V0.2-W1-07` service-auth planning QA/PM pass: PR #11 merged to `dev` at `fa87ac4`; diff was docs-only; topology selected Paperclip -> Task Hub webhook first; human Cloudflare Access login was separated from machine/API auth; machine auth documented as Cloudflare Access service token plus signed webhook headers; env var names were placeholders only; replay/idempotency requirements and Paperclip owner inputs were recorded; no live W3 webhook, production deploy, main merge, W2 UI redesign, or secrets observed. Reviewed by Codex QA / PM; Accepted by Codex PM |
 | 2026-05-13 | R46 | Pass / PM Accepted | `V0.2-W2-06` Settings + OKR + Weekly Focus Polish QA Recheck pass at `bd3e441`; branch/commit verified; `check:all`, Paperclip contract/mock verification, Settings config save paths, OKR drilldown/back, Weekly Focus Review navigation, W2 route smoke, desktop/mobile/mobile-small overflow 0, unexpected console errors 0, and page errors 0 passed. Local Trello 401s were credential/env noise. Reviewed by Codex QA Recheck; Accepted by Codex PM |
+| 2026-05-13 | R47 | Pass / PM Accepted | `V0.2-W2-06` Integration QA pass on `origin/dev@523c948`; clean detached worktree verified; `npm.cmd run check:all` passed; controlled W2 browser smoke passed for `/settings`, `/okr`, `/focus`, `/today`, `/review`, `/all`, `/boards`, `/calendar`, and `/planner` across desktop/mobile/mobile-small; max horizontal overflow 0; console/page errors 0; Settings save paths, OKR drilldown/back, Weekly Focus owner filter, and Weekly Focus to Review navigation passed. W1 deployment/access and W3 Paperclip behavior were intentionally not tested in this W2-only pass. Reviewed by Codex Integration QA; Accepted by Codex PM |
 
 ---
 

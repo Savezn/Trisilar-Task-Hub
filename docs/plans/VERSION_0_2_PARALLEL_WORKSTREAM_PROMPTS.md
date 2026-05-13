@@ -206,7 +206,7 @@ Task: V0.2-W2-06 - Settings + OKR + Weekly Focus Polish
 Alias: W2f
 
 Context:
-V0.2-W2-01 through V0.2-W2-05 are accepted and integrated on dev through `3fca059`. `V0.2-W2-06` is now QA Recheck Pass / PM Accepted at `bd3e441` and pending integration into `dev`. Keep this prompt for audit/reuse only; the active next route is Dev Integration from `CURRENT_SPRINT.md`.
+V0.2-W2-01 through V0.2-W2-05 are accepted and integrated on dev through `3fca059`. `V0.2-W2-06` is now integrated and PM accepted on `origin/dev@523c948`. Keep this prompt for audit/reuse only; do not start new W2 implementation from this prompt unless PM opens a new W2-only phase.
 
 Read first:
 - CODEX.md
@@ -446,4 +446,4 @@ Rules:
 | 2026-05-13 | Added Prompt G for QA/PM review of W1-07 service-auth topology before W3 live connector planning | Codex PM / Dev |
 | 2026-05-13 | Added Prompt H after PR #11 merge and PM acceptance of `V0.2-W1-07`; W3 live connector remains blocked until Paperclip owner inputs are confirmed | Codex PM |
 | 2026-05-13 | Marked Prompt H as held until the Paperclip server is online; active non-blocked route remains `V0.2-W2-06` | Codex PM |
-| 2026-05-13 | Marked Prompt D as accepted at `bd3e441`; active next route is W2-06 Dev Integration into `dev` | Codex PM |
+| 2026-05-13 | Marked Prompt D as integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line | Codex PM |
