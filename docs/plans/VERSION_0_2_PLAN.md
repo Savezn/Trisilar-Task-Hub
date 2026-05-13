@@ -3,10 +3,10 @@
 **Doc Role:** Active version plan
 **Status:** Active - canonical task IDs adopted; old W1/W2/W3 short labels kept as aliases
 **Version:** V0.2
-**Planning Stage:** Parallel workstreams active; W1 hosted dev/demo rebaseline in planning
+**Planning Stage:** Parallel workstreams active; W1 hosted dev/demo runtime configured and QA pending
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely while moving from manual demo access toward stable Cloudflare-protected hosted dev/demo runtime for Task Hub and service-auth with hosted Paperclip.
 
@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner. The next W1 runtime path is Task Hub hosted dev/demo behind Cloudflare, followed by service-auth verification with hosted Paperclip.
+V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub is now configured as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 still needs QA acceptance and service-auth planning with hosted Paperclip.
 
 ---
 
@@ -98,7 +98,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo for Task Hub | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
+| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` runtime configured and QA pending; `V0.2-W1-07` pending | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` planned next / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
 | W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; live connector blocked until Task Hub is deployed on stable DigitalOcean/Cloudflare runtime and service auth with hosted Paperclip is confirmed | Contract-first mock adapter, attribution/audit sync; live connector waits for stable hosted runtime and auth |
 
@@ -117,9 +117,9 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | `V0.2-W1-03` | `W1.2` / legacy `W1c setup` | Done / merged to `dev` | Dev deployment config |
 | `V0.2-W1-04` | `W1.3` | Accepted / amended | Preview/runtime decision |
 | `V0.2-W1-05` | `W1.4` | Accepted demo-only | No-domain random ngrok manual demo runtime |
-| `V0.2-W1-06` | `W1.5` | Pending | Stable Cloudflare hostname + Access teammate gate |
+| `V0.2-W1-06` | `W1.5` | Runtime configured / QA pending | Stable Cloudflare hostname + Access teammate gate |
 | `V0.2-W1-07` | `W1.6` | Pending | Future Paperclip agent/API access pattern for hosted Paperclip -> hosted Task Hub |
-| `V0.2-W1-08` | `W1.7` | Next candidate | DigitalOcean hosted dev/demo runtime for Task Hub |
+| `V0.2-W1-08` | `W1.7` | Runtime configured / QA pending | DigitalOcean hosted dev/demo runtime for Task Hub |
 
 ### W2 - Full UI Redesign
 
@@ -177,7 +177,7 @@ Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them 
 
 **Priority:** P0 after W0
 **Owner Role:** Platform Dev / PM
-**Status:** `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` preview path accepted/amended; `V0.2-W1-05` random ngrok manual demo accepted; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo for Task Hub
+**Status:** `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` preview path accepted/amended; `V0.2-W1-05` random ngrok manual demo accepted; `V0.2-W1-06`/`V0.2-W1-08` runtime configured and QA pending; `V0.2-W1-07` service-auth planning pending
 **Detailed Plan:** `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`
 
 **Scope:**
@@ -192,7 +192,7 @@ Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them 
 
 **Current PM Decision:**
 
-W1 keeps random ngrok URL + temporary Basic Auth as the accepted manual demo-only path. PM now confirmed a Cloudflare-managed domain exists and selected DigitalOcean as the next always-on dev/demo runtime for Task Hub. PM also confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Cloudflare remains the front door for DNS, access control, HTTPS/proxy, and future service-token access. Render remains the previously approved managed hosted target and Railway remains the managed alternate, but neither is the next planned path unless PM reselects them.
+W1 keeps random ngrok URL + temporary Basic Auth as the accepted manual demo-only fallback path. PM confirmed a Cloudflare-managed domain exists and selected DigitalOcean as the always-on dev/demo runtime for Task Hub. Task Hub now runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, and is routed through Cloudflare Access at `https://taskhub.trisila.online`. PM also confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Cloudflare remains the front door for DNS, access control, HTTPS/proxy, and future service-token access. Render remains the previously approved managed hosted target and Railway remains the managed alternate, but neither is the next planned path unless PM reselects them.
 
 **Why:**
 
@@ -211,9 +211,9 @@ W1 keeps random ngrok URL + temporary Basic Auth as the accepted manual demo-onl
 | `V0.2-W1-03` | `W1.2` | Done | Dev deployment config | `render.yaml`, `railway.toml`, and deployment setup handoff merged to `dev` |
 | `V0.2-W1-04` | `W1.3` | Accepted / amended | Preview/runtime decision | Random ngrok accepted for manual demo; DigitalOcean + Cloudflare selected for next hosted dev/demo runtime |
 | `V0.2-W1-05` | `W1.4` | Accepted demo-only | No-domain random ngrok manual demo runtime | QA verified Basic Auth, `/healthz`, app load, hosted callback, and local-only data path; PM accepted short manual teammate demo only |
-| `V0.2-W1-06` | `W1.5` | Pending | Stable Cloudflare hostname + Access email allowlist | Task Hub hostname confirmed; anonymous access blocked; approved teammate email can access |
+| `V0.2-W1-06` | `W1.5` | Runtime configured / QA pending | Stable Cloudflare hostname + Access email allowlist | Task Hub hostname confirmed; anonymous access blocked; approved teammate email can access |
 | `V0.2-W1-07` | `W1.6` | Pending | Paperclip agent/API access prep | Service-token pattern documented for hosted Paperclip -> hosted Task Hub integration without implementing new W3 behavior |
-| `V0.2-W1-08` | `W1.7` | Next candidate | DigitalOcean hosted dev/demo runtime for Task Hub | Runtime, persistent Task Hub `APP_DATA_DIR`, Cloudflare routes, health checks, access gate, non-destructive app load, and hosted Paperclip dependency evidence verified |
+| `V0.2-W1-08` | `W1.7` | Runtime configured / QA pending | DigitalOcean hosted dev/demo runtime for Task Hub | Runtime, persistent Task Hub `APP_DATA_DIR`, Cloudflare routes, health checks, access gate, non-destructive app load, and hosted Paperclip dependency evidence verified |
 
 **No-Cost Preview Rules:**
 
@@ -297,7 +297,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 | Workstream | Expected Sessions | Notes |
 |---|---|---|
 | W0 | 1-2 | Branch, environment docs, PR workflow |
-| W1 | 4-8 | Repo readiness is done; random ngrok manual demo path is accepted; next path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub |
+| W1 | 4-8 | Repo readiness is done; random ngrok manual demo path is accepted; DigitalOcean hosted dev/demo behind Cloudflare for Task Hub is runtime-configured and needs QA acceptance plus service-auth planning |
 | W2 | 4-8 | Depends on redesign depth and page count |
 | W3 | 3-6 | Contract/mock first, live connector second |
 
@@ -305,15 +305,15 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. If resuming W1 specifically, use this `V0.2-W1-08` hosted dev/demo handoff. Alias: W1.7.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. If resuming W1 specifically, use the QA recheck prompt in `CURRENT_SPRINT.md` for `V0.2-W1-08`. Alias: W1.7.
 
 ```text
-Role: DevOps / Dev
-Task: V0.2-W1-08 - DigitalOcean Hosted Dev/Demo Runtime Setup
+Role: QA
+Task: V0.2-W1-08 - QA Recheck DigitalOcean Hosted Dev/Demo Runtime
 Alias: W1.7
 
 Context:
-QA passed W1.4 no-domain ngrok temporary demo verification and PM accepted it as demo-only. PM now confirmed a Cloudflare-managed domain exists and selected DigitalOcean as the next always-on hosted dev/demo runtime for Task Hub. PM also confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
+QA passed W1.4 no-domain ngrok temporary demo verification and PM accepted it as demo-only. PM confirmed a Cloudflare-managed domain exists and selected DigitalOcean as the always-on hosted dev/demo runtime for Task Hub. Task Hub is now configured on the existing DigitalOcean Droplet and routed through Cloudflare Access at `https://taskhub.trisila.online`. PM also confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -322,24 +322,24 @@ Read first:
 - docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Steps:
-1. Confirm Cloudflare domain and Task Hub hostname, default `taskhub-dev.<domain>`, plus the hosted Paperclip hostname from the Paperclip owner.
-2. Prepare Cloudflare hostname/routing plan and Access email allowlist before any public teammate preview.
-3. Confirm DigitalOcean account access and create/select one dev-only Droplet or approved DO runtime layout for Task Hub.
-4. Pull Task Hub `dev`, configure server-only env values, and set persistent `APP_DATA_DIR`.
-5. Run Task Hub on a private/local bind first; do not expose the raw Droplet IP or unprotected port as the preview URL.
-6. Record hosted Paperclip base URL, health/readiness path, and service-auth requirements from the Paperclip owner.
-7. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the Cloudflare Task Hub hostname.
-8. Connect Cloudflare routing, verify anonymous block and approved teammate access, then verify Task Hub `/healthz`, non-destructive app load, and runtime persistence through the Cloudflare hostname.
-9. Route W1.6 service-auth planning for hosted Paperclip -> hosted Task Hub.
+1. Confirm `taskhub-dashboard.service` is active/enabled on the Droplet.
+2. Confirm Task Hub binds `127.0.0.1:3000` and raw public `157.230.251.209:3000` is unreachable.
+3. Confirm anonymous `https://taskhub.trisila.online` access is blocked by Cloudflare Access.
+4. Confirm approved teammate access can pass Cloudflare Access and load the app.
+5. Confirm `/healthz`, `/api/boards`, and `/api/all-cards` are healthy without exposing secrets.
+6. Confirm `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` use `https://taskhub.trisila.online`.
+7. Confirm runtime files persist under `/home/trisilar/dashboard-data` after service restart.
+8. Confirm no production deploy, no main merge, no W2 UI redesign, no new W3 Paperclip behavior, and no secrets in repo/docs/chat.
+9. If pass, recommend PM accept `V0.2-W1-06` and `V0.2-W1-08`, then route `V0.2-W1-07` service-auth planning for hosted Paperclip -> hosted Task Hub.
 
 Rules:
 - Do not deploy production.
+- QA only: do not patch code.
 - Do not use Render/Railway unless PM explicitly changes the decision.
-- Do not treat random ngrok as Paperclip automation or stable service integration.
-- Do not commit secrets.
+- Do not expose secrets, Cloudflare tokens, or Trello/Google credential values.
 - Do not implement W2 UI redesign or new W3 Paperclip behavior.
 - Preserve existing app behavior.
-- Include attribution: Runtime setup by DevOps/Dev agent name.
+- Include attribution: Routed by Codex PM; reviewed by Codex QA.
 ```
 
 ---
@@ -366,3 +366,4 @@ Rules:
 | 2026-05-09 | Accepted `V0.2-W2-05` Calendar + Planner at `4638df7` and accepted its integration on `dev@3fca059`; routed W2 next to final phase `V0.2-W2-06` Settings + OKR + Weekly Focus Polish | Codex PM |
 | 2026-05-12 | Rebaselined W1 next runtime path to DigitalOcean hosted dev/demo behind Cloudflare; historical Paperclip localhost blocker later superseded by hosted Paperclip confirmation | Codex PM |
 | 2026-05-12 | Updated V0.2 W1/W3 plan after PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare; remaining runtime path is Task Hub plus service-auth verification | Codex PM |
+| 2026-05-13 | Recorded Task Hub DigitalOcean + Cloudflare runtime checkpoint: `taskhub.trisila.online` routes through Cloudflare Access to private `127.0.0.1:3000`; W1-06/W1-08 require QA acceptance and W1-07 service-auth planning remains pending | Codex PM |

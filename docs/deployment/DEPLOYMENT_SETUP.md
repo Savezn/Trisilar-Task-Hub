@@ -1,11 +1,11 @@
 # Deployment Setup - V0.2-W1-02
 
 **Doc Role:** Deploy-readiness reference for company access
-**Status:** Active - deploy-readiness reference plus DigitalOcean/Cloudflare hosted dev path for Task Hub
+**Status:** Active - deploy-readiness reference plus DigitalOcean/Cloudflare hosted dev path for Task Hub; runtime configured and QA pending
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 **Related Docs:** `../../README.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `DEV_ENVIRONMENT_DEPLOYMENT.md`, `../plans/VERSION_0_2_PLAN.md`
 
 ---
@@ -140,21 +140,21 @@ Configure these in the platform dashboard only. Do not commit real values.
 
 ## DigitalOcean Droplet Setup
 
-Use this for the next W1 hosted dev/demo runtime. PM decision is to host Task Hub on DigitalOcean behind Cloudflare. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner and should be recorded as a service-auth dependency.
+Use this for the W1 hosted dev/demo runtime. PM decision is to host Task Hub on DigitalOcean behind Cloudflare. Task Hub is now configured on the existing Droplet and routed through Cloudflare Access at `https://taskhub.trisila.online`; QA acceptance and service-auth planning remain open. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner and should be recorded as a service-auth dependency.
 
 | Setting | Value |
 |---|---|
 | Droplet role | Dev/demo runtime only |
 | Source branch | `dev` |
 | Runtime | Node 20+ |
-| Process manager | PM2, systemd, or equivalent |
-| Task Hub bind | `localhost:<taskhub-port>` behind Cloudflare Tunnel or reverse proxy |
-| Hosted Paperclip dependency | Confirm base URL and health/readiness path with Paperclip owner |
+| Process manager | `taskhub-dashboard.service` under systemd for current dev/demo runtime |
+| Task Hub bind | `127.0.0.1:3000` behind Cloudflare Tunnel or reverse proxy |
+| Hosted Paperclip dependency | Current observed hostname `https://paperclip.trisila.online`; confirm health/readiness path with Paperclip owner |
 | Health check path | `/healthz` |
-| Persistent state | Server directory assigned to `APP_DATA_DIR` |
-| Proposed Task Hub hostname | `taskhub-dev.<cloudflare-domain>` |
-| Proposed Paperclip hostname | Confirm current hosted Paperclip hostname with Paperclip owner |
-| OAuth callback | `https://taskhub-dev.<cloudflare-domain>/auth/callback` |
+| Persistent state | `/home/trisilar/dashboard-data` assigned to `APP_DATA_DIR` |
+| Task Hub hostname | `https://taskhub.trisila.online` |
+| Paperclip hostname | `https://paperclip.trisila.online` observed; confirm owner-supported health path before W3 live connector work |
+| OAuth callback | `https://taskhub.trisila.online/auth/callback` |
 
 Required server-only environment variable names:
 

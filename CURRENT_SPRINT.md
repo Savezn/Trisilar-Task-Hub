@@ -3,7 +3,7 @@
 **Phase:** V0.2 W1 Access Foundation - DigitalOcean/Cloudflare Runtime
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -19,7 +19,7 @@
 | V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
 | V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
 | V0.2-W1-05 ngrok Random URL Demo | QA Pass / PM Accepted as demo-only path | Reviewed by Codex QA; Accepted by Codex PM; current URL/credentials remain local-only in Desktop handoff file |
-| V0.2 W1 runtime rebaseline | Pending PM/DevOps setup | Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner; remaining W1 runtime path is Task Hub hosted dev/demo behind Cloudflare plus service-auth verification |
+| V0.2 W1 hosted dev/demo runtime | Runtime configured / QA pending | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. W1 is not fully complete until W1-08 QA passes and W1-07 service-auth planning is accepted. |
 | V0.2 W2 Full UI Redesign | `V0.2-W2-01` through `V0.2-W2-05` accepted and integrated through `dev@3fca059`; `V0.2-W2-06` planned next | `V0.2-W2-05` integration QA passed on `dev@3fca059` and is accepted by Codex PM; full redesign still open until `V0.2-W2-06` passes QA/PM |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
@@ -33,7 +33,7 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` pending for Cloudflare-protected DigitalOcean hosted dev/demo for Task Hub; hosted Paperclip endpoint must be recorded for service-auth | DevOps / Dev |
+| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` are runtime-configured and require QA recheck; `V0.2-W1-07` service-auth planning remains pending for hosted Paperclip -> hosted Task Hub | QA |
 | W2 | Full UI Redesign | `V0.2-W2-01`-`V0.2-W2-05` accepted and integrated on `dev`; `V0.2-W2-06` remains the final planned W2 phase; full redesign not complete | Dev |
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Task Hub has a stable DigitalOcean/Cloudflare runtime and service auth with hosted Paperclip is confirmed | PM / Paperclip owner |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
@@ -96,19 +96,21 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W1-08 DigitalOcean Hosted Dev/Demo Runtime Setup
+## Next Action - V0.2-W1-08 QA Recheck for DigitalOcean / Cloudflare Runtime
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W1-05` (`W1.4`) remains accepted as demo-only random ngrok access. PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. The next W1 runtime step is Task Hub hosted dev/demo on DigitalOcean behind Cloudflare. This does not replace production deployment, does not implement W3 live Paperclip behavior, and does not merge to `main`.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W1-05` (`W1.4`) remains accepted as demo-only random ngrok access. Task Hub is now running as a dev/demo runtime on the existing DigitalOcean Droplet behind Cloudflare Access at `https://taskhub.trisila.online`. This does not replace production deployment, does not implement W3 live Paperclip behavior, and does not merge to `main`.
 
-W3 live connector work remains blocked until the hosted Task Hub URL, hosted Paperclip URL, health/readiness path, and service-auth path are verified together.
+PM checkpoint evidence on 2026-05-13: `taskhub-dashboard.service` is active/enabled; Task Hub binds `127.0.0.1:3000`; raw public `157.230.251.209:3000` is unreachable; anonymous `https://taskhub.trisila.online/healthz` returns Cloudflare Access `302`; local `/healthz`, `/api/boards`, and `/api/all-cards` return `200`; `GOOGLE_REDIRECT_URI` is `https://taskhub.trisila.online/auth/callback`; secrets are present only as server-side env keys and were not recorded in docs/chat.
+
+W1 is not fully complete yet. `V0.2-W1-08` needs QA recheck for approved-user browser access, non-destructive app loading after Trello env setup, and `APP_DATA_DIR` persistence. `V0.2-W1-07` service-auth planning remains the next PM/Dev task before W3 live connector work.
 
 ```text
-Role: DevOps / Dev
-Task: V0.2-W1-08 - DigitalOcean Hosted Dev/Demo Runtime Setup
+Role: QA
+Task: V0.2-W1-08 - Review DigitalOcean / Cloudflare Hosted Dev/Demo Runtime
 Alias: W1.7
 
 Context:
-`V0.2-W1-05` passed teammate demo and remains accepted as manual demo-only access. PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. The remaining W1 runtime work is to put Task Hub on DigitalOcean behind Cloudflare and verify service-auth readiness against the hosted Paperclip endpoint.
+`V0.2-W1-05` passed teammate demo and remains accepted as manual demo-only access. Task Hub is now deployed on the existing DigitalOcean Droplet from `dev@b9961fa`, routed through Cloudflare at `https://taskhub.trisila.online`, and protected by Cloudflare Access. Trello env is configured server-side only. PM needs QA to confirm whether W1-06/W1-08 can be accepted, while W1-07 service-auth planning remains pending.
 
 Read first:
 - CODEX.md
@@ -121,28 +123,27 @@ Read first:
 - docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Goal:
-Set up or prepare hosted dev/demo runtime on DigitalOcean behind Cloudflare for Task Hub without deploying production.
+Verify the hosted dev/demo runtime under Cloudflare Access without deploying production or exposing secrets.
 
 Steps:
-1. Confirm Cloudflare domain and Task Hub hostname, default `taskhub-dev.<domain>`, plus the already-hosted Paperclip hostname from the Paperclip owner.
-2. Prepare the Cloudflare Access application and email allowlist for the Task Hub hostname before any public teammate preview.
-3. Confirm DigitalOcean account access and create/select one dev-only Droplet or approved DO runtime layout for Task Hub.
-4. Pull the latest Task Hub `dev` branch on the Droplet and run it on a private/local bind only.
-5. Configure server-only dev secrets and `APP_DATA_DIR`; do not put values in chat or git.
-6. Configure `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` for the Task Hub Cloudflare hostname.
-7. Connect the Task Hub hostname through Cloudflare routing with Tunnel preferred, or proxied DNS + reverse proxy if selected.
-8. Verify Cloudflare Access blocks anonymous access before sharing any URL.
-9. Verify Task Hub `/healthz`, approved teammate access, non-destructive app load, and runtime file persistence through the Cloudflare hostname.
-10. Record the hosted Paperclip URL/health evidence supplied by the Paperclip owner and route W1.6 service-auth planning next.
+1. Confirm `taskhub-dashboard.service` is active/enabled on the Droplet.
+2. Confirm Task Hub binds `127.0.0.1:3000` and raw public `157.230.251.209:3000` is unreachable.
+3. Confirm anonymous `https://taskhub.trisila.online` access is blocked by Cloudflare Access.
+4. Confirm approved teammate access can pass Cloudflare Access and load the app.
+5. Confirm `/healthz`, `/api/boards`, and `/api/all-cards` are healthy without exposing secrets.
+6. Confirm `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` use `https://taskhub.trisila.online`.
+7. Confirm runtime files persist under `/home/trisilar/dashboard-data` after service restart.
+8. Confirm no production deploy, no main merge, no W2 UI redesign, no new W3 Paperclip behavior, and no secrets in repo/docs/chat.
+9. If pass, recommend PM accept `V0.2-W1-06` and `V0.2-W1-08`, then route `V0.2-W1-07` service-auth planning for hosted Paperclip -> hosted Task Hub.
 
 Rules:
+- QA only: do not patch code.
 - Do not deploy production.
 - Do not merge to main.
-- Do not commit secrets.
-- Do not implement W2 UI redesign.
-- Do not implement new W3 Paperclip behavior.
-- Repo changes only if a setup defect is found and must go through PR.
-- Include attribution: Runtime setup by Codex DevOps/Dev.
+- Do not expose secrets, Cloudflare tokens, or Trello/Google credential values.
+- Do not implement W2 UI redesign or new W3 Paperclip behavior.
+- Preserve W1.4 demo-only status.
+- Include attribution: Routed by Codex PM; reviewed by Codex QA.
 ```
 
-**Attribution:** W1 runtime rebaseline recorded by Codex PM. W1.4 demo confirmed by teammate and accepted by Codex PM. Paperclip-on-DigitalOcean status confirmed by PM and recorded by Codex PM.
+**Attribution:** W1 runtime rebaseline recorded by Codex PM. W1.4 demo confirmed by teammate and accepted by Codex PM. Paperclip-on-DigitalOcean status confirmed by PM and recorded by Codex PM. W1.5/W1.7 runtime checkpoint recorded by Codex PM.

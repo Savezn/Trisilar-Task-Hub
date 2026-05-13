@@ -1,11 +1,11 @@
 # Dev Environment Deployment - V0.2-W1-03 / V0.2-W1-05
 
 **Doc Role:** Dev deployment config and no-cost preview runtime handoff
-**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; next path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub
+**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; DigitalOcean hosted dev/demo runtime for Task Hub is configured and QA pending
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 **Related Docs:** `DEPLOYMENT_SETUP.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../plans/VERSION_0_2_PLAN.md`, `../../README.md`
 
 ---
@@ -14,7 +14,7 @@
 
 This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
-Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo path only. The next W1 path is DigitalOcean hosted dev/demo behind Cloudflare for Task Hub. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner; W3 live connector work still needs hosted URL/health and service-auth verification.
+Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo fallback only. Task Hub is now configured as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access at `https://taskhub.trisila.online`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner; W3 live connector work still needs hosted service-auth verification.
 
 ---
 
@@ -84,11 +84,11 @@ Run the app on the DigitalOcean runtime and expose it through Cloudflare:
 | Task Hub local bind | `http://localhost:<taskhub-port>` |
 | Hosted Paperclip dependency | Confirm current Cloudflare URL and health/readiness path with Paperclip owner |
 | Connector | `cloudflared` Tunnel preferred; proxied DNS + reverse proxy acceptable |
-| Dev hostname | `taskhub-dev.<cloudflare-domain>` or PM-confirmed equivalent |
+| Dev hostname | `taskhub.trisila.online` |
 | Access gate | Cloudflare Access email allowlist |
-| `APP_BASE_URL` | `https://taskhub-dev.<cloudflare-domain>` |
-| `GOOGLE_REDIRECT_URI` | `https://taskhub-dev.<cloudflare-domain>/auth/callback` |
-| `APP_DATA_DIR` | Stable hosted dev/demo data directory |
+| `APP_BASE_URL` | `https://taskhub.trisila.online` |
+| `GOOGLE_REDIRECT_URI` | `https://taskhub.trisila.online/auth/callback` |
+| `APP_DATA_DIR` | `/home/trisilar/dashboard-data` |
 
 Rules:
 
@@ -112,16 +112,16 @@ Use this path for `V0.2-W1-08`. PM decision is to host Task Hub on DigitalOcean 
 | Task Hub source branch | `dev` |
 | Paperclip source | Already hosted; confirm URL/health/auth with Paperclip owner |
 | Runtime | Node 20+ |
-| Process manager | PM2, systemd, or equivalent |
-| Task Hub bind target | `localhost:<taskhub-port>` |
-| Paperclip dependency | Hosted Cloudflare URL supplied by Paperclip owner |
-| Cloudflare routes | `taskhub-dev.<cloudflare-domain>` to the Task Hub runtime; Paperclip route is owner-managed |
+| Process manager | `taskhub-dashboard.service` under systemd |
+| Task Hub bind target | `127.0.0.1:3000` |
+| Paperclip dependency | Hosted Cloudflare URL supplied by Paperclip owner; current observed Paperclip hostname is `https://paperclip.trisila.online` |
+| Cloudflare routes | `https://taskhub.trisila.online` to the Task Hub runtime; Paperclip route is owner-managed |
 | Access gate | Cloudflare Access email allowlist |
 | Service auth | Cloudflare Access service token or signed webhook headers for future agent/API access |
 | `HOST` | `127.0.0.1` on the Droplet before Cloudflare route is connected |
-| `APP_BASE_URL` | `https://taskhub-dev.<cloudflare-domain>` |
-| `GOOGLE_REDIRECT_URI` | `https://taskhub-dev.<cloudflare-domain>/auth/callback` |
-| `APP_DATA_DIR` | Persistent server directory |
+| `APP_BASE_URL` | `https://taskhub.trisila.online` |
+| `GOOGLE_REDIRECT_URI` | `https://taskhub.trisila.online/auth/callback` |
+| `APP_DATA_DIR` | `/home/trisilar/dashboard-data` |
 
 Verification:
 
@@ -332,23 +332,27 @@ Historical conclusion:
 
 ## Current Runtime Blockers
 
-The current ngrok demo path is available for short-lived preview, but stable Cloudflare/DigitalOcean access cannot complete from the repo alone. These Trisilar runtime items are required for `V0.2-W1-06` / `V0.2-W1-08`:
+The random ngrok demo path remains available only as a short-lived fallback. The stable Cloudflare/DigitalOcean path is now runtime-configured and needs QA acceptance plus service-auth planning.
 
-- Confirm Cloudflare domain and preview hostname, default `taskhub-dev.<cloudflare-domain>`, or record a PM-approved alternate.
-- Confirm DigitalOcean account access and runtime details for Task Hub.
-- Prepare Cloudflare Access policy before exposing Task Hub to teammates.
-- Install or authenticate `cloudflared` on the Droplet if using Cloudflare Tunnel.
-- Run the app from the `dev` baseline with stable `APP_DATA_DIR`.
-- Bind Task Hub privately first and avoid using raw Droplet IP/ports for preview access.
-- Record hosted Paperclip base URL, health/readiness path, and service-auth requirements with the Paperclip owner.
-- Configure dev-only Trello and Google credentials on the server or in a secure runtime dashboard; do not put values in chat or git.
-- Configure the dev Google OAuth redirect URI.
-- Configure DNS/Tunnel for the dev hostname.
-- Configure Cloudflare Access email allowlist.
-- Run anonymous-blocked and approved-teammate access verification.
-- Confirm hosted Paperclip remains reachable through Cloudflare.
+2026-05-13 PM runtime checkpoint:
 
-For repeat Paperclip demo use before stable Cloudflare/DigitalOcean verification, configure a reserved/static ngrok domain or explicitly update Paperclip with the current manual URL for that run. Random URLs remain unsuitable for permanent automation.
+- Runtime source: `dev@b9961fa` on the existing DigitalOcean Droplet.
+- Service: `taskhub-dashboard.service`, active/enabled.
+- Private bind: `127.0.0.1:3000`.
+- Raw public port: `157.230.251.209:3000` unreachable from the local workstation.
+- Hostname: `https://taskhub.trisila.online`.
+- Access gate: anonymous `/healthz` returns Cloudflare Access `302` to `trisilar.cloudflareaccess.com`.
+- Local Droplet endpoints: `/healthz`, `/api/boards`, and `/api/all-cards` returned `200`.
+- Runtime env keys include `TRELLO_API_KEY` and `TRELLO_TOKEN`; values are server-side only and not recorded here.
+- Google hosted callback is configured as `https://taskhub.trisila.online/auth/callback`.
+- Google Calendar/Tasks remain disconnected until server-side Google dev credentials are configured.
+
+Remaining blockers:
+
+- QA recheck approved-user Cloudflare Access path and non-destructive browser app loading after Trello env setup.
+- QA verify `APP_DATA_DIR` persistence after service restart.
+- Record hosted Paperclip health/readiness evidence from the Paperclip owner.
+- Complete `V0.2-W1-07` service-auth planning for hosted Paperclip -> hosted Task Hub before W3 live connector work.
 
 ---
 

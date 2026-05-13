@@ -5,7 +5,7 @@
 **Version:** V0.2
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`
 
 ---
@@ -251,12 +251,12 @@ Verify:
 ## Prompt E - V0.2-W1-08 DigitalOcean Hosted Dev/Demo Runtime
 
 ```text
-Role: DevOps / Dev
-Task: V0.2-W1-08 - DigitalOcean Hosted Dev/Demo Runtime Setup
+Role: QA
+Task: V0.2-W1-08 - Review DigitalOcean / Cloudflare Hosted Dev/Demo Runtime
 Alias: W1.7
 
 Context:
-V0.2-W1-05 passed teammate demo and remains accepted as manual demo-only access. PM confirmed there is a Cloudflare-managed domain and selected DigitalOcean hosted dev/demo behind Cloudflare for Task Hub. PM also confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
+V0.2-W1-05 passed teammate demo and remains accepted as manual demo-only access. Task Hub is now deployed on the existing DigitalOcean Droplet from `dev@b9961fa`, routed through Cloudflare at `https://taskhub.trisila.online`, and protected by Cloudflare Access. PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
 
 Read first:
 - CODEX.md
@@ -269,34 +269,31 @@ Read first:
 - docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Goals:
-1. Set up or prepare Task Hub dev/demo runtime on DigitalOcean from branch `dev`.
-2. Record hosted Paperclip URL/health/auth dependency supplied by the Paperclip owner.
-3. Put Cloudflare in front for DNS/security/access before teammate preview.
-4. Keep server secrets out of git and chat.
-5. Record service-auth blocker without implementing new W3 behavior.
+1. Verify the Task Hub dev/demo runtime on DigitalOcean from branch `dev`.
+2. Confirm Cloudflare Access protects the stable hostname before teammate preview.
+3. Keep server secrets out of git and chat.
+4. Record service-auth blocker without implementing new W3 behavior.
 
 Steps:
-1. Confirm Cloudflare domain and Task Hub hostname, default `taskhub-dev.<domain>`, plus hosted Paperclip hostname from the Paperclip owner.
-2. Prepare Cloudflare hostname/routing plan and Access email allowlist before any public teammate preview.
-3. Confirm DigitalOcean account access and create/select one dev-only Droplet or approved DO runtime layout for Task Hub.
-4. Pull latest Task Hub `dev` on the Droplet.
-5. Run Task Hub on a private/local bind first; do not expose the raw Droplet IP or unprotected port as the preview URL.
-6. Record hosted Paperclip base URL, health/readiness path, and service-auth requirements from the Paperclip owner.
-7. Configure server-only env values, `APP_DATA_DIR`, `APP_BASE_URL`, and `GOOGLE_REDIRECT_URI`.
-8. Connect Cloudflare route for Task Hub using Tunnel preferred, or proxied DNS + reverse proxy if selected.
-9. Verify Cloudflare Access anonymous block, approved teammate access, Task Hub `/healthz`, non-destructive app load, and runtime file persistence.
-10. Route W1.6 service-auth planning for hosted Paperclip -> hosted Task Hub.
+1. Confirm `taskhub-dashboard.service` is active/enabled on the Droplet.
+2. Confirm Task Hub binds `127.0.0.1:3000` and raw public `157.230.251.209:3000` is unreachable.
+3. Confirm anonymous `https://taskhub.trisila.online` access is blocked by Cloudflare Access.
+4. Confirm approved teammate access can pass Cloudflare Access and load the app.
+5. Confirm `/healthz`, `/api/boards`, and `/api/all-cards` are healthy without exposing secrets.
+6. Confirm `APP_BASE_URL` and `GOOGLE_REDIRECT_URI` use `https://taskhub.trisila.online`.
+7. Confirm runtime files persist under `/home/trisilar/dashboard-data` after service restart.
+8. Confirm no production deploy, no main merge, no W2 UI redesign, no new W3 Paperclip behavior, and no secrets in repo/docs/chat.
+9. If pass, recommend PM accept `V0.2-W1-06` and `V0.2-W1-08`, then route `V0.2-W1-07` service-auth planning for hosted Paperclip -> hosted Task Hub.
 
 Rules:
-- Start from latest `dev`.
+- QA only: do not patch code.
 - Use `V0.2-W1-08` as the primary task ID; `W1.7` is an alias only.
 - Do not deploy production.
 - Do not merge to main.
 - Do not commit secrets or generated runtime data.
 - Do not implement W2 UI redesign.
 - Do not implement new W3 Paperclip behavior.
-- Repo changes only if setup defects are found, and those changes must go through PR.
-- Include attribution: Runtime setup by Codex DevOps/Dev.
+- Include attribution: Routed by Codex PM; reviewed by Codex QA.
 ```
 
 ---
@@ -312,3 +309,4 @@ Rules:
 | 2026-05-09 | Added Prompt D for `V0.2-W2-06` after `V0.2-W2-05` integration QA/PM acceptance on `dev@3fca059` | Codex PM |
 | 2026-05-12 | Added Prompt E for DigitalOcean hosted dev/demo behind Cloudflare; historical Paperclip localhost blocker later superseded by hosted Paperclip confirmation | Codex PM |
 | 2026-05-12 | Updated Prompt E after PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare; remaining runtime setup is Task Hub plus service-auth verification | Codex PM |
+| 2026-05-13 | Updated Prompt E from DevOps setup to QA recheck after Task Hub was configured on DigitalOcean behind Cloudflare Access at `taskhub.trisila.online` | Codex PM |
