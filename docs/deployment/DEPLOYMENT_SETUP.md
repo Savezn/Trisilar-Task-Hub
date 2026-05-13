@@ -222,7 +222,7 @@ Rules:
 - Do not rely on obscured platform URLs as access control.
 - QA must verify anonymous access is blocked before any production use.
 - Agent/API calls should not depend on interactive email login. Use Cloudflare Access service tokens, signed webhook headers, or an approved machine-auth pattern.
-- Paperclip is already hosted on DigitalOcean behind Cloudflare; W3 live connector work still needs Paperclip owner inputs.
+- Paperclip is already hosted on DigitalOcean behind Cloudflare, but runtime verification is held while the Paperclip server is offline; W3 live connector work still needs Paperclip owner inputs after the server is online.
 
 ---
 
@@ -242,7 +242,7 @@ Hosted URLs:
 | Service | URL | Notes |
 |---|---|---|
 | Task Hub | `https://taskhub.trisila.online` | Accepted dev/demo runtime |
-| Paperclip | `https://paperclip.trisila.online` | Owner-managed; health/readiness path still needs confirmation |
+| Paperclip | `https://paperclip.trisila.online` | Owner-managed; runtime verification held while server is offline; health/readiness path still needs confirmation |
 
 Task Hub env var names:
 
@@ -275,7 +275,7 @@ Rules:
 - Configure Cloudflare Access service token values in the Paperclip runtime only.
 - Configure webhook signing secret in both runtime dashboards/server env only.
 - Do not expose service-token headers or signing secrets to browser JavaScript.
-- Do not implement or enable the live W3 webhook until Paperclip owner confirms the remaining inputs.
+- Do not implement or enable the live W3 webhook until the Paperclip server is online and Paperclip owner confirms the remaining inputs.
 
 ---
 

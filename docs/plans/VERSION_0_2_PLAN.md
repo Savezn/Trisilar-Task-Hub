@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. W3 live connector work still needs Paperclip owner inputs before implementation planning.
+V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner, but Paperclip runtime verification is held while the Paperclip server is offline. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. W3 live connector work still needs Paperclip owner inputs before implementation planning.
 
 ---
 
@@ -98,9 +98,9 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
+| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while server is offline | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` planned next / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; live connector blocked until Paperclip owner inputs are confirmed | Contract-first mock adapter, attribution/audit sync; live connector waits for stable hosted runtime and auth |
+| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed | Contract-first mock adapter, attribution/audit sync; live connector waits for stable hosted runtime and auth |
 
 ---
 
@@ -137,7 +137,7 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Done `1d1f638` | Contract definitions, mock adapter route, idempotency/audit persistence, and mock verification |
-| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after Paperclip owner inputs are confirmed |
+| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after Paperclip server is online and owner inputs are confirmed |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature and replay hardening after the first live webhook is verified |
 
 Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them in chat, normalize the next PM update to the canonical `V0.2-W3-XX` form.
@@ -305,36 +305,37 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. If resuming W1/W3 specifically, use the Paperclip owner input confirmation prompt in `CURRENT_SPRINT.md`.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. W1 Task Hub runtime is accepted and should not be reopened. W1 Paperclip runtime verification is held while the Paperclip server is offline, so the current non-blocked route is `V0.2-W2-06`.
 
 ```text
-Role: PM / Paperclip Owner
-Task: Confirm Paperclip Inputs for W3 Live Connector
+Role: Dev
+Task: V0.2-W2-06 - Settings + OKR + Weekly Focus Polish
+Alias: W2f
 
 Context:
-W1.4 random ngrok manual demo is accepted demo-only. `V0.2-W1-06` plus `V0.2-W1-08` are accepted as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. `V0.2-W1-07` is QA Pass / PM Accepted after PR #11 merge to `dev` at `fa87ac4`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. W3 live connector work remains blocked until Paperclip owner inputs are confirmed.
+W1.4 random ngrok manual demo is accepted demo-only. `V0.2-W1-06` plus `V0.2-W1-08` are accepted as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. `V0.2-W1-07` is QA Pass / PM Accepted after PR #11 merge to `dev` at `fa87ac4`. Paperclip runtime verification is held while the Paperclip server is offline. W3 live connector work remains blocked until Paperclip owner inputs are confirmed after the server is online. Continue non-blocked V0.2 delivery with the final W2 UI phase.
 
 Read first:
 - CURRENT_SPRINT.md
-- docs/adr/ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md
 - docs/plans/VERSION_0_2_PLAN.md
-- docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
+- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
+- docs/design/ui-design-v1-0/README.md
 
 Steps:
-1. Confirm exact Paperclip health/readiness path for `https://paperclip.trisila.online`.
-2. Confirm Paperclip runtime can send Cloudflare Access service-token headers.
-3. Confirm Paperclip runtime can compute HMAC-SHA256 signatures over the raw request body or agreed canonical payload.
-4. Confirm Paperclip environment/source identifiers for `PAPERCLIP_ALLOWED_SOURCE_ID` and `PAPERCLIP_ALLOWED_ENVIRONMENT`.
-5. Confirm which Paperclip run/workspace/thread identifiers map to the W3 contract fields.
-6. Do not send token or signing-secret values in chat or docs.
-7. After inputs are confirmed, route W3 live connector planning.
+1. Start from latest `dev` in the W2 worktree.
+2. Use branch `feature/w2-06-settings-okr-focus-redesign`.
+3. Redesign `/settings`, `/okr`, and `/focus` to match the accepted W2 shell/page system.
+4. Preserve Settings save paths, integration status, OKR behavior, and Weekly Focus behavior.
+5. Run `npm.cmd run check:all`, Paperclip contract/mock verification, focused browser smoke for Settings/OKR/Weekly Focus, and regression smoke for Today, Review, Tasks, Boards, Calendar, and Planner.
+6. Route to QA after implementation.
 
 Rules:
 - Do not deploy production.
 - Do not expose secrets, Cloudflare tokens, or Trello/Google credential values.
-- Do not implement W2 UI redesign or new W3 Paperclip behavior.
+- Do not implement W1 runtime changes.
+- Do not implement new W3 Paperclip behavior.
 - Preserve existing app behavior.
-- Include attribution: W1-07 reviewed by Codex QA / PM; accepted by Codex PM.
+- Include attribution: Routed by Codex PM.
 ```
 
 ---
@@ -365,3 +366,4 @@ Rules:
 | 2026-05-13 | Accepted `V0.2-W1-06` and `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete after PR #9 merge at `91ee327`; routed next W1 work to `V0.2-W1-07` service-auth planning | Codex PM |
 | 2026-05-13 | Planned `V0.2-W1-07` service-auth topology: Paperclip calls Task Hub webhook through Cloudflare Access service token plus signed webhook headers; W3 live implementation remains blocked until QA/PM acceptance and Paperclip owner inputs | Codex PM / Dev |
 | 2026-05-13 | Accepted `V0.2-W1-07` after PR #11 QA/PM pass and merge at `fa87ac4`; routed next gate to Paperclip owner input confirmation before W3 live connector planning | Codex PM |
+| 2026-05-13 | Held W1 Paperclip runtime verification because the Paperclip server is offline; kept Task Hub runtime accepted and routed non-blocked work to `V0.2-W2-06` | Codex PM |
