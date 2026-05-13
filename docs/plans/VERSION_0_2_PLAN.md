@@ -100,7 +100,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
 | W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while server is offline | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` planned next / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed | Contract-first mock adapter, attribution/audit sync; live connector waits for stable hosted runtime and auth |
+| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W3-02a` QA Pass / PM Accepted `9391e4f`; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed | Contract-first mock adapter, mock/local docs viewer foundation, attribution/audit sync; live connector waits for stable hosted runtime and auth |
 
 ---
 
@@ -137,6 +137,7 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Done `1d1f638` | Contract definitions, mock adapter route, idempotency/audit persistence, and mock verification |
+| `V0.2-W3-02a` | W3 docs viewer foundation | QA Pass / PM Accepted `9391e4f` | Local/mock Paperclip document artifact schema, fixture, endpoint, and Docs page |
 | `V0.2-W3-02` | W3 sequence 2 | Plan Ready / Implementation Blocked | Live webhook contract/env/auth/signing/replay plan prepared; route implementation waits for Paperclip server online and owner inputs |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature and replay hardening after the first live webhook is verified |
 
@@ -259,11 +260,12 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 **Priority:** P1 after W0
 **Owner Role:** Integration Dev
-**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02` live webhook plan prepared; route implementation remains blocked until Paperclip server is online and owner inputs are confirmed
+**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02a` QA Pass / PM Accepted at `9391e4f`; `V0.2-W3-02` live webhook plan prepared; route implementation remains blocked until Paperclip server is online and owner inputs are confirmed
 
 **Scope:**
 - Integration contract.
 - Mock adapter before live connector.
+- Mock/local Paperclip Docs viewer foundation.
 - Task/agent attribution sync.
 - Error handling and audit trail.
 
@@ -368,3 +370,4 @@ Rules:
 | 2026-05-13 | Accepted `V0.2-W1-07` after PR #11 QA/PM pass and merge at `fa87ac4`; routed next gate to Paperclip owner input confirmation before W3 live connector planning | Codex PM |
 | 2026-05-13 | Held W1 Paperclip runtime verification because the Paperclip server is offline; kept Task Hub runtime accepted and routed non-blocked work to `V0.2-W2-06` | Codex PM |
 | 2026-05-13 | Prepared docs-only `V0.2-W3-02` live webhook plan while Paperclip is offline; implementation stays blocked until owner confirms health/readiness, Cloudflare Access service-token, HMAC, source/environment, and id mapping inputs | Codex PM / Dev |
+| 2026-05-13 | Accepted `V0.2-W3-02a` Paperclip Docs Viewer Foundation at `9391e4f`; live Paperclip docs/API/webhook work remains blocked until owner confirms health path, service-token support, HMAC support, source/environment ids, id mapping, and sample payload | Codex PM |

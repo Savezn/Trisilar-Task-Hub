@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02a` Docs Viewer Foundation Dev complete / QA pending; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed
+**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02a` Docs Viewer Foundation QA Pass / PM Accepted; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -289,7 +289,7 @@ Do not implement the live route until PM/owner records these inputs:
 
 ## V0.2-W3-02a Paperclip Docs Viewer Foundation
 
-Status: Dev complete / QA pending. This is a mock/local foundation task under W3 and does not unblock or implement the live webhook route.
+Status: QA Pass / PM Accepted at `9391e4f`. This is a mock/local foundation task under W3 and does not unblock or implement the live webhook route.
 
 Implemented scope:
 
@@ -505,7 +505,7 @@ npm.cmd run verify:paperclip-mock
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
-| `V0.2-W3-02a` | W3 docs viewer foundation | Dev Complete / QA Pending | Local/mock Paperclip document artifact schema, fixture, endpoint, and Docs page |
+| `V0.2-W3-02a` | W3 docs viewer foundation | QA Pass / PM Accepted `9391e4f` | Local/mock Paperclip document artifact schema, fixture, endpoint, and Docs page |
 | `V0.2-W3-02` | W3 sequence 2 | Plan Ready / Implementation Blocked | Live webhook contract/env/auth/signing/replay plan prepared; route implementation waits for Paperclip server online and owner inputs |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature/replay hardening after the first live webhook is verified |
 
@@ -513,7 +513,7 @@ Details:
 
 - `V0.2-W3-01` completed pure validator/normalizer logic, fixture files, unit-level validation checks, `POST /api/integrations/paperclip/mock/review-session`, backward-compatible review-store attribution fields, idempotency lookup by `requestId`, and `scripts/verify-paperclip-mock.js`.
 - `V0.2-W3-01` introduced no live Paperclip external calls.
-- `V0.2-W3-02a` adds a mock/local Paperclip Docs viewer foundation and does not call live Paperclip or implement the live webhook route.
+- `V0.2-W3-02a` adds a mock/local Paperclip Docs viewer foundation and does not call live Paperclip or implement the live webhook route. QA passed and PM accepted at `9391e4f`.
 - `V0.2-W3-02` now has a docs-only live webhook plan for inbound contract, env validation, Cloudflare Access service-token expectations, HMAC signing, and replay/idempotency. It must stay implementation-blocked until the Paperclip server is online, the Paperclip health/readiness path is confirmed, and Paperclip owner confirms service-token plus webhook-signing support.
 - Web-managed Paperclip connection settings were implemented as a prerequisite gate and must remain the source of runtime enable/disable state and secret rotation; do not hardcode live Paperclip values.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
@@ -563,3 +563,4 @@ Details:
 | 2026-05-13 | Held W3 live connector implementation while the Paperclip server is offline; non-blocked V0.2 work is routed back to W2-06 | Codex PM |
 | 2026-05-13 | Prepared `V0.2-W3-02` live webhook plan while Paperclip is offline: inbound contract, env validation, Cloudflare Access service-token expectations, HMAC canonical format, idempotency/replay behavior, and blocked owner inputs; no live route implemented | Codex PM / Dev |
 | 2026-05-13 | Implemented `V0.2-W3-02a` Paperclip Docs Viewer Foundation using mock/local contract data only; live webhook and Paperclip runtime calls remain blocked | Codex Dev |
+| 2026-05-13 | Accepted `V0.2-W3-02a` after QA pass at `9391e4f`; live docs/API/webhook work remains blocked until Paperclip owner confirms health path, service-token support, HMAC support, source/environment ids, id mapping, and sample payload | Codex PM |

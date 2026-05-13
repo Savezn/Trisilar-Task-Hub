@@ -22,6 +22,7 @@
 | V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. `V0.2-W1-06` and `V0.2-W1-08` are accepted as dev/demo runtime complete, not production/release-grade. |
 | V0.2 W2 Full UI Redesign | `V0.2-W2-01` through `V0.2-W2-05` accepted and integrated through `dev@3fca059`; `V0.2-W2-06` planned next | `V0.2-W2-05` integration QA passed on `dev@3fca059` and is accepted by Codex PM; full redesign still open until `V0.2-W2-06` passes QA/PM |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
+| V0.2-W3-02a Paperclip Docs Viewer Foundation | QA Pass / PM Accepted `9391e4f` | Mock/local docs viewer foundation accepted; live docs/API/webhook work remains blocked pending Paperclip owner runtime inputs |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
@@ -35,7 +36,7 @@
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while Paperclip server is offline | Hold / PM |
 | W2 | Full UI Redesign | `V0.2-W2-01`-`V0.2-W2-05` accepted and integrated on `dev`; `V0.2-W2-06` remains the final planned W2 phase; full redesign not complete | Dev |
-| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Paperclip owner inputs are confirmed after Paperclip server is online | Blocked |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; `V0.2-W3-02a` Docs Viewer Foundation QA Pass / PM Accepted `9391e4f`; live path blocked until Paperclip owner inputs are confirmed after Paperclip server is online | Blocked |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -102,7 +103,7 @@ Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W1-05` (`W1.4`
 
 QA evidence on 2026-05-13: `taskhub-dashboard.service` is active/enabled; Task Hub binds `127.0.0.1:3000`; raw public `157.230.251.209:3000` is unreachable; anonymous `https://taskhub.trisila.online/healthz` returns Cloudflare Access `302`; approved-user browser access loaded the app without `/api/boards` or `/api/all-cards` 401 errors; local `/healthz`, `/api/boards`, and `/api/all-cards` return `200`; `GOOGLE_REDIRECT_URI` is `https://taskhub.trisila.online/auth/callback`; `APP_DATA_DIR` persistence survived restart; secrets are present only as server-side env keys and were not recorded in docs/chat.
 
-W1 runtime and service-auth planning are accepted for dev/demo. Paperclip runtime verification is held because the Paperclip server is currently offline, so W3 live connector work remains blocked until Paperclip owner confirms the remaining runtime/auth inputs after the server is online. Do not reopen Task Hub runtime work.
+W1 runtime and service-auth planning are accepted for dev/demo. `V0.2-W3-02a` Paperclip Docs Viewer Foundation is accepted as mock/local only. Paperclip runtime verification is held because the Paperclip server is currently offline, so W3 live docs/API/webhook work remains blocked until Paperclip owner confirms health path, service-token support, HMAC support, source/environment ids, id mapping, and sample payload after the server is online. Do not reopen Task Hub runtime work.
 
 ```text
 Role: Dev
@@ -110,7 +111,7 @@ Task: V0.2-W2-06 - Settings + OKR + Weekly Focus Polish
 Alias: W2f
 
 Context:
-W1 Task Hub dev/demo runtime is accepted and should not be reopened. W1 Paperclip runtime verification is held because the Paperclip server is offline. W3 live connector remains blocked. Continue non-blocked V0.2 delivery by implementing the final W2 UI phase from latest `dev`.
+W1 Task Hub dev/demo runtime is accepted and should not be reopened. W1 Paperclip runtime verification is held because the Paperclip server is offline. `V0.2-W3-02a` is accepted as mock/local only, and W3 live docs/API/webhook work remains blocked. Continue non-blocked V0.2 delivery by implementing the final W2 UI phase from latest `dev`.
 
 Read first:
 - CODEX.md
@@ -142,4 +143,4 @@ Rules:
 - Include attribution: Routed by Codex PM.
 ```
 
-**Attribution:** W1 runtime rebaseline recorded by Codex PM. W1.4 demo confirmed by teammate and accepted by Codex PM. Paperclip-on-DigitalOcean status confirmed by PM and recorded by Codex PM. W1.5/W1.7 runtime checkpoint recorded by Codex PM; reviewed by Codex QA; accepted by Codex PM. W1.6 service-auth topology planned by Codex PM / Dev; reviewed by Codex QA / PM; accepted by Codex PM. Paperclip runtime verification held by Codex PM because Paperclip server is offline; non-blocked V0.2 work routed to W2-06.
+**Attribution:** W1 runtime rebaseline recorded by Codex PM. W1.4 demo confirmed by teammate and accepted by Codex PM. Paperclip-on-DigitalOcean status confirmed by PM and recorded by Codex PM. W1.5/W1.7 runtime checkpoint recorded by Codex PM; reviewed by Codex QA; accepted by Codex PM. W1.6 service-auth topology planned by Codex PM / Dev; reviewed by Codex QA / PM; accepted by Codex PM. `V0.2-W3-02a` Paperclip Docs Viewer Foundation implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM. Paperclip runtime verification held by Codex PM because Paperclip server is offline; non-blocked V0.2 work routed to W2-06.
