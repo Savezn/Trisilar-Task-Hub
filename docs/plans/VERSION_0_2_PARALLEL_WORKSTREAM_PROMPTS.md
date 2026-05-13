@@ -73,6 +73,7 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | D | `V0.2-W2-06` | `W2f` | Settings, OKR, and Weekly Focus polish |
 | E | `V0.2-W1-08` | `W1.7` | DigitalOcean hosted dev/demo runtime behind Cloudflare for Task Hub |
 | F | `V0.2-W1-07` | `W1.6` | Paperclip service-auth planning for hosted Paperclip -> hosted Task Hub |
+| G | `V0.2-W1-07` | `W1.6` | QA review for Paperclip service-auth planning |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -348,6 +349,49 @@ Rules:
 
 ---
 
+## Prompt G - V0.2-W1-07 Service-Auth Planning QA Review
+
+```text
+Role: QA / PM
+Task: V0.2-W1-07 - Review Paperclip Service-Auth Planning for Hosted Task Hub
+Alias: W1.6
+
+Context:
+V0.2-W1-05 passed teammate demo and remains accepted as manual demo-only access. PR #9 merged to `dev` at `91ee327`, and PM accepted `V0.2-W1-06` plus `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. W1-07 planning selects Paperclip -> Task Hub webhook as the first live direction, using Cloudflare Access service token plus signed webhook headers. W1-07 does not implement live W3 behavior.
+
+Read first:
+- CODEX.md
+- CURRENT_SPRINT.md
+- docs/adr/ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md
+- docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
+- docs/deployment/DEPLOYMENT_SETUP.md
+- docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
+
+Steps:
+1. Confirm W1-07 planning is docs-only and does not implement live W3 behavior.
+2. Confirm first live direction is Paperclip calls Task Hub webhook, not Task Hub polling Paperclip.
+3. Confirm human Cloudflare Access login and machine/API auth are separated.
+4. Confirm service-auth pattern is Cloudflare Access service token plus signed webhook headers.
+5. Confirm env var names are documented without secret values.
+6. Confirm replay/idempotency requirements are clear for W3.
+7. Confirm remaining Paperclip owner inputs are explicitly listed.
+8. Confirm W3 live connector remains blocked until QA/PM acceptance and owner inputs.
+9. If pass, recommend PM accept `V0.2-W1-07` and route W3 live connector planning.
+
+Rules:
+- QA only: do not patch code.
+- Do not deploy production.
+- Do not merge to main.
+- Do not commit secrets or generated runtime data.
+- Do not implement W2 UI redesign.
+- Do not implement new W3 Paperclip behavior.
+- Include attribution: Planned by Codex PM / Dev; reviewed by Codex QA.
+```
+
+---
+
 ## Change Attribution
 
 | Date | Change | Updated by |
@@ -361,3 +405,4 @@ Rules:
 | 2026-05-12 | Updated Prompt E after PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare; remaining runtime setup is Task Hub plus service-auth verification | Codex PM |
 | 2026-05-13 | Updated Prompt E from DevOps setup to QA recheck after Task Hub was configured on DigitalOcean behind Cloudflare Access at `taskhub.trisila.online` | Codex PM |
 | 2026-05-13 | Added Prompt F for `V0.2-W1-07` service-auth planning after PM accepted W1-06/W1-08 as dev/demo runtime complete | Codex PM |
+| 2026-05-13 | Added Prompt G for QA/PM review of W1-07 service-auth topology before W3 live connector planning | Codex PM / Dev |

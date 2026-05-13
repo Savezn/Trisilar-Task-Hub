@@ -67,3 +67,4 @@ Use uppercase snake case after the numeric prefix.
 | ADR | Status | Decision |
 |---|---|---|
 | `ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` | Accepted | Establish universal AI/project conventions, worktree rules, docs split, and ADR usage |
+| `ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md` | Accepted | Use Paperclip-to-Task-Hub webhook with Cloudflare Access service token plus signed webhook headers before W3 live connector implementation |

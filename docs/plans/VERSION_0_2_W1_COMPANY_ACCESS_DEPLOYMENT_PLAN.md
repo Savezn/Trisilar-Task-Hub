@@ -1,9 +1,9 @@
 # Version 0.2 W1 Company Access + Deployment Plan
 
 **Doc Role:** W1 workstream phase ladder and execution plan
-**Status:** Active - `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` service-auth planning pending
+**Status:** Active - `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` service-auth topology planned / QA pending
 **Version:** V0.2
-**Planning Stage:** Dev/demo runtime accepted; service-auth planning pending
+**Planning Stage:** Dev/demo runtime accepted; service-auth QA pending
 **Owner:** PM / Platform Dev
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-13 - **Updated by:** Codex PM
@@ -115,7 +115,7 @@ Runtime dependency rules:
 | `V0.2-W1-04` | `W1.3` | Accepted / amended | PM | Preview/runtime decision | Random ngrok accepted for manual demo; DigitalOcean + Cloudflare selected for next hosted dev/demo runtime |
 | `V0.2-W1-05` | `W1.4` | Accepted demo-only | Dev / QA / PM | No-domain random ngrok manual demo runtime | QA verified Basic Auth, `/healthz`, app load, hosted callback, and local-only data path; PM accepted for short manual teammate demo only |
 | `V0.2-W1-06` | `W1.5` | QA Pass / PM Accepted for dev/demo | Dev / QA / PM | Stable Cloudflare hostname + Access email allowlist | Task Hub hostname confirmed; Cloudflare Access blocks anonymous users; approved teammate can access and load the app |
-| `V0.2-W1-07` | `W1.6` | Pending | Dev / PM | Paperclip agent/API access prep | Service-token pattern documented for hosted Paperclip -> hosted Task Hub integration without W3 implementation |
+| `V0.2-W1-07` | `W1.6` | Planned / QA pending | Dev / PM | Paperclip agent/API access prep | Service-token and signed-webhook pattern documented for hosted Paperclip -> hosted Task Hub integration without W3 implementation |
 | `V0.2-W1-08` | `W1.7` | QA Pass / PM Accepted for dev/demo | PM / Dev / QA | DigitalOcean hosted dev/demo runtime for Task Hub | Runtime, persistent Task Hub `APP_DATA_DIR`, Cloudflare routing, health checks, access gate, non-destructive app load, and hosted Paperclip dependency evidence verified |
 
 ---
@@ -251,24 +251,91 @@ Acceptance criteria:
 
 **Alias:** W1.6
 
-**Status:** Pending
+**Status:** Planned / QA pending
 **Owner:** Dev / PM
 
-Tasks:
+Decision:
 
-- Document service-token pattern for future Paperclip agent/API access.
-- Record hosted Paperclip base URL, health/readiness path, and owner-confirmed environment before W3 live connector work proceeds.
-- Decide whether Paperclip will call Task Hub by webhook or Task Hub will call/poll Paperclip.
-- If Paperclip calls Task Hub, require a stable Task Hub hostname and service-auth path such as Cloudflare Access service token for the Paperclip endpoint.
-- If Task Hub calls Paperclip, require a stable Paperclip hostname before live code proceeds.
-- Keep live Paperclip behavior under W3 ownership.
-- Do not add new Paperclip runtime endpoints in W1.
+- First live direction is Paperclip calls Task Hub by webhook.
+- Task Hub does not poll Paperclip in the first live connector. Task Hub may later call a Paperclip health/readiness endpoint for diagnostics only.
+- Human users keep Cloudflare Access email login.
+- Machine/API access uses Cloudflare Access service token at the edge plus signed webhook headers at the Task Hub application boundary.
+- Live Paperclip behavior remains W3-owned; W1 only records topology, env var names, and handoff requirements.
+
+Recorded hosted endpoints:
+
+| Service | Base URL | Health/readiness |
+|---|---|---|
+| Task Hub | `https://taskhub.trisila.online` | `/healthz` |
+| Paperclip | `https://paperclip.trisila.online` | Paperclip owner must confirm exact health/readiness path before W3 live work |
+
+Recommended W3 live endpoint:
+
+```text
+POST /api/integrations/paperclip/webhook
+```
+
+Auth topology:
+
+```text
+Hosted Paperclip
+  -> Cloudflare Access service token headers
+  -> https://taskhub.trisila.online
+  -> signed Task Hub webhook headers
+  -> Review Queue
+  -> human approval
+  -> existing Trello / Google paths
+```
+
+Task Hub runtime env var names:
+
+- `PAPERCLIP_WEBHOOK_ENABLED`
+- `PAPERCLIP_WEBHOOK_SIGNING_SECRET`
+- `PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS`
+- `PAPERCLIP_ALLOWED_SOURCE_ID`
+- `PAPERCLIP_ALLOWED_ENVIRONMENT`
+- `PAPERCLIP_BASE_URL`
+- `PAPERCLIP_HEALTH_PATH`
+- `CLOUDFLARE_ACCESS_AUD`
+- `CLOUDFLARE_ACCESS_TEAM_DOMAIN`
+
+Paperclip runtime env var names:
+
+- `TASKHUB_BASE_URL`
+- `TASKHUB_PAPERCLIP_WEBHOOK_PATH`
+- `TASKHUB_WEBHOOK_SIGNING_SECRET`
+- `TASKHUB_CF_ACCESS_CLIENT_ID`
+- `TASKHUB_CF_ACCESS_CLIENT_SECRET`
+
+Signed webhook headers:
+
+- `X-TaskHub-Request-Id`
+- `X-TaskHub-Timestamp`
+- `X-TaskHub-Signature`
+- `X-Paperclip-Source`
+- `X-Paperclip-Agent-Run-Id`
+
+Replay/idempotency requirement:
+
+- `requestId` is the idempotency key.
+- Re-sending the same `requestId` with the same payload must not create duplicate review sessions.
+- Re-sending the same `requestId` with a different payload must be rejected and logged for audit.
+- W3 implementation should persist request id, payload hash, source, Paperclip run id, and resulting Task Hub review session id.
+
+Remaining Paperclip owner inputs:
+
+- Confirm exact Paperclip health/readiness path.
+- Confirm Paperclip runtime can send Cloudflare Access service-token headers.
+- Confirm Paperclip runtime can compute HMAC-SHA256 signatures over the raw request body or agreed canonical payload.
+- Confirm Paperclip environment/source identifier for `PAPERCLIP_ALLOWED_SOURCE_ID` and `PAPERCLIP_ALLOWED_ENVIRONMENT`.
+- Confirm which Paperclip run/workspace/thread identifiers map to the W3 contract fields.
 
 Acceptance criteria:
 
 - Human access and future agent access are separated clearly.
-- Service-token pattern is documented without committing credentials.
-- Hosted Paperclip dependency and service-auth requirement are recorded as W3 runtime blockers.
+- Service-token and signed-webhook pattern is documented without committing credentials.
+- Hosted Paperclip dependency, service-auth requirement, and owner inputs are recorded as W3 runtime blockers.
+- ADR `ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md` records the service-auth decision.
 - No new W3 implementation is introduced.
 
 ### V0.2-W1-08 - DigitalOcean Hosted Dev/Demo Runtime for Task Hub
@@ -334,7 +401,7 @@ Acceptance criteria:
 - Use temporary Basic Auth before sharing the ngrok demo URL.
 - Use Cloudflare Access before sharing a stable Cloudflare/hosted preview URL.
 - Use random tunnel URLs only for short-lived demo access; use a reserved/static domain for repeat Paperclip testing.
-- Treat W3 live integration as blocked until Task Hub hosted runtime and service-auth with hosted Paperclip are verified.
+- Treat W3 live integration as blocked until W1-07 service-auth topology passes QA/PM and Paperclip owner inputs are confirmed.
 - Repo changes require a branch/PR unless PM explicitly approves docs-only direct updates.
 
 ---
@@ -345,7 +412,7 @@ Acceptance criteria:
 |---|---|---|
 | `V0.2-W1-05` | Complete | Alias W1.4; accepted as random ngrok URL manual teammate demo path only |
 | `V0.2-W1-06` | Complete for dev/demo | Alias W1.5; Cloudflare hostname, anonymous block, approved-user access, and app load accepted |
-| `V0.2-W1-07` | 1 | Alias W1.6; documentation/pattern only; records hosted service-auth pattern; no live W3 behavior |
+| `V0.2-W1-07` | QA pending | Alias W1.6; documentation/pattern only; records hosted service-auth pattern; no live W3 behavior |
 | `V0.2-W1-08` | Complete for dev/demo | Alias W1.7; DigitalOcean hosted dev/demo runtime, private bind, Cloudflare route, and persistence accepted |
 
 ---
@@ -353,12 +420,12 @@ Acceptance criteria:
 ## Next Recommended Session
 
 ```text
-Role: PM / Dev
-Task: V0.2-W1-07 - Paperclip Service-Auth Planning for Hosted Task Hub
+Role: QA / PM
+Task: V0.2-W1-07 - Review Paperclip Service-Auth Planning for Hosted Task Hub
 Alias: W1.6
 
 Context:
-W1 repo deploy-readiness and dev deployment config are merged to `dev`. `V0.2-W1-05` random ngrok demo passed and remains accepted for short manual demo only. PR #9 merged to `dev` at `91ee327`, and PM accepted `V0.2-W1-06` plus `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. W3 live connector work remains blocked until service-auth topology is planned and accepted.
+W1 repo deploy-readiness and dev deployment config are merged to `dev`. `V0.2-W1-05` random ngrok demo passed and remains accepted for short manual demo only. PR #9 merged to `dev` at `91ee327`, and PM accepted `V0.2-W1-06` plus `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. W1-07 planning selects Paperclip -> Task Hub webhook as the first live direction, using Cloudflare Access service token plus signed webhook headers. W3 live connector work remains blocked until this topology passes QA/PM and Paperclip owner inputs are confirmed.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -368,22 +435,23 @@ Read first:
 - docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
 
 Steps:
-1. Confirm direction: Paperclip calls Task Hub, Task Hub calls/polls Paperclip, or both.
-2. Record hosted Task Hub base URL and hosted Paperclip base URL/health path without secrets.
-3. Choose service-auth pattern: Cloudflare Access service token, signed webhook header, or other PM-approved machine auth.
-4. Separate human Cloudflare Access email login from machine/API auth.
-5. Define W3 live endpoints/client calls requiring service auth without implementing in W1.
-6. Document required runtime env var names only.
-7. Define replay/idempotency requirement handoff for W3.
-8. Record remaining Paperclip owner inputs.
-9. Route next W3 live connector only after PM accepts W1-07 auth topology.
+1. Confirm W1-07 planning is docs-only and does not implement live W3 behavior.
+2. Confirm first live direction is Paperclip calls Task Hub webhook, not Task Hub polling Paperclip.
+3. Confirm human Cloudflare Access login and machine/API auth are separated.
+4. Confirm service-auth pattern is Cloudflare Access service token plus signed webhook headers.
+5. Confirm env var names are documented without secret values.
+6. Confirm replay/idempotency requirements are clear for W3.
+7. Confirm remaining Paperclip owner inputs are explicitly listed.
+8. Confirm W3 live connector remains blocked until QA/PM acceptance and owner inputs.
+9. If pass, recommend PM accept `V0.2-W1-07` and route W3 live connector planning.
 
 Rules:
 - Do not deploy production.
+- QA only: do not patch code.
 - Do not commit secrets.
 - Do not implement W2 UI redesign or new W3 Paperclip behavior.
 - Preserve existing app behavior.
-- Include attribution: Routed by Codex PM.
+- Include attribution: Planned by Codex PM / Dev; reviewed by Codex QA.
 ```
 
 ---
@@ -399,3 +467,4 @@ Rules:
 | 2026-05-12 | Updated W1 after PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare; remaining W1 runtime work is Task Hub plus service-auth verification | Codex PM |
 | 2026-05-13 | Recorded Task Hub DigitalOcean + Cloudflare runtime checkpoint at `https://taskhub.trisila.online`; W1-06/W1-08 runtime is configured but QA acceptance and W1-07 service-auth planning remain open | Codex PM |
 | 2026-05-13 | Accepted `V0.2-W1-06` and `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete after PR #9 merge at `91ee327`; routed next W1 work to `V0.2-W1-07` service-auth planning | Codex PM |
+| 2026-05-13 | Planned `V0.2-W1-07` service-auth topology: Paperclip calls Task Hub webhook through Cloudflare Access service token plus signed webhook headers; W3 live implementation remains blocked until QA/PM acceptance and Paperclip owner inputs | Codex PM / Dev |
