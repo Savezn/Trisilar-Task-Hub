@@ -48,7 +48,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | Level | Version / Track | Status | Outcome | Release Gate |
 |---|---|---|---|---|
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
-| L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; W1.5/W1.7 dev-demo runtime accepted; W1.6 service-auth planned / QA pending | Teammates can access stable dev/demo Task Hub safely with environment, persistence, and access-control boundaries; Paperclip is already hosted by its owner; random ngrok remains manual-demo-only | `V0.2-W1-07` service-auth QA/PM acceptance required before W3 live; production/release-grade promotion remains out of scope |
+| L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; W1.5/W1.7 dev-demo runtime accepted; W1.6 service-auth accepted | Teammates can access stable dev/demo Task Hub safely with environment, persistence, and access-control boundaries; Paperclip is already hosted by its owner; random ngrok remains manual-demo-only | Paperclip owner inputs required before W3 live; production/release-grade promotion remains out of scope |
 | L2 | V0.2 Full UI Redesign | Active | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted |
 | L3 | V0.2 Paperclip Foundation | Accepted mock / live future | Paperclip task handoff has a contract, mock adapter, attribution, and audit trail without uncontrolled side effects | Contract/mock verification passed; live connector remains separately gated |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
@@ -62,7 +62,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 
 ### L1 - V0.2 Access Foundation
 
-**Status:** Active / `V0.2-W1-05` random ngrok manual demo path is accepted; `V0.2-W1-06` Cloudflare Access gate and `V0.2-W1-08` DigitalOcean hosted dev/demo runtime are accepted for dev/demo; `V0.2-W1-07` service-auth topology is planned and needs QA/PM acceptance.
+**Status:** Active / `V0.2-W1-05` random ngrok manual demo path is accepted; `V0.2-W1-06` Cloudflare Access gate and `V0.2-W1-08` DigitalOcean hosted dev/demo runtime are accepted for dev/demo; `V0.2-W1-07` service-auth topology is accepted.
 
 **Goal:**
 Provide a safe dev/demo preview environment before wider teammate access.
@@ -88,7 +88,7 @@ Provide a safe dev/demo preview environment before wider teammate access.
 - Anonymous access is blocked by the active access gate.
 - Approved teammate access works.
 - PM accepted `V0.2-W1-06` stable access-gated preview evidence and `V0.2-W1-08` Task Hub hosted dev/demo runtime evidence as dev/demo complete. `V0.2-W1-05` random ngrok is already accepted for short manual teammate demo only.
-- QA/PM accepts `V0.2-W1-07` service-auth planning before W3 live connector work starts.
+- PM accepts Paperclip owner inputs before W3 live connector work starts.
 
 ### L2 - V0.2 Full UI Redesign
 
@@ -133,7 +133,7 @@ Allow AI-agent output to enter Task Hub through a contract-first review path.
 - No Trello/Calendar side effect before approval.
 
 **Next live step:**
-Live Paperclip connector should be planned only after W1 access boundaries are stable. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. W3 now needs W1-07 QA/PM acceptance plus Paperclip owner confirmation of health/readiness and service-token/signing support before live connector work proceeds.
+Live Paperclip connector should be planned only after W1 access boundaries are stable. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. W1-07 service-auth topology is accepted; W3 now needs Paperclip owner confirmation of health/readiness and service-token/signing support before live connector work proceeds.
 
 ### L4 - V0.2 Integration Release
 
@@ -202,11 +202,11 @@ Focus:
 Current recommended next implementation path:
 
 ```text
-V0.2-W1-07 QA/PM review for Paperclip service-auth/topology
--> route W3 live connector only after Paperclip owner inputs are confirmed
+Paperclip owner runtime/auth input confirmation
+-> route W3 live connector planning
 ```
 
-W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub DigitalOcean + Cloudflare runtime is accepted at `https://taskhub.trisila.online`; the next W1 path is QA/PM review of the service-auth topology with hosted Paperclip.
+W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub DigitalOcean + Cloudflare runtime is accepted at `https://taskhub.trisila.online`; W1-07 service-auth topology is accepted. The next gating path is Paperclip owner input confirmation before W3 live connector planning.
 
 ---
 
@@ -224,4 +224,5 @@ W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is 
 | 2026-05-13 | Recorded L1 runtime checkpoint after Task Hub was configured on DigitalOcean behind Cloudflare Access at `taskhub.trisila.online`; QA acceptance and service-auth planning remain open | Codex PM |
 | 2026-05-13 | Accepted `V0.2-W1-06` and `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete after QA pass; routed L1 next to `V0.2-W1-07` service-auth planning | Codex PM |
 | 2026-05-13 | Planned `V0.2-W1-07` service-auth topology using Paperclip -> Task Hub webhook with Cloudflare Access service token plus signed webhook headers; routed L1 next to QA/PM review | Codex PM / Dev |
+| 2026-05-13 | Accepted `V0.2-W1-07` after PR #11 QA/PM pass and merge at `fa87ac4`; routed L1 next to Paperclip owner input confirmation before W3 live connector planning | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-03` at `ea807fd` and routed L2 to W2-03 integration into `dev` before `V0.2-W2-04` starts | Codex PM |
