@@ -72,6 +72,7 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | C | `V0.2-W3-01` | W3 sequence 1 | Paperclip integration discovery and contract plan |
 | D | `V0.2-W2-06` | `W2f` | Settings, OKR, and Weekly Focus polish |
 | E | `V0.2-W1-08` | `W1.7` | DigitalOcean hosted dev/demo runtime behind Cloudflare for Task Hub |
+| F | `V0.2-W1-07` | `W1.6` | Paperclip service-auth planning for hosted Paperclip -> hosted Task Hub |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -298,6 +299,55 @@ Rules:
 
 ---
 
+## Prompt F - V0.2-W1-07 Paperclip Service-Auth Planning
+
+```text
+Role: PM / Dev
+Task: V0.2-W1-07 - Paperclip Service-Auth Planning for Hosted Task Hub
+Alias: W1.6
+
+Context:
+V0.2-W1-05 passed teammate demo and remains accepted as manual demo-only access. PR #9 merged to `dev` at `91ee327`, and PM accepted `V0.2-W1-06` plus `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. W3 live connector work remains blocked until service-auth topology is planned and accepted.
+
+Read first:
+- CODEX.md
+- CURRENT_SPRINT.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md
+- docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
+- docs/deployment/DEPLOYMENT_SETUP.md
+- docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md
+
+Goals:
+1. Plan machine/API auth between hosted Paperclip and hosted Task Hub.
+2. Keep human Cloudflare Access email login separate from service auth.
+3. Document runtime env var names only; do not record secret values.
+4. Route W3 live connector only after PM accepts the auth topology.
+
+Steps:
+1. Confirm direction: Paperclip calls Task Hub, Task Hub calls/polls Paperclip, or both.
+2. Record hosted Task Hub base URL and hosted Paperclip base URL/health path without secrets.
+3. Choose service-auth pattern: Cloudflare Access service token, signed webhook header, or other PM-approved machine auth.
+4. Separate human Cloudflare Access email login from machine/API auth.
+5. Define W3 live endpoints/client calls requiring service auth without implementing in W1.
+6. Document required runtime env var names only.
+7. Define replay/idempotency requirement handoff for W3.
+8. Record remaining Paperclip owner inputs.
+9. Route next W3 live connector only after PM accepts W1-07 auth topology.
+
+Rules:
+- Use `V0.2-W1-07` as the primary task ID; `W1.6` is an alias only.
+- Do not deploy production.
+- Do not merge to main.
+- Do not commit secrets or generated runtime data.
+- Do not implement W2 UI redesign.
+- Do not implement new W3 Paperclip behavior.
+- Include attribution: Routed by Codex PM.
+```
+
+---
+
 ## Change Attribution
 
 | Date | Change | Updated by |
@@ -310,3 +360,4 @@ Rules:
 | 2026-05-12 | Added Prompt E for DigitalOcean hosted dev/demo behind Cloudflare; historical Paperclip localhost blocker later superseded by hosted Paperclip confirmation | Codex PM |
 | 2026-05-12 | Updated Prompt E after PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare; remaining runtime setup is Task Hub plus service-auth verification | Codex PM |
 | 2026-05-13 | Updated Prompt E from DevOps setup to QA recheck after Task Hub was configured on DigitalOcean behind Cloudflare Access at `taskhub.trisila.online` | Codex PM |
+| 2026-05-13 | Added Prompt F for `V0.2-W1-07` service-auth planning after PM accepted W1-06/W1-08 as dev/demo runtime complete | Codex PM |

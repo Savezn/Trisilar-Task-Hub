@@ -1,7 +1,7 @@
 # Deployment Setup - V0.2-W1-02
 
 **Doc Role:** Deploy-readiness reference for company access
-**Status:** Active - deploy-readiness reference plus DigitalOcean/Cloudflare hosted dev path for Task Hub; runtime configured and QA pending
+**Status:** Active - deploy-readiness reference plus accepted DigitalOcean/Cloudflare hosted dev/demo path for Task Hub; service-auth planning pending
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -140,7 +140,7 @@ Configure these in the platform dashboard only. Do not commit real values.
 
 ## DigitalOcean Droplet Setup
 
-Use this for the W1 hosted dev/demo runtime. PM decision is to host Task Hub on DigitalOcean behind Cloudflare. Task Hub is now configured on the existing Droplet and routed through Cloudflare Access at `https://taskhub.trisila.online`; QA acceptance and service-auth planning remain open. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner and should be recorded as a service-auth dependency.
+Use this for the W1 hosted dev/demo runtime. PM decision is to host Task Hub on DigitalOcean behind Cloudflare. Task Hub is now configured on the existing Droplet and routed through Cloudflare Access at `https://taskhub.trisila.online`; QA passed and PM accepted `V0.2-W1-06`/`V0.2-W1-08` as dev/demo runtime complete after PR #9 merged to `dev` at `91ee327`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner and should be recorded as a service-auth dependency.
 
 | Setting | Value |
 |---|---|
