@@ -140,7 +140,7 @@ Paperclip note:
 - Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
 - First live direction is Paperclip calls Task Hub by webhook.
 - Configure hosted Paperclip to call the stable Task Hub hostname with Cloudflare Access service-token headers plus signed webhook headers.
-- Do not mark W3 live integration ready until the Paperclip owner confirms remaining inputs.
+- Do not mark W3 live integration ready until the Paperclip server is online and the Paperclip owner confirms remaining inputs.
 
 ---
 
@@ -157,7 +157,7 @@ This is the `V0.2-W1-07` topology for future W3 live connector work. It does not
 | Task Hub base URL | `https://taskhub.trisila.online` |
 | Paperclip base URL | `https://paperclip.trisila.online` |
 | Task Hub health | `/healthz` |
-| Paperclip health | Owner must confirm exact health/readiness path |
+| Paperclip health | Runtime verification held while server is offline; owner must confirm exact health/readiness path after it is online |
 | Future W3 route | `POST /api/integrations/paperclip/webhook` |
 
 Task Hub runtime env var names:

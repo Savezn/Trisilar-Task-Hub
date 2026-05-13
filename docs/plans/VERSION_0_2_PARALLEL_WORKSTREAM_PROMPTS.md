@@ -74,6 +74,7 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | E | `V0.2-W1-08` | `W1.7` | DigitalOcean hosted dev/demo runtime behind Cloudflare for Task Hub |
 | F | `V0.2-W1-07` | `W1.6` | Paperclip service-auth planning for hosted Paperclip -> hosted Task Hub |
 | G | `V0.2-W1-07` | `W1.6` | QA review for Paperclip service-auth planning |
+| H | `V0.2-W3-02` gate | Paperclip owner input confirmation | Resume only after Paperclip server is online |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -392,14 +393,14 @@ Rules:
 
 ---
 
-## Prompt H - Paperclip Owner Inputs for W3 Live Connector
+## Prompt H - Paperclip Owner Inputs for W3 Live Connector After Server Is Online
 
 ```text
 Role: PM / Paperclip Owner
-Task: Confirm Paperclip Inputs for W3 Live Connector
+Task: Confirm Paperclip Inputs for W3 Live Connector After Server Is Online
 
 Context:
-V0.2-W1-05 remains accepted as manual demo-only access. PR #9 merged to `dev` at `91ee327`, and PM accepted `V0.2-W1-06` plus `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. PR #11 merged to `dev` at `fa87ac4`, and PM accepted `V0.2-W1-07` service-auth topology. W3 live connector work remains blocked until Paperclip owner inputs are confirmed.
+V0.2-W1-05 remains accepted as manual demo-only access. PR #9 merged to `dev` at `91ee327`, and PM accepted `V0.2-W1-06` plus `V0.2-W1-08` as Cloudflare-protected DigitalOcean dev/demo runtime complete for Task Hub. PR #11 merged to `dev` at `fa87ac4`, and PM accepted `V0.2-W1-07` service-auth topology. This prompt is held while the Paperclip server is offline. W3 live connector work remains blocked until Paperclip server is online and Paperclip owner inputs are confirmed.
 
 Read first:
 - CODEX.md
@@ -409,13 +410,14 @@ Read first:
 - docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
 
 Steps:
-1. Confirm exact Paperclip health/readiness path for `https://paperclip.trisila.online`.
-2. Confirm Paperclip runtime can send Cloudflare Access service-token headers.
-3. Confirm Paperclip runtime can compute HMAC-SHA256 signatures over the raw request body or agreed canonical payload.
-4. Confirm Paperclip environment/source identifiers for `PAPERCLIP_ALLOWED_SOURCE_ID` and `PAPERCLIP_ALLOWED_ENVIRONMENT`.
-5. Confirm which Paperclip run/workspace/thread identifiers map to W3 contract fields.
-6. Do not send token or signing-secret values in chat or docs.
-7. After inputs are confirmed, route W3 live connector planning.
+1. Confirm the Paperclip server is online.
+2. Confirm exact Paperclip health/readiness path for `https://paperclip.trisila.online`.
+3. Confirm Paperclip runtime can send Cloudflare Access service-token headers.
+4. Confirm Paperclip runtime can compute HMAC-SHA256 signatures over the raw request body or agreed canonical payload.
+5. Confirm Paperclip environment/source identifiers for `PAPERCLIP_ALLOWED_SOURCE_ID` and `PAPERCLIP_ALLOWED_ENVIRONMENT`.
+6. Confirm which Paperclip run/workspace/thread identifiers map to W3 contract fields.
+7. Do not send token or signing-secret values in chat or docs.
+8. After inputs are confirmed, route W3 live connector planning.
 
 Rules:
 - Do not deploy production.
@@ -443,3 +445,4 @@ Rules:
 | 2026-05-13 | Added Prompt F for `V0.2-W1-07` service-auth planning after PM accepted W1-06/W1-08 as dev/demo runtime complete | Codex PM |
 | 2026-05-13 | Added Prompt G for QA/PM review of W1-07 service-auth topology before W3 live connector planning | Codex PM / Dev |
 | 2026-05-13 | Added Prompt H after PR #11 merge and PM acceptance of `V0.2-W1-07`; W3 live connector remains blocked until Paperclip owner inputs are confirmed | Codex PM |
+| 2026-05-13 | Marked Prompt H as held until the Paperclip server is online; active non-blocked route remains `V0.2-W2-06` | Codex PM |
