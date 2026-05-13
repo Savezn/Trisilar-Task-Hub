@@ -2,7 +2,7 @@
 
 **Doc Role:** Append-only QA and completion history
 **Status:** Active log
-**Last Updated:** 2026-05-09 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 
 This file preserves historical QA rounds, completed sprint work, bug fixes, and deferred items moved from `CURRENT_SPRINT.md` to keep the active sprint file short.
 
@@ -114,6 +114,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-09 | R40 | Pass | `V0.2-W2-03` Tasks Inbox + Cross-board Rows QA Recheck pass at `ea807fd`; `check:all`, Paperclip contract/mock verification, Tasks populated/search/filter/label/owner/group/export/open-edit/inline rename/mark done workflows, mobile Tasks overflow 0, unclipped rows, mobile nav, Today smoke, Review drawer smoke, and console checks passed. Controlled API responses were used for populated visual/workflow QA to avoid local Trello credential dependency; Reviewed by Codex QA Recheck; Accepted by Codex PM |
 | 2026-05-09 | R41 | Pass | `V0.2-W2-04` Boards Monitor + Team Board Views integration QA pass on `dev@0b77aed`; accepted Boards redesign/drawer regression plus Today, Review, Tasks, and W3 Paperclip contract/mock regression remained stable; Reviewed by Codex Integration QA; Accepted by Codex PM |
 | 2026-05-09 | R42 | Pass | `V0.2-W2-05` Calendar + Planner integration QA pass on `dev@3fca059`; `check:all`, Paperclip contract/mock verification, Calendar create/edit/delete controlled API paths, Planner Google Tasks add/complete, Trello due list rendering, disconnected states, Today/Review/Tasks/Boards regression smoke, mobile overflow 0 for Calendar, Planner, Today, Review, Tasks, and Boards, and console/page error checks passed. Controlled API responses were used for populated Calendar/Planner workflow QA to avoid local credential sensitivity; Reviewed by Codex Integration QA; Accepted by Codex PM |
+| 2026-05-13 | R43 | PM checkpoint / QA pending | `V0.2-W1-06`/`V0.2-W1-08` runtime checkpoint: Task Hub runs on DigitalOcean from `dev@b9961fa`, `taskhub-dashboard.service` is active/enabled, private bind is `127.0.0.1:3000`, raw public `157.230.251.209:3000` is unreachable, anonymous `https://taskhub.trisila.online/healthz` returns Cloudflare Access `302`, local `/healthz`, `/api/boards`, and `/api/all-cards` return `200`, and `GOOGLE_REDIRECT_URI` is `https://taskhub.trisila.online/auth/callback`. This is not a QA pass; approved-user browser access, app load after Trello env setup, and `APP_DATA_DIR` restart persistence remain routed to QA. Reviewed by Codex PM |
 
 ---
 

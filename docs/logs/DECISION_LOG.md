@@ -2,7 +2,7 @@
 
 **Doc Role:** Append-only PM decision log
 **Status:** Active log
-**Last Updated:** 2026-05-12 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 
 Use this file for major PM decisions that affect planning, workflow, branch strategy, document structure, or multi-agent coordination.
 
@@ -28,6 +28,7 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 | 2026-05-12 | Record Paperclip localhost on Noffy's machine as a W3 live-connector runtime blocker | Paperclip currently runs on localhost on another teammate's machine. This was recorded as the immediate blocker, then superseded by the PM decision to deploy Paperclip to DigitalOcean for the W3 live target. | Codex PM |
 | 2026-05-12 | Deploy Paperclip to DigitalOcean for the W3 live target | PM selected DigitalOcean deployment for Paperclip instead of relying on Noffy's localhost or a teammate-machine tunnel. W3 live connector work remains blocked until hosted Task Hub, hosted Paperclip, Cloudflare routes, and service-auth are verified. | Codex PM |
 | 2026-05-12 | Mark Paperclip hosted and narrow remaining W1 runtime work to Task Hub | PM confirmed the Paperclip owner has deployed Paperclip to DigitalOcean and connected it through Cloudflare. W1 no longer needs to plan Paperclip migration; the next runtime work is Task Hub on DigitalOcean behind Cloudflare, then W1.6 service-auth verification between hosted Paperclip and hosted Task Hub. | Codex PM |
+| 2026-05-13 | Record Task Hub DigitalOcean/Cloudflare runtime configured and route QA recheck | Task Hub now runs from `dev@b9961fa` on the existing DigitalOcean Droplet with private `127.0.0.1:3000` bind, stable `APP_DATA_DIR`, Cloudflare hostname `taskhub.trisila.online`, Cloudflare Access anonymous block, and Trello env configured server-side only. PM does not mark W1 complete until QA accepts W1-06/W1-08 and W1-07 service-auth planning is completed. | Codex PM |
 | 2026-05-08 | Create project-wide ladder in `docs/plans/PROJECT_LADDER.md` | Separates release sequencing from `CURRENT_SPRINT.md` and keeps `TODO.md` as an index while clarifying V0.2 cannot release until access, full UI, and Paperclip gates are accepted | Codex PM |
 | 2026-05-08 | Lead W2 phase planning with canonical IDs `V0.2-W2-01`-`V0.2-W2-06`; keep `W2a`-`W2f` as aliases only | Aligns W2 phase structure with the latest dev naming policy so Dev, QA, PM prompts, commits, and PR notes use stable canonical task IDs | Codex PM |
 | 2026-05-08 | Accept `V0.2-W2-02` Review Queue redesign at `d33d8f7` | QA Recheck passed drawer click handling regression, Review create/edit/approve/reject/bulk workflows, processed read-only rows, mobile overflow 0, Today controlled smoke, and W3 Paperclip contract/mock regression; local Trello 401 was credential/env noise | Codex PM |
