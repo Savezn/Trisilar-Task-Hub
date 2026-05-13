@@ -1,7 +1,7 @@
 # Dev Environment Deployment - V0.2-W1-03 / V0.2-W1-05
 
 **Doc Role:** Dev deployment config and no-cost preview runtime handoff
-**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; DigitalOcean hosted dev/demo runtime for Task Hub is configured and QA pending
+**Status:** `V0.2-W1-05` accepted as random ngrok URL manual demo only; DigitalOcean hosted dev/demo runtime for Task Hub is QA Pass / PM Accepted; service-auth planning pending
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -14,7 +14,7 @@
 
 This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
-Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo fallback only. Task Hub is now configured as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access at `https://taskhub.trisila.online`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner; W3 live connector work still needs hosted service-auth verification.
+Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo fallback only. Task Hub is now accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access at `https://taskhub.trisila.online`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner; W3 live connector work still needs hosted service-auth verification.
 
 ---
 
@@ -237,18 +237,22 @@ Observed local results:
 
 ---
 
-## Hosted Verification To Complete
+## Hosted Verification Status
 
-After Trisilar configures the platform account, DNS, secrets, and Cloudflare Access:
+Task Hub hosted dev/demo runtime verification is accepted for `V0.2-W1-06` and `V0.2-W1-08` after PR #9 merged to `dev` at `91ee327`.
 
-- DigitalOcean Task Hub runtime from branch `dev` succeeds, or PM explicitly reselects Render/Railway.
-- Hosted Paperclip URL/health evidence is recorded from the Paperclip owner.
-- `GET /healthz` returns `200` through the hosted service.
+Accepted evidence:
+
+- DigitalOcean Task Hub runtime from branch `dev` succeeds.
+- `GET /healthz` returns `200`.
 - Anonymous access to the dev URL is blocked by Cloudflare Access.
-- Approved teammate access passes Cloudflare Access.
-- The app loads without destructive writes.
-- Runtime JSON files are written under the configured persistent disk or volume.
-- Hosted Paperclip dependency and service-auth requirements are recorded.
+- Approved teammate access passes Cloudflare Access and loads the app.
+- Runtime JSON files persist under the configured `APP_DATA_DIR`.
+- No production deploy, main merge, W2 UI redesign, or W3 live Paperclip behavior was introduced.
+
+Still pending:
+
+- Hosted Paperclip URL/health evidence and service-auth requirements must be recorded in `V0.2-W1-07`.
 
 ---
 
@@ -332,7 +336,7 @@ Historical conclusion:
 
 ## Current Runtime Blockers
 
-The random ngrok demo path remains available only as a short-lived fallback. The stable Cloudflare/DigitalOcean path is now runtime-configured and needs QA acceptance plus service-auth planning.
+The random ngrok demo path remains available only as a short-lived fallback. The stable Cloudflare/DigitalOcean path is now QA Pass / PM Accepted for dev/demo and still needs service-auth planning.
 
 2026-05-13 PM runtime checkpoint:
 
@@ -349,8 +353,6 @@ The random ngrok demo path remains available only as a short-lived fallback. The
 
 Remaining blockers:
 
-- QA recheck approved-user Cloudflare Access path and non-destructive browser app loading after Trello env setup.
-- QA verify `APP_DATA_DIR` persistence after service restart.
 - Record hosted Paperclip health/readiness evidence from the Paperclip owner.
 - Complete `V0.2-W1-07` service-auth planning for hosted Paperclip -> hosted Task Hub before W3 live connector work.
 
