@@ -156,6 +156,136 @@ Recommended Paperclip env var names:
 
 ---
 
+## V0.2-W3-02 Live Webhook Plan While Paperclip Is Offline
+
+Status: plan prepared; route implementation remains blocked until the Paperclip server is online and the Paperclip owner confirms runtime inputs.
+
+This section converts the accepted `V0.2-W1-07` topology into the Task Hub inbound webhook implementation plan without adding live behavior. The live route must not be implemented, enabled, or deployed from this plan alone.
+
+### Task Hub Inbound Webhook Contract
+
+Planned endpoint:
+
+```text
+POST /api/integrations/paperclip/webhook
+```
+
+Inbound requirements:
+
+- Accept only `Content-Type: application/json` requests whose raw body verifies before Task Hub trusts parsed JSON.
+- Reuse the accepted `paperclip.taskhub.v0.2` payload contract and existing Paperclip normalizer/audit path.
+- Require `requestId` in both `X-TaskHub-Request-Id` and the JSON body, and require the values to match exactly.
+- Require `source.system=paperclip`.
+- Require `source.environment` to match `PAPERCLIP_ALLOWED_ENVIRONMENT`.
+- Require `X-Paperclip-Source` to match `PAPERCLIP_ALLOWED_SOURCE_ID` or the owner-approved source identifier.
+- Require `X-Paperclip-Agent-Run-Id` to match `agent.runId` when Paperclip confirms it can provide a stable run id.
+- Create only Review Queue sessions. Trello, Google Calendar, and Google Tasks side effects stay human-gated behind existing approve actions.
+- Keep the existing mock route unchanged for verification: `POST /api/integrations/paperclip/mock/review-session`.
+
+The route must additionally require the web-managed Paperclip connection gate:
+
+- Runtime Paperclip connection state must be enabled/connected.
+- `PAPERCLIP_WEBHOOK_ENABLED` must be truthy.
+- The live signing secret must come from runtime configuration/secret management, not hardcoded source files.
+- Disconnect in Settings must make the future live route reject new requests and must clear/disable the live signing secret path.
+
+### Required Env Vars and Validation Rules
+
+| Env var | Required when live enabled | Validation rule | Notes |
+|---|---:|---|---|
+| `PAPERCLIP_WEBHOOK_ENABLED` | Yes | Boolean-like `true`/`false`; default `false` | Live route rejects unless true and Settings connection state is enabled |
+| `PAPERCLIP_WEBHOOK_SIGNING_SECRET` | Yes | Secret value present in runtime secret store; minimum 32 characters for live | Do not commit, log, or return to frontend/API responses |
+| `PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS` | No | Integer, default `300`, allowed `60`-`900` | Reject stale or future timestamps outside skew |
+| `PAPERCLIP_ALLOWED_SOURCE_ID` | Yes | Non-empty exact string match | Owner must confirm first live source id |
+| `PAPERCLIP_ALLOWED_ENVIRONMENT` | Yes | Non-empty exact string match such as `dev` or `live` | Must match payload `source.environment` |
+| `PAPERCLIP_BASE_URL` | No | Valid absolute `https://` URL if set | Diagnostics only; first live connector does not poll Paperclip |
+| `PAPERCLIP_HEALTH_PATH` | Blocked input | Must start with `/` after owner confirms | Health/readiness path remains blocked while Paperclip is offline |
+| `CLOUDFLARE_ACCESS_AUD` | Conditional | Non-empty exact Cloudflare Access audience if app-level JWT validation is added | Edge service-token validation remains the W1-07 requirement |
+| `CLOUDFLARE_ACCESS_TEAM_DOMAIN` | Conditional | Cloudflare team domain if app-level JWT validation is added | Do not treat human email Access login as machine auth |
+
+Startup/config validation for the future route should fail closed:
+
+- If live is disabled, missing live env vars must not break the existing app or mock verification.
+- If live is enabled and required env vars are missing or invalid, the live route must reject requests and expose a safe status message without leaking secret values.
+- `/api/config` and Settings status responses must never return secret values.
+
+### Cloudflare Access Service-Token Expectations
+
+Paperclip-to-Task-Hub machine traffic must pass Cloudflare Access before reaching Task Hub:
+
+- Paperclip sends `CF-Access-Client-Id` and `CF-Access-Client-Secret` headers configured out of band in the Paperclip runtime.
+- Cloudflare validates those service-token headers at the edge for `https://taskhub.trisila.online`.
+- Missing or invalid service-token headers should be blocked by Cloudflare before the request reaches Express.
+- Task Hub must never log service-token values.
+- If Cloudflare forwards an Access JWT and W3 later adds app-level verification, Task Hub may validate `CLOUDFLARE_ACCESS_AUD` and `CLOUDFLARE_ACCESS_TEAM_DOMAIN`; this is hardening, not a replacement for the edge policy.
+- Human Cloudflare Access email login remains only for the Task Hub web UI and must not be required for Paperclip/API calls.
+
+### HMAC Canonical Signing Format
+
+Paperclip must sign the exact raw request body bytes. Task Hub must verify the signature before trusting parsed JSON.
+
+Required request headers:
+
+- `X-TaskHub-Request-Id`
+- `X-TaskHub-Timestamp`
+- `X-TaskHub-Signature`
+- `X-Paperclip-Source`
+- `X-Paperclip-Agent-Run-Id`
+
+Canonical values:
+
+- `X-TaskHub-Timestamp`: Unix seconds as a base-10 string.
+- `bodyHash`: lowercase hex SHA-256 of the raw request body bytes.
+- `signature`: lowercase hex HMAC-SHA256 using `PAPERCLIP_WEBHOOK_SIGNING_SECRET`.
+
+Canonical string to sign:
+
+```text
+v1
+<timestamp>
+<requestId>
+<paperclipSource>
+<bodyHash>
+```
+
+Signature header format:
+
+```text
+X-TaskHub-Signature: v1=<hexHmacSha256(canonicalString)>
+```
+
+Verification rules:
+
+- Reject missing, duplicate, malformed, or unsupported-version signature headers.
+- Reject timestamps outside `PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS`.
+- Reject when header `requestId` does not match body `requestId`.
+- Reject when source/environment headers and payload fields do not match configured allowlist values.
+- Compare HMAC values with timing-safe equality.
+- Persist the accepted `bodyHash`, `requestId`, source id, environment, Paperclip run id, and resulting Review Queue session id for audit.
+
+### Idempotency and Replay Behavior
+
+- `requestId` is the idempotency key.
+- First valid request for a `requestId` creates one Review Queue session and records `requestId`, `bodyHash`, source id, environment, Paperclip run id, and review session id.
+- Re-sending the same `requestId` with the same `bodyHash` must not create a duplicate session. The live route should return the existing review session id with an explicit duplicate/idempotent response so Paperclip retries do not create extra work.
+- Re-sending the same `requestId` with a different `bodyHash` must be rejected, audited as a conflict, and must not create or mutate a review session.
+- Requests outside timestamp skew are rejected even if the `requestId` is new.
+- Task Hub must keep Review Queue approval as the only path to Trello/Google side effects.
+
+### Blocked Inputs Before Route Implementation
+
+Do not implement the live route until PM/owner records these inputs:
+
+- Paperclip server is online and reachable at the Cloudflare-hosted base URL.
+- Exact Paperclip health/readiness path for diagnostics.
+- Confirmation that Paperclip can send Cloudflare Access service-token headers.
+- Confirmation that Paperclip can compute HMAC-SHA256 over the agreed raw-body canonical format above, or a recorded replacement canonical format.
+- Allowed source id and environment id values for the first live connector.
+- Stable mapping for Paperclip workspace/thread/run/agent/task ids to Task Hub audit fields.
+- One representative live payload sample from Paperclip for mapping review.
+
+---
+
 ## Inbound Contract Draft
 
 Paperclip should submit one work packet per agent run or coordination event.
@@ -343,14 +473,14 @@ npm.cmd run verify:paperclip-mock
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
-| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after Paperclip server is online and owner inputs are confirmed |
+| `V0.2-W3-02` | W3 sequence 2 | Plan Ready / Implementation Blocked | Live webhook contract/env/auth/signing/replay plan prepared; route implementation waits for Paperclip server online and owner inputs |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature/replay hardening after the first live webhook is verified |
 
 Details:
 
 - `V0.2-W3-01` completed pure validator/normalizer logic, fixture files, unit-level validation checks, `POST /api/integrations/paperclip/mock/review-session`, backward-compatible review-store attribution fields, idempotency lookup by `requestId`, and `scripts/verify-paperclip-mock.js`.
 - `V0.2-W3-01` introduced no live Paperclip external calls.
-- `V0.2-W3-02` should add authenticated `POST /api/integrations/paperclip/webhook`, reuse the same normalizer and audit path, and stay blocked until the Paperclip server is online, the Paperclip health/readiness path is confirmed, and Paperclip owner confirms service-token plus webhook-signing support.
+- `V0.2-W3-02` now has a docs-only live webhook plan for inbound contract, env validation, Cloudflare Access service-token expectations, HMAC signing, and replay/idempotency. It must stay implementation-blocked until the Paperclip server is online, the Paperclip health/readiness path is confirmed, and Paperclip owner confirms service-token plus webhook-signing support.
 - Web-managed Paperclip connection settings were implemented as a prerequisite gate and must remain the source of runtime enable/disable state and secret rotation; do not hardcode live Paperclip values.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
@@ -396,4 +526,5 @@ Details:
 | 2026-05-12 | Updated W3 gate after PM confirmed Paperclip is already hosted on DigitalOcean behind Cloudflare; live work now waits on Task Hub hosting plus service-auth verification | Codex PM |
 | 2026-05-13 | Recorded W1-07 service-auth topology for W3: Paperclip calls Task Hub webhook through Cloudflare Access service token plus signed webhook headers; W3 live work remains blocked until QA/PM and Paperclip owner inputs | Codex PM / Dev |
 | 2026-05-13 | Accepted W1-07 service-auth topology after PR #11 QA/PM pass and merge at `fa87ac4`; W3 live work now waits on Paperclip owner input confirmation | Codex PM |
-| 2026-05-13 | Held W3 live connector planning while the Paperclip server is offline; non-blocked V0.2 work is routed back to W2-06 | Codex PM |
+| 2026-05-13 | Held W3 live connector implementation while the Paperclip server is offline; non-blocked V0.2 work is routed back to W2-06 | Codex PM |
+| 2026-05-13 | Prepared `V0.2-W3-02` live webhook plan while Paperclip is offline: inbound contract, env validation, Cloudflare Access service-token expectations, HMAC canonical format, idempotency/replay behavior, and blocked owner inputs; no live route implemented | Codex PM / Dev |
