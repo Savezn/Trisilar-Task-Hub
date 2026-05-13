@@ -2,6 +2,7 @@ const assert = require("assert");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const vm = require("vm");
 const { spawn } = require("child_process");
 
 const {
@@ -64,6 +65,24 @@ function pass(label) {
   console.log(`PASS ${label}`);
 }
 
+function loadDocsPageHelpers() {
+  const docsSource = fs.readFileSync(path.join(__dirname, "..", "public", "js", "pages", "docs.js"), "utf8");
+  const context = {
+    S: {},
+    api: {},
+    document: {},
+    console,
+    formatThaiDateTime: value => value,
+    icon: name => `[${name}]`,
+    esc: value => String(value ?? ""),
+    navigateTo: () => {},
+    $: () => null,
+  };
+  vm.createContext(context);
+  vm.runInContext(docsSource, context, { filename: "public/js/pages/docs.js" });
+  return context;
+}
+
 async function main() {
   const fixture = readFixture();
   const normalized = normalizePaperclipDocsPayload(fixture);
@@ -120,6 +139,49 @@ async function main() {
     const reviewFixture = JSON.parse(fs.readFileSync(REVIEW_FIXTURE, "utf8"));
     const created = await postJson(`${baseUrl}/api/integrations/paperclip/mock/review-session`, reviewFixture);
     assert.strictEqual(created.status, 201);
+    const sessionsRes = await fetch(`${baseUrl}/api/reviews`);
+    assert.strictEqual(sessionsRes.status, 200);
+    const sessions = await sessionsRes.json();
+
+    const docsHelpers = loadDocsPageHelpers();
+    assert.strictEqual(typeof docsHelpers.applyDocsFiltersAndSort, "function");
+    assert.strictEqual(typeof docsHelpers.buildDocsRelatedTaskStatus, "function");
+    const marketingSearch = docsHelpers.applyDocsFiltersAndSort(body.documents, {
+      query: "campaign brief",
+      status: "ready",
+      type: "meeting_summary",
+      linkedState: "linked",
+      sort: "title_asc",
+    });
+    assert.strictEqual(marketingSearch.length, 1);
+    assert.strictEqual(marketingSearch[0].artifactId, "doc_weekly_marketing_sync");
+    const draftSearch = docsHelpers.applyDocsFiltersAndSort(body.documents, {
+      query: "research child",
+      status: "draft",
+      type: "agent_notes",
+      linkedState: "linked",
+      sort: "generated_desc",
+    });
+    assert.strictEqual(draftSearch.length, 1);
+    assert.strictEqual(draftSearch[0].agent.parentRunId, "run_docs_20260513_001");
+    const sortedByAgent = docsHelpers.applyDocsFiltersAndSort(body.documents, {
+      query: "",
+      status: "all",
+      type: "all",
+      linkedState: "all",
+      sort: "agent_asc",
+    });
+    assert.deepStrictEqual(sortedByAgent.map(doc => doc.agent.agentName), [
+      "Paperclip Docs Agent",
+      "Paperclip Research Child Agent",
+    ]);
+    const relatedStatus = docsHelpers.buildDocsRelatedTaskStatus(body.documents[0], sessions);
+    assert.strictEqual(relatedStatus.length, 1);
+    assert.strictEqual(relatedStatus[0].status, "pending");
+    assert.strictEqual(relatedStatus[0].sessionTitle, "Paperclip handoff - Weekly Marketing Sync");
+    assert.strictEqual(relatedStatus[0].externalTaskId, "pc_task_001");
+    pass("Docs helpers filter, sort, and resolve related Review Queue task status");
+
     const linkedDoc = body.documents.find(doc => (doc.linkedTasks || []).some(link =>
       link.requestId === created.json.requestId &&
       link.externalTaskId === created.json.tasks[0].externalTaskId
@@ -145,6 +207,11 @@ async function main() {
     const docsPage = fs.readFileSync(path.join(__dirname, "..", "public", "js", "pages", "docs.js"), "utf8");
     assert(docsPage.includes("renderDocsLinkedTasks"));
     assert(docsPage.includes("openLinkedReviewTask"));
+    assert(docsPage.includes("docs-search-input"));
+    assert(docsPage.includes("docs-filter-status"));
+    assert(docsPage.includes("docs-sort-select"));
+    assert(docsPage.includes("renderDocsMetadataPanel"));
+    assert(docsPage.includes("renderDocsRelatedTaskStatus"));
     pass("Docs page renders linked task affordances");
 
     const reviewPage = fs.readFileSync(path.join(__dirname, "..", "public", "js", "pages", "review.js"), "utf8");
