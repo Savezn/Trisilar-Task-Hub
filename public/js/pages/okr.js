@@ -1,80 +1,86 @@
 // Implemented by: Codex Dev (2026-05-07)
+// V0.2-W2-06 OKR polish implemented by Codex Dev.
 
-// ── OKR Progress View (P7-3) ──────────────────────────────────────────────────
+// OKR Progress View (P7-3)
 async function showOKRPage() {
   S.mode = "okr";
   S.currentBoardId = null;
   S.currentGroupId = null;
   $("board-title").textContent = "OKR Progress";
-  $("board-subtitle").textContent = "";
+  $("board-subtitle").textContent = "Portfolio progress";
   $("add-list-btn").classList.add("hidden");
 
   const content = $("board-content");
-  content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading OKR data…</div>';
+  content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading OKR data...</div>';
   try {
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
     renderOKRPage(getAllowedCards(), S.boards || []);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
+    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">${esc(e.message)}</p></div>`;
   }
 }
 
 function renderOKRPage(allCards, boards) {
   const content = $("board-content");
 
-  // Detect OKR board(s): name contains "OKR" or "Objective" (case-insensitive)
   const OKR_RE = /okr|objective/i;
   const okrBoards = boards.filter(b => OKR_RE.test(b.name));
 
   if (!okrBoards.length) {
     content.innerHTML = `
-      <div class="empty-state okr-setup-guide">
-        <div class="empty-icon">🎯</div>
-        <h3>ยังไม่มี OKR Board</h3>
-        <p>ทำตาม 4 ขั้นตอนนี้เพื่อเริ่มใช้ OKR ใน Trisilar Task Hub</p>
-        <div class="okr-guide-steps">
-
-          <details class="okr-guide-step" open>
-            <summary><span class="okr-step-num">1</span>สร้าง Trello Board ชื่อ "OKR Board"</summary>
-            <div class="okr-step-body">
-              <p>สร้าง board ใหม่ใน Trello ตั้งชื่อให้มีคำว่า <code>OKR</code> หรือ <code>Objective</code> เพื่อให้ระบบตรวจพบอัตโนมัติ</p>
-              <a href="https://trello.com" target="_blank" rel="noopener" class="okr-guide-link">เปิด Trello ↗</a>
-            </div>
-          </details>
-
-          <details class="okr-guide-step">
-            <summary><span class="okr-step-num">2</span>สร้าง Lists สำหรับแต่ละ Objective</summary>
-            <div class="okr-step-body">
-              <p>ใน OKR Board สร้าง lists ตั้งชื่อเป็นชื่อ Objective เช่น <code>Objective 1 — เพิ่มรายได้</code>, <code>Objective 2 — ลด cost</code> แต่ละ list แทน 1 Objective</p>
-            </div>
-          </details>
-
-          <details class="okr-guide-step">
-            <summary><span class="okr-step-num">3</span>สร้าง Cards สำหรับ Key Results</summary>
-            <div class="okr-step-body">
-              <p>ใต้แต่ละ Objective list สร้าง cards ชื่อ <code>KR1.1</code>, <code>KR1.2</code> พร้อมกำหนด due date และเพิ่ม checklist เพื่อ track progress</p>
-            </div>
-          </details>
-
-          <details class="okr-guide-step">
-            <summary><span class="okr-step-num">4</span>Link กับ Project Boards ด้วย Labels</summary>
-            <div class="okr-step-body">
-              <p>ใส่ label ชื่อเดียวกันกับ project boards บน KR cards เพื่อให้ Trisilar เชื่อม KR กับ tasks ที่เกี่ยวข้อง</p>
-              <a href="https://trello.com" target="_blank" rel="noopener" class="okr-guide-link">ไปที่ Trello ↗</a>
-            </div>
-          </details>
-
+      <div class="okr-page okr-empty-page">
+        <section class="okr-command-panel">
+          <div>
+            <div class="okr-kicker">Portfolio layer</div>
+            <h2 class="okr-command-title">OKR Progress</h2>
+            <p class="okr-command-subtitle">Create a Trello board with OKR or Objective in the name to activate this view.</p>
+          </div>
+          <div class="okr-command-stats">
+            <div class="okr-summary-card"><span class="okr-summary-num">0</span><span class="okr-summary-label">Objectives</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num">${boards.length}</span><span class="okr-summary-label">Boards scanned</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num">Setup</span><span class="okr-summary-label">Status</span></div>
+          </div>
+        </section>
+        <div class="empty-state okr-setup-guide">
+          <div class="empty-icon">${icon("target")}</div>
+          <h3>No OKR board found</h3>
+          <p>Follow these steps to start using OKR progress inside Trisilar Task Hub.</p>
+          <div class="okr-guide-steps">
+            <details class="okr-guide-step" open>
+              <summary><span class="okr-step-num">1</span>Create a Trello board named "OKR Board"</summary>
+              <div class="okr-step-body">
+                <p>Create a board whose name contains <code>OKR</code> or <code>Objective</code> so the app can detect it automatically.</p>
+                <a href="https://trello.com" target="_blank" rel="noopener" class="okr-guide-link">Open Trello</a>
+              </div>
+            </details>
+            <details class="okr-guide-step">
+              <summary><span class="okr-step-num">2</span>Create lists for each Objective</summary>
+              <div class="okr-step-body">
+                <p>Each OKR board list is treated as one Objective, for example <code>Objective 1 - Increase revenue</code>.</p>
+              </div>
+            </details>
+            <details class="okr-guide-step">
+              <summary><span class="okr-step-num">3</span>Create Key Result cards</summary>
+              <div class="okr-step-body">
+                <p>Add cards such as <code>KR1.1</code> and use checklists or due-complete status to track progress.</p>
+              </div>
+            </details>
+            <details class="okr-guide-step">
+              <summary><span class="okr-step-num">4</span>Link project work with labels</summary>
+              <div class="okr-step-body">
+                <p>Use matching label names on KR cards and project cards so this page can show linked work.</p>
+                <a href="https://trello.com" target="_blank" rel="noopener" class="okr-guide-link">Go to Trello</a>
+              </div>
+            </details>
+          </div>
+          <button class="btn btn-primary btn-sm okr-refresh-btn" onclick="showOKRPage()">Refresh OKR scan</button>
         </div>
-        <button class="btn btn-primary btn-sm okr-refresh-btn" onclick="showOKRPage()">↻ Refresh — ตรวจสอบอีกครั้ง</button>
       </div>`;
     return;
   }
 
-  // Collect OKR cards (cards on OKR boards)
   const okrBoardIds = new Set(okrBoards.map(b => b.id));
   const okrCards = allCards.filter(c => okrBoardIds.has(c.boardId));
-
-  // Non-OKR cards (project cards) — used for linking via label name matching
   const projectCards = allCards.filter(c => !okrBoardIds.has(c.boardId));
 
   let labelFilter = "";
@@ -99,14 +105,12 @@ function renderOKRPage(allCards, boards) {
     });
   });
 
-  // Group OKR cards by listName (each list = one Objective group)
-  const objectiveMap = new Map(); // listName → cards[]
+  const objectiveMap = new Map();
   okrCards.forEach(c => {
     if (!objectiveMap.has(c.listName)) objectiveMap.set(c.listName, []);
     objectiveMap.get(c.listName).push(c);
   });
 
-  // Helper: compute progress % for a KR card
   function krProgress(card) {
     const { done, total } = card.checklistProgress || {};
     if (total > 0) return Math.round((done / total) * 100);
@@ -126,14 +130,14 @@ function renderOKRPage(allCards, boards) {
     const labelChips = allLabels.map(l => {
       const active = labelFilter === l.name;
       const color = labelColor(l.color);
-      return `<button class="filter-chip okr-label-filter${active ? " active" : ""}" data-label="${esc(l.name)}" style="${active ? `background:${color};border-color:${color};color:#fff` : ""}">${esc(l.name)}</button>`;
+      return `<button type="button" class="filter-chip okr-label-filter${active ? " active" : ""}" data-label="${esc(l.name)}" style="${active ? `background:${color};border-color:${color};color:#fff` : ""}">${esc(l.name)}</button>`;
     }).join("");
     const memberChips = allMembers.map(m =>
-      `<button class="filter-chip okr-member-filter${memberFilter === m.id ? " active" : ""}" data-member-id="${esc(m.id)}">${esc(m.fullName || m.username || m.id)}</button>`
+      `<button type="button" class="filter-chip okr-member-filter${memberFilter === m.id ? " active" : ""}" data-member-id="${esc(m.id)}">${esc(m.fullName || m.username || m.id)}</button>`
     ).join("");
     if (!labelChips && !memberChips) return "";
     return `
-      <div class="filters filters-row2" style="margin-bottom:12px">
+      <div class="filters filters-row2 okr-filter-row">
         ${labelChips ? `<span class="at-chip-label">Label:</span>${labelChips}` : ""}
         ${labelChips && memberChips ? `<span class="at-chip-divider"></span>` : ""}
         ${memberChips ? `<span class="at-chip-label">Owner:</span>${memberChips}` : ""}
@@ -157,7 +161,6 @@ function renderOKRPage(allCards, boards) {
     });
   }
 
-  // Helper: find project cards linked to a KR by label name match
   function linkedCards(krCard) {
     const krLabels = new Set((krCard.labels || []).map(l => l.name).filter(Boolean));
     if (!krLabels.size) return [];
@@ -194,7 +197,6 @@ function renderOKRPage(allCards, boards) {
     return Math.round(total / krCards.length);
   }
 
-  // OKR drill-down state: null = overview, cardId = KR detail
   let drillCard = null;
 
   function renderDetail(krCard) {
@@ -205,21 +207,21 @@ function renderOKRPage(allCards, boards) {
       : "Add labels to this KR card that match labels on project board cards.";
 
     content.innerHTML = `
-      <div class="okr-detail">
-        <button class="btn btn-ghost btn-xs okr-back-btn">← Back to OKR Overview</button>
-        <div class="okr-detail-header">
-          <div class="okr-detail-title">${esc(krCard.name)}</div>
-          <div class="okr-detail-meta">
-            ${esc(krCard.boardName)} · ${esc(krCard.listName)}
-            ${krCard.due ? ` · Due ${formatThaiDateTime(krCard.due, false)}` : ""}
+      <div class="okr-page okr-detail-page">
+        <section class="okr-command-panel okr-detail-command">
+          <div>
+            <button type="button" class="btn btn-ghost btn-xs okr-back-btn">Back to OKR Overview</button>
+            <div class="okr-kicker">${esc(krCard.boardName)} / ${esc(krCard.listName)}</div>
+            <h2 class="okr-command-title">${esc(krCard.name)}</h2>
+            <p class="okr-command-subtitle">${krCard.due ? `Due ${formatThaiDateTime(krCard.due, false)}` : "No due date set"}</p>
           </div>
-        </div>
-        <div class="okr-detail-stats">
-          <div class="okr-stat"><span class="okr-stat-num">${linked.length}</span><span class="okr-stat-label">Linked Tasks</span></div>
-          <div class="okr-stat"><span class="okr-stat-num" style="color:var(--danger)">${overdue.length}</span><span class="okr-stat-label">Overdue</span></div>
-          <div class="okr-stat"><span class="okr-stat-num" style="color:var(--success)">${done.length}</span><span class="okr-stat-label">Done</span></div>
-          <div class="okr-stat"><span class="okr-stat-num">${upcoming.length}</span><span class="okr-stat-label">Upcoming</span></div>
-        </div>
+          <div class="okr-command-stats">
+            <div class="okr-summary-card"><span class="okr-summary-num">${linked.length}</span><span class="okr-summary-label">Linked Tasks</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num" style="color:var(--danger)">${overdue.length}</span><span class="okr-summary-label">Overdue</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num" style="color:var(--success)">${done.length}</span><span class="okr-summary-label">Done</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num">${upcoming.length}</span><span class="okr-summary-label">Upcoming</span></div>
+          </div>
+        </section>
         ${linked.length ? `
         <div class="okr-linked-table">
           <div class="task-table-head" style="grid-template-columns:1fr 130px 110px 90px"><div>TASK</div><div>BOARD</div><div>DUE</div><div>STATUS</div></div>
@@ -231,7 +233,7 @@ function renderOKRPage(allCards, boards) {
                   ${(c.labels || []).filter(l => l.name).map(l => `<span class="task-label-chip" style="background:${labelColor(l.color)}">${esc(l.name)}</span>`).join("")}
                 </div>
                 <div class="task-board">${esc(c.boardName)}</div>
-                <div>${c.due ? buildDueBadge(c.due, c.dueComplete) : '<span style="color:#bbb">—</span>'}</div>
+                <div>${c.due ? buildDueBadge(c.due, c.dueComplete) : '<span style="color:#bbb">None</span>'}</div>
                 <div>${c.dueComplete ? '<span class="due-badge due-complete">Done</span>' : '<span style="color:#aaa;font-size:12px">Active</span>'}</div>
               </div>`).join("")}
           </div>
@@ -252,6 +254,7 @@ function renderOKRPage(allCards, boards) {
     const uniqueLinked = [...visibleLinkedIds].map(id => visibleLinked.find(c => c.id === id));
     const summaryStats = linkedStats(uniqueLinked);
     const overallProgress = averageProgress(visibleKrs);
+    const sourceLabel = okrBoards.map(b => esc(b.name)).join(", ");
 
     const objectivesHtml = visibleObjectives.map(({ objName, krCards: visibleKrs }) => {
       const avgProg = averageProgress(visibleKrs);
@@ -304,18 +307,28 @@ function renderOKRPage(allCards, boards) {
     }).join("");
 
     content.innerHTML = `
-      <div class="okr-overview">
-        <div class="okr-board-label">Source: ${okrBoards.map(b => esc(b.name)).join(", ")}</div>
-        ${filterBarHtml()}
-        ${visibleKrs.length ? `
-          <div class="okr-summary-grid">
+      <div class="okr-page">
+        <section class="okr-command-panel">
+          <div>
+            <div class="okr-kicker">Source: ${sourceLabel}</div>
+            <h2 class="okr-command-title">OKR Progress</h2>
+            <p class="okr-command-subtitle">Track objectives, key results, and linked project work without changing Trello data.</p>
+          </div>
+          <div class="okr-command-stats">
             <div class="okr-summary-card"><span class="okr-summary-num">${visibleObjectives.length}</span><span class="okr-summary-label">Objectives</span></div>
             <div class="okr-summary-card"><span class="okr-summary-num">${visibleKrs.length}</span><span class="okr-summary-label">Key Results</span></div>
             <div class="okr-summary-card"><span class="okr-summary-num">${overallProgress}%</span><span class="okr-summary-label">Avg Progress</span></div>
             <div class="okr-summary-card"><span class="okr-summary-num">${uniqueLinked.length}</span><span class="okr-summary-label">Linked Tasks</span></div>
             <div class="okr-summary-card"><span class="okr-summary-num" style="color:var(--danger)">${summaryStats.overdue.length}</span><span class="okr-summary-label">Overdue</span></div>
-          </div>` : ""}
-        ${objectivesHtml || `<div class="empty-state okr-empty-state"><h3>${filtersActive ? "No OKRs match this filter" : "No OKR cards yet"}</h3><p>${filtersActive ? "Try clearing the active label/member filter or link matching project cards to the KR labels." : "Create Key Result cards in the OKR board to populate this progress view."}</p></div>`}
+          </div>
+        </section>
+        <div class="okr-toolbar">
+          <div class="okr-board-label">Filters narrow linked project cards and visible KRs.</div>
+          ${filterBarHtml()}
+        </div>
+        <div class="okr-overview">
+          ${objectivesHtml || `<div class="empty-state okr-empty-state"><h3>${filtersActive ? "No OKRs match this filter" : "No OKR cards yet"}</h3><p>${filtersActive ? "Try clearing the active label/member filter or link matching project cards to the KR labels." : "Create Key Result cards in the OKR board to populate this progress view."}</p></div>`}
+        </div>
       </div>`;
 
     bindPortfolioFilters();

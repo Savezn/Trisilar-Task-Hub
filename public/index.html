@@ -103,6 +103,9 @@
   <div class="main">
     <header class="topbar">
       <div class="topbar-left">
+        <button id="mobile-nav-btn" class="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
         <h2 id="board-title">Today</h2>
         <span id="board-subtitle" class="board-subtitle"></span>
       </div>
@@ -122,6 +125,8 @@
 </div>
 
 <!-- ── Manage Groups Modal ─────────────────────────────────────────────────── -->
+<div id="mobile-nav-overlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+
 <div id="manage-modal" class="modal-overlay hidden">
   <div class="modal modal-lg">
     <div class="modal-header">
@@ -291,7 +296,7 @@
           <div>
             <strong>Create OAuth 2.0 Credentials</strong>
             <p>Credentials → Create Credentials → OAuth 2.0 Client ID → Web application<br>
-            Authorized redirect URI: <code class="code-inline">http://localhost:3000/auth/callback</code></p>
+            Authorized redirect URI: <code id="setup-redirect-uri" class="code-inline">http://localhost:3000/auth/callback</code></p>
           </div>
         </div>
         <div class="setup-step">

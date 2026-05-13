@@ -7,6 +7,7 @@ const BASE = `http://localhost:${PORT}`;
 
 const CHECKS = [
   { label: "GET /",                    url: `${BASE}/` },
+  { label: "GET /healthz",             url: `${BASE}/healthz` },
   { label: "GET /api/config",          url: `${BASE}/api/config` },
   { label: "GET /api/calendar/status", url: `${BASE}/api/calendar/status` },
   { label: "GET /api/reviews",         url: `${BASE}/api/reviews` },

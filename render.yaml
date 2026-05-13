@@ -1,0 +1,33 @@
+services:
+  - type: web
+    runtime: node
+    name: trisilar-task-hub-dev
+    branch: dev
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    disk:
+      name: taskhub-dev-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: APP_BASE_URL
+        value: https://taskhub-dev.trisilar.com
+      - key: GOOGLE_REDIRECT_URI
+        value: https://taskhub-dev.trisilar.com/auth/callback
+      - key: APP_DATA_DIR
+        value: /var/data
+      - key: GOOGLE_CALENDAR_ID
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REFRESH_TOKEN
+        sync: false
+      - key: TRELLO_API_KEY
+        sync: false
+      - key: TRELLO_TOKEN
+        sync: false

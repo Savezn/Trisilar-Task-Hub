@@ -1,9 +1,9 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2 W2 Full UI Redesign Phase Planning
+**Phase:** V0.2-W2-06 Integration PM Acceptance
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -16,9 +16,11 @@
 | V0.1 Release Acceptance | Pass | `docs/logs/QA_LOG.md` R34 |
 | P9 open bugs | None currently open | `docs/logs/QA_LOG.md` |
 | V0.2 W0 Branch / Environment / CI Setup | QA Pass `9dbb47b` | Implemented by Codex Dev; Reviewed by Codex QA |
-| V0.2 W1b Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md` |
-| V0.2 W1c Dev Environment Deployment Setup | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
-| V0.2 W2 Full UI Redesign | W2a PM Accepted `b5f67fb` / remaining W2b-W2f planned | W2a implemented by Codex Dev; reviewed by Codex QA; phased full redesign plan updated by Codex PM |
+| V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
+| V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
+| V0.2-W1-05 ngrok Random URL Demo | QA Pass / PM Accepted as demo-only path | Reviewed by Codex QA; Accepted by Codex PM; current URL/credentials remain local-only in Desktop handoff file |
+| V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. `V0.2-W1-06` and `V0.2-W1-08` are accepted as dev/demo runtime complete, not production/release-grade. |
+| V0.2 W2 Full UI Redesign | `V0.2-W2-06` integrated on `origin/dev@523c948` / PM Accepted | Settings, OKR, and Weekly Focus polish passed feature QA, Dev Integration, and Integration QA on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
@@ -31,9 +33,9 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | W1c setup merged / hosted runtime setup next | Dev |
-| W2 | Full UI Redesign | W2a accepted; W2b-W2f planned; full redesign not complete | Dev |
-| W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | PM complete |
+| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while Paperclip server is offline | Hold / PM |
+| W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Paperclip owner inputs are confirmed after Paperclip server is online | Blocked |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -43,11 +45,12 @@
 | Need | Read |
 |---|---|
 | Current task and next action | `CURRENT_SPRINT.md` |
+| Project-wide ladder and release gates | `docs/plans/PROJECT_LADDER.md` |
 | Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | W2 full UI redesign phase plan | `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` |
-| W1 deploy-readiness setup | `docs/deployment/DEPLOYMENT_SETUP.md` |
-| W1 dev environment runtime setup | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
+| W1 deploy-readiness setup (`V0.2-W1-02`) and DigitalOcean/Cloudflare hosted dev path | `docs/deployment/DEPLOYMENT_SETUP.md` |
+| W1 dev deployment config / ngrok demo handoff / DigitalOcean runtime notes (`V0.2-W1-03` to `V0.2-W1-08`) | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
 | QA history and completed work archive | `docs/logs/QA_LOG.md` |
 | PM decisions and phase context | `docs/logs/DECISION_LOG.md` |
 | Product/UX scope | `MVP_PRD.md` |
@@ -68,15 +71,16 @@
 
 Required branches:
 
-- W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
-- W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
-- W2: `feature/w2-*` phase branches; next default `feature/w2b-review-redesign`
+- `V0.2-W1-02` / legacy W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
+- `V0.2-W1-03` / legacy W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
+- W2: `feature/w2-*` phase branches; `feature/w2-06-settings-okr-focus-redesign` integrated into `origin/dev@523c948` and PM accepted
 - W3: `feature/w3-paperclip-integration`
 
 Required worktrees:
 
 - PM / Integration: `trisilar-task-hub` on `dev`
-- W1c: runtime setup uses hosted platform dashboards and no repo branch unless a fix is discovered
+- `V0.2-W1-05`: ngrok temporary demo runtime uses local runtime tools; repo branch only if a docs/setup defect is discovered
+- `V0.2-W1-08`: DigitalOcean hosted dev/demo setup uses latest `dev`, server-only secrets, and Cloudflare front door for Task Hub; repo changes only if setup defects are found
 - W2: `trisilar-task-hub-w2-ui-redesign` on the active `feature/w2-*` phase branch
 - W3: `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`
 
@@ -92,48 +96,24 @@ Parallel rule:
 
 ---
 
-## Next Action - W2b Review Queue Redesign
+## Next Action - W2 Hold / Complete
 
-Accepted W2a (`b5f67fb`) is now treated as shell foundation and Today redesign only. Full W2 UI redesign remains open through W2b-W2f. The next planned role is W2b Dev to redesign Review Queue against `docs/design/ui-design-v1-0/` while preserving W2a/W3 behavior.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated on `origin/dev@523c948` and PM accepted. This completes the W2 full UI redesign line on `dev`.
+
+Integration QA evidence on 2026-05-13: clean detached worktree at `origin/dev@523c948`; `npm.cmd run check:all` passed; W2 browser smoke passed for `/settings`, `/okr`, `/focus`, `/today`, `/review`, `/all`, `/boards`, `/calendar`, and `/planner` across desktop/mobile/mobile-small; max horizontal overflow 0; console/page errors 0; Settings save paths, OKR drilldown/back, Weekly Focus owner filter, and Weekly Focus -> Review navigation passed with controlled W2 API responses. W1 deployment/access and W3 Paperclip behavior were intentionally not tested in this W2-only Integration QA pass.
 
 ```text
-Role: Dev
-Task: V0.2 W2b - Review Queue Redesign + Shared Task Drawer Foundation
+Role: PM
+Task: V0.2-W2-06 W2 Workstream Hold / Complete
 
-Context:
-V0.2 W2a shell/Today redesign was accepted at `b5f67fb`, but PM has clarified this is not full W2 UI redesign completion. W2 is now phased as W2a-W2f in `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`. Implement W2b only.
-
-Read first:
-- CODEX.md
-- CURRENT_SPRINT.md
-- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
-- docs/design/ui-design-v1-0/README.md
-- docs/design/ui-design-v1-0/pages-review-cal-settings.jsx
-- docs/design/ui-design-v1-0/app.jsx
-- public/style.css
-- public/app.js
-- public/js/router.js
-- public/js/pages/review.js
-
-Goal:
-Redesign Review Queue to match the `ui-design-v1-0` direction while preserving current review APIs and workflows. Introduce shared task row/detail drawer primitives only as needed for Review and future W2 phases.
-
-Steps:
-1. Confirm branch/worktree before editing.
-2. Preserve accepted W2a shell/Today behavior and W3 Paperclip mock behavior.
-3. Use a W2 phase branch under `feature/w2-*`, default `feature/w2b-review-redesign`.
-4. Redesign `/review` using the prototype's review card, confidence, diff, target-field, sync-toggle, and bulk-action patterns where compatible with the static JS app.
-5. Add or extend shared UI primitives only when they support W2b and later W2 pages.
-6. Preserve review create/edit/approve/reject/bulk APIs and existing route behavior.
-7. Capture desktop/mobile visual QA evidence for Review and any shared drawer primitives.
-8. Run `npm.cmd run check:all`.
+Status:
+W2 full UI redesign is complete on origin/dev@523c948.
 
 Rules:
-- Do not implement W1 deployment/access.
-- Do not implement new W3 Paperclip behavior.
-- Do not rewrite to React/Vite unless PM explicitly approves.
-- Preserve route behavior and existing APIs.
-- Include attribution: Implemented by Codex Dev.
+- Do not start W1 deployment/access work from this W2 handoff.
+- Do not start W3 Paperclip work from this W2 handoff.
+- Do not start new W2 implementation unless PM opens a new W2-only phase.
+- If more W2 work is requested, define a new W2-only task with fresh scope and QA criteria.
 ```
 
-**Attribution:** V0.2 W2a/W3 integration accepted by Codex PM after Codex QA pass at `dde7ab0`. W2 full UI redesign phased plan updated by Codex PM. W1b/W1c implemented by Codex Dev, reviewed by Codex QA/PM, and merged by Codex PM. W2a and W3 implemented by Codex Dev, reviewed by Codex QA, and accepted by Codex PM.
+**Attribution:** `V0.2-W2-06` integrated by Codex Dev and accepted by Codex PM on `origin/dev@523c948` after Codex Integration QA pass.

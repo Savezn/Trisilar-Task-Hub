@@ -12,7 +12,9 @@ const { friendlyError } = require("./src/utils/errors");
 const { todayBangkok } = require("./src/utils/date");
 const { readConfig, writeConfig } = require("./src/utils/config");
 const { 
+  getAppBaseUrl,
   getCalendarId, 
+  getGoogleRedirectUri,
   getOAuth2Client, 
   getCalendarClient, 
   getTasksClient, 
@@ -24,6 +26,7 @@ const {
 // ── Routes ───────────────────────────────────────────────────────────────────
 const makeConfigRoutes      = require("./src/routes/config.routes");
 const makeReviewRoutes      = require("./src/routes/review.routes");
+const makePaperclipRoutes   = require("./src/routes/paperclip.routes");
 const makeCalendarRoutes    = require("./src/routes/calendar.routes");
 const makeGoogleTasksRoutes = require("./src/routes/google-tasks.routes");
 const makeTrelloRoutes      = require("./src/routes/trello.routes");
@@ -35,10 +38,15 @@ app.use(express.static(path.join(__dirname, "public")));
 // ── API Mount ─────────────────────────────────────────────────────────────────
 app.use("/api", makeConfigRoutes({ readConfig, writeConfig, friendlyError }));
 app.use("/api", makeReviewRoutes({ store, diff, trello, friendlyError, cacheInvalidate, autoSyncToGCal }));
+app.use("/api", makePaperclipRoutes({ store, diff, friendlyError }));
 app.use("/api", makeGoogleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }));
 
+app.get("/healthz", (_req, res) => {
+  res.json({ ok: true });
+});
+
 // Root-level mounts (auth, etc)
-app.use(makeCalendarRoutes({ getCalendarClient, getCalendarId, getOAuth2Client, updateEnvKey, friendlyError }));
+app.use(makeCalendarRoutes({ getAppBaseUrl, getCalendarClient, getCalendarId, getGoogleRedirectUri, getOAuth2Client, updateEnvKey, friendlyError }));
 
 // Wrap buildCfNames to inject trello dependency automatically for routes
 const buildCfNamesInjected = (boardId, cfCache) => buildCfNames(boardId, cfCache, trello);
@@ -73,4 +81,11 @@ app.get([
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀  http://localhost:${PORT}`));
+const HOST = process.env.HOST;
+const displayHost = HOST || "localhost";
+
+if (HOST) {
+  app.listen(PORT, HOST, () => console.log(`🚀  http://${displayHost}:${PORT}`));
+} else {
+  app.listen(PORT, () => console.log(`🚀  http://${displayHost}:${PORT}`));
+}

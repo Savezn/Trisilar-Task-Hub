@@ -16,6 +16,7 @@ async function init() {
     if (gcalEl) gcalEl.style.display = "";
   }
 
+  setupShellPrimitives();
   renderSidebar();
   navigateTo(getPageFromPath(), { replace: true });
   updateReviewBadge().catch(() => {});
@@ -35,6 +36,7 @@ function getAllowedCards() {
 
 
 // ── Planner Page ──────────────────────────────────────────────────────────────
+// V0.2-W2-05 Planner redesign implemented by Codex Dev.
 async function showPlannerPage() {
   S.mode = "planner";
   S.currentBoardId = null;
@@ -46,17 +48,37 @@ async function showPlannerPage() {
   const dateStr = formatThaiDateTime(new Date().toISOString(), false);
 
   $("board-content").innerHTML = `
-    <div class="planner-wrap">
-      <div class="planner-date">${dateStr}</div>
-
-      <div class="planner-section">
-        <div class="planner-section-title">📝 Google Tasks — วันนี้</div>
-        <div id="planner-gtasks-body"><div class="planner-loading">กำลังโหลด…</div></div>
+    <div class="planner-page">
+      <div class="planner-command-panel">
+        <div class="planner-command-copy">
+          <div class="planner-kicker">${icon("checkSquare")} Daily planner</div>
+          <h1 class="planner-title">Daily Planner</h1>
+          <p class="planner-subtitle">Plan today from Google Tasks and Trello deadlines without mixing the source systems.</p>
+          <div class="planner-date">${dateStr}</div>
+        </div>
+        <div class="planner-command-stats" aria-label="Planner summary">
+          <div class="planner-stat-card"><span>Google Tasks</span><strong id="planner-gtasks-count">...</strong></div>
+          <div class="planner-stat-card is-warning"><span>Due today</span><strong id="planner-today-count">...</strong></div>
+          <div class="planner-stat-card"><span>Due tomorrow</span><strong id="planner-tomorrow-count">...</strong></div>
+        </div>
       </div>
 
-      <div class="planner-section">
-        <div class="planner-section-title">📋 Trello — Due Today &amp; Tomorrow</div>
-        <div id="planner-trello-body"><div class="planner-loading">กำลังโหลด…</div></div>
+      <div class="planner-grid">
+        <section class="planner-section planner-panel-google">
+          <div class="planner-section-title">
+            <span>${icon("checkSquare")} Google Tasks</span>
+            <em id="planner-gtasks-state">Loading</em>
+          </div>
+          <div id="planner-gtasks-body"><div class="planner-loading">Loading Google Tasks...</div></div>
+        </section>
+
+        <section class="planner-section planner-panel-trello">
+          <div class="planner-section-title">
+            <span>${icon("calendar")} Trello deadlines</span>
+            <em>Today and tomorrow</em>
+          </div>
+          <div id="planner-trello-body"><div class="planner-loading">Loading Trello deadlines...</div></div>
+        </section>
       </div>
     </div>
   `;
@@ -70,16 +92,24 @@ async function loadPlannerGTasks() {
   try {
     const status = await api.get("/api/google-tasks/status");
     if (!status.connected) {
+      const statusMessage = status.error || "Connect Google to add and complete daily tasks from the Planner.";
+      if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = "Off";
+      if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Disconnected";
       body.innerHTML = `
         <div class="planner-connect-state">
-          <p>เชื่อมต่อ Google Tasks เพื่อดู to-do list ประจำวัน</p>
-          <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Google →</button>
+          <strong>Google Tasks is disconnected</strong>
+          <p>${esc(statusMessage)}</p>
+          <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Google</button>
         </div>`;
       return;
     }
     const tasks = await api.get("/api/google-tasks/today");
+    if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = tasks.length;
+    if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Connected";
     renderPlannerGTasks(tasks);
   } catch (e) {
+    if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = "!";
+    if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Error";
     body.innerHTML = `<div class="planner-error">Error: ${esc(e.message)}</div>`;
   }
 }
@@ -90,7 +120,7 @@ function renderPlannerGTasks(tasks) {
 
   let listHtml = "";
   if (tasks.length === 0) {
-    listHtml = `<div class="planner-empty">ไม่มี task วันนี้ 🎉</div>`;
+    listHtml = `<div class="planner-empty">No Google Tasks due today.</div>`;
   } else {
     listHtml = `<div class="planner-task-list">` +
       tasks.map(t => `
@@ -98,6 +128,7 @@ function renderPlannerGTasks(tasks) {
           <input type="checkbox" class="planner-checkbox"
             onchange="plannerCompleteTask('${esc(t.id)}',this)">
           <span class="planner-task-title">${esc(t.title)}</span>
+          <span class="planner-source-pill">Google</span>
         </div>`).join("") +
     `</div>`;
   }
@@ -105,9 +136,9 @@ function renderPlannerGTasks(tasks) {
   body.innerHTML = listHtml + `
     <div class="planner-add-row">
       <input type="text" id="planner-add-input" class="planner-add-input"
-        placeholder="+ เพิ่ม task สำหรับวันนี้..."
+        placeholder="Add a Google Task for today..."
         onkeydown="if(event.key==='Enter')plannerAddTask()">
-      <button class="btn btn-sm planner-add-btn" onclick="plannerAddTask()">Add</button>
+      <button class="btn btn-sm planner-add-btn" onclick="plannerAddTask()">${icon("plus")} Add</button>
     </div>`;
 }
 
@@ -122,7 +153,11 @@ async function plannerCompleteTask(taskId, checkbox) {
         row.remove();
         const list = $("planner-gtasks-body")?.querySelector(".planner-task-list");
         if (list && !list.querySelector(".planner-task-row")) {
-          list.innerHTML = `<div class="planner-empty">ไม่มี task วันนี้ 🎉</div>`;
+          list.innerHTML = `<div class="planner-empty">No Google Tasks due today.</div>`;
+        }
+        if ($("planner-gtasks-count")) {
+          const remaining = $("planner-gtasks-body")?.querySelectorAll(".planner-task-row").length ?? 0;
+          $("planner-gtasks-count").textContent = remaining;
         }
       }, 350);
     }
@@ -154,8 +189,10 @@ async function plannerAddTask() {
       row.innerHTML = `
         <input type="checkbox" class="planner-checkbox"
           onchange="plannerCompleteTask('${esc(task.id)}',this)">
-        <span class="planner-task-title">${esc(task.title)}</span>`;
+        <span class="planner-task-title">${esc(task.title)}</span>
+        <span class="planner-source-pill">Google</span>`;
       list.appendChild(row);
+      if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = list.querySelectorAll(".planner-task-row").length;
     } else {
       await loadPlannerGTasks();
     }
@@ -176,7 +213,9 @@ async function loadPlannerTrello() {
     try {
       S.allCardsCache = await api.get("/api/all-cards");
     } catch (e) {
-      body.innerHTML = `<div class="planner-error">ไม่สามารถโหลด Trello cards ได้</div>`;
+      if ($("planner-today-count")) $("planner-today-count").textContent = "!";
+      if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = "!";
+      body.innerHTML = `<div class="planner-error">Unable to load Trello cards.</div>`;
       return;
     }
   }
@@ -189,9 +228,11 @@ async function loadPlannerTrello() {
 
   const todayCards    = cards.filter(c => c.due && new Date(c.due) >= todayStart    && new Date(c.due) < tomorrowStart);
   const tomorrowCards = cards.filter(c => c.due && new Date(c.due) >= tomorrowStart && new Date(c.due) < dayAfterStart);
+  if ($("planner-today-count")) $("planner-today-count").textContent = todayCards.length;
+  if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = tomorrowCards.length;
 
   if (!todayCards.length && !tomorrowCards.length) {
-    body.innerHTML = `<div class="planner-empty">ไม่มี Trello card ที่ due วันนี้หรือพรุ่งนี้ 🎉</div>`;
+    body.innerHTML = `<div class="planner-empty">No Trello cards due today or tomorrow.</div>`;
     return;
   }
 
@@ -204,17 +245,67 @@ async function loadPlannerTrello() {
 
   let html = "";
   if (todayCards.length) {
-    html += `<div class="planner-sub-label">วันนี้</div>`;
-    html += todayCards.map(c => cardRow(c, "วันนี้", "chip-danger")).join("");
+    html += `<div class="planner-sub-label">Today</div>`;
+    html += todayCards.map(c => cardRow(c, "Today", "chip-danger")).join("");
   }
   if (tomorrowCards.length) {
-    html += `<div class="planner-sub-label">พรุ่งนี้</div>`;
-    html += tomorrowCards.map(c => cardRow(c, "พรุ่งนี้", "chip-warning")).join("");
+    html += `<div class="planner-sub-label">Tomorrow</div>`;
+    html += tomorrowCards.map(c => cardRow(c, "Tomorrow", "chip-warning")).join("");
   }
   body.innerHTML = html;
 }
 
 // ── Sidebar ───────────────────────────────────────────────────────────────────
+function setupShellPrimitives() {
+  // Implemented by Codex Dev: code-native icons and mobile nav shell.
+  const navIcons = {
+    today: "today",
+    review: "sparkles",
+    all: "inbox",
+    boards: "layout",
+    calendar: "calendar",
+    planner: "checkSquare",
+    okr: "target",
+    focus: "calendar",
+    settings: "settings",
+  };
+  document.querySelectorAll(".nav-item[data-page]").forEach(item => {
+    const slot = item.querySelector(".nav-icon");
+    if (slot && typeof icon === "function") {
+      slot.innerHTML = icon(navIcons[item.dataset.page] || "today");
+    }
+  });
+  const refreshBtn = $("topbar-refresh-btn");
+  if (refreshBtn && typeof icon === "function") {
+    refreshBtn.innerHTML = icon("refresh");
+    refreshBtn.setAttribute("aria-label", "Refresh current view");
+  }
+  setupMobileNavigation();
+}
+
+function setupMobileNavigation() {
+  if (window.__taskHubMobileNavReady) return;
+  window.__taskHubMobileNavReady = true;
+  const btn = $("mobile-nav-btn");
+  const overlay = $("mobile-nav-overlay");
+  if (!btn || !overlay) return;
+
+  btn.onclick = () => {
+    const open = !document.body.classList.contains("mobile-nav-open");
+    document.body.classList.toggle("mobile-nav-open", open);
+    btn.setAttribute("aria-expanded", String(open));
+  };
+  overlay.onclick = closeMobileNav;
+  document.querySelectorAll(".sidebar .nav-item").forEach(item => {
+    item.addEventListener("click", closeMobileNav);
+  });
+}
+
+function closeMobileNav() {
+  document.body.classList.remove("mobile-nav-open");
+  $("mobile-nav-btn")?.setAttribute("aria-expanded", "false");
+}
+
 function renderSidebar() {
   renderGroupsList();
   renderBoardsList();
@@ -669,6 +760,7 @@ function labelColor(color) {
   return MAP[color] || "#b3bac5";
 }
 
+// V0.2-W2-06 Weekly Focus polish implemented by Codex Dev.
 // ── Weekly Focus View (P7-5) ──────────────────────────────────────────────────
 async function showWeeklyFocusPage() {
   S.mode = "focus";
@@ -820,12 +912,19 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
       `<option value="${esc(m.id)}"${S.focusOwner === m.id ? " selected" : ""}>${esc(m.fullName || m.username || m.id)}</option>`
     ).join("");
 
+    const weekRange = `${formatThaiDateTime(weekStart, false)} - ${formatThaiDateTime(weekEnd, false)}`;
+    const selectedOwner = S.focusOwner
+      ? allMembers.find(m => m.id === S.focusOwner)
+      : null;
+    const ownerLabel = selectedOwner
+      ? selectedOwner.fullName || selectedOwner.username || selectedOwner.id
+      : "Everyone";
     const pendingBadgeHtml = pendingCount
-      ? `<span class="focus-pending-badge">📋 ${pendingCount} pending review</span>`
+      ? `<span class="focus-pending-badge">${pendingCount} pending review</span>`
       : "";
 
     const laneHtml = lanes.map(({ key, label, hint, cards, showReviewAction }) => `
-      <div class="focus-day-group">
+      <div class="focus-day-group is-${key}">
         <div class="focus-day-header">
           <span class="focus-day-label">${esc(label)}</span>
           <span class="focus-day-count">${cards.length}</span>
@@ -848,27 +947,35 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
 
     const emptyHtml = !activeCards.length && !doneCount && !pendingCount
       ? `<div class="empty-state" style="padding:48px">
-          <div class="empty-icon">🗓</div>
+          <div class="empty-icon">${icon("calendar")}</div>
           <h3>No weekly focus work</h3>
           <p>${S.focusOwner ? "No assigned active work for this owner." : "No active work or pending review items found."}</p>
         </div>`
       : "";
 
     content.innerHTML = `
-      <div class="focus-wrap">
+      <div class="focus-wrap focus-page">
+        <section class="focus-command-panel">
+          <div class="focus-command-copy">
+            <div class="focus-kicker">Weekly operating view</div>
+            <h2 class="focus-command-title">Weekly Focus</h2>
+            <p class="focus-command-subtitle">${esc(weekRange)}. Prioritized from due dates, labels, review status, and blocked signals.</p>
+          </div>
+          <div class="focus-command-stats">
+            <div class="focus-stat"><span class="focus-stat-num">${doNowCount}</span><span class="focus-stat-label">Do Now</span></div>
+            <div class="focus-stat"><span class="focus-stat-num" style="color:var(--warning)">${reviewAiCount}</span><span class="focus-stat-label">AI / Agent</span></div>
+            <div class="focus-stat"><span class="focus-stat-num" style="color:var(--purple,#8b5cf6)">${pendingCount}</span><span class="focus-stat-label">Pending review</span></div>
+            <div class="focus-stat"><span class="focus-stat-num" style="color:var(--success)">${doneCount}</span><span class="focus-stat-label">Done this week</span></div>
+          </div>
+        </section>
         <div class="focus-toolbar">
           ${allMembers.length ? `
             <span class="at-chip-label">Owner:</span>
             <select class="at-select" id="focus-owner-sel">
               <option value="">Everyone</option>${ownerOpts}
             </select>` : ""}
+          <span class="focus-owner-summary">Showing ${esc(ownerLabel)}</span>
           ${pendingBadgeHtml}
-        </div>
-        <div class="focus-summary">
-          <div class="focus-stat"><span class="focus-stat-num">${doNowCount}</span><span class="focus-stat-label">Do Now</span></div>
-          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--warning)">${reviewAiCount}</span><span class="focus-stat-label">AI / Agent</span></div>
-          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--purple,#8b5cf6)">${pendingCount}</span><span class="focus-stat-label">Pending review</span></div>
-          <div class="focus-stat"><span class="focus-stat-num" style="color:var(--success)">${doneCount}</span><span class="focus-stat-label">Done this week</span></div>
         </div>
         <div class="focus-task-list">
           ${laneHtml}${emptyHtml}
@@ -1427,7 +1534,14 @@ $("cal-allday").addEventListener("change", () => {
 });
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { closeModal(); closeConfirm(); closeManage(); closeCalSetup(); closeCalModal(); }
+  if (e.key === "Escape") {
+    closeModal();
+    closeConfirm();
+    closeManage();
+    closeCalSetup();
+    closeCalModal();
+    if (typeof closeReviewTaskDrawer === "function") closeReviewTaskDrawer();
+  }
   if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
     if (!$("card-modal").classList.contains("hidden"))      saveCard();
     if (!$("cal-event-modal").classList.contains("hidden")) saveCalEvent();
@@ -1435,7 +1549,7 @@ document.addEventListener("keydown", e => {
 });
 
 window.addEventListener("message", e => {
-  if (e.origin !== "http://localhost:3000") return;
+  if (e.origin !== window.location.origin) return;
   if (e.data === "cal_connected") {
     CAL.status = { connected: true };
     const gcalEl = $("sidebar-gcal-status");

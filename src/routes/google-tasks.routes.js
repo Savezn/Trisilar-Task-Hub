@@ -4,14 +4,69 @@ const express = require("express");
 module.exports = function googleTasksRoutes({ getTasksClient, todayBangkok, friendlyError }) {
   const router = express.Router();
 
-  router.get("/google-tasks/status", (req, res) => {
-    res.json({
-      connected: !!(
-        process.env.GOOGLE_CLIENT_ID &&
-        process.env.GOOGLE_CLIENT_SECRET &&
-        process.env.GOOGLE_REFRESH_TOKEN
-      ),
-    });
+  function hasGoogleTasksEnv() {
+    return !!(
+      process.env.GOOGLE_CLIENT_ID &&
+      process.env.GOOGLE_CLIENT_SECRET &&
+      process.env.GOOGLE_REFRESH_TOKEN
+    );
+  }
+
+  function googleTasksAuthStatus(e) {
+    const msg = String(e?.message || e || "").toLowerCase();
+    const status = e?.code || e?.response?.status;
+    const reason = String(e?.errors?.[0]?.reason || e?.response?.data?.error || "").toLowerCase();
+
+    if (
+      status === 401 ||
+      status === 403 ||
+      reason.includes("invalid_client") ||
+      reason.includes("invalid_grant") ||
+      reason.includes("insufficient") ||
+      msg.includes("invalid_client") ||
+      msg.includes("invalid grant") ||
+      msg.includes("insufficient authentication scopes") ||
+      msg.includes("unauthorized") ||
+      msg.includes("not authorized")
+    ) {
+      return {
+        status: status === 403 || msg.includes("insufficient") || reason.includes("insufficient") ? 403 : 401,
+        message: "Google Tasks not connected. Reconnect Google with Tasks scope.",
+      };
+    }
+
+    return null;
+  }
+
+  router.get("/google-tasks/status", async (req, res) => {
+    if (!hasGoogleTasksEnv()) {
+      return res.json({ connected: false, configured: false });
+    }
+
+    try {
+      const tasks = getTasksClient();
+      await tasks.tasks.list({
+        tasklist: "@default",
+        showCompleted: false,
+        maxResults: 1,
+      });
+      res.json({ connected: true, configured: true });
+    } catch (e) {
+      const authError = googleTasksAuthStatus(e);
+      if (authError) {
+        return res.json({
+          connected: false,
+          configured: true,
+          error: authError.message,
+          requiresReconnect: true,
+        });
+      }
+      res.json({
+        connected: false,
+        configured: true,
+        error: friendlyError(e),
+      });
+    }
   });
 
   // Returns incomplete tasks due today or overdue (Bangkok timezone)
@@ -29,7 +84,11 @@ module.exports = function googleTasksRoutes({ getTasksClient, todayBangkok, frie
         !t.due || t.due.slice(0, 10) <= today
       );
       res.json(items);
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) {
+      const authError = googleTasksAuthStatus(e);
+      if (authError) return res.status(authError.status).json({ error: authError.message, connected: false });
+      res.status(500).json({ error: friendlyError(e) });
+    }
   });
 
   // Create a new task due today
@@ -44,7 +103,11 @@ module.exports = function googleTasksRoutes({ getTasksClient, todayBangkok, frie
         resource: { title, due: today + "T00:00:00.000Z" },
       });
       res.json(r.data);
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) {
+      const authError = googleTasksAuthStatus(e);
+      if (authError) return res.status(authError.status).json({ error: authError.message, connected: false });
+      res.status(500).json({ error: friendlyError(e) });
+    }
   });
 
   // Update a task: mark complete or update title
@@ -60,7 +123,11 @@ module.exports = function googleTasksRoutes({ getTasksClient, todayBangkok, frie
         resource: patch,
       });
       res.json(r.data);
-    } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+    } catch (e) {
+      const authError = googleTasksAuthStatus(e);
+      if (authError) return res.status(authError.status).json({ error: authError.message, connected: false });
+      res.status(500).json({ error: friendlyError(e) });
+    }
   });
 
   return router;

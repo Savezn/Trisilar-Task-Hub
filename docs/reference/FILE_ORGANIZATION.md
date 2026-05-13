@@ -108,8 +108,27 @@ Do not commit `.env`, API tokens, OAuth secrets, or production data exports.
 | Logs | `UPPER_SNAKE_CASE.md` | `QA_LOG.md` |
 | Design artifact folders | `lower-kebab-case` | `ui-design-v1-0/` |
 | Legacy utilities | `lower-kebab-case` | `trello-gemini-cli/` |
+| Active V0.2 task IDs | `V0.2-W<workstream>-<NN>` | `V0.2-W2-02` |
 
 Use descriptive names. Avoid generic names such as `notes.md`, `new.md`, `test2.js`, or `final-final.md`.
+
+## Task and Phase ID Rules
+
+Active task IDs must use the canonical version/workstream/sequence format:
+
+```text
+V0.2-W1-05
+V0.2-W2-02
+V0.2-W3-01
+```
+
+Rules:
+
+- Use two digits for the sequence number so sorting stays stable.
+- Keep old labels such as `W1.4`, `W2b`, or `W3 sequence 1` as aliases only.
+- Do not introduce new active `P0`, `P1`, `P7`, or `P8` task IDs for V0.2 work. Use `Priority: P0/P1/P2` for priority instead.
+- Historical archived plans and QA logs keep their original IDs.
+- New workstream plan sections should show both fields when aliases are useful: `Canonical ID` and `Alias`.
 
 ---
 
