@@ -18,6 +18,15 @@ const FIXTURE = path.join(
   "fixtures",
   "document-artifacts.json"
 );
+const REVIEW_FIXTURE = path.join(
+  __dirname,
+  "..",
+  "src",
+  "integrations",
+  "paperclip",
+  "fixtures",
+  "valid-paperclip-review-session.json"
+);
 
 function readFixture() {
   return JSON.parse(fs.readFileSync(FIXTURE, "utf8"));
@@ -41,6 +50,16 @@ async function waitForServer(baseUrl, child) {
   throw new Error("Server did not become ready");
 }
 
+async function postJson(url, body) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json();
+  return { status: res.status, json };
+}
+
 function pass(label) {
   console.log(`PASS ${label}`);
 }
@@ -56,6 +75,14 @@ async function main() {
   assert.strictEqual(normalized.documents[0].content.format, "markdown");
   assert(normalized.documents[0].content.text.includes("Weekly Marketing Sync"));
   assert.strictEqual(normalized.documents[0].agent.runId, fixture.agent.runId);
+  assert.strictEqual(normalized.documents[0].linkedTasks.length, 1);
+  assert.deepStrictEqual(normalized.documents[0].linkedTasks[0], {
+    requestId: "pc_req_20260508_001",
+    externalTaskId: "pc_task_001",
+    title: "Prepare campaign brief",
+    relationship: "supports",
+    anchorText: "Prepare campaign brief draft",
+  });
   pass("document fixture normalizes through contract");
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "task-hub-paperclip-docs-"));
@@ -86,8 +113,24 @@ async function main() {
     assert.strictEqual(body.mode, "mock");
     assert.strictEqual(body.documents.length, 2);
     assert.strictEqual(body.documents[1].artifactId, "doc_child_agent_execution_notes");
+    assert.strictEqual(body.documents[0].linkedTasks[0].externalTaskId, "pc_task_001");
     assert(!JSON.stringify(body).includes("PAPERCLIP_WEBHOOK_SIGNING_SECRET"));
     pass("mock docs endpoint returns local contract data only");
+
+    const reviewFixture = JSON.parse(fs.readFileSync(REVIEW_FIXTURE, "utf8"));
+    const created = await postJson(`${baseUrl}/api/integrations/paperclip/mock/review-session`, reviewFixture);
+    assert.strictEqual(created.status, 201);
+    const linkedDoc = body.documents.find(doc => (doc.linkedTasks || []).some(link =>
+      link.requestId === created.json.requestId &&
+      link.externalTaskId === created.json.tasks[0].externalTaskId
+    ));
+    assert(linkedDoc);
+    assert.strictEqual(linkedDoc.artifactId, "doc_weekly_marketing_sync");
+    const fetchedReview = await fetch(`${baseUrl}/api/reviews/${created.json.id}`);
+    assert.strictEqual(fetchedReview.status, 200);
+    const persistedReview = await fetchedReview.json();
+    assert.strictEqual(persistedReview.tasks[0].externalTaskId, "pc_task_001");
+    pass("mock document artifact links to persisted Review Queue task");
 
     const html = fs.readFileSync(path.join(__dirname, "..", "public", "index.html"), "utf8");
     assert(html.includes('data-page="docs"'));
@@ -98,6 +141,16 @@ async function main() {
     assert(router.includes('docs: "/docs"'));
     assert(router.includes("showDocsPage"));
     pass("Docs page route is registered");
+
+    const docsPage = fs.readFileSync(path.join(__dirname, "..", "public", "js", "pages", "docs.js"), "utf8");
+    assert(docsPage.includes("renderDocsLinkedTasks"));
+    assert(docsPage.includes("openLinkedReviewTask"));
+    pass("Docs page renders linked task affordances");
+
+    const reviewPage = fs.readFileSync(path.join(__dirname, "..", "public", "js", "pages", "review.js"), "utf8");
+    assert(reviewPage.includes("loadPaperclipDocsIndex"));
+    assert(reviewPage.includes("renderLinkedPaperclipDocs"));
+    pass("Review Queue renders linked Paperclip docs without changing approvals");
 
     console.log("Paperclip docs viewer verification passed.");
   } catch (error) {

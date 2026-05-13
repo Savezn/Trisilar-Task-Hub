@@ -13,7 +13,9 @@ async function showReviewPage() {
 
   try {
     const sessions = await api.get("/api/reviews");
+    expandLinkedReviewSession(sessions);
     renderReviewPage(sessions);
+    focusPendingReviewTaskLink(sessions);
     updateReviewBadge().catch(() => {});
   } catch (e) {
     content.innerHTML = `<div class="empty-state review-empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Failed to load Review Queue</h3><p>${esc(e.message)}</p></div>`;
@@ -181,13 +183,16 @@ function buildSessionCard(session) {
 async function loadSessionTasks(sessionId, taskListEl) {
   taskListEl.innerHTML = '<div class="loading-box review-inline-loading"><span class="spinner"></span></div>';
   try {
-    const session = await api.get(`/api/reviews/${sessionId}`);
+    const [session, paperclipDocsIndex] = await Promise.all([
+      api.get(`/api/reviews/${sessionId}`),
+      loadPaperclipDocsIndex(),
+    ]);
     taskListEl.innerHTML = "";
     const tasks = session.tasks || [];
     if (!tasks.length) {
       taskListEl.innerHTML = '<div class="review-task-empty">No tasks in this session.</div>';
     } else {
-      tasks.forEach(task => taskListEl.appendChild(buildTaskCard(session, task)));
+      tasks.forEach(task => taskListEl.appendChild(buildTaskCard(session, task, paperclipDocsIndex)));
     }
     taskListEl.dataset.loaded = "1";
   } catch (e) {
@@ -195,14 +200,15 @@ async function loadSessionTasks(sessionId, taskListEl) {
   }
 }
 
-function buildTaskCard(session, task) {
+function buildTaskCard(session, task, paperclipDocsIndex = []) {
   const el = document.createElement("div");
   el.id = `task-${task.id}`;
   el.dataset.sessionId = session.id;
+  const linkedDocs = getLinkedPaperclipDocs(session, task, paperclipDocsIndex);
 
   if (task.status !== "pending") {
     el.className = "review-task-card task-processed";
-    el.innerHTML = buildProcessedTaskHTML(task);
+    el.innerHTML = buildProcessedTaskHTML(task, linkedDocs);
     return el;
   }
 
@@ -244,6 +250,7 @@ function buildTaskCard(session, task) {
       <span><span class="label">Priority</span><span class="chip ${reviewPriorityClass(task.priority)}">${icon("flag")}${esc(task.priority || "medium")}</span></span>
     </div>
     ${reasoning ? `<div class="review-reasoning"><strong>AI:</strong> ${esc(reasoning)}</div>` : ""}
+    ${renderLinkedPaperclipDocs(linkedDocs)}
     <div class="review-task-actions">
       <label class="review-toggle-label">
         <input type="checkbox" ${task.syncCalendar ? "checked" : ""}
@@ -295,7 +302,7 @@ function reviewListLabel(task) {
   return task.targetListName || task.listName || "Selected list";
 }
 
-function buildProcessedTaskHTML(task) {
+function buildProcessedTaskHTML(task, linkedDocs = []) {
   const approved  = task.status === "approved";
   const color     = approved ? "var(--success)" : "var(--text-faint)";
   const label     = approved ? "Approved" : "Rejected";
@@ -316,9 +323,86 @@ function buildProcessedTaskHTML(task) {
           ${trelloTip}
         </div>
         ${reasonTip}
+        ${renderLinkedPaperclipDocs(linkedDocs)}
       </div>
     </div>
   `;
+}
+
+async function loadPaperclipDocsIndex() {
+  if (Array.isArray(S.paperclipDocsIndex)) return S.paperclipDocsIndex;
+  try {
+    const payload = await api.get("/api/integrations/paperclip/mock/docs");
+    S.paperclipDocsIndex = Array.isArray(payload.documents) ? payload.documents : [];
+  } catch (_error) {
+    S.paperclipDocsIndex = [];
+  }
+  return S.paperclipDocsIndex;
+}
+
+function getLinkedPaperclipDocs(session, task, docsIndex) {
+  if (!session?.requestId || !task?.externalTaskId || !Array.isArray(docsIndex)) return [];
+  return docsIndex
+    .filter(doc => (doc.linkedTasks || []).some(link =>
+      link.requestId === session.requestId && link.externalTaskId === task.externalTaskId
+    ))
+    .map(doc => ({
+      artifactId: doc.artifactId,
+      title: doc.title,
+      status: doc.status,
+      artifactType: doc.artifactType,
+    }));
+}
+
+function renderLinkedPaperclipDocs(linkedDocs) {
+  if (!linkedDocs.length) return "";
+  return `
+    <div class="review-linked-docs">
+      <span class="review-linked-docs-label">${icon("layout")} Paperclip docs</span>
+      ${linkedDocs.map(doc => `
+        <button type="button" class="review-linked-doc" onclick="openLinkedPaperclipDoc('${esc(doc.artifactId)}')">
+          <span>${esc(doc.title || doc.artifactId)}</span>
+          <small>${esc(doc.artifactType || "document")} - ${esc(doc.status || "ready")}</small>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function openLinkedPaperclipDoc(artifactId) {
+  S.docsSelectedArtifactId = artifactId;
+  navigateTo("docs");
+}
+
+function expandLinkedReviewSession(sessions) {
+  const link = S.pendingReviewTaskLink;
+  if (!link?.requestId || !Array.isArray(sessions)) return;
+  const session = sessions.find(item => item.requestId === link.requestId);
+  if (session?.id) S.reviewExpanded.add(session.id);
+}
+
+function focusPendingReviewTaskLink(sessions) {
+  const link = S.pendingReviewTaskLink;
+  if (!link?.requestId || !link?.externalTaskId || !Array.isArray(sessions)) return;
+  const session = sessions.find(item => item.requestId === link.requestId);
+  if (!session?.id) {
+    toast("Linked Review Queue task is not available in this local store", true);
+    return;
+  }
+
+  setTimeout(async () => {
+    const taskList = $(`task-list-${session.id}`);
+    if (taskList && !taskList.dataset.loaded) await loadSessionTasks(session.id, taskList);
+    const latest = await api.get(`/api/reviews/${session.id}`);
+    const task = (latest.tasks || []).find(item => item.externalTaskId === link.externalTaskId);
+    const taskEl = task ? $(`task-${task.id}`) : null;
+    if (taskEl) {
+      taskEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      taskEl.classList.add("review-task-linked-focus");
+      setTimeout(() => taskEl.classList.remove("review-task-linked-focus"), 2400);
+    }
+    S.pendingReviewTaskLink = null;
+  }, 120);
 }
 
 // Review drawer foundation shared by V0.2-W2-02 and later W2 task surfaces.

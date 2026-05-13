@@ -23,6 +23,15 @@
       "generatedAt": "2026-05-13T06:45:00.000Z",
       "sourceUrl": "paperclip://mock/runs/run_docs_20260513_001/artifacts/doc_weekly_marketing_sync",
       "tags": ["weekly-sync", "marketing", "mock"],
+      "linkedTasks": [
+        {
+          "requestId": "pc_req_20260508_001",
+          "externalTaskId": "pc_task_001",
+          "title": "Prepare campaign brief",
+          "relationship": "supports",
+          "anchorText": "Prepare campaign brief draft"
+        }
+      ],
       "content": {
         "format": "markdown",
         "text": "# Weekly Marketing Sync\n\n## Decisions\n\n- Keep the Q2 campaign brief focused on inbound proof.\n- Route unclear task ownership through Review Queue before creating Trello cards.\n\n## Follow-up\n\n1. Prepare campaign brief draft.\n2. Confirm landing page owner.\n3. Review evidence links before approval."
@@ -44,6 +53,15 @@
       "generatedAt": "2026-05-13T06:50:00.000Z",
       "sourceUrl": "paperclip://mock/runs/run_child_docs_20260513_002/artifacts/doc_child_agent_execution_notes",
       "tags": ["agent-trace", "mock"],
+      "linkedTasks": [
+        {
+          "requestId": "pc_req_20260508_001",
+          "externalTaskId": "pc_task_001",
+          "title": "Prepare campaign brief",
+          "relationship": "audit_context",
+          "anchorText": "Child agent verification context"
+        }
+      ],
       "agent": {
         "agentId": "agent_research_child_02",
         "agentName": "Paperclip Research Child Agent",

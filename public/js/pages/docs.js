@@ -66,6 +66,7 @@ function renderDocsPage(payload) {
     item.innerHTML = `
       <span class="docs-item-title">${esc(doc.title)}</span>
       <span class="docs-item-meta">${esc(doc.artifactType)} - ${esc(doc.agent?.agentName || "Paperclip agent")}</span>
+      ${(doc.linkedTasks || []).length ? `<span class="docs-item-linked">${(doc.linkedTasks || []).length} linked task${doc.linkedTasks.length === 1 ? "" : "s"}</span>` : ""}
       <span class="docs-item-tags">${(doc.tags || []).slice(0, 3).map(tag => `<em>${esc(tag)}</em>`).join("")}</span>
     `;
     list.appendChild(item);
@@ -100,9 +101,33 @@ function renderDocsViewer(doc, source) {
       <div><span>Run</span><strong>${esc(doc.agent?.runId || "")}</strong></div>
       <div><span>Thread</span><strong>${esc(source?.threadId || "")}</strong></div>
     </div>
+    ${renderDocsLinkedTasks(doc.linkedTasks || [])}
     <div class="docs-content">${renderDocsMarkdown(doc.content?.text || "")}</div>
     ${renderDocsEvidence(doc.sourceEvidence || [])}
   `;
+}
+
+function renderDocsLinkedTasks(linkedTasks) {
+  if (!linkedTasks.length) return "";
+  return `
+    <div class="docs-linked-tasks">
+      <h3>Linked Review Queue Tasks</h3>
+      ${linkedTasks.map(task => `
+        <button type="button" class="docs-linked-task" onclick='openLinkedReviewTask(${JSON.stringify(task).replace(/'/g, "&apos;")})'>
+          <span>${esc(task.title || task.externalTaskId)}</span>
+          <small>${esc(task.relationship || "supports")} - ${esc(task.externalTaskId || task.requestId)}</small>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function openLinkedReviewTask(link) {
+  S.pendingReviewTaskLink = {
+    requestId: link?.requestId || "",
+    externalTaskId: link?.externalTaskId || "",
+  };
+  navigateTo("review");
 }
 
 function renderDocsMarkdown(text) {

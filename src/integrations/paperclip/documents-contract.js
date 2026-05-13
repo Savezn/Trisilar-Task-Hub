@@ -92,6 +92,26 @@ function normalizeEvidence(value, path, errors) {
   });
 }
 
+function normalizeLinkedTasks(value, path, errors) {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value)) {
+    errors.push({ path, message: "Must be an array" });
+    return [];
+  }
+
+  return value.map((item, index) => {
+    const itemPath = `${path}[${index}]`;
+    const input = requireObject(item, itemPath, errors);
+    return {
+      requestId: requireText(input.requestId, `${itemPath}.requestId`, errors),
+      externalTaskId: requireText(input.externalTaskId, `${itemPath}.externalTaskId`, errors),
+      title: requireText(input.title, `${itemPath}.title`, errors),
+      relationship: optionalText(input.relationship, "supports"),
+      anchorText: optionalText(input.anchorText),
+    };
+  });
+}
+
 function normalizeDocument(document, index, sharedAgent, errors) {
   const path = `documents[${index}]`;
   const input = requireObject(document, path, errors);
@@ -119,6 +139,7 @@ function normalizeDocument(document, index, sharedAgent, errors) {
       text: boundedText(requireText(content.text, `${path}.content.text`, errors), MAX_DOCUMENT_TEXT_LENGTH),
     },
     sourceEvidence: normalizeEvidence(input.sourceEvidence, `${path}.sourceEvidence`, errors),
+    linkedTasks: normalizeLinkedTasks(input.linkedTasks, `${path}.linkedTasks`, errors),
   };
 }
 

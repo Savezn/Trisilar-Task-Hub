@@ -3975,6 +3975,11 @@ a { text-decoration: none; }
   background: rgba(236, 254, 255, 0.5);
 }
 
+.review-task-card.review-task-linked-focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
 .review-task-card.task-processed {
   background: rgba(248, 250, 252, 0.86);
 }
@@ -4077,6 +4082,52 @@ a { text-decoration: none; }
   font-size: 13px;
   line-height: 1.45;
   overflow-wrap: anywhere;
+}
+
+.review-linked-docs {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.review-linked-docs-label {
+  align-items: center;
+  color: var(--ink-4);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 740;
+  gap: 5px;
+}
+.review-linked-docs-label svg {
+  height: 14px;
+  width: 14px;
+}
+.review-linked-doc {
+  background: var(--surface);
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  border-radius: 8px;
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 260px;
+  min-width: 0;
+  padding: 7px 9px;
+  text-align: left;
+}
+.review-linked-doc:hover { border-color: var(--primary); }
+.review-linked-doc span {
+  font-size: 12px;
+  font-weight: 740;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.review-linked-doc small {
+  color: var(--ink-4);
+  font-size: 11px;
 }
 
 .review-task-meta-row {
@@ -6466,6 +6517,13 @@ a { text-decoration: none; }
   color: var(--text-muted);
   font-size: 11px;
 }
+.docs-item-linked {
+  color: var(--primary);
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 4px;
+}
 .docs-item-tags {
   display: flex;
   flex-wrap: wrap;
@@ -6537,6 +6595,39 @@ a { text-decoration: none; }
   font-size: 12px;
   margin-top: 3px;
   overflow-wrap: anywhere;
+}
+.docs-linked-tasks {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+}
+.docs-linked-tasks h3 {
+  color: var(--text);
+  font-size: 13px;
+  margin: 0 0 10px;
+}
+.docs-linked-task {
+  align-items: flex-start;
+  background: var(--list-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 10px 12px;
+  text-align: left;
+  width: 100%;
+}
+.docs-linked-task:hover { border-color: var(--primary); }
+.docs-linked-task span {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+.docs-linked-task small {
+  color: var(--text-muted);
+  font-size: 11px;
 }
 .docs-content {
   color: var(--text);

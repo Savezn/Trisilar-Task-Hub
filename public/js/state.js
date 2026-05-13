@@ -8,6 +8,8 @@ const S = {
   currentLists: [],
   mode: "today",   // "today" | "review" | "all" | "board" | "group" | "calendar" | "docs" | "planner" | "okr" | "focus" | "settings"
   docsSelectedArtifactId: null,
+  paperclipDocsIndex: null,
+  pendingReviewTaskLink: null,
   focusOwner: "",  // P7-5: selected owner id in Weekly Focus (persists across re-renders)
   allCardsCache: null,
   editing: null,
