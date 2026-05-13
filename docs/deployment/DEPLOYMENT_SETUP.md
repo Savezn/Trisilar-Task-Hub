@@ -1,7 +1,7 @@
 # Deployment Setup - V0.2-W1-02
 
 **Doc Role:** Deploy-readiness reference for company access
-**Status:** Active - deploy-readiness reference plus accepted DigitalOcean/Cloudflare hosted dev/demo path for Task Hub; service-auth planning pending
+**Status:** Active - deploy-readiness reference plus accepted DigitalOcean/Cloudflare hosted dev/demo path for Task Hub; service-auth topology planned / QA pending
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
@@ -222,7 +222,60 @@ Rules:
 - Do not rely on obscured platform URLs as access control.
 - QA must verify anonymous access is blocked before any production use.
 - Agent/API calls should not depend on interactive email login. Use Cloudflare Access service tokens, signed webhook headers, or an approved machine-auth pattern.
-- Paperclip is already hosted on DigitalOcean behind Cloudflare; W3 live connector work still needs service-auth verification with hosted Task Hub.
+- Paperclip is already hosted on DigitalOcean behind Cloudflare; W3 live connector work still needs W1-07 service-auth QA/PM acceptance and Paperclip owner inputs.
+
+---
+
+## Paperclip Service Auth Planning
+
+Use this for `V0.2-W1-07` planning only. Do not configure secret values in git or chat.
+
+Selected direction:
+
+- Paperclip calls Task Hub first by webhook.
+- Task Hub does not poll Paperclip in the first live connector.
+- Human access remains Cloudflare Access email login.
+- Machine/API access uses Cloudflare Access service token plus signed webhook headers.
+
+Hosted URLs:
+
+| Service | URL | Notes |
+|---|---|---|
+| Task Hub | `https://taskhub.trisila.online` | Accepted dev/demo runtime |
+| Paperclip | `https://paperclip.trisila.online` | Owner-managed; health/readiness path still needs confirmation |
+
+Task Hub env var names:
+
+- `PAPERCLIP_WEBHOOK_ENABLED`
+- `PAPERCLIP_WEBHOOK_SIGNING_SECRET`
+- `PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS`
+- `PAPERCLIP_ALLOWED_SOURCE_ID`
+- `PAPERCLIP_ALLOWED_ENVIRONMENT`
+- `PAPERCLIP_BASE_URL`
+- `PAPERCLIP_HEALTH_PATH`
+- `CLOUDFLARE_ACCESS_AUD`
+- `CLOUDFLARE_ACCESS_TEAM_DOMAIN`
+
+Paperclip env var names:
+
+- `TASKHUB_BASE_URL`
+- `TASKHUB_PAPERCLIP_WEBHOOK_PATH`
+- `TASKHUB_WEBHOOK_SIGNING_SECRET`
+- `TASKHUB_CF_ACCESS_CLIENT_ID`
+- `TASKHUB_CF_ACCESS_CLIENT_SECRET`
+
+Future W3 route:
+
+```text
+POST /api/integrations/paperclip/webhook
+```
+
+Rules:
+
+- Configure Cloudflare Access service token values in the Paperclip runtime only.
+- Configure webhook signing secret in both runtime dashboards/server env only.
+- Do not expose service-token headers or signing secrets to browser JavaScript.
+- Do not implement or enable the live W3 webhook until W1-07 passes QA/PM and Paperclip owner confirms the remaining inputs.
 
 ---
 
