@@ -92,12 +92,13 @@ async function loadPlannerGTasks() {
   try {
     const status = await api.get("/api/google-tasks/status");
     if (!status.connected) {
+      const statusMessage = status.error || "Connect Google to add and complete daily tasks from the Planner.";
       if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = "Off";
       if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Disconnected";
       body.innerHTML = `
         <div class="planner-connect-state">
           <strong>Google Tasks is disconnected</strong>
-          <p>Connect Google to add and complete daily tasks from the Planner.</p>
+          <p>${esc(statusMessage)}</p>
           <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Google</button>
         </div>`;
       return;
