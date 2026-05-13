@@ -90,6 +90,7 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `testing/TEST_STRATEGY.md` | Verification policy and automated test-suite roadmap |
 | `adr/README.md` | ADR index and process |
 | `adr/ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` | Project conventions and AI workflow decision |
+| `adr/ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md` | Paperclip-to-Task-Hub service-auth topology decision |
 | `archive/VERSION_0_1_PLAN.md` | Historical V0.1 modularization plan |
 | `archive/DEVELOPMENT_HISTORY.md` | Archived roadmap and completed phase tracker |
 | `archive/ARCHITECTURE_ANALYSIS_V0_1.md` | Archived V0.1 architecture analysis |

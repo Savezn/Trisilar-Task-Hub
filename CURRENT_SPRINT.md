@@ -1,9 +1,9 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2 W2 Full UI Redesign - W2-06 Accepted / Integration Next
+**Phase:** V0.2 W1 Access Foundation - DigitalOcean/Cloudflare Runtime
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-09 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -19,7 +19,8 @@
 | V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
 | V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
 | V0.2-W1-05 ngrok Random URL Demo | QA Pass / PM Accepted as demo-only path | Reviewed by Codex QA; Accepted by Codex PM; current URL/credentials remain local-only in Desktop handoff file |
-| V0.2 W2 Full UI Redesign | `V0.2-W2-01` through `V0.2-W2-05` accepted and integrated through `dev@3fca059`; `V0.2-W2-06` accepted at `d83614d` and pending integration into `dev` | `V0.2-W2-06` QA Recheck passed Settings save paths, disconnected integration states, OKR/Focus interactions, final route mobile overflow, W3 Paperclip contract/mock, and console checks; full redesign should be treated as pending integration QA/PM until merged to `dev` |
+| V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. `V0.2-W1-06` and `V0.2-W1-08` are accepted as dev/demo runtime complete, not production/release-grade. |
+| V0.2 W2 Full UI Redesign | `V0.2-W2-01` through `V0.2-W2-05` accepted and integrated through `dev@3fca059`; `V0.2-W2-06` planned next | `V0.2-W2-05` integration QA passed on `dev@3fca059` and is accepted by Codex PM; full redesign still open until `V0.2-W2-06` passes QA/PM |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
@@ -32,9 +33,9 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06` stable Cloudflare Access gate deferred until domain/subdomain exists | PM / User |
-| W2 | Full UI Redesign | `V0.2-W2-06` accepted at `d83614d`; final W2 feature branch is ready for integration into `dev` | Dev Integration |
-| W3 | Paperclip Multi-Agent Integration | Done `1d1f638` / QA Pass / PM Accepted / merged to `dev` | PM complete |
+| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while Paperclip server is offline | Hold / PM |
+| W2 | Full UI Redesign | `V0.2-W2-01`-`V0.2-W2-05` accepted and integrated on `dev`; `V0.2-W2-06` remains the final planned W2 phase; full redesign not complete | Dev |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Paperclip owner inputs are confirmed after Paperclip server is online | Blocked |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -48,8 +49,8 @@
 | Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | W2 full UI redesign phase plan | `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` |
-| W1 deploy-readiness setup (`V0.2-W1-02`) | `docs/deployment/DEPLOYMENT_SETUP.md` |
-| W1 dev deployment config / no-cost preview handoff (`V0.2-W1-03` to `V0.2-W1-05`) | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
+| W1 deploy-readiness setup (`V0.2-W1-02`) and DigitalOcean/Cloudflare hosted dev path | `docs/deployment/DEPLOYMENT_SETUP.md` |
+| W1 dev deployment config / ngrok demo handoff / DigitalOcean runtime notes (`V0.2-W1-03` to `V0.2-W1-08`) | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
 | QA history and completed work archive | `docs/logs/QA_LOG.md` |
 | PM decisions and phase context | `docs/logs/DECISION_LOG.md` |
 | Product/UX scope | `MVP_PRD.md` |
@@ -78,7 +79,8 @@ Required branches:
 Required worktrees:
 
 - PM / Integration: `trisilar-task-hub` on `dev`
-- `V0.2-W1-05`: ngrok temporary demo runtime uses the W1 worktree or local runtime tools; repo branch only if a docs/setup defect is discovered
+- `V0.2-W1-05`: ngrok temporary demo runtime uses local runtime tools; repo branch only if a docs/setup defect is discovered
+- `V0.2-W1-08`: DigitalOcean hosted dev/demo setup uses latest `dev`, server-only secrets, and Cloudflare front door for Task Hub; repo changes only if setup defects are found
 - W2: `trisilar-task-hub-w2-ui-redesign` on the active `feature/w2-*` phase branch
 - W3: `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`
 
@@ -94,45 +96,50 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W2-06 Integration
+## Next Action - V0.2-W2-06 Settings + OKR + Weekly Focus Polish
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. Accepted `V0.2-W2-01` (`W2a`, `b5f67fb`) is shell foundation and Today redesign only. Accepted `V0.2-W2-02` (`W2b`, `d33d8f7`) is Review Queue redesign and shared task drawer foundation only. Accepted `V0.2-W2-03` (`W2c`, `ea807fd`) is Tasks Inbox + Cross-board Rows only. Accepted `V0.2-W2-04` (`W2d`, `47ebd84`, integrated `dev@0b77aed`) is Boards Monitor + Team Board Views only. Accepted `V0.2-W2-05` (`W2e`, `4638df7`, integrated `dev@3fca059`) is Calendar + Planner only. Accepted `V0.2-W2-06` (`W2f`, `d83614d`) is Settings + OKR + Weekly Focus Polish only.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W1-05` (`W1.4`) remains accepted as demo-only random ngrok access. `V0.2-W1-06` and `V0.2-W1-08` are accepted as Cloudflare-protected DigitalOcean dev/demo runtime complete after QA pass and PR #9 merge to `dev` at `91ee327`. `V0.2-W1-07` service-auth topology is accepted after QA/PM review and PR #11 merge to `dev` at `fa87ac4`. This does not replace production deployment, does not implement W3 live Paperclip behavior, and does not merge to `main`.
 
-The next planned role is Dev Integration to merge accepted `feature/w2-06-settings-okr-focus-redesign` into updated `dev`.
+QA evidence on 2026-05-13: `taskhub-dashboard.service` is active/enabled; Task Hub binds `127.0.0.1:3000`; raw public `157.230.251.209:3000` is unreachable; anonymous `https://taskhub.trisila.online/healthz` returns Cloudflare Access `302`; approved-user browser access loaded the app without `/api/boards` or `/api/all-cards` 401 errors; local `/healthz`, `/api/boards`, and `/api/all-cards` return `200`; `GOOGLE_REDIRECT_URI` is `https://taskhub.trisila.online/auth/callback`; `APP_DATA_DIR` persistence survived restart; secrets are present only as server-side env keys and were not recorded in docs/chat.
+
+W1 runtime and service-auth planning are accepted for dev/demo. Paperclip runtime verification is held because the Paperclip server is currently offline, so W3 live connector work remains blocked until Paperclip owner confirms the remaining runtime/auth inputs after the server is online. Do not reopen Task Hub runtime work.
 
 ```text
-Role: Dev Integration
-Task: V0.2-W2-06 Integration - Merge Accepted Settings/OKR/Focus Redesign Into dev
+Role: Dev
+Task: V0.2-W2-06 - Settings + OKR + Weekly Focus Polish
+Alias: W2f
 
 Context:
-`V0.2-W2-06` (`W2f`) is accepted by Codex PM at `d83614d` on `feature/w2-06-settings-okr-focus-redesign`. QA Recheck passed Settings save paths, disconnected integration surfaces, OKR detail/filter behavior, Weekly Focus owner/review navigation, final W2 route mobile overflow checks, Review drawer smoke, and W3 Paperclip contract/mock regression. Merge only this accepted W2-06 branch into updated `dev`.
+W1 Task Hub dev/demo runtime is accepted and should not be reopened. W1 Paperclip runtime verification is held because the Paperclip server is offline. W3 live connector remains blocked. Continue non-blocked V0.2 delivery by implementing the final W2 UI phase from latest `dev`.
 
 Read first:
 - CODEX.md
 - CURRENT_SPRINT.md
 - docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
-- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
 - docs/plans/VERSION_0_2_PLAN.md
+- docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md
+- docs/design/ui-design-v1-0/README.md
 
 Goal:
-Merge accepted W2-06 into `dev` without starting any new W1/W2/W3 implementation, then verify the integrated `dev` state.
+Redesign Settings, OKR, and Weekly Focus to match the accepted W2 shell/page system while preserving existing behavior.
 
 Steps:
-1. Switch to the PM/integration worktree on `dev`.
-2. Fetch and update `dev` from `origin/dev`.
-3. Merge `feature/w2-06-settings-okr-focus-redesign` only.
-4. Run `node server.js`, `npm.cmd run check:all`, `npm.cmd run verify:paperclip-contract`, and `npm.cmd run verify:paperclip-mock`.
-5. Browser smoke `/settings`, `/okr`, `/focus`, plus Today, Review, Tasks, Boards, Calendar, Planner, and W3 regression.
-6. Capture or reference integration visual evidence for desktop/mobile Settings, OKR, and Weekly Focus.
-7. Do not start any post-W2 work in this task.
+1. Start from latest `dev` in the W2 worktree.
+2. Use branch `feature/w2-06-settings-okr-focus-redesign`.
+3. Redesign `/settings` as the operational control center for integrations, workspace visibility, hidden boards, monitor teams, and BU groups.
+4. Normalize `/okr` and `/focus` to the accepted W2 visual system without expanding OKR or Weekly Focus strategy scope.
+5. Preserve existing settings save paths, OKR behavior, Weekly Focus behavior, and integration status surfaces.
+6. Verify desktop and mobile for Settings, OKR, and Weekly Focus, plus regression smoke for Today, Review, Tasks, Boards, Calendar, Planner, and W3 mock.
+7. Route to QA after implementation.
 
 Rules:
-- Do not implement W1 deployment/access.
-- Do not implement new W3 Paperclip behavior.
-- Do not rewrite to React/Vite unless PM explicitly approves.
-- Preserve route behavior and existing APIs.
-- Keep scope to integration of accepted W2-06.
-- Include attribution: Implemented by Codex Dev.
+- Do not deploy production.
+- Do not merge to main.
+- Do not expose secrets, Cloudflare tokens, or Trello/Google credential values.
+- Do not implement W1 runtime changes.
+- Do not implement new W3 Paperclip behavior or live connector work.
+- Preserve W1.4 demo-only status.
+- Include attribution: Routed by Codex PM.
 ```
 
-**Attribution:** `V0.2-W2-06` implemented by Codex Dev at `d83614d`, reviewed by Codex QA Recheck, and accepted by Codex PM. Earlier W2 phases remain accepted as documented. W2 full UI redesign remains pending integration into `dev` and Integration QA/PM acceptance.
+**Attribution:** W1 runtime rebaseline recorded by Codex PM. W1.4 demo confirmed by teammate and accepted by Codex PM. Paperclip-on-DigitalOcean status confirmed by PM and recorded by Codex PM. W1.5/W1.7 runtime checkpoint recorded by Codex PM; reviewed by Codex QA; accepted by Codex PM. W1.6 service-auth topology planned by Codex PM / Dev; reviewed by Codex QA / PM; accepted by Codex PM. Paperclip runtime verification held by Codex PM because Paperclip server is offline; non-blocked V0.2 work routed to W2-06.
