@@ -100,7 +100,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
 | W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while server is offline | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` planned next / full redesign not complete | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W3-02a` QA Pass / PM Accepted `9391e4f`; `V0.2-W3-02b` QA Pass / PM Accepted `e681006`; `V0.2-W3-02c` planned next; live connector blocked while owner inputs remain unconfirmed | Contract-first mock adapter, mock/local docs viewer, docs-to-task traceability, attribution/audit sync; live connector waits for owner runtime/auth inputs |
+| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; `V0.2-W3-02a` QA Pass / PM Accepted `9391e4f`; `V0.2-W3-02b` QA Pass / PM Accepted `e681006`; `V0.2-W3-02c` QA Pass / PM Accepted `64fdb01`; `V0.2-W3-02d` approved next; live connector blocked while owner inputs remain unconfirmed | Contract-first mock adapter, mock/local docs viewer, docs-to-task traceability, attribution/audit sync; live connector waits for owner runtime/auth inputs |
 
 ---
 
@@ -139,8 +139,8 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | `V0.2-W3-01` | W3 sequence 1 | Done `1d1f638` | Contract definitions, mock adapter route, idempotency/audit persistence, and mock verification |
 | `V0.2-W3-02a` | W3 docs viewer foundation | QA Pass / PM Accepted `9391e4f` | Local/mock Paperclip document artifact schema, fixture, endpoint, and Docs page |
 | `V0.2-W3-02b` | W3 docs-to-task links | QA Pass / PM Accepted `e681006` | Mock/local document artifact `linkedTasks`, Docs-to-Review links, Review Queue-to-Docs links, and verification |
-| `V0.2-W3-02c` | W3 docs usability hardening | Planned next | Search, filter, sort, metadata panel, and related task status panel for mock/local docs |
-| `V0.2-W3-02d` | W3 docs-to-review workflow | Planned after `02c` | Create pending Review Queue tasks from document excerpts; manual attach/detach document-task links |
+| `V0.2-W3-02c` | W3 docs usability hardening | QA Pass / PM Accepted `64fdb01` | Search, filter, sort, metadata panel, and related task status panel for mock/local docs |
+| `V0.2-W3-02d` | W3 docs-to-review workflow | Approved next | Create pending Review Queue tasks from document excerpts; manual attach/detach document-task links |
 | `V0.2-W3-02e` | W3 docs traceability polish | Planned after `02d` | Agent/run grouping, bounded evidence viewer, and document audit timeline |
 | `V0.2-W3-02` | W3 sequence 2 | Plan Ready / Implementation Blocked | Live webhook contract/env/auth/signing/replay plan prepared; route implementation waits for Paperclip server online and owner inputs |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature and replay hardening after the first live webhook is verified |
@@ -265,7 +265,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 **Priority:** P1 after W0
 **Owner Role:** Integration Dev
-**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02a` QA Pass / PM Accepted at `9391e4f`; `V0.2-W3-02b` QA Pass / PM Accepted at `e681006`; `V0.2-W3-02c` planned next; `V0.2-W3-02` live webhook plan prepared; live route implementation remains blocked until Paperclip owner inputs are confirmed
+**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02a` QA Pass / PM Accepted at `9391e4f`; `V0.2-W3-02b` QA Pass / PM Accepted at `e681006`; `V0.2-W3-02c` QA Pass / PM Accepted at `64fdb01`; `V0.2-W3-02d` approved next; `V0.2-W3-02` live webhook plan prepared; live route implementation remains blocked until Paperclip owner inputs are confirmed
 
 **Scope:**
 - Integration contract.
@@ -279,7 +279,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 - Task Hub is accepted as a stable hosted dev/demo URL through DigitalOcean + Cloudflare.
 - Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
-- Non-live W3 Docs work can continue through `V0.2-W3-02c` without waiting on Paperclip owner runtime inputs.
+- Non-live W3 Docs work can continue through `V0.2-W3-02d` without waiting on Paperclip owner runtime inputs.
 - W3 live connector or live Docs API work can proceed only after Paperclip owner inputs are confirmed.
 
 **Docs phase tracking:**
@@ -288,8 +288,8 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 |---|---|---|---|
 | `V0.2-W3-02a` | QA Pass / PM Accepted | Docs viewer foundation | No live Paperclip; no W2 visual redesign |
 | `V0.2-W3-02b` | QA Pass / PM Accepted | Docs-to-task links | Review Queue remains human-gated |
-| `V0.2-W3-02c` | Planned next | Search/filter/sort, metadata panel, related task status panel | Functional W3 scope; no live call |
-| `V0.2-W3-02d` | Planned after `02c` | Create pending review tasks from doc excerpts; manual attach/detach links | Requires separate PM approval because it changes workflow behavior |
+| `V0.2-W3-02c` | QA Pass / PM Accepted `64fdb01` | Search/filter/sort, metadata panel, related task status panel | Functional W3 scope; no live call |
+| `V0.2-W3-02d` | Approved next | Create pending review tasks from doc excerpts; manual attach/detach links | PM-approved mock/local workflow behavior; must stay human-gated |
 | `V0.2-W3-02e` | Planned after `02d` | Agent/run grouping, bounded evidence viewer, audit timeline | Defer until core usability and workflow are stable |
 | `V0.2-W3-04` | Blocked | Live Docs API/backend proxy | Requires Paperclip owner runtime inputs and server-only token path |
 
@@ -325,14 +325,14 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. W1 Task Hub runtime is accepted and should not be reopened. W2 continuation remains owned by the W2 worktree/agent. For the W3 worktree, the current non-blocked route is `V0.2-W3-02c` because it is mock/local Docs usability work and does not require live Paperclip.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. W1 Task Hub runtime is accepted and should not be reopened. W2 continuation remains owned by the W2 worktree/agent. For the W3 worktree, the current non-blocked route is `V0.2-W3-02d` because it is mock/local Docs-to-Review workflow work and does not require live Paperclip.
 
 ```text
 Role: Dev
-Task: V0.2-W3-02c - Paperclip Docs Usability Hardening
+Task: V0.2-W3-02d - Paperclip Docs-to-Review Workflow
 
 Context:
-`V0.2-W3-02a` Paperclip Docs Viewer Foundation is accepted at `9391e4f`. `V0.2-W3-02b` Docs-to-Task Attachment Links is accepted at `e681006`. W3 live docs/API/webhook work remains blocked until Paperclip owner confirms health path, service-token support, HMAC support, source/environment ids, id mapping, and sample payload. Continue W3 only with mock/local Docs usability hardening.
+`V0.2-W3-02a` Paperclip Docs Viewer Foundation is accepted at `9391e4f`. `V0.2-W3-02b` Docs-to-Task Attachment Links is accepted at `e681006`. `V0.2-W3-02c` Docs Usability Hardening is accepted at `64fdb01`. W3 live docs/API/webhook work remains blocked until Paperclip owner confirms health path, service-token support, HMAC support, source/environment ids, id mapping, and sample payload. Continue W3 only with mock/local Docs-to-Review workflow work.
 
 Read first:
 - CURRENT_SPRINT.md
@@ -345,12 +345,12 @@ Read first:
 
 Steps:
 1. Work only in the W3 worktree on `feature/w3-paperclip-integration`.
-2. Add or update verification for mock/local Docs usability before or with implementation.
-3. Add `/docs` search across title, summary, tags, agent/run ids, artifact ids, and linked task ids.
-4. Add filters for document status, artifact type, and linked/unlinked state.
-5. Add deterministic sorting by generated date, title, status, and agent/run.
-6. Add a metadata panel that shows normalized source, attribution, evidence counts, linked task ids, and document status without exposing secrets.
-7. Add related Review Queue task status on `/docs` for linked tasks while preserving `/docs` -> `/review` -> `/docs` navigation.
+2. Add or update verification for Docs-created pending Review Queue tasks, manual attach/detach, and document review status.
+3. Add a bounded mock/local flow to create a pending Review Queue task from a document excerpt.
+4. Add manual attach/detach of document artifacts to existing Review Queue tasks by `artifactId`, `requestId`, and `externalTaskId`.
+5. Add local document review status with allowed values `new`, `reviewed`, `needs_follow_up`, and `archived`.
+6. Persist local workflow state under `APP_DATA_DIR`; do not mutate mock fixture files at runtime.
+7. Preserve `V0.2-W3-02c` search/filter/sort/metadata behavior.
 8. Route to QA with verification evidence.
 
 Rules:
@@ -361,6 +361,7 @@ Rules:
 - Do not change W1 runtime/access scope.
 - Do not change W2 visual redesign scope.
 - Do not bypass Review Queue human approval.
+- Do not auto-approve, auto-create Trello cards, auto-sync Calendar, or auto-sync Google Tasks from Docs.
 - Preserve existing mock route and connection settings behavior.
 - Preserve existing app behavior.
 - Stage specific files only; do not use `git add .`.
@@ -399,3 +400,4 @@ Rules:
 | 2026-05-13 | Prepared docs-only `V0.2-W3-02` live webhook plan while Paperclip is offline; implementation stays blocked until owner confirms health/readiness, Cloudflare Access service-token, HMAC, source/environment, and id mapping inputs | Codex PM / Dev |
 | 2026-05-13 | Accepted `V0.2-W3-02a` Paperclip Docs Viewer Foundation at `9391e4f`; live Paperclip docs/API/webhook work remains blocked until owner confirms health path, service-token support, HMAC support, source/environment ids, id mapping, and sample payload | Codex PM |
 | 2026-05-13 | Accepted `V0.2-W3-02b` Paperclip Docs-to-Task Attachment Links at `e681006`; added W3 Docs phase ladder through `V0.2-W3-02c`/`02d`/`02e` plus blocked `V0.2-W3-04` live Docs API boundary | Codex PM |
+| 2026-05-13 | Accepted `V0.2-W3-02c` Paperclip Docs Usability Hardening at `64fdb01`; approved `V0.2-W3-02d` Docs-to-Review Workflow as the next mock/local human-gated W3 task | Codex PM |

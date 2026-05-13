@@ -117,7 +117,7 @@ Make the whole app feel like one coherent command center, not a mix of old scree
 
 ### L3 - V0.2 Paperclip Foundation
 
-**Status:** Mock integration accepted; `V0.2-W3-02a` and `V0.2-W3-02b` Docs foundation phases accepted; `V0.2-W3-02c` Docs Usability Hardening planned next; live connector remains future work blocked by Paperclip owner runtime inputs.
+**Status:** Mock integration accepted; `V0.2-W3-02a`, `V0.2-W3-02b`, and `V0.2-W3-02c` Docs phases accepted; `V0.2-W3-02d` Docs-to-Review Workflow approved next; live connector remains future work blocked by Paperclip owner runtime inputs.
 
 **Goal:**
 Allow AI-agent output to enter Task Hub through a contract-first review path.
@@ -133,9 +133,10 @@ Allow AI-agent output to enter Task Hub through a contract-first review path.
 - No Trello/Calendar side effect before approval.
 - Mock/local Docs viewer foundation.
 - Bidirectional Docs-to-Task links through Review Queue.
+- Mock/local Docs search, filters, sorting, metadata, and related Review Queue status.
 
 **Next non-live step:**
-`V0.2-W3-02c` Paperclip Docs Usability Hardening can proceed without live Paperclip. It should add search, filters, sort, a document metadata panel, and related task status display while preserving Review Queue human approval.
+`V0.2-W3-02d` Paperclip Docs-to-Review Workflow can proceed without live Paperclip. It may create pending Review Queue tasks from bounded document excerpts and allow manual attach/detach of document-task links, but it must preserve Review Queue human approval and avoid Trello/Calendar/Google Tasks side effects until an existing human approval route runs.
 
 **Next live step:**
 Live Paperclip connector and live Docs API/backend proxy should be planned only after owner inputs are accepted. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner, but W3 live work needs Paperclip owner confirmation of health/readiness path, service-token support, HMAC/signing support, source/environment ids, id mapping, sample payload, and any server-only Docs API token path before live connector work proceeds.
@@ -208,11 +209,12 @@ Current recommended next implementation path:
 
 ```text
 V0.2-W3-02c Paperclip Docs Usability Hardening
--> QA/PM acceptance
--> decide whether to start V0.2-W3-02d Docs-to-Review Workflow
+-> QA/PM accepted at 64fdb01
+-> V0.2-W3-02d Docs-to-Review Workflow
+-> QA/PM acceptance before V0.2-W3-02e
 ```
 
-W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub DigitalOcean + Cloudflare runtime is accepted at `https://taskhub.trisila.online`; W1-07 service-auth topology is accepted. W3 live connector planning remains blocked by Paperclip owner input confirmation, but mock/local Docs usability work can proceed.
+W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub DigitalOcean + Cloudflare runtime is accepted at `https://taskhub.trisila.online`; W1-07 service-auth topology is accepted. W3 live connector planning remains blocked by Paperclip owner input confirmation, but mock/local Docs-to-Review workflow work can proceed.
 
 ---
 
@@ -234,3 +236,4 @@ W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is 
 | 2026-05-13 | Held W1 Paperclip runtime verification while the Paperclip server is offline; kept L1 Task Hub runtime accepted and routed non-blocked work back to L2 `V0.2-W2-06` | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-03` at `ea807fd` and routed L2 to W2-03 integration into `dev` before `V0.2-W2-04` starts | Codex PM |
 | 2026-05-13 | Updated L3 Paperclip Foundation with accepted `V0.2-W3-02b` Docs-to-Task Links and routed non-live W3 work to `V0.2-W3-02c` Docs Usability Hardening while keeping live connector/API work blocked | Codex PM |
+| 2026-05-13 | Accepted `V0.2-W3-02c` Docs Usability Hardening at `64fdb01` and routed L3 next to `V0.2-W3-02d` Docs-to-Review Workflow with human-gated mock/local guardrails | Codex PM |

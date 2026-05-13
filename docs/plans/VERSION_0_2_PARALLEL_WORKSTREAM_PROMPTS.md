@@ -77,6 +77,8 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | H | `V0.2-W3-02` gate | Paperclip owner input confirmation | Resume only after Paperclip server is online |
 | I | `V0.2-W3-02c` | W3 docs usability hardening | Search/filter/sort and metadata for mock/local Docs |
 | J | `V0.2-W3-02c` | QA review | QA review for Docs usability hardening |
+| K | `V0.2-W3-02d` | W3 docs-to-review workflow | Create pending Review Queue work and local doc-task link corrections |
+| L | `V0.2-W3-02d` | QA review | QA review for Docs-to-Review workflow |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -536,6 +538,117 @@ Expected output:
 
 ---
 
+## Prompt K - V0.2-W3-02d Paperclip Docs-to-Review Workflow
+
+```text
+Role: Dev
+Task: V0.2-W3-02d - Paperclip Docs-to-Review Workflow
+
+Context:
+V0.2-W3-02a Docs Viewer Foundation is QA Pass / PM Accepted at `9391e4f`.
+V0.2-W3-02b Docs-to-Task Attachment Links is QA Pass / PM Accepted at `e681006`.
+V0.2-W3-02c Docs Usability Hardening is QA Pass / PM Accepted at `64fdb01`.
+Live Paperclip docs/API/webhook work remains blocked until Paperclip owner confirms runtime inputs.
+This task adds mock/local Docs-to-Review workflow behavior while preserving Review Queue human approval.
+
+Branch/worktree:
+- Worktree: `trisilar-task-hub-w3-paperclip`
+- Branch: `feature/w3-paperclip-integration`
+
+Read first:
+- CODEX.md
+- CURRENT_SPRINT.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
+- public/js/pages/docs.js
+- public/js/pages/review.js
+- review-store.js
+- src/integrations/paperclip/documents-contract.js
+- src/integrations/paperclip/fixtures/document-artifacts.json
+- scripts/verify-paperclip-docs.js
+
+Goal:
+Let a reviewer create pending Review Queue work from a mock/local Paperclip document excerpt and manually attach/detach document-task links without live Paperclip or external side effects.
+
+Implement:
+1. Add verification for creating a pending Review Queue task from a bounded document excerpt.
+2. Add a local `/docs` affordance to create a Review Queue candidate from selected document content or a bounded excerpt field.
+3. Store Docs-created tasks as pending Review Queue tasks only.
+4. Preserve source metadata tying created tasks back to `artifactId`, `requestId`, `externalTaskId` when available, agent/run ids, and source evidence.
+5. Add manual attach of a document artifact to an existing Review Queue task by `artifactId`, `requestId`, and `externalTaskId`.
+6. Add manual detach of a mistaken document-task link while preserving a local audit event.
+7. Add document review status with allowed states `new`, `reviewed`, `needs_follow_up`, and `archived`.
+8. Persist local attachment/status state under `APP_DATA_DIR`; do not mutate mock fixture files at runtime.
+9. Preserve V0.2-W3-02c search/filter/sort/metadata behavior and existing `/docs -> /review -> /docs` navigation.
+
+Rules:
+- Do not call live Paperclip.
+- Do not add live webhook.
+- Do not add live Docs API reader or backend proxy.
+- Do not change W1 deployment/access.
+- Do not perform W2 visual redesign or shell/navigation redesign.
+- Do not bypass Review Queue human approval.
+- Do not auto-approve, auto-create Trello cards, auto-sync Calendar, or auto-sync Google Tasks from Docs.
+- Stage specific files only; do not use `git add .`.
+
+Verification:
+- npm.cmd run verify:paperclip-docs
+- npm.cmd run verify:paperclip-contract
+- npm.cmd run verify:paperclip-mock
+- npm.cmd run verify:paperclip-connection
+- npm.cmd run verify
+- node server.js
+- npm.cmd run check:all
+
+Expected output:
+- Commit hash.
+- Verification evidence.
+- QA next-session prompt.
+```
+
+---
+
+## Prompt L - V0.2-W3-02d QA Review
+
+```text
+Role: QA
+Task: Review V0.2-W3-02d Paperclip Docs-to-Review Workflow
+
+Branch:
+feature/w3-paperclip-integration
+
+Review:
+- Latest implementation commit for V0.2-W3-02d
+
+Check:
+1. `/docs` can create a pending Review Queue task from a bounded mock/local document excerpt.
+2. Docs-created tasks preserve source metadata: artifact id, request id/external task id when available, agent/run ids, and source evidence.
+3. Manual attach links a document artifact to an existing Review Queue task by local identifiers.
+4. Manual detach removes a mistaken document-task link while preserving audit history.
+5. Document review status supports only `new`, `reviewed`, `needs_follow_up`, and `archived`.
+6. Local attachment/status state persists under `APP_DATA_DIR` and does not mutate mock fixtures at runtime.
+7. V0.2-W3-02c search/filter/sort/metadata behavior still works.
+8. Existing `/docs -> /review -> /docs` navigation still works.
+9. No live webhook, live Docs API reader/proxy, Paperclip network call, W1 scope, or W2 visual redesign is added.
+10. Review Queue approval/reject behavior remains human-gated; no Trello/Calendar/Google Tasks side effects occur until existing human approval routes run.
+
+Run:
+npm.cmd run verify:paperclip-docs
+npm.cmd run verify:paperclip-contract
+npm.cmd run verify:paperclip-mock
+npm.cmd run verify:paperclip-connection
+npm.cmd run verify
+npm.cmd run check:all
+
+Expected output:
+- QA PASS/FAIL with evidence.
+- If PASS: PM can accept V0.2-W3-02d and decide whether to start V0.2-W3-02e traceability polish.
+- If FAIL: list exact blocking fixes for Dev.
+```
+
+---
+
 ## Change Attribution
 
 | Date | Change | Updated by |
@@ -553,3 +666,4 @@ Expected output:
 | 2026-05-13 | Added Prompt H after PR #11 merge and PM acceptance of `V0.2-W1-07`; W3 live connector remains blocked until Paperclip owner inputs are confirmed | Codex PM |
 | 2026-05-13 | Marked Prompt H as held until the Paperclip server is online; active non-blocked route remains `V0.2-W2-06` | Codex PM |
 | 2026-05-13 | Added Prompt I and Prompt J for `V0.2-W3-02c` Docs Usability Hardening so W3 can continue with mock/local Docs work without unblocking live Paperclip | Codex PM |
+| 2026-05-13 | Added Prompt K and Prompt L for `V0.2-W3-02d` Docs-to-Review Workflow after PM accepted `V0.2-W3-02c` at `64fdb01` | Codex PM |
