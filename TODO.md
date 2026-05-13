@@ -46,7 +46,7 @@ Historical details live in `docs/archive/VERSION_0_1_PLAN.md`, `docs/archive/DEV
 
 ### V0.2 - Company Access, UI Redesign, Paperclip Integration
 
-Status: Active. W2 full UI redesign is re-scoped into `V0.2-W2-01`-`V0.2-W2-06` (`W2a`-`W2f` aliases), and V0.2 should not be treated as release-ready until W1 Cloudflare-protected hosted dev/demo access, W2 full UI, and W3 mock/integration gates are accepted. `V0.2-W1-05` random ngrok + temporary Basic Auth is accepted for short manual teammate demo only. Paperclip is already hosted on DigitalOcean behind Cloudflare by its owner, but runtime verification is held while the Paperclip server is offline. Task Hub is now configured on DigitalOcean behind Cloudflare at `https://taskhub.trisila.online`; `V0.2-W1-06`/`V0.2-W1-08` are accepted as dev/demo runtime complete; `V0.2-W1-07` service-auth topology is accepted. W3 live integration still needs Paperclip owner inputs before implementation planning.
+Status: Active. W2 full UI redesign is re-scoped into `V0.2-W2-01`-`V0.2-W2-06` (`W2a`-`W2f` aliases). `V0.2-W2-06` is QA Recheck Pass / PM Accepted at `bd3e441` and now needs integration into `dev`. V0.2 should not be treated as release-ready until W1 Cloudflare-protected hosted dev/demo access, W2 full UI integration, and W3 mock/integration gates are accepted. `V0.2-W1-05` random ngrok + temporary Basic Auth is accepted for short manual teammate demo only. Paperclip is already hosted on DigitalOcean behind Cloudflare by its owner, but runtime verification is held while the Paperclip server is offline. Task Hub is now configured on DigitalOcean behind Cloudflare at `https://taskhub.trisila.online`; `V0.2-W1-06`/`V0.2-W1-08` are accepted as dev/demo runtime complete; `V0.2-W1-07` service-auth topology is accepted. W3 live integration still needs Paperclip owner inputs before implementation planning.
 
 Workstreams:
 
@@ -54,7 +54,7 @@ Workstreams:
 |---|---|---|
 | W0 Branch / Environment / CI Setup | Establish `dev`, branch model, worktree workflow | Done |
 | W1 Company Access + Deployment | Make Trisilar teammates able to access stable Task Hub dev/demo safely | `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` accepted for dev/demo runtime; `V0.2-W1-07` accepted |
-| W2 Full UI Redesign | Redesign the full app UI with a durable design system | Active / Next |
+| W2 Full UI Redesign | Redesign the full app UI with a durable design system | W2-06 accepted / integration next |
 | W3 Paperclip Multi-Agent Integration | Connect Task Hub to the Paperclip multi-agent system | Mock accepted; live blocked while Paperclip server is offline and owner inputs remain unconfirmed |
 | W4 Integration QA | Merge workstreams into `dev` and verify combined behavior | Planned |
 | W5 V0.2 Release | Promote from `dev` to `main` after acceptance | Planned |
@@ -67,7 +67,7 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 |---|---|---|
 | L0 | V0.1 Local MVP | Complete |
 | L1 | V0.2 Access Foundation | Active |
-| L2 | V0.2 Full UI Redesign | Active |
+| L2 | V0.2 Full UI Redesign | W2-06 accepted / integration next |
 | L3 | V0.2 Paperclip Foundation | Mock accepted / live future |
 | L4 | V0.2 Integration Release | Planned |
 | L5 | V0.3 Reliability Hardening | Planned |

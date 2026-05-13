@@ -49,7 +49,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 |---|---|---|---|---|
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
 | L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; W1.5/W1.7 dev-demo runtime accepted; W1.6 service-auth accepted; Paperclip runtime verification held | Teammates can access stable dev/demo Task Hub safely with environment, persistence, and access-control boundaries; Paperclip is already hosted by its owner but currently offline; random ngrok remains manual-demo-only | Paperclip owner inputs required before W3 live; production/release-grade promotion remains out of scope |
-| L2 | V0.2 Full UI Redesign | Active | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted |
+| L2 | V0.2 Full UI Redesign | W2-06 accepted / integration next | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted; W2-06 integration QA/PM still required on `dev` |
 | L3 | V0.2 Paperclip Foundation | Accepted mock / live future | Paperclip task handoff has a contract, mock adapter, attribution, and audit trail without uncontrolled side effects | Contract/mock verification passed; live connector remains separately gated |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
 | L5 | V0.3 Reliability Hardening | Planned | Automated tests, deterministic fixtures, browser regression, CI gate, backend structure hardening | Test strategy implemented enough to reduce manual QA risk |
@@ -92,7 +92,7 @@ Provide a safe dev/demo preview environment before wider teammate access.
 
 ### L2 - V0.2 Full UI Redesign
 
-**Status:** Active; `V0.2-W2-01` (`W2a`), `V0.2-W2-02` (`W2b`), and `V0.2-W2-03` (`W2c`) accepted, `V0.2-W2-04`-`V0.2-W2-06` remain.
+**Status:** `V0.2-W2-01` through `V0.2-W2-06` are feature-scope accepted; `V0.2-W2-06` is accepted at `bd3e441` and pending integration into `dev`.
 
 **Goal:**
 Make the whole app feel like one coherent command center, not a mix of old screens and one redesigned page.
@@ -104,16 +104,16 @@ Make the whole app feel like one coherent command center, not a mix of old scree
 | `V0.2-W2-01` | `W2a` | Accepted | Shell foundation, mobile nav baseline, Today redesign |
 | `V0.2-W2-02` | `W2b` | Accepted `d33d8f7` | Review Queue redesign and shared task drawer foundation |
 | `V0.2-W2-03` | `W2c` | Accepted `ea807fd` | Tasks inbox and cross-board task rows |
-| `V0.2-W2-04` | `W2d` | Next after W2-03 integration | Boards monitor and team board views |
-| `V0.2-W2-05` | `W2e` | Planned | Calendar and Planner redesign |
-| `V0.2-W2-06` | `W2f` | Planned | Settings, OKR, and Weekly Focus polish |
+| `V0.2-W2-04` | `W2d` | Accepted `47ebd84` / integrated on `dev@0b77aed` | Boards monitor and team board views |
+| `V0.2-W2-05` | `W2e` | Accepted `4638df7` / integrated on `dev@3fca059` | Calendar and Planner redesign |
+| `V0.2-W2-06` | `W2f` | Accepted `bd3e441` / pending integration | Settings, OKR, and Weekly Focus polish |
 
 **Done when:**
 
 - Every production route has desktop/mobile visual QA evidence.
 - Existing live workflows still work or are verified with controlled responses when credentials are unavailable.
 - No mobile page-level horizontal overflow remains.
-- PM accepts `V0.2-W2-06` (`W2f`) and explicitly marks Full UI Redesign complete.
+- PM accepts `V0.2-W2-06` (`W2f`) integration on `dev` and explicitly marks the integrated Full UI Redesign complete.
 
 ### L3 - V0.2 Paperclip Foundation
 
@@ -145,7 +145,7 @@ Promote only a coherent internal preview release, not partial work labeled as do
 **Release candidate gate:**
 
 - W1 `V0.2-W1-06` Cloudflare Access evidence and `V0.2-W1-08` DigitalOcean hosted dev/demo evidence for Task Hub accepted for release-grade access. `V0.2-W1-05` random ngrok acceptance covers manual demo only.
-- W2 full UI redesign accepted through `V0.2-W2-06` (`W2f`).
+- W2 full UI redesign feature scope accepted through `V0.2-W2-06` (`W2f`) and W2-06 integration QA/PM accepted on `dev`.
 - W3 mock integration remains passing.
 - `npm.cmd run check:all` passes with `node server.js` running.
 - Paperclip contract/mock verification passes.
@@ -202,11 +202,13 @@ Focus:
 Current recommended next implementation path:
 
 ```text
-Paperclip owner runtime/auth input confirmation
--> route W3 live connector planning
+V0.2-W2-06 accepted at bd3e441
+-> Merge accepted W2-06 into dev
+-> Integration QA
+-> PM integration acceptance
 ```
 
-W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub DigitalOcean + Cloudflare runtime is accepted at `https://taskhub.trisila.online`; W1-07 service-auth topology is accepted. The next gating path is Paperclip owner input confirmation before W3 live connector planning.
+W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub DigitalOcean + Cloudflare runtime is accepted at `https://taskhub.trisila.online`; W1-07 service-auth topology is accepted. Paperclip owner input confirmation is still required before W3 live connector planning, but current non-blocked route is W2-06 integration into `dev`.
 
 ---
 
@@ -226,4 +228,5 @@ W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is 
 | 2026-05-13 | Planned `V0.2-W1-07` service-auth topology using Paperclip -> Task Hub webhook with Cloudflare Access service token plus signed webhook headers; routed L1 next to QA/PM review | Codex PM / Dev |
 | 2026-05-13 | Accepted `V0.2-W1-07` after PR #11 QA/PM pass and merge at `fa87ac4`; routed L1 next to Paperclip owner input confirmation before W3 live connector planning | Codex PM |
 | 2026-05-13 | Held W1 Paperclip runtime verification while the Paperclip server is offline; kept L1 Task Hub runtime accepted and routed non-blocked work back to L2 `V0.2-W2-06` | Codex PM |
+| 2026-05-13 | Accepted `V0.2-W2-06` at `bd3e441`; routed L2 next to Dev Integration into `dev` | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-03` at `ea807fd` and routed L2 to W2-03 integration into `dev` before `V0.2-W2-04` starts | Codex PM |
