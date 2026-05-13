@@ -1,8 +1,13 @@
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const {
   toReviewSessionInput,
   validatePaperclipPayload,
 } = require("../integrations/paperclip/contract");
+const {
+  normalizePaperclipDocsPayload,
+} = require("../integrations/paperclip/documents-contract");
 const {
   connectPaperclipConnection,
   disconnectPaperclipConnection,
@@ -12,6 +17,7 @@ const {
 
 module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
   const router = express.Router();
+  const docsFixturePath = path.join(__dirname, "..", "integrations", "paperclip", "fixtures", "document-artifacts.json");
 
   function auditEvent(type, fields = {}) {
     return { type, actor: "system", at: new Date().toISOString(), ...fields };
@@ -98,6 +104,16 @@ module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
         })
       ) || session;
       return res.status(201).json(updated);
+    } catch (e) {
+      return res.status(500).json({ error: friendlyError(e) });
+    }
+  });
+
+  router.get("/integrations/paperclip/mock/docs", (_req, res) => {
+    try {
+      const fixture = JSON.parse(fs.readFileSync(docsFixturePath, "utf8"));
+      const docs = normalizePaperclipDocsPayload(fixture);
+      return res.json(docs);
     } catch (e) {
       return res.status(500).json({ error: friendlyError(e) });
     }

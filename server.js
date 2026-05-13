@@ -72,6 +72,7 @@ app.get([
   "/all",
   "/boards",
   "/calendar",
+  "/docs",
   "/planner",
   "/okr",
   "/focus",

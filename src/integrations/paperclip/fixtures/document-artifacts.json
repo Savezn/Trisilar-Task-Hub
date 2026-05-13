@@ -1,0 +1,67 @@
+{
+  "contractVersion": "paperclip.docs.v0.2",
+  "source": {
+    "system": "paperclip",
+    "environment": "mock",
+    "workspaceId": "paperclip_workspace_id",
+    "threadId": "paperclip_thread_id"
+  },
+  "agent": {
+    "agentId": "agent_docs_01",
+    "agentName": "Paperclip Docs Agent",
+    "agentRole": "document_synthesis",
+    "runId": "run_docs_20260513_001",
+    "parentRunId": null
+  },
+  "documents": [
+    {
+      "artifactId": "doc_weekly_marketing_sync",
+      "title": "Weekly Marketing Sync Summary",
+      "artifactType": "meeting_summary",
+      "status": "ready",
+      "summary": "Agent-generated summary of campaign decisions, blockers, and follow-up tasks from the mock Paperclip run.",
+      "generatedAt": "2026-05-13T06:45:00.000Z",
+      "sourceUrl": "paperclip://mock/runs/run_docs_20260513_001/artifacts/doc_weekly_marketing_sync",
+      "tags": ["weekly-sync", "marketing", "mock"],
+      "content": {
+        "format": "markdown",
+        "text": "# Weekly Marketing Sync\n\n## Decisions\n\n- Keep the Q2 campaign brief focused on inbound proof.\n- Route unclear task ownership through Review Queue before creating Trello cards.\n\n## Follow-up\n\n1. Prepare campaign brief draft.\n2. Confirm landing page owner.\n3. Review evidence links before approval."
+      },
+      "sourceEvidence": [
+        {
+          "type": "transcript_excerpt",
+          "text": "We need the campaign brief ready before the next weekly review.",
+          "sourceOffset": 124
+        }
+      ]
+    },
+    {
+      "artifactId": "doc_child_agent_execution_notes",
+      "title": "Child Agent Execution Notes",
+      "artifactType": "agent_notes",
+      "status": "draft",
+      "summary": "Mock child-agent notes showing parent/child traceability without contacting the live Paperclip runtime.",
+      "generatedAt": "2026-05-13T06:50:00.000Z",
+      "sourceUrl": "paperclip://mock/runs/run_child_docs_20260513_002/artifacts/doc_child_agent_execution_notes",
+      "tags": ["agent-trace", "mock"],
+      "agent": {
+        "agentId": "agent_research_child_02",
+        "agentName": "Paperclip Research Child Agent",
+        "agentRole": "research",
+        "runId": "run_child_docs_20260513_002",
+        "parentRunId": "run_docs_20260513_001"
+      },
+      "content": {
+        "format": "markdown",
+        "text": "# Child Agent Notes\n\n- Verified that the document viewer uses mock fixtures only.\n- Preserved the W1 service-auth gate for future live webhook work.\n- Left live health path and payload mapping blocked until owner confirmation."
+      },
+      "sourceEvidence": [
+        {
+          "type": "agent_note",
+          "text": "No live Paperclip endpoint was called for these local artifact notes.",
+          "sourceOffset": null
+        }
+      ]
+    }
+  ]
+}

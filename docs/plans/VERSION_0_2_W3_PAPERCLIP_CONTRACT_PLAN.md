@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter accepted; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed
+**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02a` Docs Viewer Foundation Dev complete / QA pending; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -17,6 +17,7 @@ This W3 plan covers Paperclip multi-agent integration discovery, contracts, mock
 In scope:
 
 - Contract-first inbound task handoff from Paperclip into Task Hub review sessions.
+- Contract-first local/mock document artifact viewing for agent-generated docs.
 - Adapter boundary for future Paperclip live connector work.
 - Mock adapter verification before any live external Paperclip calls.
 - Attribution and audit trail requirements for multi-agent traceability.
@@ -286,6 +287,37 @@ Do not implement the live route until PM/owner records these inputs:
 
 ---
 
+## V0.2-W3-02a Paperclip Docs Viewer Foundation
+
+Status: Dev complete / QA pending. This is a mock/local foundation task under W3 and does not unblock or implement the live webhook route.
+
+Implemented scope:
+
+- Added a contract-first Paperclip document artifact schema for `paperclip.docs.v0.2`.
+- Added local mock fixture data for agent-generated document artifacts.
+- Added local-only mock endpoint: `GET /api/integrations/paperclip/mock/docs`.
+- Added Task Hub `/docs` page for viewing mock Paperclip document artifacts and attribution metadata.
+- Added verification command: `npm.cmd run verify:paperclip-docs`.
+
+Guardrails:
+
+- The Docs page uses mock/local fixture data only.
+- No live Paperclip runtime is required.
+- No live Paperclip network call, live webhook route, Trello write, Google Calendar write, or Google Tasks write is introduced.
+- W1 service-auth and live webhook gates remain unchanged.
+- Paperclip health path and real payload mapping remain blocked owner inputs for future live work.
+
+QA should verify:
+
+```powershell
+npm.cmd run verify:paperclip-docs
+npm.cmd run verify:paperclip-contract
+npm.cmd run verify:paperclip-mock
+npm.cmd run verify
+```
+
+---
+
 ## Inbound Contract Draft
 
 Paperclip should submit one work packet per agent run or coordination event.
@@ -473,6 +505,7 @@ npm.cmd run verify:paperclip-mock
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
+| `V0.2-W3-02a` | W3 docs viewer foundation | Dev Complete / QA Pending | Local/mock Paperclip document artifact schema, fixture, endpoint, and Docs page |
 | `V0.2-W3-02` | W3 sequence 2 | Plan Ready / Implementation Blocked | Live webhook contract/env/auth/signing/replay plan prepared; route implementation waits for Paperclip server online and owner inputs |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature/replay hardening after the first live webhook is verified |
 
@@ -480,6 +513,7 @@ Details:
 
 - `V0.2-W3-01` completed pure validator/normalizer logic, fixture files, unit-level validation checks, `POST /api/integrations/paperclip/mock/review-session`, backward-compatible review-store attribution fields, idempotency lookup by `requestId`, and `scripts/verify-paperclip-mock.js`.
 - `V0.2-W3-01` introduced no live Paperclip external calls.
+- `V0.2-W3-02a` adds a mock/local Paperclip Docs viewer foundation and does not call live Paperclip or implement the live webhook route.
 - `V0.2-W3-02` now has a docs-only live webhook plan for inbound contract, env validation, Cloudflare Access service-token expectations, HMAC signing, and replay/idempotency. It must stay implementation-blocked until the Paperclip server is online, the Paperclip health/readiness path is confirmed, and Paperclip owner confirms service-token plus webhook-signing support.
 - Web-managed Paperclip connection settings were implemented as a prerequisite gate and must remain the source of runtime enable/disable state and secret rotation; do not hardcode live Paperclip values.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
@@ -528,3 +562,4 @@ Details:
 | 2026-05-13 | Accepted W1-07 service-auth topology after PR #11 QA/PM pass and merge at `fa87ac4`; W3 live work now waits on Paperclip owner input confirmation | Codex PM |
 | 2026-05-13 | Held W3 live connector implementation while the Paperclip server is offline; non-blocked V0.2 work is routed back to W2-06 | Codex PM |
 | 2026-05-13 | Prepared `V0.2-W3-02` live webhook plan while Paperclip is offline: inbound contract, env validation, Cloudflare Access service-token expectations, HMAC canonical format, idempotency/replay behavior, and blocked owner inputs; no live route implemented | Codex PM / Dev |
+| 2026-05-13 | Implemented `V0.2-W3-02a` Paperclip Docs Viewer Foundation using mock/local contract data only; live webhook and Paperclip runtime calls remain blocked | Codex Dev |
