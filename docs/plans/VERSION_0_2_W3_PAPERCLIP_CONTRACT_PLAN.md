@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02a` Docs Viewer Foundation QA Pass / PM Accepted; `V0.2-W3-02b` mock/local docs-to-task links implemented; live connector blocked while Paperclip owner runtime inputs remain unconfirmed
+**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02a` Docs Viewer Foundation QA Pass / PM Accepted; `V0.2-W3-02b` Docs-to-Task Links QA Pass / PM Accepted; `V0.2-W3-02c` planned next; live connector blocked while Paperclip owner runtime inputs remain unconfirmed
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -18,6 +18,7 @@ In scope:
 
 - Contract-first inbound task handoff from Paperclip into Task Hub review sessions.
 - Contract-first local/mock document artifact viewing for agent-generated docs.
+- Mock/local document-to-task traceability and Review Queue workflow hardening.
 - Adapter boundary for future Paperclip live connector work.
 - Mock adapter verification before any live external Paperclip calls.
 - Attribution and audit trail requirements for multi-agent traceability.
@@ -27,6 +28,7 @@ Out of scope:
 - W1 company access, deployment, auth, or teammate onboarding.
 - W2 visual redesign, navigation redesign, or UI styling implementation.
 - Live Paperclip API/webhook calls before mock contract verification passes.
+- Live Paperclip Docs API reader or backend proxy until owner runtime inputs are accepted.
 - Changes to existing Trello, Google Calendar, Google Tasks, or current app behavior.
 
 Implemented by: Codex Dev
@@ -320,7 +322,7 @@ npm.cmd run verify
 
 ## V0.2-W3-02b Paperclip Docs-to-Task Attachment Links
 
-Status: implemented for mock/local verification only. This task does not add live Paperclip API calls, live webhook behavior, or W1/W2 scope.
+Status: QA Pass / PM Accepted at `e681006`. This task does not add live Paperclip API calls, live webhook behavior, or W1/W2 scope.
 
 Implemented scope:
 
@@ -345,6 +347,136 @@ npm.cmd run verify:paperclip-mock
 npm.cmd run verify:paperclip-connection
 npm.cmd run verify
 ```
+
+---
+
+## Paperclip Docs Product Plan
+
+PM intent: `/docs` should become a practical document hub for agent-generated artifacts, not a standalone reader. A reviewer should be able to answer four questions quickly:
+
+1. Where did this document come from?
+2. Which Review Queue task or Paperclip run does it support?
+3. What human decision or follow-up is needed?
+4. Can PM/QA trace the source, agent, run, and evidence without trusting an unverified live system?
+
+Design boundaries:
+
+- Docs work remains W3 functional scope when it concerns contract data, Review Queue links, task creation candidates, attribution, or audit traceability.
+- Visual redesign of the Docs page as part of the overall shell/page system remains W2 scope unless PM explicitly assigns a small W3 functional UI change.
+- Any new task creation from a document must enter Review Queue as pending work and must not bypass human approval.
+- Live Paperclip Docs API/backend proxy work remains blocked until Paperclip owner inputs are accepted.
+
+### Feature Impact / Difficulty Matrix
+
+| Priority | Feature | Impact | Difficulty | First eligible phase | Notes |
+|---|---|---:|---:|---|---|
+| P0 | Search docs by title, summary, tag, agent, artifact id | High | Low-Med | `V0.2-W3-02c` | Needed before fixture count grows beyond a few docs |
+| P0 | Filter docs by status, artifact type, linked/unlinked state | High | Low-Med | `V0.2-W3-02c` | Keeps review work scannable without W2 redesign |
+| P0 | Sort docs by generated date, title, status, agent | Med-High | Low | `V0.2-W3-02c` | Low-risk usability improvement |
+| P0 | Related task status panel | High | Low-Med | `V0.2-W3-02c` | Show pending/approved/rejected, owner, due date, and Review Queue session where available |
+| P0 | Document metadata panel | High | Low | `V0.2-W3-02c` | Source, environment, workspace, thread, agent, run id, parent run id, generated time, evidence count |
+| P1 | Manual attach/detach doc-to-task links | High | Med | `V0.2-W3-02d` | Lets PM/QA correct or supplement mock/local mapping without live Paperclip |
+| P1 | Create Review Queue candidate from document excerpt | Very High | Med-High | `V0.2-W3-02d` | Must create pending Review Queue work only; no Trello/Calendar side effects |
+| P1 | Document review status workflow | Med-High | Med | `V0.2-W3-02d` | Suggested states: `new`, `reviewed`, `needs_follow_up`, `archived` |
+| P2 | Agent/run/thread grouping | Med | Med | `V0.2-W3-02e` | Useful for multi-agent traceability after core Docs usability is stable |
+| P2 | Evidence viewer with bounded excerpts | Med | Med | `V0.2-W3-02e` | Keeps transcript/evidence inspection controlled and bounded |
+| P2 | Audit/trace timeline for a document | Med | Med-High | `V0.2-W3-02e` | Show artifact received, linked task, human action, Review Queue decision |
+| P2 | Version/regeneration history | Med | High | Future | Defer until real Paperclip payloads show version semantics |
+| P3 | Export Markdown/PDF | Low-Med | Med | Future | Useful but not core to Task Hub approval workflow |
+| Blocked | Live Paperclip Docs API reader/backend proxy | High | High | `V0.2-W3-04` | Requires accepted owner inputs and server-only token handling |
+
+### Docs Phase Ladder
+
+| Canonical ID | Status | Scope | Exit Criteria |
+|---|---|---|---|
+| `V0.2-W3-02a` | QA Pass / PM Accepted `9391e4f` | Mock/local Docs page foundation and docs contract | `/docs` renders mock artifacts through contract; no live Paperclip behavior |
+| `V0.2-W3-02b` | QA Pass / PM Accepted `e681006` | Mock/local bidirectional Docs-to-Task links | `/docs -> /review -> /docs` link flow verified; Review Queue remains human-gated |
+| `V0.2-W3-02c` | Planned next | Docs usability hardening: search, filter, sort, metadata panel, related task status panel | Mock/local verification covers search/filter/sort and related task metadata; no live call |
+| `V0.2-W3-02d` | Planned after `02c` | Docs-to-Review workflow: create pending review task from doc excerpt; manual attach/detach links | New tasks enter Review Queue pending state only; attach/detach persists locally; approval behavior unchanged |
+| `V0.2-W3-02e` | Planned after `02d` | Traceability polish: agent/run grouping, bounded evidence viewer, document audit timeline | Reviewer can inspect source/run/evidence path without external calls |
+| `V0.2-W3-04` | Blocked | Live Paperclip Docs API reader/backend proxy and live task attachments | Paperclip owner inputs accepted; server-only token path verified; no browser-exposed secrets |
+
+### V0.2-W3-02c Implementation Plan
+
+Goal: make the mock/local Docs page usable as a review surface before adding any new workflow behavior.
+
+Owned files:
+
+- `src/integrations/paperclip/documents-contract.js`
+- `src/integrations/paperclip/fixtures/document-artifacts.json`
+- `scripts/verify-paperclip-docs.js`
+- `public/js/pages/docs.js`
+- `public/js/pages/review.js` only if related task status requires reading Review Queue state
+- `public/js/state.js`
+- `public/style.css`
+- `docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md` for status update only
+
+Required Dev steps:
+
+1. Add failing verification in `scripts/verify-paperclip-docs.js` for search/filter/sort behavior and related task metadata.
+2. Keep docs data source as `GET /api/integrations/paperclip/mock/docs`.
+3. If Review Queue status is needed, read existing `GET /api/reviews`/`GET /api/reviews/:id` only; do not add a new live Paperclip route.
+4. Add search input for title, summary, tags, artifact id, and agent name.
+5. Add filters for status, artifact type, and linked/unlinked state.
+6. Add sort control for generated date, title, status, and agent.
+7. Add metadata panel with source, workspace, thread, agent, run id, parent run id, generated time, artifact id, evidence count, and linked task count.
+8. Add related task status fields where available: Review Queue session title, task status, owner, due date, external task id.
+9. Preserve existing Docs-to-Review and Review-to-Docs navigation.
+10. Run W3 and frontend verification.
+
+Acceptance criteria:
+
+- Search returns expected mock docs by title, tag, artifact id, and agent name.
+- Filters can isolate status, artifact type, linked docs, and unlinked docs.
+- Sort order is deterministic and verified.
+- Metadata panel exposes source/agent/run traceability without secrets.
+- Related task panel shows pending/approved/rejected status when a matching Review Queue task exists.
+- Review Queue approval/reject semantics are unchanged.
+- No live webhook, live Docs API reader, Paperclip network call, W1 deployment/access change, or W2 visual redesign is introduced.
+
+Required verification:
+
+```powershell
+npm.cmd run verify:paperclip-docs
+npm.cmd run verify:paperclip-contract
+npm.cmd run verify:paperclip-mock
+npm.cmd run verify:paperclip-connection
+npm.cmd run verify
+node server.js
+npm.cmd run check:all
+```
+
+### V0.2-W3-02d Planning Boundary
+
+Do not start `V0.2-W3-02d` until `V0.2-W3-02c` passes QA/PM. This phase changes workflow behavior, so it needs separate PM approval before Dev starts.
+
+Scope candidates:
+
+- Select a bounded text excerpt in a document and create a new pending Review Queue task.
+- Manually attach a document artifact to an existing Review Queue task by `artifactId`, `requestId`, and `externalTaskId`.
+- Manually detach a mistaken document-task link while preserving audit history.
+- Set document review status to `new`, `reviewed`, `needs_follow_up`, or `archived`.
+
+Non-negotiable guardrails:
+
+- New tasks must be pending Review Queue tasks only.
+- No auto-approval.
+- No Trello, Calendar, or Google Tasks side effect until existing human approval routes run.
+- No live Paperclip call.
+
+### V0.2-W3-04 Live Docs/API Boundary
+
+Do not implement live Docs API or backend proxy work until Paperclip owner confirms all runtime inputs:
+
+- health/readiness path,
+- Cloudflare Access service-token support,
+- HMAC/signing support,
+- source/environment ids,
+- workspace/thread/run/agent/task id mapping,
+- representative sample payload,
+- server-only Docs API token path if a pull/proxy model is approved.
+
+If a backend proxy is later approved, `DOCS_API_TOKEN` or equivalent must remain server-only and must never reach browser JS, page source, logs, fixtures, or committed files.
 
 ---
 
@@ -536,9 +668,13 @@ npm.cmd run verify:paperclip-mock
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
 | `V0.2-W3-02a` | W3 docs viewer foundation | QA Pass / PM Accepted `9391e4f` | Local/mock Paperclip document artifact schema, fixture, endpoint, and Docs page |
-| `V0.2-W3-02b` | W3 docs-to-task links | Implemented / QA Pending | Mock/local document artifact `linkedTasks`, Docs-to-Review links, Review Queue-to-Docs links, and verification |
+| `V0.2-W3-02b` | W3 docs-to-task links | QA Pass / PM Accepted `e681006` | Mock/local document artifact `linkedTasks`, Docs-to-Review links, Review Queue-to-Docs links, and verification |
+| `V0.2-W3-02c` | W3 docs usability hardening | Planned next | Search, filter, sort, metadata panel, and related task status panel for mock/local docs |
+| `V0.2-W3-02d` | W3 docs-to-review workflow | Planned after `02c` | Create pending Review Queue tasks from document excerpts; manual attach/detach document-task links |
+| `V0.2-W3-02e` | W3 docs traceability polish | Planned after `02d` | Agent/run grouping, bounded evidence viewer, and document audit timeline |
 | `V0.2-W3-02` | W3 sequence 2 | Plan Ready / Implementation Blocked | Live webhook contract/env/auth/signing/replay plan prepared; route implementation waits for Paperclip server online and owner inputs |
 | `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature/replay hardening after the first live webhook is verified |
+| `V0.2-W3-04` | W3 live docs/API reader | Blocked | Live Paperclip Docs API/backend proxy and live task attachments after owner runtime inputs |
 
 Details:
 
@@ -546,7 +682,11 @@ Details:
 - `V0.2-W3-01` introduced no live Paperclip external calls.
 - `V0.2-W3-02a` adds a mock/local Paperclip Docs viewer foundation and does not call live Paperclip or implement the live webhook route. QA passed and PM accepted at `9391e4f`.
 - `V0.2-W3-02b` adds mock/local bidirectional linking between Paperclip document artifacts and Review Queue tasks by `requestId` plus `externalTaskId`. It does not add live Paperclip behavior.
+- `V0.2-W3-02c` is the next recommended W3 task because it improves reviewer usability without changing workflow semantics or requiring live Paperclip.
+- `V0.2-W3-02d` is intentionally split from `02c` because creating tasks from document excerpts and manual attach/detach changes workflow behavior.
+- `V0.2-W3-02e` should polish traceability only after the core Docs page is searchable and task workflow is stable.
 - `V0.2-W3-02` now has a docs-only live webhook plan for inbound contract, env validation, Cloudflare Access service-token expectations, HMAC signing, and replay/idempotency. It must stay implementation-blocked until the Paperclip server is online, the Paperclip health/readiness path is confirmed, and Paperclip owner confirms service-token plus webhook-signing support.
+- `V0.2-W3-04` must remain blocked until the live Docs API/backend proxy token and payload mapping are approved.
 - Web-managed Paperclip connection settings were implemented as a prerequisite gate and must remain the source of runtime enable/disable state and secret rotation; do not hardcode live Paperclip values.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
@@ -597,3 +737,4 @@ Details:
 | 2026-05-13 | Implemented `V0.2-W3-02a` Paperclip Docs Viewer Foundation using mock/local contract data only; live webhook and Paperclip runtime calls remain blocked | Codex Dev |
 | 2026-05-13 | Accepted `V0.2-W3-02a` after QA pass at `9391e4f`; live docs/API/webhook work remains blocked until Paperclip owner confirms health path, service-token support, HMAC support, source/environment ids, id mapping, and sample payload | Codex PM |
 | 2026-05-13 | Implemented `V0.2-W3-02b` mock/local Paperclip docs-to-task attachment links and verification; no live Paperclip behavior added | Codex Dev |
+| 2026-05-13 | Accepted `V0.2-W3-02b` after QA pass at `e681006` and added systematic Docs phase ladder: `V0.2-W3-02c` usability hardening, `02d` docs-to-review workflow, `02e` traceability polish, and blocked `V0.2-W3-04` live Docs API boundary | Codex PM |

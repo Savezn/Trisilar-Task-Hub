@@ -50,7 +50,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
 | L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; W1.5/W1.7 dev-demo runtime accepted; W1.6 service-auth accepted; Paperclip runtime verification held | Teammates can access stable dev/demo Task Hub safely with environment, persistence, and access-control boundaries; Paperclip is already hosted by its owner but currently offline; random ngrok remains manual-demo-only | Paperclip owner inputs required before W3 live; production/release-grade promotion remains out of scope |
 | L2 | V0.2 Full UI Redesign | Active | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted |
-| L3 | V0.2 Paperclip Foundation | Accepted mock / live future | Paperclip task handoff has a contract, mock adapter, attribution, and audit trail without uncontrolled side effects | Contract/mock verification passed; live connector remains separately gated |
+| L3 | V0.2 Paperclip Foundation | Mock/docs foundation active / live future | Paperclip task handoff has a contract, mock adapter, mock/local Docs viewer, Docs-to-Task links, attribution, and audit trail without uncontrolled side effects | Contract/mock verification passed; Docs usability can continue mock/local; live connector remains separately gated |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
 | L5 | V0.3 Reliability Hardening | Planned | Automated tests, deterministic fixtures, browser regression, CI gate, backend structure hardening | Test strategy implemented enough to reduce manual QA risk |
 | L6 | V0.4 Live AI Operations | Planned | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Live connector QA with controlled production-like data |
@@ -117,7 +117,7 @@ Make the whole app feel like one coherent command center, not a mix of old scree
 
 ### L3 - V0.2 Paperclip Foundation
 
-**Status:** Mock integration accepted; live connector remains future work blocked by runtime/auth topology.
+**Status:** Mock integration accepted; `V0.2-W3-02a` and `V0.2-W3-02b` Docs foundation phases accepted; `V0.2-W3-02c` Docs Usability Hardening planned next; live connector remains future work blocked by Paperclip owner runtime inputs.
 
 **Goal:**
 Allow AI-agent output to enter Task Hub through a contract-first review path.
@@ -131,9 +131,14 @@ Allow AI-agent output to enter Task Hub through a contract-first review path.
 - Session/task attribution and audit persistence.
 - No live Paperclip call.
 - No Trello/Calendar side effect before approval.
+- Mock/local Docs viewer foundation.
+- Bidirectional Docs-to-Task links through Review Queue.
+
+**Next non-live step:**
+`V0.2-W3-02c` Paperclip Docs Usability Hardening can proceed without live Paperclip. It should add search, filters, sort, a document metadata panel, and related task status display while preserving Review Queue human approval.
 
 **Next live step:**
-Live Paperclip connector should be planned only after W1 access boundaries are stable. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner, but runtime verification is held while the Paperclip server is offline. W1-07 service-auth topology is accepted; W3 now needs Paperclip owner confirmation of health/readiness and service-token/signing support before live connector work proceeds.
+Live Paperclip connector and live Docs API/backend proxy should be planned only after owner inputs are accepted. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner, but W3 live work needs Paperclip owner confirmation of health/readiness path, service-token support, HMAC/signing support, source/environment ids, id mapping, sample payload, and any server-only Docs API token path before live connector work proceeds.
 
 ### L4 - V0.2 Integration Release
 
@@ -202,11 +207,12 @@ Focus:
 Current recommended next implementation path:
 
 ```text
-Paperclip owner runtime/auth input confirmation
--> route W3 live connector planning
+V0.2-W3-02c Paperclip Docs Usability Hardening
+-> QA/PM acceptance
+-> decide whether to start V0.2-W3-02d Docs-to-Review Workflow
 ```
 
-W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub DigitalOcean + Cloudflare runtime is accepted at `https://taskhub.trisila.online`; W1-07 service-auth topology is accepted. The next gating path is Paperclip owner input confirmation before W3 live connector planning.
+W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Task Hub DigitalOcean + Cloudflare runtime is accepted at `https://taskhub.trisila.online`; W1-07 service-auth topology is accepted. W3 live connector planning remains blocked by Paperclip owner input confirmation, but mock/local Docs usability work can proceed.
 
 ---
 
@@ -227,3 +233,4 @@ W1 `V0.2-W1-05` is accepted for random ngrok manual teammate demo. Paperclip is 
 | 2026-05-13 | Accepted `V0.2-W1-07` after PR #11 QA/PM pass and merge at `fa87ac4`; routed L1 next to Paperclip owner input confirmation before W3 live connector planning | Codex PM |
 | 2026-05-13 | Held W1 Paperclip runtime verification while the Paperclip server is offline; kept L1 Task Hub runtime accepted and routed non-blocked work back to L2 `V0.2-W2-06` | Codex PM |
 | 2026-05-09 | Accepted `V0.2-W2-03` at `ea807fd` and routed L2 to W2-03 integration into `dev` before `V0.2-W2-04` starts | Codex PM |
+| 2026-05-13 | Updated L3 Paperclip Foundation with accepted `V0.2-W3-02b` Docs-to-Task Links and routed non-live W3 work to `V0.2-W3-02c` Docs Usability Hardening while keeping live connector/API work blocked | Codex PM |

@@ -75,6 +75,8 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | F | `V0.2-W1-07` | `W1.6` | Paperclip service-auth planning for hosted Paperclip -> hosted Task Hub |
 | G | `V0.2-W1-07` | `W1.6` | QA review for Paperclip service-auth planning |
 | H | `V0.2-W3-02` gate | Paperclip owner input confirmation | Resume only after Paperclip server is online |
+| I | `V0.2-W3-02c` | W3 docs usability hardening | Search/filter/sort and metadata for mock/local Docs |
+| J | `V0.2-W3-02c` | QA review | QA review for Docs usability hardening |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -430,6 +432,110 @@ Rules:
 
 ---
 
+## Prompt I - V0.2-W3-02c Paperclip Docs Usability Hardening
+
+```text
+Role: Dev
+Task: V0.2-W3-02c - Paperclip Docs Usability Hardening
+
+Context:
+V0.2-W3-02a Docs Viewer Foundation is QA Pass / PM Accepted at `9391e4f`.
+V0.2-W3-02b Docs-to-Task Attachment Links is QA Pass / PM Accepted at `e681006`.
+Live Paperclip docs/API/webhook work remains blocked until Paperclip owner confirms runtime inputs.
+This task improves the mock/local Docs page as a functional W3 review surface.
+
+Branch/worktree:
+- Worktree: `trisilar-task-hub-w3-paperclip`
+- Branch: `feature/w3-paperclip-integration`
+
+Read first:
+- CODEX.md
+- CURRENT_SPRINT.md
+- docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md
+- docs/plans/VERSION_0_2_PLAN.md
+- docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md
+- public/js/pages/docs.js
+- public/js/pages/review.js
+- src/integrations/paperclip/documents-contract.js
+- src/integrations/paperclip/fixtures/document-artifacts.json
+- scripts/verify-paperclip-docs.js
+
+Goal:
+Make `/docs` easier to use for PM/QA review by adding search, filters, sort, metadata, and related task status while keeping all data mock/local.
+
+Implement:
+1. Add search over document title, summary, tags, artifact id, and agent name.
+2. Add filters for document status, artifact type, and linked/unlinked state.
+3. Add sort controls for generated date, title, status, and agent.
+4. Add a document metadata panel showing source, workspace, thread, artifact id, agent, run id, parent run id, generated time, evidence count, and linked task count.
+5. Show related Review Queue task metadata when available: session title, task status, owner, due date, external task id.
+6. Preserve existing `/docs -> /review -> /docs` link behavior from `V0.2-W3-02b`.
+7. Add verification for search/filter/sort and related task metadata.
+
+Rules:
+- Do not call live Paperclip.
+- Do not add live webhook.
+- Do not add a live Docs API reader or backend proxy.
+- Do not change W1 deployment/access.
+- Do not perform W2 visual redesign or shell/navigation redesign.
+- Do not bypass Review Queue human approval.
+- Stage specific files only; do not use `git add .`.
+
+Verification:
+- npm.cmd run verify:paperclip-docs
+- npm.cmd run verify:paperclip-contract
+- npm.cmd run verify:paperclip-mock
+- npm.cmd run verify:paperclip-connection
+- npm.cmd run verify
+- node server.js
+- npm.cmd run check:all
+
+Expected output:
+- Commit hash.
+- Verification evidence.
+- QA next-session prompt.
+```
+
+---
+
+## Prompt J - V0.2-W3-02c QA Review
+
+```text
+Role: QA
+Task: Review V0.2-W3-02c Paperclip Docs Usability Hardening
+
+Branch:
+feature/w3-paperclip-integration
+
+Review:
+- Latest implementation commit for V0.2-W3-02c
+
+Check:
+1. Search works for title, summary, tags, artifact id, and agent name.
+2. Filters work for status, artifact type, linked docs, and unlinked docs.
+3. Sort order is deterministic for generated date, title, status, and agent.
+4. Metadata panel shows source/workspace/thread/artifact/agent/run/evidence fields without secrets.
+5. Related task panel shows Review Queue status, owner, due date, session title, and external task id when a matching task exists.
+6. Existing `/docs -> /review -> /docs` navigation still works.
+7. No live webhook, live Docs API reader, Paperclip network call, W1 scope, or W2 visual redesign is added.
+8. Review Queue approval/reject behavior remains human-gated.
+
+Run:
+npm.cmd run verify:paperclip-docs
+npm.cmd run verify:paperclip-contract
+npm.cmd run verify:paperclip-mock
+npm.cmd run verify:paperclip-connection
+npm.cmd run verify
+npm.cmd run check:all
+
+Expected output:
+- QA PASS/FAIL with evidence.
+- If PASS: PM can accept V0.2-W3-02c and decide whether to start V0.2-W3-02d Docs-to-Review Workflow.
+- If FAIL: list exact blocking fixes for Dev.
+```
+
+---
+
 ## Change Attribution
 
 | Date | Change | Updated by |
@@ -446,3 +552,4 @@ Rules:
 | 2026-05-13 | Added Prompt G for QA/PM review of W1-07 service-auth topology before W3 live connector planning | Codex PM / Dev |
 | 2026-05-13 | Added Prompt H after PR #11 merge and PM acceptance of `V0.2-W1-07`; W3 live connector remains blocked until Paperclip owner inputs are confirmed | Codex PM |
 | 2026-05-13 | Marked Prompt H as held until the Paperclip server is online; active non-blocked route remains `V0.2-W2-06` | Codex PM |
+| 2026-05-13 | Added Prompt I and Prompt J for `V0.2-W3-02c` Docs Usability Hardening so W3 can continue with mock/local Docs work without unblocking live Paperclip | Codex PM |
