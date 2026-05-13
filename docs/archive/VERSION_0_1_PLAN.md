@@ -7,7 +7,7 @@
 **Owner:** PM
 **Created:** 2026-05-06
 **Last Updated:** 2026-05-08 - **Updated by:** Codex PM
-**Related Docs:** `../reference/ARCHITECTURE_ANALYSIS.md`, `../../CURRENT_SPRINT.md`, `../../DEVELOPMENT_PLAN.md`
+**Related Docs:** `ARCHITECTURE_ANALYSIS_V0_1.md`, `../../CURRENT_SPRINT.md`, `DEVELOPMENT_HISTORY.md`
 **Theme:** Keep the app local-first and useful, but split the monolith into clear modules so future features can be added without breaking existing workflows.
 
 ---
@@ -296,7 +296,7 @@ Historical prompt templates from the V0.1 modularization plan are retained below
 ### Dev: Backend Route Split (ใช้ซ้ำต่อแต่ละ route)
 
 ```
-คุณ Dev — อ่าน docs/reference/ARCHITECTURE_ANALYSIS.md และ docs/archive/VERSION_0_1_PLAN.md ก่อน
+คุณ Dev — อ่าน docs/archive/ARCHITECTURE_ANALYSIS_V0_1.md และ docs/archive/VERSION_0_1_PLAN.md ก่อน
 
 Task: แยก [config/review/calendar/google-tasks/trello] routes ออกจาก server.js
 Target: src/routes/[name].routes.js
@@ -311,7 +311,7 @@ Rules:
 ### Dev: Frontend Page Split (ใช้ซ้ำต่อแต่ละ page)
 
 ```
-คุณ Dev — อ่าน docs/reference/ARCHITECTURE_ANALYSIS.md และ docs/archive/VERSION_0_1_PLAN.md ก่อน
+คุณ Dev — อ่าน docs/archive/ARCHITECTURE_ANALYSIS_V0_1.md และ docs/archive/VERSION_0_1_PLAN.md ก่อน
 
 Task: แยก [page name] page renderer ออกจาก app.js
 Target: public/js/pages/[page].js
@@ -333,4 +333,4 @@ Rules:
 | 2026-05-08 | Archived after V0.1 Release Acceptance pass | Codex PM |
 | 2026-05-08 | Standardized plan document format | Codex PM |
 
-*แผนนี้ใช้ร่วมกับ docs/reference/ARCHITECTURE_ANALYSIS.md — อ่านทั้งคู่ก่อนเริ่ม phase ใหม่ทุกครั้ง*
+*แผนนี้ใช้ร่วมกับ docs/archive/ARCHITECTURE_ANALYSIS_V0_1.md — อ่านทั้งคู่ก่อนเริ่ม phase ใหม่ทุกครั้ง*
