@@ -1,10 +1,10 @@
 # V0.3-RUX-02A Trello Connection State + Failure Copy
 
 **Doc Role:** Scoped Dev / UX / Runtime handoff for first V0.3 RUX implementation task
-**Status:** Implemented - QA pass; ready for PM acceptance
+**Status:** PM Accepted
 **Owner:** Runtime / UX / Frontend
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex Dev / UX / Runtime
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `../../CURRENT_SPRINT.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../testing/TEST_STRATEGY.md`
 
 ---
@@ -122,23 +122,33 @@ Verification passed:
 - Browser QA on `/today`, `/all`, `/boards`, `/okr`, `/focus`, and `/settings` across desktop/mobile: horizontal overflow `0`, console errors `0`, no `.env` or API-key UI wording, and no false Trello connected/ready state.
 - Regression browser QA on `/review`, `/calendar`, `/planner`, and `/docs` across desktop/mobile: rendered content present, horizontal overflow `0`, console errors `0`, and page errors `0`.
 
+## PM Acceptance
+
+Accepted on 2026-05-14 at commit `516b33e`.
+
+Acceptance basis:
+
+- `RUX-001` and `RUX-002` are resolved by verified Trello connection-state and product-facing failure copy.
+- The QA evidence covers the affected routes plus `/review`, `/calendar`, `/planner`, and `/docs` regression routes across desktop/mobile.
+- No `.env`, API-key, secret, token, auth header, or private credentialed URL exposure was recorded.
+- No W3 branch merge, V0.3/W3 cross-merge, or Paperclip live-enablement change was made.
+
 ---
 
 ## Next Recommended Session
 
 ```text
 Role: PM
-Task: Review and accept V0.3-RUX-02A Trello Connection State + Failure Copy.
+Task: Route V0.3-RUX-03 Review Queue + AI Trace Clarity.
 
 Read:
-- docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md
 - docs/logs/V0_3_RUX_FINDINGS.md
-- docs/logs/QA_LOG.md
+- docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md
+- docs/plans/VERSION_0_3_RUX_03_REVIEW_QUEUE_AI_TRACE_CLARITY.md if created
 
 Guardrails:
-- Accept or hold only `V0.3-RUX-02A`.
 - Do not merge W3/V0.3 branches.
-- Leave `RUX-003` for later `V0.3-RUX-03`.
+- Scope `RUX-003` to Docs/Paperclip trace clarity unless PM adds new findings.
 - Confirm no secrets or private credential values were recorded.
 ```
 
@@ -150,3 +160,4 @@ Guardrails:
 |---|---|---|
 | 2026-05-14 | Created PM triage handoff for grouped `RUX-001` and `RUX-002` implementation | Codex PM |
 | 2026-05-14 | Implemented and verified `V0.3-RUX-02A`; routed to PM acceptance | Codex Dev / UX / Runtime |
+| 2026-05-14 | Accepted `V0.3-RUX-02A` at `516b33e`; routed next to `V0.3-RUX-03` planning | Codex PM |

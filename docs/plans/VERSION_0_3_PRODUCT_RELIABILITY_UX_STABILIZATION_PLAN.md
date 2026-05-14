@@ -118,8 +118,8 @@ V0.3-RUX-02
 | ID | Phase | Owner Role | Status | Outcome |
 |---|---|---|---|---|
 | `V0.3-RUX-01` | UX Issue Intake + Reliability Baseline | PM / UX / QA | Baseline findings recorded | Create the issue intake model, severity labels, route inventory, first baseline audit checklist, and initial findings batch |
-| `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Active / `V0.3-RUX-02A` QA pass; PM acceptance pending | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
-| `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | Planned | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
+| `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Active / `V0.3-RUX-02A` PM Accepted; `V0.3-RUX-03` ready to route | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
+| `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | Ready to route | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | Planned | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
 | `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | Planned | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
 | `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | Planned | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
@@ -409,16 +409,16 @@ Acceptance confirmed:
 
 ```text
 Role: PM
-Task: Review and accept V0.3-RUX-02A Trello Connection State + Failure Copy.
+Task: Route V0.3-RUX-03 Review Queue + AI Trace Clarity.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md
 - docs/logs/V0_3_RUX_FINDINGS.md
 
 Do:
-- Confirm grouped `RUX-001` and `RUX-002` meet acceptance criteria.
-- Confirm browser QA evidence covers desktop/mobile, console errors, overflow, and no false Trello connected/ready state.
-- Keep `RUX-003` deferred to `V0.3-RUX-03`.
+- Scope `RUX-003` into a focused UX / AI Integration / Frontend / QA handoff.
+- Keep work limited to Docs/Paperclip trace readability and linked-task clarity unless PM adds new findings.
+- Preserve Review Queue human gate behavior and Paperclip runtime safety boundaries.
 - Do not merge W3/V0.3 branches.
 - Keep W3 live enablement or Paperclip hardening on its own W3 branch/worktree.
 
@@ -438,3 +438,4 @@ If held:
 | 2026-05-14 | Recorded first desktop/mobile baseline findings and routed next to PM triage | Codex UX / QA |
 | 2026-05-14 | Triaged baseline findings and routed grouped Trello connection-state work as `V0.3-RUX-02A` | Codex PM |
 | 2026-05-14 | Implemented and verified `V0.3-RUX-02A`; routed to PM acceptance | Codex Dev / UX / Runtime |
+| 2026-05-14 | Accepted `V0.3-RUX-02A` at `516b33e`; routed next to `V0.3-RUX-03` planning | Codex PM |
