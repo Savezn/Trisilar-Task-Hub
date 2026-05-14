@@ -133,7 +133,7 @@ Allow AI-agent output to enter Task Hub through a contract-first review path.
 - No Trello/Calendar side effect before approval.
 
 **Live connector acceptance:**
-Live Paperclip connector uses the accepted W1 access boundaries. Paperclip is hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Runtime inputs are confirmed: base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check status `200` from the Paperclip server. `V0.2-W3-02` is accepted after signed webhook local QA and live interop returned HTTP `201` for request `pc_live_interop_20260514115714`, created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`, and kept the task `pending`. W3 merged to `dev` at `a89c26a`. `V0.2-W3-03` controlled live enablement policy is PM accepted, a runtime-local signed canary window passed for request `pc_w3_03_window_20260514062346`, a true external sender window passed for request `pc_true_external_20260514064709`, and the standing dev/demo observation start passed for request `pc_standing_observation_20260514092342`, creating pending session `884fec91-26e9-40e9-91af-6a11f91f317f`. Runtime is `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window only; keep secret values out of docs/git and preserve rollback readiness.
+Live Paperclip connector uses the accepted W1 access boundaries. Paperclip is hosted on DigitalOcean behind Cloudflare by the Paperclip owner. Runtime inputs are confirmed: base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check status `200` from the Paperclip server. `V0.2-W3-02` is accepted after signed webhook local QA and live interop returned HTTP `201` for request `pc_live_interop_20260514115714`, created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`, and kept the task `pending`. W3 merged to `dev` at `a89c26a`. `V0.2-W3-03` controlled live enablement policy is PM accepted, a runtime-local signed canary window passed for request `pc_w3_03_window_20260514062346`, a true external sender window passed for request `pc_true_external_20260514064709`, the standing dev/demo observation start passed for request `pc_standing_observation_20260514092342`, and two follow-up canaries passed with 0 Trello-linked side effects. Runtime is `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation; routine monitoring is now read-only to avoid unnecessary pending canary tasks. Keep secret values out of docs/git and preserve rollback readiness.
 
 ### L4 - V0.2 Integration Release
 
@@ -211,7 +211,9 @@ Paperclip runtime inputs confirmed
 -> true external Paperclip sender window passed
 -> standing dev/demo enablement policy planning started
 -> standing dev/demo observation window started
--> runtime gate is PAPERCLIP_WEBHOOK_ENABLED=true for named dev/demo observation only
+-> two follow-up canaries passed with 0 Trello-linked side effects
+-> runtime gate is PAPERCLIP_WEBHOOK_ENABLED=true for dev/demo observation
+-> routine monitoring is read-only unless PM/QA requests active probing
 ```
 
 This is now a W3 post-acceptance route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not keep live webhook enabled without PM policy approval.
@@ -245,3 +247,4 @@ This is now a W3 post-acceptance route. Do not reopen W1 Task Hub runtime work, 
 | 2026-05-14 | Completed true external `V0.2-W3-03` Paperclip sender window from Paperclip runtime host/env through Cloudflare Access and HMAC; runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / Paperclip Owner / QA |
 | 2026-05-14 | Started planning standing dev/demo enablement policy for `V0.2-W3-03`; Monitor Owner, Rollback Owner, monitoring checklist, stop conditions, rollback steps, and PM acceptance criteria are recorded before any standing flag change | Codex PM |
 | 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; runtime `PAPERCLIP_WEBHOOK_ENABLED=true`; canary/replay/negative checks passed and Review Queue human gate remained intact | Codex PM / Runtime Owner / QA / Paperclip Owner |
+| 2026-05-14 | Continued standing dev/demo observation with read-only routine monitoring after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |

@@ -592,6 +592,16 @@ Standing dev/demo observation window start result:
 - Post-start Task Hub health returned `200`.
 - Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` only for this dev/demo observation window; rollback owner must set it to `false` immediately if any stop condition occurs.
 
+Post-observation PM decision:
+
+- Two follow-up monitor canaries passed with no stop condition and kept all created Review Queue tasks `pending`.
+- Paperclip task count reached 6 pending / 0 approved / 0 rejected / 0 Trello-linked.
+- Keep standing dev/demo enablement active for the current dev/demo observation path.
+- Change routine monitoring to read-only so monitoring does not keep adding pending canary tasks.
+- Read-only monitoring must check flag state, Task Hub health, Paperclip service health, Settings connection state, recent Paperclip-created sessions, pending/approved/rejected counts, Trello-linked side-effect count, and abnormal webhook/audit patterns.
+- Active signed canaries remain allowed only when PM/QA explicitly requests one, after runtime/config changes, after Paperclip sender changes, or when read-only evidence suggests a possible regression.
+- If any stop condition appears, Runtime Owner must set `PAPERCLIP_WEBHOOK_ENABLED=false` immediately and QA must record affected request/session/task ids without recording secrets.
+
 ---
 
 ## Open Questions for PM / Paperclip Owner
@@ -645,3 +655,4 @@ Resolved runtime inputs:
 | 2026-05-14 | Completed true external `V0.2-W3-03` Paperclip sender window from Paperclip runtime host/env through Cloudflare Access and HMAC; request `pc_true_external_20260514064709` created pending session `0e8f8b2e-d767-44ef-854c-538481c124c8`; replay/negative checks passed; runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / Paperclip Owner / QA |
 | 2026-05-14 | Started standing dev/demo enablement policy planning with Monitor Owner, Rollback Owner, daily/weekly monitoring, stop conditions, rollback steps, and PM acceptance criteria; runtime remains `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex PM |
 | 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; runtime is `PAPERCLIP_WEBHOOK_ENABLED=true`; canary/replay/negative checks passed and created pending session `884fec91-26e9-40e9-91af-6a11f91f317f` | Codex Runtime Owner / QA / Paperclip Owner |
+| 2026-05-14 | PM continued standing dev/demo enablement but changed routine monitoring to read-only after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |

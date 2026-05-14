@@ -107,7 +107,7 @@ Parallel rule:
 
 ---
 
-## Next Action - Standing Dev/Demo Observation Monitoring
+## Next Action - Standing Dev/Demo Read-Only Monitoring
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated and PM accepted, so W2 is complete on `dev`. `V0.2-W1-06`, `V0.2-W1-08`, and `V0.2-W1-07` remain accepted for dev/demo runtime and service-auth planning.
 
@@ -117,12 +117,12 @@ Runtime gate status:
 
 - Task Hub dev/demo runtime is deployed from `dev@a89c26a` after W3 merge.
 - Paperclip Settings connection is configured and secret-backed under `APP_DATA_DIR`.
-- `PAPERCLIP_WEBHOOK_ENABLED=true` is now active only for the named `V0.2-W3-03 Standing Dev/Demo Observation Window - 2026-05-14`.
+- `PAPERCLIP_WEBHOOK_ENABLED=true` is active for the dev/demo observation path; routine monitoring is now read-only unless PM/QA requests another active signed canary.
 - This is dev/demo only, not production, not a `main` merge, and not permission for auto-approval.
 
 PM accepted `V0.2-W3-03` controlled live enablement policy and ran a limited runtime-local signed canary window. The canary created Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` with task status `pending`, duplicate same-payload replay returned idempotent success, duplicate changed payload returned `409`, invalid signature returned `401`, invalid source returned `403`, invalid environment returned `400`, and the runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false`. This window did not re-run the external Cloudflare service-token sender path; that path remains covered by the earlier live-sender interop evidence.
 
-PM decision: standing dev/demo policy accepted and observation window started; keep `PAPERCLIP_WEBHOOK_ENABLED=true` only for the named dev/demo observation window.
+PM decision: standing dev/demo policy accepted and observation window started; keep `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but stop routine canary creation. Normal monitoring should be read-only unless PM/QA explicitly requests another active signed canary or runtime/config changes require one.
 
 True external sender window result on 2026-05-14:
 
@@ -167,6 +167,14 @@ Standing dev/demo daily monitor follow-up on 2026-05-14:
 - Paperclip-created task counts moved from 5 pending / 0 approved / 0 rejected / 0 Trello-linked to 6 pending / 0 approved / 0 rejected / 0 Trello-linked.
 - No stop condition observed; no rollback was triggered.
 
+PM post-observation decision on 2026-05-14:
+
+- Keep standing dev/demo enablement active for the current dev/demo observation path.
+- Do not run routine signed canaries on every monitor because each successful canary creates a pending Review Queue task.
+- Default daily monitor now becomes read-only: check `PAPERCLIP_WEBHOOK_ENABLED`, Task Hub health, Paperclip service health, Settings connection state, recent Paperclip-created Review Queue sessions, pending/approved/rejected counts, and Trello-linked side-effect count.
+- Run a new active signed canary only when PM/QA requests it, after runtime/config changes, after Paperclip sender changes, or when read-only evidence suggests a possible regression.
+- Rollback owner must still set `PAPERCLIP_WEBHOOK_ENABLED=false` immediately if any stop condition occurs.
+
 ```text
 Role: Runtime Owner / QA / Paperclip Owner
 Task: Monitor V0.2-W3-03 Standing Dev/Demo Observation Window
@@ -192,6 +200,8 @@ Accepted evidence:
 - Standing observation Review Queue session `884fec91-26e9-40e9-91af-6a11f91f317f` stayed `pending`.
 - Standing observation replay and negative checks passed.
 - Runtime is now `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window.
+- Two follow-up monitor canaries passed without stop conditions; pending Paperclip tasks increased to 6 and Trello-linked side-effect count stayed 0.
+- PM chose to continue standing dev/demo enablement with read-only routine monitoring to avoid unnecessary pending canary clutter.
 
 Window rules:
 - Do not deploy production.
@@ -200,11 +210,13 @@ Window rules:
 - Keep `PAPERCLIP_WEBHOOK_ENABLED=true` only for the named dev/demo observation window; rollback to `false` immediately if any stop condition occurs.
 - Preserve Review Queue human gate and existing mock/local Docs behavior.
 - Keep Cloudflare Client ID/Secret and HMAC signing secret out of git, docs, logs, browser JavaScript, and chat.
+- Do not create more routine canary Review Queue tasks unless PM/QA explicitly requests an active probe or runtime/config changes require one.
 
 Expected output:
-- Daily monitor report: health, accepted/rejected Paperclip count, pending Review Queue tasks, replay behavior, invalid signature/source/env checks if run.
+- Daily read-only monitor report: flag state, Task Hub health, Paperclip service health, Settings connection state, pending/approved/rejected Paperclip task counts, Trello-linked side-effect count, and any abnormal webhook/audit pattern.
+- Active signed canary report only when explicitly requested or after runtime/config change.
 - Rollback immediately to `PAPERCLIP_WEBHOOK_ENABLED=false` if any stop condition occurs.
-- PM decision after observation: keep dev/demo standing enabled, narrow to named windows, or disable.
+- PM decision after further observation: keep standing dev/demo enabled, narrow to named windows, or disable.
 ```
 
 **Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM; W3-03 policy planned and accepted by Codex PM; limited window executed by Codex Runtime Owner / QA; true external sender window executed by Codex Runtime Owner / Paperclip Owner / QA.
