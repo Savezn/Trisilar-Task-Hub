@@ -157,6 +157,16 @@ Standing dev/demo daily monitor report on 2026-05-14:
 - Paperclip-created task counts moved from 4 pending / 0 approved / 0 rejected / 0 Trello-linked to 5 pending / 0 approved / 0 rejected / 0 Trello-linked.
 - No stop condition observed; no rollback was triggered.
 
+Standing dev/demo daily monitor follow-up on 2026-05-14:
+
+- Runtime flag remained `PAPERCLIP_WEBHOOK_ENABLED=true`; Task Hub local `/healthz` and public Cloudflare-protected `/healthz` both returned `200`.
+- Paperclip Settings remained `connected` with `hasSecret=true`; API response did not return the signing secret.
+- Daily monitor request `pc_daily_monitor_20260514095453`; agent run `run_daily_monitor_20260514095453`.
+- Created Review Queue session `7d2e82aa-c35d-4463-a5a1-513e85adb12d` and task `5f0bcdd6-9057-4623-9b0d-bf041d3ec059`.
+- Created task status stayed `pending`; same-payload replay returned `200`, changed-payload replay returned `409`, invalid signature returned `401`, invalid source returned `403`, and invalid environment returned `400`.
+- Paperclip-created task counts moved from 5 pending / 0 approved / 0 rejected / 0 Trello-linked to 6 pending / 0 approved / 0 rejected / 0 Trello-linked.
+- No stop condition observed; no rollback was triggered.
+
 ```text
 Role: Runtime Owner / QA / Paperclip Owner
 Task: Monitor V0.2-W3-03 Standing Dev/Demo Observation Window
