@@ -3609,6 +3609,30 @@ a { text-decoration: none; }
   overflow-wrap: anywhere;
   text-align: left;
 }
+.today-decision-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 7px;
+  min-width: 0;
+}
+.today-decision-chip {
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  color: var(--ink-3);
+  font-size: 11px;
+  font-weight: 720;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 4px 7px;
+}
+.today-next-action {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: var(--accent);
+}
 .today-task-actions {
   grid-area: actions;
   opacity: 1;
@@ -3663,6 +3687,12 @@ a { text-decoration: none; }
   font-weight: 700;
   margin: 5px 0 8px;
   overflow-wrap: anywhere;
+}
+.today-review-note {
+  color: var(--ink-3);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: -2px 0 10px;
 }
 .today-review-card-meta {
   display: flex;
@@ -4208,6 +4238,65 @@ a { text-decoration: none; }
 .review-paperclip-context.is-live {
   border-color: rgba(14, 165, 233, 0.22);
   background: rgba(240, 249, 255, 0.7);
+}
+
+.review-linked-docs {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.review-linked-docs-label {
+  align-items: center;
+  color: var(--ink-4);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 780;
+  gap: 6px;
+  text-transform: uppercase;
+}
+
+.review-linked-docs-label svg {
+  fill: none;
+  height: 13px;
+  stroke: currentColor;
+  stroke-width: 2;
+  width: 13px;
+}
+
+.review-linked-doc {
+  align-items: flex-start;
+  background: rgba(248, 250, 252, 0.86);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 9px 10px;
+  text-align: left;
+}
+
+.review-linked-doc:hover {
+  border-color: rgba(14, 165, 233, 0.54);
+}
+
+.review-linked-doc > span {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 760;
+  overflow-wrap: anywhere;
+}
+
+.review-linked-doc-meta {
+  color: var(--ink-4);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 11px;
+  gap: 5px 10px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .review-task-meta-row {
@@ -4840,6 +4929,39 @@ a { text-decoration: none; }
   font-size: 11px;
   font-weight: 700;
   gap: 4px;
+}
+
+.task-source-pill,
+.task-context-label,
+.task-next-action {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 10.5px;
+  font-weight: 760;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 4px 7px;
+  white-space: normal;
+}
+
+.task-source-pill {
+  background: #ecfeff;
+  border: 1px solid #a5f3fc;
+  color: #0e7490;
+}
+
+.task-context-label {
+  background: var(--surface-2, #f8fafc);
+  border: 1px solid var(--line-2, #e2e8f0);
+  color: var(--ink-3, #64748b);
+}
+
+.task-next-action {
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  color: var(--accent, #4f46e5);
 }
 
 .task-board-cell,
@@ -6802,6 +6924,12 @@ a { text-decoration: none; }
   color: var(--info);
 }
 
+.settings-status-chip.is-warning {
+  background: var(--warn-soft);
+  border-color: rgba(217,119,6,0.24);
+  color: var(--warn);
+}
+
 .ws-row,
 .vis-row {
   align-items: center;
@@ -7648,8 +7776,10 @@ a { text-decoration: none; }
   font-weight: 800;
 }
 .docs-item-meta {
-  color: var(--text-muted);
-  font-size: 11px;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 .docs-item-linked {
   color: var(--primary);
@@ -7674,10 +7804,44 @@ a { text-decoration: none; }
   background: var(--primary-light);
   border-radius: var(--radius-pill);
   color: var(--primary-hover);
+  display: inline-flex;
+  gap: 4px;
   font-size: 10px;
   font-style: normal;
   font-weight: 700;
   padding: 2px 7px;
+}
+.docs-item-tags em span {
+  color: var(--text-muted);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.docs-trace-chip {
+  align-items: center;
+  background: var(--list-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  display: inline-flex;
+  gap: 5px;
+  max-width: 100%;
+  min-width: 0;
+  padding: 2px 7px;
+}
+.docs-trace-chip-label {
+  color: var(--text-muted);
+  flex: 0 0 auto;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.docs-trace-chip strong {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .docs-viewer {
   background: var(--card-bg);

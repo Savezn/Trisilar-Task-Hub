@@ -292,7 +292,7 @@ async function main() {
     assert(docsPage.includes("renderDocsTracePanel"));
     assert(docsPage.includes("copyDocsTraceValue"));
     assert(docsPage.includes("openDocsTraceTarget"));
-    assert(docsPage.includes("Review task is not in this local store"));
+    assert(docsPage.includes("Missing local Review Queue task"));
     assert(docsPage.includes("Confirm detach"));
     assert(docsPage.includes("Created Review Queue task"));
     pass("Docs page renders linked task affordances");

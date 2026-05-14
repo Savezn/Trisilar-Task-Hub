@@ -13,6 +13,11 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 
 | Task | Status | Commit |
 |---|---|---|
+| V0.3-RUX-02A - Trello Connection State + Failure Copy | QA Pass / PM Accepted | `516b33e` |
+| V0.3-RUX-03 - Review Queue + AI Trace Clarity | QA Pass / PM Accepted | `b2425a4` |
+| V0.3-RUX-04 - Today + Tasks Decision Flow | QA Pass / PM Accepted | `d72f979` |
+| V0.3-RUX-05 - Browser Regression + Responsive QA Gate | QA Pass / PM Accepted | `0af9417` |
+| V0.3-RUX-06 - Release Checklist for dev -> main | QA Pass / PM Accepted | `df29307`, `5a90cc7` |
 | B10 — Tasks label group scroll | ✅ QA Pass | `ac48125` |
 | B11 — Pending Review badge ซ้ำ | ✅ QA Pass | `8c73b7d` |
 | B12 — OKR page clip (overview + detail) | ✅ QA Pass | `ac48125`, `f5b3773` |
@@ -75,7 +80,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.2-W3-03 - Standing Dev/Demo Read-only Monitor Second Follow-up 2026-05-14 | Runtime QA Pass / no stop condition | `dev@a89c26a` |
 | V0.2-W3-04 - Paperclip Review Queue Cleanup | QA Pass / PM Accepted | `1af8273` |
 | V0.2-W3-04a - Paperclip Cleanup Audit Retention | QA Pass / PM Accepted / merged to dev | `dev@7ea4650` |
-| V0.2-W3-05 - Paperclip Live Operations Hardening | QA Pass / PM Accepted / merged and deployed | `dev@2c302dc` |
+| V0.2-W3-05 - Paperclip Live Operations Hardening | QA Pass / PM Accepted / merged and deployed | `dev@2c302dc`, `ff20e48` |
 
 ---
 
@@ -144,6 +149,11 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-14 | R58 | QA PASS - V0.2-W3-05 Paperclip Live Operations Hardening | `b0d70ff` passed QA. `GET /api/integrations/paperclip/operations/status` is read-only; Settings Paperclip panel shows live flag, connection, source/environment, Review Queue counts, cleanup state, audit categories, and warnings; secret values are not returned or rendered; no canary task is created; no outbound Paperclip network call, auto-approval, Trello, Calendar, Google Tasks, W1, or W2 scope was added. Verification passed for operations, cleanup, webhook, connection, contract, mock, docs, frontend verify, and `check:all` with local server running. |
 | 2026-05-14 | R59 | Runtime QA PASS - V0.2-W3-05 integration/deploy closeout | `0776908` polished Paperclip Settings operations copy and `2c302dc` merged W3-05 into `dev`. Runtime deployed from `dev@2c302dc`; Task Hub `/healthz` returned `200`; `taskhub-dashboard.service` and `paperclip.service` were active; operations status returned `200`; Paperclip Settings remained connected with `hasSecret=true` and did not return the signing secret. Paperclip Review Queue counts were 0 pending / 0 approved / 6 rejected / 0 Trello-linked, expected warning `standing_dev_demo_enabled` was present, no danger warnings were present, no canary was sent, and no external side effect occurred. |
 | 2026-05-14 | R60 | Runtime QA PASS - W3 standing dev/demo read-only monitor after closeout | Read-only monitor sent no webhook and created no canary. Runtime remained on `dev@2c302dc`; `taskhub-dashboard.service` and `paperclip.service` were active; Task Hub `/healthz` returned `200`; operations status mode was `read_only`; Paperclip Settings remained connected with `hasSecret=true`; Paperclip Review Queue counts were 6 sessions / 6 tasks with 0 pending / 0 approved / 6 rejected / 6 cleaned / 0 Trello-linked; expected warning `standing_dev_demo_enabled` was present, no danger warnings were present, and no stop condition was found. |
+| 2026-05-14 | R61 | QA PASS / PM Accepted - V0.3-RUX-02A Trello connection-state and failure-copy clarity | `516b33e` added scoped Trello connection-state and route failure-copy clarity. Verification covered configured/unconfigured/disconnected/error copy without adding Dev/UI scope beyond the accepted RUX-02A boundary. |
+| 2026-05-14 | R62 | QA PASS / PM Accepted - V0.3-RUX-03 Review Queue and AI trace clarity | `b2425a4` added Review Queue linked-doc clarity and Paperclip/AI trace readability. Verification covered visible source/context/audit affordances while preserving the Review Queue human gate. |
+| 2026-05-14 | R63 | QA PASS / PM Accepted - V0.3-RUX-04 Today and Tasks decision flow | `d72f979` added source/context/next-action clarity for Today and Tasks. Verification covered route decision-flow copy without adding Trello, Calendar, Google Tasks, or Paperclip side effects. |
+| 2026-05-14 | R64 | QA PASS / PM Accepted - V0.3-RUX-05 browser regression and responsive QA gate | `0af9417` added the repeatable RUX browser regression gate for core desktop/mobile routes. Verification covered responsive route smoke and no page-level horizontal overflow under controlled data. |
+| 2026-05-14 | R65 | QA PASS / PM Accepted - V0.3-RUX-06 release checklist for dev -> main | `df29307` and `5a90cc7` accepted the release checklist artifact and routed integration only after the operating-model prerequisite merged. Current gate is integrated candidate QA on latest `dev`; no `main` merge is approved. |
 | 2026-05-13 | R46 | Pass / PM Accepted | `V0.2-W2-06` Settings + OKR + Weekly Focus Polish QA Recheck pass at `bd3e441`; branch/commit verified; `check:all`, Paperclip contract/mock verification, Settings config save paths, OKR drilldown/back, Weekly Focus Review navigation, W2 route smoke, desktop/mobile/mobile-small overflow 0, unexpected console errors 0, and page errors 0 passed. Local Trello 401s were credential/env noise. Reviewed by Codex QA Recheck; Accepted by Codex PM |
 | 2026-05-13 | R47 | Pass / PM Accepted | `V0.2-W2-06` Integration QA pass on `origin/dev@523c948`; clean detached worktree verified; `npm.cmd run check:all` passed; controlled W2 browser smoke passed for `/settings`, `/okr`, `/focus`, `/today`, `/review`, `/all`, `/boards`, `/calendar`, and `/planner` across desktop/mobile/mobile-small; max horizontal overflow 0; console/page errors 0; Settings save paths, OKR drilldown/back, Weekly Focus owner filter, and Weekly Focus to Review navigation passed. W1 deployment/access and W3 Paperclip behavior were intentionally not tested in this W2-only pass. Reviewed by Codex Integration QA; Accepted by Codex PM |
 

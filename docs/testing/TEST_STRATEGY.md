@@ -3,8 +3,8 @@
 **Doc Role:** Verification policy and automated test suite roadmap
 **Status:** Active
 **Owner:** QA / Dev
-**Last Updated:** 2026-05-08
-**Updated by:** Codex PM
+**Last Updated:** 2026-05-14
+**Updated by:** Codex QA
 
 This document defines how agents verify changes today and how the automated test suite should grow.
 
@@ -39,6 +39,11 @@ npm run smoke
 | `scripts/smoke-test.js` | Local endpoint smoke checks |
 | `scripts/verify-paperclip-contract.js` | Paperclip contract verification when relevant |
 | `scripts/verify-paperclip-mock.js` | Paperclip mock verification when relevant |
+| `scripts/verify-paperclip-docs.js` | Paperclip Docs and Docs-to-Review workflow verification when relevant |
+| `scripts/verify-rux-trello-connection-ux.js` | V0.3 RUX Trello connection-state and failure-copy verification |
+| `scripts/verify-rux-ai-trace-clarity.js` | V0.3 RUX Docs/Paperclip trace readability and Review Queue linked-doc clarity verification |
+| `scripts/verify-rux-today-tasks-decision-flow.js` | V0.3 RUX Today and Tasks source/context/next-action verification |
+| `scripts/verify-rux-browser-regression.js` | V0.3 RUX controlled browser regression gate for core desktop/mobile routes |
 
 Use `node --check <file>` for targeted JavaScript syntax checks when changing individual files.
 
@@ -68,6 +73,14 @@ Minimum browser surfaces for release/regression passes:
 - Review Queue
 
 Record console errors and API failures separately from visual findings.
+
+For V0.3 RUX browser regression, use:
+
+```powershell
+npm.cmd run verify:rux-browser-regression
+```
+
+The command starts a temporary local server, uses controlled browser API fixtures, checks desktop and mobile viewports, captures console/page errors, checks horizontal overflow, validates the core route matrix, and cleans up temporary runtime data. It must not require production secrets.
 
 ---
 

@@ -12,6 +12,10 @@ async function showBoardsMonitor() {
   content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading board stats...</div>';
 
   try {
+    if (!isTrelloVerified()) {
+      content.innerHTML = trelloRouteUnavailableHtml("Boards");
+      return;
+    }
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
     const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
     const healthResults = [];
@@ -22,7 +26,7 @@ async function showBoardsMonitor() {
     const healthMap = new Map(visibleBoards.map((b, i) => [b.id, healthResults[i]]));
     renderBoardsMonitor(getAllowedCards(), healthMap);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state boards-empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Unable to load Boards</h3><p>${esc(e.message)}</p></div>`;
+    content.innerHTML = trelloRouteUnavailableHtml("Boards");
   }
 }
 
