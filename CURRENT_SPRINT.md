@@ -1,9 +1,9 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2-W3-02 Live Paperclip Connector Planning
+**Phase:** V0.2-W3-02 Live Paperclip Connector Acceptance
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Runtime
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -22,7 +22,7 @@
 | V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. `V0.2-W1-06` and `V0.2-W1-08` are accepted as dev/demo runtime complete, not production/release-grade. |
 | V0.2 W2 Full UI Redesign | `V0.2-W2-06` integrated on `origin/dev@523c948` / PM Accepted | Settings, OKR, and Weekly Focus polish passed feature QA, Dev Integration, and Integration QA on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
-| V0.2 W3 live Paperclip inputs | Runtime inputs confirmed / route W3-02 | `PAPERCLIP_BASE_URL=https://paperclip.trisila.online`, `PAPERCLIP_HEALTH_PATH=/healthz`, `PAPERCLIP_ALLOWED_SOURCE_ID=paperclip-do-dev`, `PAPERCLIP_ALLOWED_ENVIRONMENT=dev`, Paperclip local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check from the Paperclip server returned `200`. Secret values remain excluded. |
+| V0.2 W3 live Paperclip connector | Code + live interop PM Accepted / runtime gate closed | `c1e4df2` added the signed inbound webhook. QA passed local verification, then live sender interop returned HTTP `201` for request `pc_live_interop_20260514115714`, created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`, and kept the task `pending`. Runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after the test. Secret values remain excluded. |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
@@ -36,7 +36,7 @@
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime inputs now confirmed for W3 planning | PM complete |
 | W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
-| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector planning is routed after Paperclip runtime inputs and Task Hub service-token reachability were confirmed | Dev |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -97,50 +97,42 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W3-02 Live Paperclip -> Task Hub Webhook Connector
+## Next Action - V0.2-W3 Post-Acceptance
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated and PM accepted, so W2 is complete on `dev`. `V0.2-W1-06`, `V0.2-W1-08`, and `V0.2-W1-07` remain accepted for dev/demo runtime and service-auth planning.
 
-Runtime evidence on 2026-05-14: Paperclip is running as `paperclip.service` on local runtime port `3100`; `https://paperclip.trisila.online` is the hosted Paperclip base URL; `/healthz` is the confirmed Paperclip health path; allowed non-secret identifiers are `paperclip-do-dev` and `dev`; the Task Hub Cloudflare Access service-token check from the Paperclip server returned `/healthz` status `200`. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
+Runtime evidence on 2026-05-14: Paperclip is running as `paperclip.service` on local runtime port `3100`; `https://paperclip.trisila.online` is the hosted Paperclip base URL; `/healthz` is the confirmed Paperclip health path; allowed non-secret identifiers are `paperclip-do-dev` and `dev`; the Task Hub Cloudflare Access service-token check from the Paperclip server returned `/healthz` status `200`. The W3 live connector code at `c1e4df2` and live signed interop test are PM accepted. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
+
+Runtime gate status:
+
+- Task Hub dev/demo runtime is temporarily deployed from `feature/w3-paperclip-integration@c1e4df2` for W3 interop verification.
+- Paperclip Settings connection is configured and secret-backed under `APP_DATA_DIR`.
+- `PAPERCLIP_WEBHOOK_ENABLED=false` after the interop test.
+- Do not enable live webhook traffic permanently until PM approves a controlled live enablement policy.
 
 ```text
-Role: Dev
-Task: V0.2-W3-02 - Live Paperclip -> Task Hub Webhook Connector
+Role: PM / Integration
+Task: Decide W3 post-acceptance path
 
-Context:
-W1 Task Hub dev/demo runtime and service-auth topology are accepted. Paperclip runtime inputs are confirmed:
-- PAPERCLIP_BASE_URL=https://paperclip.trisila.online
-- PAPERCLIP_HEALTH_PATH=/healthz
-- PAPERCLIP_ALLOWED_SOURCE_ID=paperclip-do-dev
-- PAPERCLIP_ALLOWED_ENVIRONMENT=dev
-- Paperclip service=paperclip.service
-- Paperclip local runtime port=3100
-- Task Hub service-token check from the Paperclip server returned 200 for /healthz
-- Do not expose Cloudflare Client ID/Secret or HMAC signing secret.
+Decision needed:
+1. Merge `feature/w3-paperclip-integration` into `dev` after final branch acceptance, or
+2. Plan a controlled live enablement policy before any permanent runtime enablement.
 
-Goal:
-Implement the authenticated live Paperclip -> Task Hub webhook without production deploy.
-
-Steps:
-1. Start from latest dev in the W3 worktree.
-2. Use the W3 branch/worktree from project policy: `feature/w3-paperclip-integration`, refreshed from latest `origin/dev` before editing.
-3. Add `POST /api/integrations/paperclip/webhook` using the existing Paperclip contract normalizer and review-store audit path.
-4. Require app-level HMAC validation and expected Paperclip source/environment identifiers.
-5. Validate `X-TaskHub-Request-Id`, `X-TaskHub-Timestamp`, `X-TaskHub-Signature`, `X-Paperclip-Source`, and `X-Paperclip-Agent-Run-Id`.
-6. Enforce timestamp skew and idempotency: same request id plus same payload creates no duplicate; same request id plus different payload rejects/logs.
-7. Keep `PAPERCLIP_WEBHOOK_ENABLED=false` by default until QA/PM approval.
-8. Add local/mock signed-request verification; do not require live Paperclip for unit-level checks.
-9. Route to QA with evidence for `/planner`, mock Paperclip behavior, and the new signed webhook path.
+Accepted evidence:
+- Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
+- QA local verification passed for webhook, contract, mock route, connection settings, docs, frontend, and smoke.
+- Live interop returned HTTP `201` for request `pc_live_interop_20260514115714`.
+- Created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`.
+- Created task stayed `pending`; human approval gate remained intact.
+- Runtime gate was closed after test: `PAPERCLIP_WEBHOOK_ENABLED=false`.
 
 Rules:
 - Do not deploy production.
 - Do not merge to main.
 - Do not commit or print secrets.
-- Do not implement W2 UI redesign.
-- Preserve W1 dev/demo runtime.
-- Preserve existing mock Paperclip endpoint behavior.
-- No Trello/Google side effects before human approval.
-- Include attribution: Runtime inputs recorded by Codex PM / Runtime; implementation by Codex Dev.
+- Do not enable permanent live Paperclip traffic until PM approves the live enablement policy.
+- Preserve Review Queue human gate and existing mock/local Docs behavior.
+- Keep Cloudflare Client ID/Secret and HMAC signing secret out of git, docs, logs, browser JavaScript, and chat.
 ```
 
-**Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; recorded by Codex PM / Runtime. W3-02 routed to Codex Dev.
+**Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM.

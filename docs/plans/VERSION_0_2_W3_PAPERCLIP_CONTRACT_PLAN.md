@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02` live connector routed after Paperclip runtime inputs were confirmed
+**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02` live connector code and live interop accepted; runtime webhook gate remains disabled by default
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -34,7 +34,8 @@ PM runtime clarification:
 
 - Task Hub is accepted as a stable hosted dev/demo URL on DigitalOcean behind Cloudflare at `https://taskhub.trisila.online`.
 - Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
-- `V0.2-W3-02` live webhook work is now routed after Paperclip runtime inputs and Task Hub service-token reachability were confirmed.
+- `V0.2-W3-02` live webhook work is now implemented and accepted after Paperclip runtime inputs and Task Hub service-token reachability were confirmed.
+- Runtime `PAPERCLIP_WEBHOOK_ENABLED` remains `false` after interop; permanent live enablement requires separate PM policy approval.
 - Do not treat the old random ngrok Task Hub URL as a Paperclip endpoint.
 - Do not add live Paperclip calls in W1 or W2.
 
@@ -236,7 +237,7 @@ Paperclip should submit one work packet per agent run or coordination event.
 ### Contract Rules
 
 - `contractVersion`, `requestId`, `source.system`, `agent.agentId`, `agent.agentName`, `agent.runId`, `reviewSession.title`, and at least one task title are required.
-- `source.environment` must be `mock` until live connector work is explicitly approved.
+- `source.environment` defaults to `mock` for mock/local verification; accepted live webhook requests may use approved runtime environment `dev` through the live route validation path.
 - `requestId` must be idempotent. Re-submitting the same request must not create duplicate review sessions.
 - Task Hub assigns internal `session.id` and `task.id`; Paperclip keeps `requestId`, `runId`, and `externalTaskId` for traceability.
 - Dates must be ISO 8601 strings or `null`.
@@ -365,14 +366,15 @@ npm.cmd run verify:paperclip-mock
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
-| `V0.2-W3-02` | W3 sequence 2 | Routed / Next | Live webhook route after Paperclip runtime inputs and Task Hub service-token reachability were confirmed |
-| `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature/replay hardening after the first live webhook is verified |
+| `V0.2-W3-02` | W3 sequence 2 | PM Accepted | Live webhook route, signed request validation, connection gate, idempotency, local QA, and live sender interop verified |
+| `V0.2-W3-03` | W3 sequence 3 | Future | Controlled live enablement policy and additional source signature/replay hardening after merge/integration acceptance |
 
 Details:
 
 - `V0.2-W3-01` completed pure validator/normalizer logic, fixture files, unit-level validation checks, `POST /api/integrations/paperclip/mock/review-session`, backward-compatible review-store attribution fields, idempotency lookup by `requestId`, and `scripts/verify-paperclip-mock.js`.
 - `V0.2-W3-01` introduced no live Paperclip external calls.
-- `V0.2-W3-02` should add authenticated `POST /api/integrations/paperclip/webhook`, reuse the same normalizer and audit path, validate service-auth/source context plus signed webhook headers, and keep the route disabled by default until QA/PM approval.
+- `V0.2-W3-02` added authenticated `POST /api/integrations/paperclip/webhook`, reused the same normalizer and audit path, validated service-auth/source context plus signed webhook headers, and kept the route disabled by default after QA/PM approval.
+- Live interop evidence: HTTP `201` for request `pc_live_interop_20260514115714`; Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`; created task stayed `pending`; runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false`.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
 ---
@@ -421,3 +423,4 @@ Resolved runtime inputs:
 | 2026-05-13 | Accepted W1-07 service-auth topology after PR #11 QA/PM pass and merge at `fa87ac4`; W3 live work now waits on Paperclip owner input confirmation | Codex PM |
 | 2026-05-13 | Held W3 live connector planning while the Paperclip server is offline; non-blocked V0.2 work is routed back to W2-06 | Codex PM |
 | 2026-05-14 | Recorded Paperclip runtime inputs, confirmed `/healthz`, and confirmed Task Hub service-token `/healthz` reachability from the Paperclip server; routed `V0.2-W3-02` live webhook connector | Codex PM / Runtime |
+| 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
