@@ -1,10 +1,18 @@
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
-  const [boards, config, calStatus] = await Promise.all([
-    api.get("/api/boards").catch(() => []),
+  const [trelloStatus, config, calStatus] = await Promise.all([
+    api.get("/api/trello/status").catch(() => ({
+      configured: false,
+      verified: false,
+      connected: false,
+      state: "unavailable",
+      error: "Trello connection could not be verified. Ask Runtime to check credentials and connectivity.",
+    })),
     api.get("/api/config").catch(() => ({ groups: [], hiddenBoards: [], allowedWorkspaceIds: [] })),
     api.get("/api/calendar/status").catch(() => null),
   ]);
+  S.trelloStatus = trelloStatus || S.trelloStatus;
+  const boards = isTrelloVerified() ? await api.get("/api/boards").catch(() => []) : [];
   S.boards = boards;
   S.config = config;
   if (!S.config.allowedWorkspaceIds) S.config.allowedWorkspaceIds = [];
@@ -18,6 +26,7 @@ async function init() {
 
   setupShellPrimitives();
   renderSidebar();
+  updateTrelloSidebarStatus();
   navigateTo(getPageFromPath(), { replace: true });
   updateReviewBadge().catch(() => {});
 }
@@ -209,6 +218,13 @@ async function loadPlannerTrello() {
   const body = $("planner-trello-body");
   if (!body) return;
 
+  if (!isTrelloVerified()) {
+    if ($("planner-today-count")) $("planner-today-count").textContent = "Off";
+    if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = "Off";
+    body.innerHTML = `<div class="planner-error">${esc(trelloConnectionSummary().description)}</div>`;
+    return;
+  }
+
   if (!S.allCardsCache) {
     try {
       S.allCardsCache = await api.get("/api/all-cards");
@@ -307,6 +323,7 @@ function closeMobileNav() {
 }
 
 function renderSidebar() {
+  updateTrelloSidebarStatus();
   renderGroupsList();
   renderBoardsList();
 }
@@ -423,7 +440,7 @@ async function loadBoard(boardId) {
     listsWithCards.forEach(l => kanban.appendChild(buildListCol(l, false)));
     content.appendChild(kanban);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
+    content.innerHTML = trelloRouteUnavailableHtml("Board");
   }
 }
 
@@ -503,7 +520,7 @@ async function loadGroupView(group, boards) {
 
     content.appendChild(buView);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
+    content.innerHTML = trelloRouteUnavailableHtml("Business Unit");
   }
 }
 
@@ -773,6 +790,10 @@ async function showWeeklyFocusPage() {
   const content = $("board-content");
   content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading…</div>';
   try {
+    if (!isTrelloVerified()) {
+      content.innerHTML = trelloRouteUnavailableHtml("Weekly Focus");
+      return;
+    }
     const [sessions] = await Promise.all([
       api.get("/api/reviews").catch(() => []),
     ]);
@@ -788,7 +809,7 @@ async function showWeeklyFocusPage() {
 
     renderWeeklyFocusPage(getAllowedCards(), pendingCount);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
+    content.innerHTML = trelloRouteUnavailableHtml("Weekly Focus");
   }
 }
 
@@ -1119,6 +1140,7 @@ async function refreshCurrentView() {
   else if (S.mode === "calendar") await renderCalendar();
   else if (S.mode === "today")    await showTodayPage();
   else if (S.mode === "review")   await showReviewPage();
+  else if (S.mode === "docs")     await showDocsPage();
   else if (S.mode === "planner")  await showPlannerPage();
   else if (S.mode === "okr")      await showOKRPage();
   else if (S.mode === "focus")    await showWeeklyFocusPage();

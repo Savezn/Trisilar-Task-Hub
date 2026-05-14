@@ -5,7 +5,7 @@
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Runtime
 **Related Docs:** `../../README.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `DEV_ENVIRONMENT_DEPLOYMENT.md`, `../plans/VERSION_0_2_PLAN.md`
 
 ---
@@ -149,11 +149,11 @@ Use this for the W1 hosted dev/demo runtime. PM decision is to host Task Hub on 
 | Runtime | Node 20+ |
 | Process manager | `taskhub-dashboard.service` under systemd for current dev/demo runtime |
 | Task Hub bind | `127.0.0.1:3000` behind Cloudflare Tunnel or reverse proxy |
-| Hosted Paperclip dependency | Current observed hostname `https://paperclip.trisila.online`; confirm health/readiness path with Paperclip owner |
+| Hosted Paperclip dependency | `https://paperclip.trisila.online` with confirmed health path `/healthz` |
 | Health check path | `/healthz` |
 | Persistent state | `/home/trisilar/dashboard-data` assigned to `APP_DATA_DIR` |
 | Task Hub hostname | `https://taskhub.trisila.online` |
-| Paperclip hostname | `https://paperclip.trisila.online` observed; confirm owner-supported health path before W3 live connector work |
+| Paperclip hostname | `https://paperclip.trisila.online`; health path `/healthz`; local runtime port `3100`; service `paperclip.service` |
 | OAuth callback | `https://taskhub.trisila.online/auth/callback` |
 
 Required server-only environment variable names:
@@ -177,8 +177,8 @@ Rules:
 - Run Task Hub on a private/local bind first; do not use the raw Droplet IP or unprotected port as the teammate preview URL.
 - Confirm backup/export handling for `APP_DATA_DIR` before relying on the Droplet for important state.
 - Put Cloudflare Access in front before teammate preview.
-- Record hosted Paperclip base URL, health/readiness path, and service-auth requirements from the Paperclip owner.
-- Keep W3 live integration blocked until Task Hub hosted URL, hosted Paperclip URL, and service-auth are verified.
+- Use confirmed hosted Paperclip base URL, health path, and service-auth requirements for W3 planning.
+- Keep W3 live integration disabled until W3 implementation and QA verify signed webhook behavior.
 
 ---
 
@@ -222,7 +222,7 @@ Rules:
 - Do not rely on obscured platform URLs as access control.
 - QA must verify anonymous access is blocked before any production use.
 - Agent/API calls should not depend on interactive email login. Use Cloudflare Access service tokens, signed webhook headers, or an approved machine-auth pattern.
-- Paperclip is already hosted on DigitalOcean behind Cloudflare, but runtime verification is held while the Paperclip server is offline; W3 live connector work still needs Paperclip owner inputs after the server is online.
+- Paperclip is hosted on DigitalOcean behind Cloudflare; runtime inputs are confirmed for W3 planning. Agent/API calls still require Cloudflare Access service-token headers plus signed webhook validation.
 
 ---
 
@@ -242,7 +242,14 @@ Hosted URLs:
 | Service | URL | Notes |
 |---|---|---|
 | Task Hub | `https://taskhub.trisila.online` | Accepted dev/demo runtime |
-| Paperclip | `https://paperclip.trisila.online` | Owner-managed; runtime verification held while server is offline; health/readiness path still needs confirmation |
+| Paperclip | `https://paperclip.trisila.online` | Owner-managed; health path `/healthz`; local runtime port `3100`; service `paperclip.service` |
+
+Confirmed non-secret runtime inputs:
+
+- `PAPERCLIP_ALLOWED_SOURCE_ID`: `paperclip-do-dev`
+- `PAPERCLIP_ALLOWED_ENVIRONMENT`: `dev`
+- Task Hub service-token `/healthz` check from the Paperclip server returned `200`
+- Cloudflare Client ID/Secret and HMAC signing secret remain excluded from docs/chat/git
 
 Task Hub env var names:
 
@@ -275,7 +282,7 @@ Rules:
 - Configure Cloudflare Access service token values in the Paperclip runtime only.
 - Configure webhook signing secret in both runtime dashboards/server env only.
 - Do not expose service-token headers or signing secrets to browser JavaScript.
-- Do not implement or enable the live W3 webhook until the Paperclip server is online and Paperclip owner confirms the remaining inputs.
+- Do not enable the live W3 webhook until W3 implementation and QA verify signed webhook behavior.
 
 ---
 

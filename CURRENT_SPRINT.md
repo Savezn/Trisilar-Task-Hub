@@ -1,9 +1,9 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2-W2-06 Integration PM Acceptance
-**Status:** Active
+**Phase:** V0.3 Product Reliability + UX Stabilization Closeout
+**Status:** Complete on dev/dev-demo; no main release yet
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -16,15 +16,28 @@
 | V0.1 Release Acceptance | Pass | `docs/logs/QA_LOG.md` R34 |
 | P9 open bugs | None currently open | `docs/logs/QA_LOG.md` |
 | V0.2 W0 Branch / Environment / CI Setup | QA Pass `9dbb47b` | Implemented by Codex Dev; Reviewed by Codex QA |
-| V0.2-W1-02 Deploy Readiness | Merged to `dev` via PR #1 / `615eb6e` | `docs/deployment/DEPLOYMENT_SETUP.md`; legacy label W1b |
-| V0.2-W1-03 Dev Deployment Config | Merged to `dev` via PR #2 / `84c01cf` | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md`; legacy label W1c |
-| V0.2-W1-05 ngrok Random URL Demo | QA Pass / PM Accepted as demo-only path | Reviewed by Codex QA; Accepted by Codex PM; current URL/credentials remain local-only in Desktop handoff file |
-| V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. `V0.2-W1-06` and `V0.2-W1-08` are accepted as dev/demo runtime complete, not production/release-grade. |
-| V0.2 W2 Full UI Redesign | `V0.2-W2-06` integrated on `origin/dev@523c948` / PM Accepted | Settings, OKR, and Weekly Focus polish passed feature QA, Dev Integration, and Integration QA on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line |
-| V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
-| V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
-| Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
-| Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
+| V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | DigitalOcean + Cloudflare Access; Task Hub persistent `APP_DATA_DIR`; service-auth topology accepted |
+| V0.2 W2 Full UI Redesign | Complete on integrated `dev` | `V0.2-W2-06` PM accepted on `origin/dev@523c948` |
+| V0.2 W3 Paperclip mock/docs/settings/live connector | PM Accepted through `V0.2-W3-05`; merged/deployed on `dev@2c302dc` | Contract, mock route, Docs, Settings gate, live webhook, live interop, cleanup, cleanup audit retention, and read-only operations status accepted |
+| V0.2 W3 runtime cleanup | Complete | Runtime deployed from `dev@7ea4650`; Paperclip test/canary sessions cleaned from 6 pending to 0 pending / 6 rejected / 0 Trello-linked |
+| V0.2 W3 standing dev/demo observation | Active with read-only monitor automation | `PAPERCLIP_WEBHOOK_ENABLED=true` on dev/demo; active signed canary only on PM/QA request or after runtime/sender changes |
+| Latest W3 dev closeout | `origin/dev@ff20e48` | `V0.2-W3-05` operations status and settings copy polish merged/deployed at `dev@2c302dc`; W3 foundation closeout status is on latest `dev` |
+| V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
+| V0.3 Product Reliability + UX Stabilization | Complete on `origin/dev@02fe7cf` and dev/demo runtime | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, and runtime QA passed. `dev -> main` remains a separate PM release decision. |
+
+---
+
+## Plain-Language PM Summary
+
+Paperclip can now send work into Task Hub through the protected live webhook path. Task Hub verifies Cloudflare Access, HMAC signature, source/environment, request id, agent run id, timestamp, and payload contract before creating a Review Queue session.
+
+The important safety rule is still intact: Paperclip-created tasks enter Review Queue as pending work only. They do not create Trello cards, Calendar events, or Google Tasks until a human approves them.
+
+The test/canary items created during live validation have been cleaned safely. They were rejected/archived with audit retained, not deleted and not approved. Runtime count after cleanup is 0 pending / 0 approved / 6 rejected / 0 Trello-linked.
+
+W3-05 adds that operational hardening: PM/QA/Runtime Owner can now inspect live flag status, connection state, source/environment, Review Queue counts, cleanup state, audit categories, and warnings without sending a new canary. It is merged and deployed at `dev@2c302dc`; W3 foundation closeout status is recorded on `origin/dev@ff20e48`.
+
+V0.3 RUX is complete on the integrated `dev` line and the dev/demo runtime. The accepted V0.3 work adds Trello connection-state/failure-copy clarity, Review Queue and AI trace clarity, Today/Tasks decision-flow polish, browser regression coverage, and a future `dev -> main` release checklist. Runtime QA confirmed Task Hub on `dev@02fe7cf`, local health/config/reviews `200`, Cloudflare Access anonymous block `302`, and Paperclip operations read-only with 0 pending / 6 rejected / 0 Trello-linked.
 
 ---
 
@@ -33,10 +46,13 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while Paperclip server is offline | Hold / PM |
-| W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
-| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Paperclip owner inputs are confirmed after Paperclip server is online | Blocked |
-| Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
+| W1 | Company Access + Deployment | Dev/demo runtime and Paperclip service-auth topology accepted | PM complete |
+| W2 | Full UI Redesign | Complete on integrated `dev` | PM complete / hold |
+| W3-03 | Controlled Paperclip live enablement | Standing dev/demo observation active; read-only monitor automation active | QA Owner / Runtime Owner monitor |
+| W3-04 | Paperclip Review Queue Cleanup | PM Accepted; merged to `dev@7ea4650`; runtime cleanup complete | PM complete |
+| W3-05 | Paperclip Live Operations Hardening | QA Pass / PM Accepted; merged and deployed on `dev@2c302dc`; closeout on `origin/dev@ff20e48` | PM complete / Runtime monitor |
+| V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted / merged to `dev@ed9fae0` | PM complete |
+| V0.3 RUX Integration | Product Reliability + UX Stabilization accepted branch integration | Complete on `origin/dev@02fe7cf`; dev/demo runtime QA pass | PM complete |
 
 ---
 
@@ -47,15 +63,18 @@
 | Current task and next action | `CURRENT_SPRINT.md` |
 | Project-wide ladder and release gates | `docs/plans/PROJECT_LADDER.md` |
 | Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
+| W3 Paperclip contract/live plan | `docs/plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
-| W2 full UI redesign phase plan | `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` |
-| W1 deploy-readiness setup (`V0.2-W1-02`) and DigitalOcean/Cloudflare hosted dev path | `docs/deployment/DEPLOYMENT_SETUP.md` |
-| W1 dev deployment config / ngrok demo handoff / DigitalOcean runtime notes (`V0.2-W1-03` to `V0.2-W1-08`) | `docs/deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` |
 | QA history and completed work archive | `docs/logs/QA_LOG.md` |
 | PM decisions and phase context | `docs/logs/DECISION_LOG.md` |
-| Product/UX scope | `MVP_PRD.md` |
-| Historical roadmap/progress tracker | `docs/archive/DEVELOPMENT_HISTORY.md` |
 | File/function lookup hints | `docs/reference/KEY_FILE_MAP.md` |
+| Long-term organization operating model | `docs/reference/ORGANIZATION_OPERATING_MODEL.md` |
+| AI agent governance and role boundaries | `docs/reference/AI_AGENT_GOVERNANCE.md` |
+| Parallel Codex branch/worktree model | `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` |
+| Role-specific agent handoffs | `docs/agents/` |
+| V0.3 Product Reliability + UX Stabilization plan | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` |
+| V0.3 RUX findings and baseline | `docs/logs/V0_3_RUX_FINDINGS.md` |
+| V0.3 RUX release checklist | `docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md` |
 
 ---
 
@@ -63,57 +82,67 @@
 
 | File / Area | Write Owner | Rule |
 |---|---|---|
-| `CURRENT_SPRINT.md` | PM only | Dev/QA may read but must not update this file during W1/W2/W3 parallel work; integration conflict resolution may preserve accepted PM status. |
+| `CURRENT_SPRINT.md` | PM only | Dev/QA may read but must not update this file during W1/W2/W3 parallel work. |
 | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` | PM only | Preserve prompts for all workstreams; do not delete other workstream prompts. |
 | W1 plan/files | W1 Dev / QA | Keep W1 updates inside W1-owned docs/branches until PM checkpoint. |
 | W2 plan/files | W2 Dev / QA | Keep W2 updates inside W2-owned docs/branches until PM checkpoint. |
 | W3 plan/files | W3 Dev / QA | Keep W3 updates inside W3-owned docs/branches until PM checkpoint. |
 
-Required branches:
+Completed V0.3 integration branch/worktree:
 
-- `V0.2-W1-02` / legacy W1b: `feature/w1-deploy-readiness` merged to `dev` in PR #1
-- `V0.2-W1-03` / legacy W1c: `feature/w1c-dev-environment-deployment` merged to `dev` in PR #2
-- W2: `feature/w2-*` phase branches; `feature/w2-06-settings-okr-focus-redesign` integrated into `origin/dev@523c948` and PM accepted
-- W3: `feature/w3-paperclip-integration`
+- Branch: `codex/integrate-v03-rux-into-dev`
+- Worktree: `trisilar-task-hub-operating-model-integration`
 
-Required worktrees:
+Required W3 branch/worktree for W3-only work:
 
-- PM / Integration: `trisilar-task-hub` on `dev`
-- `V0.2-W1-05`: ngrok temporary demo runtime uses local runtime tools; repo branch only if a docs/setup defect is discovered
-- `V0.2-W1-08`: DigitalOcean hosted dev/demo setup uses latest `dev`, server-only secrets, and Cloudflare front door for Task Hub; repo changes only if setup defects are found
-- W2: `trisilar-task-hub-w2-ui-redesign` on the active `feature/w2-*` phase branch
-- W3: `trisilar-task-hub-w3-paperclip` on `feature/w3-paperclip-integration`
+- Branch: `feature/w3-paperclip-integration`
+- Worktree: `trisilar-task-hub-w3-paperclip`
 
 Parallel rule:
 
-- W1/W2/W3 Dev agents must not edit `CURRENT_SPRINT.md` directly.
 - W1/W2/W3 Dev agents must not share one feature branch.
 - W1/W2/W3 Dev agents must not run in the same working directory.
 - Before editing, each agent must run `git status --short --branch` and confirm the folder/branch match the assigned workstream.
 - QA agents report evidence in the workstream handoff/doc, not `CURRENT_SPRINT.md`.
-- PM is the only role that updates `CURRENT_SPRINT.md` after QA pass, PM decision, or integration checkpoint.
-- If a Dev/QA task needs a status change, leave a PM handoff note instead of editing the sprint snapshot.
+- PM updates `CURRENT_SPRINT.md` after QA pass, PM decision, or integration checkpoint.
 
 ---
 
-## Next Action - W2 Hold / Complete
-
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated on `origin/dev@523c948` and PM accepted. This completes the W2 full UI redesign line on `dev`.
-
-Integration QA evidence on 2026-05-13: clean detached worktree at `origin/dev@523c948`; `npm.cmd run check:all` passed; W2 browser smoke passed for `/settings`, `/okr`, `/focus`, `/today`, `/review`, `/all`, `/boards`, `/calendar`, and `/planner` across desktop/mobile/mobile-small; max horizontal overflow 0; console/page errors 0; Settings save paths, OKR drilldown/back, Weekly Focus owner filter, and Weekly Focus -> Review navigation passed with controlled W2 API responses. W1 deployment/access and W3 Paperclip behavior were intentionally not tested in this W2-only Integration QA pass.
+## Next Action - Post-V0.3 PM Decision
 
 ```text
 Role: PM
-Task: V0.2-W2-06 W2 Workstream Hold / Complete
+Task: Decide the next project route after V0.3 completion
 
-Status:
-W2 full UI redesign is complete on origin/dev@523c948.
+Completed baseline:
+origin/dev@02fe7cf
+dev/demo runtime deployed from dev@02fe7cf
+
+V0.3 status:
+Complete on dev/dev-demo. RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, and runtime QA passed.
+
+Decision options:
+- Hold on dev and continue routine read-only monitoring.
+- Open a separate PM release decision for dev -> main using the RUX-06 checklist.
+- Route the next roadmap item, likely V0.4 Live AI Operations or a focused post-V0.3 hardening item.
 
 Rules:
-- Do not start W1 deployment/access work from this W2 handoff.
-- Do not start W3 Paperclip work from this W2 handoff.
-- Do not start new W2 implementation unless PM opens a new W2-only phase.
-- If more W2 work is requested, define a new W2-only task with fresh scope and QA criteria.
+- Do not merge dev -> main without a separate PM release decision.
+- Do not deploy production.
+- Do not commit secrets.
+- Do not merge W3 sibling branches into V0.3 branches or V0.3 branches into W3 branches.
+- Preserve `PAPERCLIP_WEBHOOK_ENABLED=true` only for the existing dev/demo observation policy.
+- Do not send Paperclip webhooks.
+- Do not create canary tasks.
+- Do not add outbound Paperclip network calls.
+- Do not expose secrets, Cloudflare tokens, signing headers, or raw auth values.
+- Do not auto-approve Review Queue tasks.
+- Do not create Trello cards, Calendar events, or Google Tasks.
+- Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
+
+Expected output:
+- Next named phase or release decision.
+- If dev -> main is selected, run the RUX-06 release checklist as a new explicit release task.
 ```
 
-**Attribution:** `V0.2-W2-06` integrated by Codex Dev and accepted by Codex PM on `origin/dev@523c948` after Codex Integration QA pass.
+**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, and accepted complete after runtime QA.

@@ -12,6 +12,7 @@ This folder contains logs, plans, references, archives, and design artifacts. Th
 
 | Folder | Purpose |
 |---|---|
+| `agents/` | Durable role guides for PM, UX, Dev, QA, Runtime, Integration, AI Integration, and Documentation Workflow owners |
 | `reference/` | Architecture analysis and durable technical references |
 | `adr/` | Architecture Decision Records and process decisions |
 | `archive/` | Historical plans retained for traceability |
@@ -80,6 +81,9 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | File | Purpose |
 |---|---|
 | `reference/ARCHITECTURE.md` | Current technical architecture reference |
+| `reference/ORGANIZATION_OPERATING_MODEL.md` | Long-term operating model for Trello, Task Hub, Review Queue, AI intake, runtime governance, and Codex agents |
+| `reference/AI_AGENT_GOVERNANCE.md` | AI-originated work rules, role boundaries, Review Queue safety, and attribution |
+| `reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` | Parallel Codex branch/worktree ownership and contamination-prevention model |
 | `reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
 | `reference/FILE_ORGANIZATION.md` | File placement policy for future files |
 | `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
@@ -96,7 +100,24 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `archive/ARCHITECTURE_ANALYSIS_V0_1.md` | Archived V0.1 architecture analysis |
 | `design/ui-design-v1-0/` | UI redesign prototype artifact |
 | `logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
+| `logs/V0_3_RUX_FINDINGS.md` | V0.3 Product Reliability + UX findings log |
 | `logs/DECISION_LOG.md` | PM decisions and phase context |
 | `plans/PROJECT_LADDER.md` | Project-wide roadmap ladder and release gates |
 | `plans/VERSION_0_2_PLAN.md` | V0.2 branch/workstream plan |
 | `plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md` | V0.2 W1 company access, no-domain ngrok demo, stable Cloudflare Access, and no-cost preview phase ladder |
+| `plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` | V0.3 Product Reliability + UX Stabilization phase plan |
+| `plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` | V0.3-RUX-01 issue intake model, route inventory, owner map, and baseline checklist |
+| `plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md` | V0.3-RUX-02A scoped handoff for Trello connection-state and route failure-copy clarity |
+| `plans/VERSION_0_3_RUX_03_REVIEW_QUEUE_AI_TRACE_CLARITY.md` | V0.3-RUX-03 scoped handoff for Review Queue and Paperclip/AI trace clarity |
+| `plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md` | V0.3-RUX-04 scoped handoff for Today and Tasks decision-flow clarity |
+| `plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md` | V0.3-RUX-05 scoped handoff for browser regression and responsive QA gate |
+| `plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md` | V0.3-RUX-06 release checklist artifact for future dev -> main PM decision |
+| `agents/PM.md` | PM / Product Owner role guide |
+| `agents/UX_OWNER.md` | UX / Product Experience Owner role guide |
+| `agents/DEV_FRONTEND.md` | Frontend Product Dev role guide |
+| `agents/DEV_CORE.md` | Core Workflow / Backend Dev role guide |
+| `agents/AI_INTEGRATION.md` | AI Integration Owner role guide |
+| `agents/RUNTIME_OWNER.md` | Runtime / Access Owner role guide |
+| `agents/QA_RELEASE.md` | QA / Release Owner role guide |
+| `agents/INTEGRATION_OWNER.md` | Integration Owner role guide |
+| `agents/DOCUMENTATION_WORKFLOW_OWNER.md` | Documentation / Agent Workflow Owner role guide |

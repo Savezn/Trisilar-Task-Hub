@@ -6,6 +6,7 @@ const PAGE_PATHS = {
   all: "/all",
   boards: "/boards",
   calendar: "/calendar",
+  docs: "/docs",
   planner: "/planner",
   okr: "/okr",
   focus: "/focus",
@@ -56,6 +57,7 @@ function navigateTo(page, options = {}) {
       case "all":      showAllTasks();        break;
       case "boards":   showBoardsMonitor();   break;
       case "calendar": showCalendar();        break;
+      case "docs":     showDocsPage();        break;
       case "planner":  showPlannerPage();     break;
       case "okr":      showOKRPage();         break;
       case "focus":    showWeeklyFocusPage(); break;

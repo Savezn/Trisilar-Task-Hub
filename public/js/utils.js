@@ -84,6 +84,92 @@ function icon(name, attrs = "") {
   return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" ${attrs}>${body}</svg>`;
 }
 
+const DEFAULT_TRELLO_STATUS = {
+  configured: false,
+  verified: false,
+  connected: false,
+  state: "unknown",
+  error: "Trello connection has not been verified yet.",
+};
+
+function trelloConnection() {
+  return (typeof S !== "undefined" && S.trelloStatus) || DEFAULT_TRELLO_STATUS;
+}
+
+function isTrelloVerified() {
+  const status = trelloConnection();
+  return Boolean(status.verified || status.connected || status.state === "verified");
+}
+
+function trelloConnectionSummary() {
+  const status = trelloConnection();
+  const state = status.state || "unknown";
+  if (state === "verified") {
+    return {
+      label: "Verified",
+      chipClass: "is-connected",
+      statClass: "is-ok",
+      dotClass: "dot-green",
+      description: "Trello credentials are verified and board data can load.",
+    };
+  }
+  if (state === "invalid") {
+    return {
+      label: "Needs verification",
+      chipClass: "is-warning",
+      statClass: "is-warning",
+      dotClass: "dot-red",
+      description: status.error || "Runtime needs to verify or rotate Trello credentials before board data can load.",
+    };
+  }
+  if (state === "disconnected") {
+    return {
+      label: "Disconnected",
+      chipClass: "",
+      statClass: "is-muted",
+      dotClass: "dot-gray",
+      description: status.error || "Runtime needs to configure Trello credentials before board data can load.",
+    };
+  }
+  if (state === "rate_limited") {
+    return {
+      label: "Retry later",
+      chipClass: "is-warning",
+      statClass: "is-warning",
+      dotClass: "dot-gray",
+      description: status.error || "Trello is rate limited. Wait a moment, then refresh.",
+    };
+  }
+  return {
+    label: "Unavailable",
+    chipClass: "",
+    statClass: "is-muted",
+    dotClass: "dot-gray",
+    description: status.error || "Trello connection could not be verified. Ask Runtime to check credentials and connectivity.",
+  };
+}
+
+function trelloRouteUnavailableHtml(routeName) {
+  const summary = trelloConnectionSummary();
+  return `
+    <div class="empty-state">
+      <div class="empty-icon">${icon("alert")}</div>
+      <h3>${esc(routeName)} needs Trello verification</h3>
+      <p>${esc(summary.description)}</p>
+      <p style="color:var(--text-muted);font-size:12px">Runtime owns Trello credential verification. You can continue using non-Trello routes while this is checked.</p>
+    </div>`;
+}
+
+function updateTrelloSidebarStatus() {
+  const el = $("sidebar-status");
+  if (!el) return;
+  const dot = el.querySelector(".status-dot");
+  const label = el.querySelector(".status-label");
+  const summary = trelloConnectionSummary();
+  if (dot) dot.className = `status-dot ${summary.dotClass}`;
+  if (label) label.textContent = `Trello ${summary.label.toLowerCase()}`;
+}
+
 // ── Toast ─────────────────────────────────────────────────────────────────────
 let _tt;
 function toast(msg, isError = false) {
