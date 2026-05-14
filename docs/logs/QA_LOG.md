@@ -2,7 +2,7 @@
 
 **Doc Role:** Append-only QA and completion history
 **Status:** Active log
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
 
 This file preserves historical QA rounds, completed sprint work, bug fixes, and deferred items moved from `CURRENT_SPRINT.md` to keep the active sprint file short.
 
@@ -20,6 +20,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.3-RUX-06 - Release Checklist for dev -> main | QA Pass / PM Accepted | `df29307`, `5a90cc7` |
 | V0.3 RUX Integrated Dev/Demo Closeout | Runtime QA Pass / PM Accepted complete | `origin/dev@02fe7cf` |
 | V0.3 RUX Main Release Candidate | Release QA Pass / PM Accepted | PR #20 / `5eb23ef` |
+| V0.3 Post-Sync Release / Integration QA + Branch Workflow Docs | QA Pass / PM Accepted docs update | `codex/v03-branch-workflow-release-qa` |
 | B10 — Tasks label group scroll | ✅ QA Pass | `ac48125` |
 | B11 — Pending Review badge ซ้ำ | ✅ QA Pass | `8c73b7d` |
 | B12 — OKR page clip (overview + detail) | ✅ QA Pass | `ac48125`, `f5b3773` |
@@ -92,6 +93,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 
 | Date | Round | Result | Notes |
 |---|---|---|---|
+| 2026-05-15 | V0.3 post-main-sync release/integration QA and branch workflow docs | Pass | Clean worktree `codex/v03-branch-workflow-release-qa` from `origin/dev@631d3b2` after `origin/dev` and `origin/main` were synced. Updated branch/worktree docs to document `codex/*` and `claude/*` topic branches, backup refs, worktree naming, and cleanup rules. Verification passed: `npm ci`, `git diff --check`, conflict-marker scan, `check:all` with isolated local server, `verify:rux-trello`, `verify:rux-ai-trace`, `verify:rux-decision-flow`, `verify:rux-browser-regression`, `verify:paperclip-contract`, `verify:paperclip-mock`, `verify:paperclip-docs`, `verify:paperclip-operations`, `verify:paperclip-cleanup`, `verify:paperclip-connection`, and `verify:paperclip-webhook`. No production deploy, runtime flag change, live canary, secret exposure, or Trello/Calendar/Google Tasks side effect was performed. |
 | 2026-05-14 | V0.2 release/integration cleanup QA | Pass | Clean QA worktree `codex/v02-release-integration-qa` from `origin/dev@8027324`; `npm ci`, `check:all` with isolated server, Paperclip contract/mock/webhook/cleanup/docs/operations/connection checks, RUX browser regression, AI trace clarity, Today/Tasks decision flow, and Trello connection UX checks passed. Stale W1/W2/W3 worktree metadata, folders, local branches, and remote workstream branches were removed after verification. |
 | 2026-05-06 | R1 | ✅ Pass | B10–B15 pass ทุกข้อ |
 | 2026-05-06 | R2 | ✅ Pass | B16, B17 pass; B18 found & fixed ใน P9-4 session |

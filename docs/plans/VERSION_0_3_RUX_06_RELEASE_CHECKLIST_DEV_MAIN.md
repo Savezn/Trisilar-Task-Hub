@@ -4,7 +4,7 @@
 **Status:** PM accepted - V0.3 main promotion accepted through PR #20; production deploy not performed
 **Owner:** PM / QA / Integration / Runtime
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md`, `../../CURRENT_SPRINT.md`, `../logs/QA_LOG.md`, `../logs/DECISION_LOG.md`, `../testing/TEST_STRATEGY.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `PROJECT_LADDER.md`
 
 ---
@@ -72,9 +72,9 @@ Use this checklist when PM is ready to decide whether accepted V0.3 work can mov
 
 | Check | Required state | Evidence |
 |---|---|---|
-| Source branch | `feature/v0.3-product-reliability-ux-stabilization` | `git status --short --branch` shows the expected branch and no unrelated dirty files. |
-| Worktree | `trisilar-task-hub-v03-product-reliability-ux` | Work is isolated from W3 and main runtime worktrees. |
-| Stacked base | `feature/project-operating-model-agent-structure@96826f7` | Operating-model branch must be accepted and integrated before this V0.3 branch is integrated. |
+| Source branch | PM-assigned V0.3 topic branch; historical implementation integrated through `codex/integrate-v03-rux-into-dev` | `git status --short --branch` shows the expected branch and no unrelated dirty files. |
+| Worktree | Dedicated V0.3 sibling worktree, for example `trisilar-task-hub-v03-release-qa` | Work is isolated from W3 and main runtime worktrees. |
+| Stacked base | Operating-model branch accepted at `96826f7` and merged into `dev@ed9fae0` | Operating-model branch must be accepted and integrated before V0.3 RUX integration. |
 | W3 boundary | No W3 sibling branch merged into V0.3; no V0.3 branch merged into W3 | Integration Owner confirms with branch history when preparing the release candidate. |
 | Release action | No direct `main` merge from this phase | PM acceptance and Integration Owner action are separate later steps. |
 
@@ -307,6 +307,41 @@ Rollback readiness: Use PR #20 merge revert or scoped hotfix from main, then bac
 Reason: All V0.3 acceptance, integration, browser, Paperclip, and release-candidate gates passed
 Next owner: PM for post-V0.3 roadmap routing; Runtime Owner only if a separate production deployment decision is opened
 ```
+
+## Post-Main-Sync Verification - 2026-05-15
+
+After `origin/dev` and `origin/main` were synced at `631d3b2`, PM/Integration opened a scoped Codex worktree to align branch workflow docs with actual Codex/Claude operation and rerun V0.3 release/integration QA.
+
+```text
+Branch: codex/v03-branch-workflow-release-qa
+Worktree: trisilar-task-hub-v03-release-qa
+Base: origin/dev@631d3b2 / origin/main@631d3b2
+Result: QA Pass
+Production deploy: Not performed
+Runtime flag change: Not performed
+Live canary: Not sent
+Secret exposure: None
+```
+
+Verification passed:
+
+- `npm ci`
+- `git diff --check`
+- conflict-marker scan
+- `npm.cmd run check:all` with isolated local server
+- `npm.cmd run verify:rux-trello`
+- `npm.cmd run verify:rux-ai-trace`
+- `npm.cmd run verify:rux-decision-flow`
+- `npm.cmd run verify:rux-browser-regression`
+- `npm.cmd run verify:paperclip-contract`
+- `npm.cmd run verify:paperclip-mock`
+- `npm.cmd run verify:paperclip-docs`
+- `npm.cmd run verify:paperclip-operations`
+- `npm.cmd run verify:paperclip-cleanup`
+- `npm.cmd run verify:paperclip-connection`
+- `npm.cmd run verify:paperclip-webhook`
+
+This verification confirms the synced V0.3 release baseline remains safe after branch-workflow documentation updates. It does not open production deploy, change runtime flags, send Paperclip canaries, expose secrets, or create Trello/Calendar/Google Tasks side effects.
 
 ---
 

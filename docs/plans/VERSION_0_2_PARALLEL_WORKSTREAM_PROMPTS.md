@@ -1,20 +1,21 @@
 # Version 0.2 Parallel Workstream Prompts - Trisilar Task Hub
 
 **Doc Role:** Durable prompt registry for V0.2 parallel workstreams
-**Status:** Active
+**Status:** Historical reference - V0.2 workstreams complete
 **Version:** V0.2
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
 **Related Docs:** `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`
 
 ---
 
 ## How to Use This Document
 
-- Keep reusable W1/W2/W3 prompts here so they do not disappear when `CURRENT_SPRINT.md` changes its single Next Action.
+- Keep reusable W1/W2/W3 prompts here as historical reference so completed V0.2 work remains traceable.
 - `CURRENT_SPRINT.md` should point to the current immediate next action only.
-- Start every V0.2 workstream from `dev` unless the workflow doc explicitly says otherwise.
+- Do not restart these V0.2 workstreams unless PM opens a new route.
+- Start any new related work from `dev` using the current branch namespace rules in `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`.
 - W1/W2/W3 Dev agents must not edit `CURRENT_SPRINT.md`; PM updates it after QA/decision checkpoints.
 - QA agents report evidence in their workstream handoff/doc; PM decides what enters `CURRENT_SPRINT.md`.
 - Use canonical task IDs first: `V0.2-W1-XX`, `V0.2-W2-XX`, and `V0.2-W3-XX`.

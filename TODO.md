@@ -3,8 +3,8 @@
 **Doc Role:** High-level roadmap index
 **Status:** Active
 **Owner:** PM
-**Last Updated:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Last Updated:** 2026-05-15
+**Updated by:** Codex PM / Integration Owner
 
 This file tracks the broad roadmap. It does not replace `CURRENT_SPRINT.md`, version plans, QA logs, or ADRs.
 
@@ -50,7 +50,7 @@ Historical details live in `docs/archive/VERSION_0_1_PLAN.md`, `docs/archive/DEV
 
 ### V0.2 - Company Access, UI Redesign, Paperclip Integration
 
-Status: Active. W2 full UI redesign is re-scoped into `V0.2-W2-01`-`V0.2-W2-06` (`W2a`-`W2f` aliases). `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` random ngrok + temporary Basic Auth is accepted for short manual teammate demo only. Task Hub is configured on DigitalOcean behind Cloudflare at `https://taskhub.trisila.online`; `V0.2-W1-06`/`V0.2-W1-08` are accepted as dev/demo runtime complete; `V0.2-W1-07` service-auth topology is accepted. Paperclip runtime inputs are confirmed, W3 live connector and interop are PM accepted, and runtime `PAPERCLIP_WEBHOOK_ENABLED=false` remains the default until PM approves standing live enablement.
+Status: Complete for the V0.2 release/integration baseline. W2 full UI redesign is complete through `V0.2-W2-06` (`W2a`-`W2f` aliases). `V0.2-W1-05` random ngrok + temporary Basic Auth is accepted for short manual teammate demo only. Task Hub is configured on DigitalOcean behind Cloudflare at `https://taskhub.trisila.online`; `V0.2-W1-06`/`V0.2-W1-08` are accepted as dev/demo runtime complete; `V0.2-W1-07` service-auth topology is accepted. Paperclip runtime inputs are confirmed, W3 live connector and interop are PM accepted, W3 cleanup/operations hardening is complete for V0.2, and V0.2 release/integration cleanup QA passed. Standing dev/demo Paperclip observation remains a runtime monitoring policy, not an open V0.2 delivery blocker.
 
 Workstreams:
 
@@ -60,8 +60,8 @@ Workstreams:
 | W1 Company Access + Deployment | Make Trisilar teammates able to access stable Task Hub dev/demo safely | `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` accepted for dev/demo runtime; `V0.2-W1-07` accepted |
 | W2 Full UI Redesign | Redesign the full app UI with a durable design system | W2-06 integrated / PM accepted on `origin/dev@523c948` |
 | W3 Paperclip Multi-Agent Integration | Connect Task Hub to the Paperclip multi-agent system | Mock and live connector accepted; runtime gate disabled by default |
-| W4 Integration QA | Merge workstreams into `dev` and verify combined behavior | W3 integrated on `origin/dev@a89c26a`; release candidate QA/PM decision still required |
-| W5 V0.2 Release | Promote from `dev` to `main` after acceptance | Planned |
+| W4 Integration QA | Merge workstreams into `dev` and verify combined behavior | Passed on clean `origin/dev@8027324`; branch/worktree residue cleaned |
+| W5 V0.2 Release | Promote from `dev` to `main` after acceptance | Complete; later dev/main sync is at `631d3b2` |
 
 Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 
@@ -70,10 +70,10 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 | Level | Track | Status |
 |---|---|---|
 | L0 | V0.1 Local MVP | Complete |
-| L1 | V0.2 Access Foundation | Active |
+| L1 | V0.2 Access Foundation | Complete for dev/demo baseline |
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` |
 | L3 | V0.2 Paperclip Foundation | W3-02 live connector accepted / runtime gate disabled by default |
-| L4 | V0.2 Integration Release | Active |
+| L4 | V0.2 Integration Release | Complete |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Planned |
 | L7 | V0.5 Team Operating System | Future |
@@ -96,7 +96,7 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 
 ## Enterprise-Grade Hardening Backlog
 
-These items are not blockers for the current `V0.2-W2-02`/W1 runtime work. They are the next quality bar after V0.2 core access, redesign, and Paperclip integration stabilize.
+These items are not blockers for the completed V0.2 or V0.3 release baselines. They are candidates for V0.4+ hardening after V0.2 access/redesign/Paperclip work and V0.3 reliability/UX stabilization.
 
 | Area | Gap | Recommended path |
 |---|---|---|

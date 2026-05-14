@@ -6,7 +6,7 @@
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
 **Related Docs:** `../../CURRENT_SPRINT.md`, `PROJECT_LADDER.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md`, `VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md`, `VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md`, `../../TODO.md`, `../../MVP_PRD.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`, `../logs/V0_3_RUX_FINDINGS.md`
 **Theme:** Stabilize the human workflow and release confidence before expanding larger AI automation.
 
@@ -88,7 +88,7 @@ V0.3 planning may proceed in parallel with V0.2-W3 only if ownership stays separ
 | Track | Role | Scope | Branch / Worktree |
 |---|---|---|---|
 | V0.2-W3 | AI Integration / Runtime / QA | Controlled live enablement policy, Paperclip webhook hardening, runtime evidence, QA rechecks | `feature/w3-paperclip-integration` or PM-assigned W3 branch in `trisilar-task-hub-w3-paperclip` |
-| V0.3 RUX | PM / UX / QA / scoped Dev | Human workflow reliability, UX clarity, browser regression, release checklist | `feature/v0.3-product-reliability-ux-stabilization` in `trisilar-task-hub-v03-product-reliability-ux` |
+| V0.3 RUX | PM / UX / QA / scoped Dev | Human workflow reliability, UX clarity, browser regression, release checklist | Historical RUX work used a dedicated V0.3 worktree; current Codex/Claude work should use `codex/*` or `claude/*` topic branches per `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md` |
 
 Rules:
 
@@ -382,15 +382,16 @@ Release execution later requires the runtime/check commands assigned by QA/Integ
 
 ## Branch / Worktree Model
 
-Current V0.3 planning branch:
+Accepted V0.3 branch lineage:
 
 ```text
-Branch: feature/v0.3-product-reliability-ux-stabilization
-Worktree: trisilar-task-hub-v03-product-reliability-ux
-Base: feature/project-operating-model-agent-structure@96826f7
+Operating-model branch: codex/project-operating-model-agent-structure lineage, accepted at 96826f7 and integrated at dev@ed9fae0
+V0.3 integration branch: codex/integrate-v03-rux-into-dev
+V0.3 main release candidate: codex/v03-dev-to-main-release-candidate@5eb23ef
+Current branch namespace rule: Codex uses codex/<version-or-short-scope>; Claude uses claude/<version-or-short-scope>; historical feature/* branches remain valid references.
 ```
 
-This branch is intentionally stacked on the PM-accepted operating-model branch because the V0.3 plan depends on the new accepted reference docs. Integration Owner should merge the operating-model branch into `dev` before integrating this V0.3 plan branch.
+The V0.3 work was intentionally stacked on the PM-accepted operating-model branch because the V0.3 plan depended on the accepted reference docs. Integration Owner merged the operating-model branch into `dev` before integrating V0.3 RUX.
 
 ---
 
@@ -463,3 +464,4 @@ If held:
 | 2026-05-14 | Accepted `V0.3-RUX-06` at `df29307`; routed to Integration Owner and later closed on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM |
 | 2026-05-14 | Integrated V0.3 RUX through PR #18, deployed `dev@02fe7cf` to dev/demo, passed runtime QA, and closed V0.3 complete on dev/dev-demo | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |
+| 2026-05-15 | Confirmed V0.2 complete, aligned Codex/Claude branch workflow docs, and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa` | Codex PM / Integration Owner |

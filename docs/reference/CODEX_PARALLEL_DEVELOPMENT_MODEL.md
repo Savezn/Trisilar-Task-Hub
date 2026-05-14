@@ -4,6 +4,7 @@
 **Status:** PM accepted
 **Owner:** PM / Integration Owner
 **Created:** 2026-05-14
+**Last Updated:** 2026-05-15
 **Updated by:** Codex PM
 **Related Docs:** `BRANCH_ENVIRONMENT_WORKFLOW.md`, `AI_AGENT_GOVERNANCE.md`, `../agents/INTEGRATION_OWNER.md`, `../../CONTRIBUTING.md`
 
@@ -98,13 +99,25 @@ Use descriptive branch names under the existing branch model.
 
 | Work type | Branch pattern |
 |---|---|
+| Codex-scoped docs / implementation / QA / release-prep | `codex/<version-or-short-scope>` |
+| Claude-scoped docs / implementation | `claude/<version-or-short-scope>` |
 | Product/frontend feature | `feature/<short-scope>` |
 | Runtime/access work | `feature/w1-*` or `feature/runtime-*` when PM assigns it |
 | UX/product docs | `feature/ux-*` or `feature/project-*` |
 | AI/Paperclip integration | `feature/w3-*` or `feature/ai-*` when PM assigns it |
 | Release hotfix | `hotfix/<short-scope>` from `main`, then backport to `dev` |
+| Local safety backup | `codex/backup-*` or `claude/backup-*`; do not use as PR source unless PM asks |
 
 V0.2 W1/W2/W3 historical branch rules still apply to active V0.2 work. V0.3 may use role/scope names when PM assigns non-W1/W2/W3 work.
+
+Branch names should be short, role-readable, and phase-specific. Prefer examples like:
+
+- `codex/v03-branch-workflow-release-qa`
+- `codex/v03-dev-to-main-release-candidate`
+- `codex/integrate-v03-rux-into-dev`
+- `claude/review-queue-polish`
+
+If local Git cannot create slash-namespaced refs because of permissions or lock-file issues, use a flat fallback and record it in the handoff.
 
 ---
 
@@ -114,7 +127,8 @@ Use a dedicated sibling worktree folder for each active branch. Example:
 
 ```powershell
 git fetch origin
-git worktree add ..\trisilar-task-hub-project-operating-model -b feature/project-operating-model-agent-structure origin/dev
+git worktree add ..\trisilar-task-hub-project-operating-model -b codex/project-operating-model-agent-structure origin/dev
+git worktree add ..\trisilar-task-hub-v03-release-qa -b codex/v03-branch-workflow-release-qa origin/dev
 git worktree list
 ```
 
@@ -181,7 +195,7 @@ If unrelated dirty files exist, leave them alone and stage only owned paths.
 ## Integration Flow
 
 ```text
-feature branch
+topic branch
 -> role verification
 -> QA / PM acceptance
 -> Integration Owner merges accepted branch into dev
@@ -191,6 +205,13 @@ feature branch
 
 Feature agents do not merge sibling branches into each other. Integration Owner may merge accepted branches into `dev` after PM/QA acceptance and must record the evidence.
 
+Completed branch/worktree cleanup:
+
+- Remove completed temporary worktrees after the branch is merged or pushed and no longer needed.
+- Delete merged local topic branches unless PM asks to keep them.
+- Keep explicit backup branches until PM confirms they are safe to delete.
+- Run `git worktree list`, `git branch -vv`, and `git status --short --branch` before declaring cleanup complete.
+
 ---
 
 ## Change Attribution
@@ -199,3 +220,4 @@ Feature agents do not merge sibling branches into each other. Integration Owner 
 |---|---|---|
 | 2026-05-14 | Created parallel Codex development model for V0.3 PM review | Codex PM / Documentation Architect |
 | 2026-05-14 | PM accepted the long-term parallel Codex branch/worktree model | Codex PM |
+| 2026-05-15 | Added Codex/Claude branch namespaces, backup branch rules, worktree examples, and cleanup expectations | Codex PM / Integration Owner |

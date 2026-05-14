@@ -3,8 +3,8 @@
 **Doc Role:** Contribution workflow for humans and AI agents
 **Status:** Active
 **Owner:** PM
-**Last Updated:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Last Updated:** 2026-05-15
+**Updated by:** Codex PM / Integration Owner
 
 This repository uses a small-team, multi-agent workflow. The goal is to keep implementation fast without losing traceability, branch hygiene, or release confidence.
 
@@ -31,19 +31,23 @@ Do not begin edits if the current folder or branch does not match the task.
 ## Branch Model
 
 ```text
-feature/* -> dev -> main
+topic branch -> dev -> main
 ```
 
 | Branch | Purpose |
 |---|---|
 | `main` | Production-ready baseline |
 | `dev` | Integration/dev baseline |
+| `codex/*` | Codex-scoped docs, implementation, QA, integration, backup, or release-prep work |
+| `claude/*` | Claude-scoped docs or implementation work |
 | `feature/w1-*` | Company access/deployment work |
 | `feature/w2-*` | UI redesign work |
 | `feature/w3-*` | Paperclip integration work |
 | `hotfix/*` | Urgent production fixes |
 
 Parallel workstreams must use separate git worktree folders. Do not run W1/W2/W3 in the same working directory. For V0.3 role-based parallel Codex work, use `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`.
+
+`feature/*` remains valid for PM-assigned product branches and historical workstreams. New Codex sessions should normally use `codex/<version-or-short-scope>`; new Claude sessions should normally use `claude/<version-or-short-scope>`.
 
 ---
 
@@ -58,6 +62,7 @@ git pull --ff-only origin dev
 git worktree add ..\trisilar-task-hub-w1-company-access feature/w1-company-access-deployment
 git worktree add ..\trisilar-task-hub-w2-ui-redesign feature/w2b-review-redesign
 git worktree add ..\trisilar-task-hub-w3-paperclip feature/w3-paperclip-integration
+git worktree add ..\trisilar-task-hub-v03-release-qa -b codex/v03-branch-workflow-release-qa origin/dev
 git worktree list
 ```
 
@@ -148,6 +153,7 @@ QA must not edit files.
 Every PR into `dev` must include:
 
 - workstream and branch
+- worktree folder
 - owner agent
 - summary of changed files
 - verification commands and result

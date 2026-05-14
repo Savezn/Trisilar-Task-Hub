@@ -1,12 +1,12 @@
 # Version 0.2 Workstream Plan - Trisilar Task Hub
 
-**Doc Role:** Active version plan
-**Status:** Active - canonical task IDs adopted; old W1/W2/W3 short labels kept as aliases
+**Doc Role:** Completed version plan
+**Status:** Complete - V0.2 release/integration baseline accepted; canonical task IDs retained for history
 **Version:** V0.2
-**Planning Stage:** W3-02 live connector accepted; runtime live gate disabled by default
+**Planning Stage:** V0.2 closed; standing dev/demo Paperclip observation remains a runtime monitoring policy
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely while moving from manual demo access toward stable Cloudflare-protected hosted dev/demo runtime for Task Hub and service-auth with hosted Paperclip.
 
@@ -26,7 +26,7 @@
 
 ## Planning Summary
 
-V0.1 Release Acceptance passed. V0.2 will be managed as parallel workstreams after W0 establishes branch and environment rules.
+V0.1 Release Acceptance passed. V0.2 was managed as parallel workstreams after W0 established branch and environment rules.
 
 Goals:
 
@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. Paperclip runtime inputs are confirmed for W3 planning: hosted base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check returned `200` from the Paperclip server. W3 live connector code and live sender interop are accepted at `c1e4df2` and merged to `dev` at `a89c26a`; limited, true external, standing observation, and two follow-up canaries passed. Runtime `PAPERCLIP_WEBHOOK_ENABLED=true` remains active for dev/demo observation, but routine monitoring is now read-only to avoid adding unnecessary pending canary tasks. Production/release-grade promotion remains out of scope.
+V0.2 release/integration baseline is accepted. W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/live/cleanup/operations verification are accepted. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. Paperclip runtime inputs are confirmed: hosted base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check returned `200` from the Paperclip server. W3 live connector code and live sender interop are accepted at `c1e4df2` and merged to `dev` at `a89c26a`; cleanup, audit retention, and read-only operations status are accepted through `V0.2-W3-05`. Runtime `PAPERCLIP_WEBHOOK_ENABLED=true` remains active for the named dev/demo observation policy, but routine monitoring is read-only to avoid adding unnecessary pending canary tasks. Production deploy remains a separate runtime decision.
 
 ---
 
@@ -73,6 +73,8 @@ Not in scope for W0:
 |---|---|---|
 | `main` | Production | Protected, no direct feature work |
 | `dev` | Integration/dev environment | Feature PRs merge here first |
+| `codex/*` | Codex-scoped docs, QA, integration, release-prep, or backup work | Starts from `dev` unless PM assigns `main` |
+| `claude/*` | Claude-scoped docs or implementation work | Starts from `dev` unless PM assigns `main` |
 | `feature/w0-*` | Branch/environment setup | Starts from `main` until `dev` exists |
 | `feature/w1-*` | Company access/deployment | Starts from `dev` |
 | `feature/w2-*` | UI redesign | Starts from `dev` |
@@ -82,8 +84,10 @@ Not in scope for W0:
 Flow:
 
 ```text
-feature/* -> dev -> QA/integration -> main -> production
+topic branch -> dev -> QA/integration -> main -> production
 ```
+
+`topic branch` means `feature/*`, `codex/*`, `claude/*`, or `hotfix/*` as assigned by PM. V0.2 historical workstream branches remain valid historical references; new Codex/Claude work should use the agent namespace rules in `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`.
 
 Dependency rule:
 
@@ -165,16 +169,16 @@ Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them 
 - Create `dev` from current `main` if it does not exist.
 - Push `dev` to origin.
 - Document branch model and environment expectations.
-- Document PR flow: `feature/* -> dev -> main`.
+- Document PR flow: `topic branch -> dev -> main`.
 - Confirm verification command: `npm.cmd run check:all`.
 
 **AC:**
-- [ ] `dev` branch exists and is pushed to remote.
-- [ ] Branch model is documented in README/docs.
-- [ ] PR flow is documented: `feature/* -> dev -> main`.
-- [ ] Dev/prod environment expectations are documented.
-- [ ] Required check command is documented: `npm.cmd run check:all`.
-- [ ] Next actions for W1, W2, and W3 are clear enough to open parallel Dev sessions.
+- [x] `dev` branch exists and is pushed to remote.
+- [x] Branch model is documented in README/docs.
+- [x] PR flow is documented: `topic branch -> dev -> main`.
+- [x] Dev/prod environment expectations are documented.
+- [x] Required check command is documented: `npm.cmd run check:all`.
+- [x] Next actions for W1, W2, and W3 were clear enough to complete parallel Dev/QA sessions.
 
 ### W1 - Company Access + Deployment
 

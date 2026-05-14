@@ -4,7 +4,7 @@
 **Status:** Active
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Integration Owner
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
 **Related Docs:** `../../TODO.md`, `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `../reference/PROJECT_CONTEXT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`
 
 ---
@@ -52,10 +52,10 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | Level | Version / Track | Status | Outcome | Release Gate |
 |---|---|---|---|---|
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
-| L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; W1.5/W1.7 dev-demo runtime accepted; W1.6 service-auth accepted; Paperclip runtime inputs confirmed | Teammates can access stable dev/demo Task Hub safely with environment, persistence, and access-control boundaries; Paperclip runtime health and Task Hub service-token reachability are confirmed for W3 planning; random ngrok remains manual-demo-only | Production/release-grade promotion remains out of scope |
+| L1 | V0.2 Access Foundation | Complete for dev/demo baseline | Teammates can access stable dev/demo Task Hub safely with environment, persistence, and access-control boundaries; Paperclip runtime health and Task Hub service-token reachability are confirmed for W3 planning; random ngrok remains manual-demo-only | Production deploy remains a separate runtime decision |
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted and integrated; W2-06 Integration QA/PM accepted on `dev` |
 | L3 | V0.2 Paperclip Foundation | Complete for V0.2 / standing dev-demo monitor active | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, safe cleanup for accumulated test sessions, retained traceability, and read-only operations visibility | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3-03 standing dev/demo observation active; W3-04/W3-04a cleanup merged to `dev@7ea4650`; runtime cleanup completed with 0 pending / 6 rejected / 0 Trello-linked; W3-05 operations status and copy polish merged/deployed at `dev@2c302dc`; closeout status is on `origin/dev@ff20e48` |
-| L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
+| L4 | V0.2 Integration Release | Complete | Accepted W1/W2/W3 work runs together on `dev` without regressions | Release/integration cleanup QA passed on clean `origin/dev@8027324`; workstream branch/worktree residue cleaned |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, deployed to dev/demo, and release-candidate verified; production deploy remains a separate runtime decision |
 | L6 | V0.4 Live AI Operations | Planned | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Live connector QA with controlled production-like data |
 | L7 | V0.5 Team Operating System | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
@@ -66,7 +66,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 
 ### L1 - V0.2 Access Foundation
 
-**Status:** Active / `V0.2-W1-05` random ngrok manual demo path is accepted; `V0.2-W1-06` Cloudflare Access gate and `V0.2-W1-08` DigitalOcean hosted dev/demo runtime are accepted for dev/demo; `V0.2-W1-07` service-auth topology is accepted; Paperclip runtime inputs are confirmed for W3 planning.
+**Status:** Complete for the V0.2 dev/demo access baseline. `V0.2-W1-05` random ngrok manual demo path is accepted; `V0.2-W1-06` Cloudflare Access gate and `V0.2-W1-08` DigitalOcean hosted dev/demo runtime are accepted for dev/demo; `V0.2-W1-07` service-auth topology is accepted; Paperclip runtime inputs are confirmed.
 
 **Goal:**
 Provide a safe dev/demo preview environment before wider teammate access.
@@ -141,7 +141,7 @@ Live Paperclip connector uses the accepted W1 access boundaries. Paperclip is ho
 
 ### L4 - V0.2 Integration Release
 
-**Status:** Planned after active V0.2 gaps close.
+**Status:** Complete. V0.2 release/integration cleanup QA passed on clean `origin/dev@8027324`, and stale W1/W2/W3 branches/worktrees were removed after verification.
 
 **Goal:**
 Promote only a coherent internal preview release, not partial work labeled as done.
