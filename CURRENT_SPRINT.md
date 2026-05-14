@@ -1,6 +1,6 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2-W3-03 Standing Paperclip Dev/Demo Enablement Policy Planning
+**Phase:** V0.2-W3-03 Standing Paperclip Dev/Demo Observation Window Active
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
@@ -22,7 +22,7 @@
 | V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. `V0.2-W1-06` and `V0.2-W1-08` are accepted as dev/demo runtime complete, not production/release-grade. |
 | V0.2 W2 Full UI Redesign | `V0.2-W2-06` integrated on `origin/dev@523c948` / PM Accepted | Settings, OKR, and Weekly Focus polish passed feature QA, Dev Integration, and Integration QA on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
-| V0.2 W3 live Paperclip connector | Code + live interop PM Accepted / merged to `dev` / external sender window QA Pass / standing policy planning / runtime gate closed | `c1e4df2` added the signed inbound webhook. QA passed local verification, live sender interop returned HTTP `201` for request `pc_live_interop_20260514115714`, and W3 merged to `dev` at `a89c26a`. `V0.2-W3-03` limited runtime-local signed canary and true external sender window passed replay/negative checks. Runtime is back to `PAPERCLIP_WEBHOOK_ENABLED=false`. Secret values remain excluded. |
+| V0.2 W3 live Paperclip connector | Code + live interop PM Accepted / merged to `dev` / standing dev-demo observation active | `c1e4df2` added the signed inbound webhook. QA passed local verification, live sender interop returned HTTP `201`, and W3 merged to `dev` at `a89c26a`. `V0.2-W3-03` limited, true external, and standing observation canaries passed replay/negative checks. Runtime is now `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window only. Secret values remain excluded. |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
@@ -46,7 +46,7 @@
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime inputs now confirmed for W3 planning | PM complete |
 | W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
-| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; W3 merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled policy accepted; limited and true external sender windows passed; standing dev/demo policy planning started; runtime gate remains disabled | PM / Runtime Owner / QA / Paperclip Owner |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; W3 merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled policy accepted; limited and true external sender windows passed; standing dev/demo observation window active | PM / Runtime Owner / QA / Paperclip Owner |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -107,7 +107,7 @@ Parallel rule:
 
 ---
 
-## Next Action - Standing Dev/Demo Enablement Policy
+## Next Action - Standing Dev/Demo Observation Monitoring
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated and PM accepted, so W2 is complete on `dev`. `V0.2-W1-06`, `V0.2-W1-08`, and `V0.2-W1-07` remain accepted for dev/demo runtime and service-auth planning.
 
@@ -117,12 +117,12 @@ Runtime gate status:
 
 - Task Hub dev/demo runtime is deployed from `dev@a89c26a` after W3 merge.
 - Paperclip Settings connection is configured and secret-backed under `APP_DATA_DIR`.
-- `PAPERCLIP_WEBHOOK_ENABLED=false` after the live interop test, limited window, and true external sender window.
-- Do not enable standing live webhook traffic until PM explicitly accepts the standing dev/demo policy and names owners.
+- `PAPERCLIP_WEBHOOK_ENABLED=true` is now active only for the named `V0.2-W3-03 Standing Dev/Demo Observation Window - 2026-05-14`.
+- This is dev/demo only, not production, not a `main` merge, and not permission for auto-approval.
 
 PM accepted `V0.2-W3-03` controlled live enablement policy and ran a limited runtime-local signed canary window. The canary created Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` with task status `pending`, duplicate same-payload replay returned idempotent success, duplicate changed payload returned `409`, invalid signature returned `401`, invalid source returned `403`, invalid environment returned `400`, and the runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false`. This window did not re-run the external Cloudflare service-token sender path; that path remains covered by the earlier live-sender interop evidence.
 
-PM decision: start standing dev/demo enablement policy planning, but keep `PAPERCLIP_WEBHOOK_ENABLED=false` by default.
+PM decision: standing dev/demo policy accepted and observation window started; keep `PAPERCLIP_WEBHOOK_ENABLED=true` only for the named dev/demo observation window.
 
 True external sender window result on 2026-05-14:
 
@@ -135,9 +135,21 @@ True external sender window result on 2026-05-14:
 - QA checks passed: create `201`, same-payload replay `200`, changed-payload replay `409`, invalid signature `401`, invalid source `403`, invalid environment `400`.
 - Final `/healthz` returned `200`; final disabled probe returned `403`; final runtime flag is `PAPERCLIP_WEBHOOK_ENABLED=false`.
 
+Standing dev/demo observation window start result on 2026-05-14:
+
+- Window: `V0.2-W3-03 Standing Dev/Demo Observation Window - 2026-05-14`.
+- Runtime Owner set `PAPERCLIP_WEBHOOK_ENABLED=true` after confirming preflight flag was `false`.
+- Task Hub runtime: `dev@a89c26a`; service health stayed `200`.
+- Paperclip Settings connection was `connected` with `hasSecret=true`.
+- Request `pc_standing_observation_20260514092342`; agent run `run_standing_observation_20260514092342`.
+- Created Review Queue session `884fec91-26e9-40e9-91af-6a11f91f317f` and task `025630e8-d52b-4ef3-b7ac-0cb858342497`.
+- Created task status stayed `pending`; Review Queue human gate remained intact.
+- QA checks passed: create `201`, same-payload replay `200`, changed-payload replay `409`, invalid signature `401`, invalid source `403`, invalid environment `400`.
+- Runtime is intentionally left `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window.
+
 ```text
 Role: Runtime Owner / QA / Paperclip Owner
-Task: Review and accept V0.2-W3-03 Standing Dev/Demo Enablement Policy
+Task: Monitor V0.2-W3-03 Standing Dev/Demo Observation Window
 
 Required owners:
 - PM Owner: Codex PM / project PM.
@@ -156,20 +168,23 @@ Accepted evidence:
 - Limited window Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` stayed `pending`.
 - Replay and negative checks passed.
 - Runtime gate was closed after test: `PAPERCLIP_WEBHOOK_ENABLED=false`.
+- Standing observation request `pc_standing_observation_20260514092342` returned HTTP `201`.
+- Standing observation Review Queue session `884fec91-26e9-40e9-91af-6a11f91f317f` stayed `pending`.
+- Standing observation replay and negative checks passed.
+- Runtime is now `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window.
 
 Window rules:
 - Do not deploy production.
 - Do not merge to main.
 - Do not commit or print secrets.
-- Keep `PAPERCLIP_WEBHOOK_ENABLED=false` unless PM explicitly accepts standing dev/demo enablement or names another limited window.
+- Keep `PAPERCLIP_WEBHOOK_ENABLED=true` only for the named dev/demo observation window; rollback to `false` immediately if any stop condition occurs.
 - Preserve Review Queue human gate and existing mock/local Docs behavior.
 - Keep Cloudflare Client ID/Secret and HMAC signing secret out of git, docs, logs, browser JavaScript, and chat.
 
 Expected output:
-- PM acceptance or hold for standing dev/demo enablement policy.
-- Confirm Monitor Owner and Rollback Owner.
-- If accepted, hand off to Runtime Owner / QA / Paperclip Owner for a named standing dev/demo start window.
-- If held, list exact missing owner or monitoring requirement.
+- Daily monitor report: health, accepted/rejected Paperclip count, pending Review Queue tasks, replay behavior, invalid signature/source/env checks if run.
+- Rollback immediately to `PAPERCLIP_WEBHOOK_ENABLED=false` if any stop condition occurs.
+- PM decision after observation: keep dev/demo standing enabled, narrow to named windows, or disable.
 ```
 
 **Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM; W3-03 policy planned and accepted by Codex PM; limited window executed by Codex Runtime Owner / QA; true external sender window executed by Codex Runtime Owner / Paperclip Owner / QA.
