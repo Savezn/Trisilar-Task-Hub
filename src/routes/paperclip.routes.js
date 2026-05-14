@@ -23,6 +23,9 @@ const {
   rotatePaperclipSecret,
 } = require("../integrations/paperclip/connection-config");
 const {
+  buildPaperclipOperationsStatus,
+} = require("../integrations/paperclip/operations-status");
+const {
   assertPaperclipWebhookRequest,
   PaperclipWebhookAuthError,
 } = require("../integrations/paperclip/webhook-auth");
@@ -314,6 +317,18 @@ module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
   router.get("/integrations/paperclip/connection", (_req, res) => {
     try {
       return res.json(publicPaperclipConnection());
+    } catch (e) {
+      return sendConnectionError(res, e);
+    }
+  });
+
+  router.get("/integrations/paperclip/operations/status", (_req, res) => {
+    try {
+      return res.json(buildPaperclipOperationsStatus({
+        sessions: store.getAllSessions(),
+        connection: publicPaperclipConnection(),
+        env: process.env,
+      }));
     } catch (e) {
       return sendConnectionError(res, e);
     }

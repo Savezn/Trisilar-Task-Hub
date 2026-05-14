@@ -491,6 +491,7 @@ a { text-decoration: none; }
 .chip-soon     { background: var(--list-bg);        color: var(--text-faint); }
 .chip-high     { background: var(--danger-light);  color: #dc2626; }
 .chip-med      { background: var(--warning-light); color: #b45309; }
+.chip-warning  { background: var(--warning-light); color: #b45309; }
 .chip-low      { background: var(--success-light); color: #059669; }
 .chip-create   { background: var(--success-light); color: #059669; }
 .chip-update   { background: var(--warning-light); color: #b45309; }
@@ -990,6 +991,88 @@ a { text-decoration: none; }
 .chip-cleanup {
   background: rgba(16, 185, 129, 0.12);
   color: #047857;
+}
+
+.paperclip-ops-panel {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 14px 0;
+  background: rgba(248, 250, 252, 0.82);
+}
+
+.paperclip-ops-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.paperclip-ops-header h4 {
+  margin: 2px 0 0;
+  font-size: 15px;
+}
+
+.paperclip-ops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.paperclip-ops-grid div {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--surface);
+  min-width: 0;
+}
+
+.paperclip-ops-grid span,
+.paperclip-audit-strip span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.paperclip-ops-grid strong {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.paperclip-audit-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.paperclip-audit-strip span {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: var(--surface);
+}
+
+.paperclip-ops-warnings {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.paperclip-ops-warning {
+  display: grid;
+  gap: 2px;
+  border-left: 3px solid var(--warning);
+  padding: 8px 10px;
+  background: rgba(245, 158, 11, 0.08);
+  border-radius: 8px;
+}
+
+.paperclip-ops-warning.is-danger {
+  border-left-color: var(--danger);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 /* ════════════════════════════════════════════════════════════
