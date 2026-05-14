@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.3 Product Reliability + UX Stabilization Closeout
-**Status:** Complete on dev/dev-demo; no main release yet
+**Phase:** V0.3 Product Reliability + UX Stabilization Main Release
+**Status:** PM accepted for main promotion; production deploy not performed
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
@@ -23,7 +23,7 @@
 | V0.2 W3 standing dev/demo observation | Active with read-only monitor automation | `PAPERCLIP_WEBHOOK_ENABLED=true` on dev/demo; active signed canary only on PM/QA request or after runtime/sender changes |
 | Latest W3 dev closeout | `origin/dev@ff20e48` | `V0.2-W3-05` operations status and settings copy polish merged/deployed at `dev@2c302dc`; W3 foundation closeout status is on latest `dev` |
 | V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
-| V0.3 Product Reliability + UX Stabilization | Complete on `origin/dev@02fe7cf` and dev/demo runtime | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, and runtime QA passed. `dev -> main` remains a separate PM release decision. |
+| V0.3 Product Reliability + UX Stabilization | PM accepted for main promotion through PR #20 | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, and release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`. Production deploy remains a separate runtime decision. |
 
 ---
 
@@ -37,7 +37,9 @@ The test/canary items created during live validation have been cleaned safely. T
 
 W3-05 adds that operational hardening: PM/QA/Runtime Owner can now inspect live flag status, connection state, source/environment, Review Queue counts, cleanup state, audit categories, and warnings without sending a new canary. It is merged and deployed at `dev@2c302dc`; W3 foundation closeout status is recorded on `origin/dev@ff20e48`.
 
-V0.3 RUX is complete on the integrated `dev` line and the dev/demo runtime. The accepted V0.3 work adds Trello connection-state/failure-copy clarity, Review Queue and AI trace clarity, Today/Tasks decision-flow polish, browser regression coverage, and a future `dev -> main` release checklist. Runtime QA confirmed Task Hub on `dev@02fe7cf`, local health/config/reviews `200`, Cloudflare Access anonymous block `302`, and Paperclip operations read-only with 0 pending / 6 rejected / 0 Trello-linked.
+V0.3 RUX is complete on the integrated `dev` line and the dev/demo runtime. The accepted V0.3 work adds Trello connection-state/failure-copy clarity, Review Queue and AI trace clarity, Today/Tasks decision-flow polish, browser regression coverage, and a `dev -> main` release checklist. Runtime QA confirmed Task Hub on `dev@02fe7cf`, local health/config/reviews `200`, Cloudflare Access anonymous block `302`, and Paperclip operations read-only with 0 pending / 6 rejected / 0 Trello-linked.
+
+PM accepted the V0.3 `dev -> main` release candidate in PR #20 after merging `origin/dev@e05eb66` over `origin/main@88dfa09` into release-candidate commit `5eb23ef`. Verification passed `npm ci`, `check:all`, RUX checks, browser regression, Paperclip contract/mock/docs/operations/cleanup/connection/webhook checks, conflict-marker scan, and `git diff --check`. No production deploy, runtime flag change, secret exposure, live canary, Trello/Calendar/Google Tasks side effect, or W3/V0.3 cross-merge was performed.
 
 ---
 
@@ -53,6 +55,7 @@ V0.3 RUX is complete on the integrated `dev` line and the dev/demo runtime. The 
 | W3-05 | Paperclip Live Operations Hardening | QA Pass / PM Accepted; merged and deployed on `dev@2c302dc`; closeout on `origin/dev@ff20e48` | PM complete / Runtime monitor |
 | V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted / merged to `dev@ed9fae0` | PM complete |
 | V0.3 RUX Integration | Product Reliability + UX Stabilization accepted branch integration | Complete on `origin/dev@02fe7cf`; dev/demo runtime QA pass | PM complete |
+| V0.3 Main Release | Product Reliability + UX Stabilization `dev -> main` release candidate | PM accepted PR #20; production deploy not performed | PM complete / Runtime hold |
 
 ---
 
@@ -108,26 +111,26 @@ Parallel rule:
 
 ---
 
-## Next Action - Post-V0.3 PM Decision
+## Next Action - Post-V0.3 Main Release Route
 
 ```text
 Role: PM
-Task: Decide the next project route after V0.3 completion
+Task: Decide the next project route after V0.3 main release acceptance
 
 Completed baseline:
-origin/dev@02fe7cf
-dev/demo runtime deployed from dev@02fe7cf
+origin/dev@e05eb66
+release candidate PR #20 at 5eb23ef
+dev/demo runtime deployed from dev@e05eb66
 
 V0.3 status:
-Complete on dev/dev-demo. RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, and runtime QA passed.
+Complete on dev/dev-demo and PM accepted for main promotion. RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, and release-candidate verification passed.
 
 Decision options:
-- Hold on dev and continue routine read-only monitoring.
-- Open a separate PM release decision for dev -> main using the RUX-06 checklist.
+- Hold after main promotion and continue routine read-only monitoring.
 - Route the next roadmap item, likely V0.4 Live AI Operations or a focused post-V0.3 hardening item.
+- Open a separate production runtime/deploy decision if production deployment becomes needed.
 
 Rules:
-- Do not merge dev -> main without a separate PM release decision.
 - Do not deploy production.
 - Do not commit secrets.
 - Do not merge W3 sibling branches into V0.3 branches or V0.3 branches into W3 branches.
@@ -141,8 +144,7 @@ Rules:
 - Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
 
 Expected output:
-- Next named phase or release decision.
-- If dev -> main is selected, run the RUX-06 release checklist as a new explicit release task.
+- Next named phase or release/runtime decision.
 ```
 
-**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, and accepted complete after runtime QA.
+**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification.

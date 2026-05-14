@@ -316,18 +316,19 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention, operations hardening, and copy polish on latest `origin/dev`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only. V0.3 operating model and long-term agent team structure are PM accepted and merged to `dev@ed9fae0`; V0.3 Product Reliability + UX Stabilization is complete on `origin/dev@02fe7cf` and dev/demo runtime.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention, operations hardening, and copy polish on latest `origin/dev`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only. V0.3 operating model and long-term agent team structure are PM accepted and merged to `dev@ed9fae0`; V0.3 Product Reliability + UX Stabilization is complete on dev/dev-demo and PM accepted for main promotion through PR #20.
 
 ```text
 Role: PM
-Task: Decide the next project route after V0.3 completion
+Task: Decide the next project route after V0.3 main release acceptance
 
 Completed baseline:
-origin/dev@02fe7cf
-dev/demo runtime deployed from dev@02fe7cf
+origin/dev@e05eb66
+release candidate PR #20 at 5eb23ef
+dev/demo runtime deployed from dev@e05eb66
 
 Goal:
-Choose whether to hold on dev, open a separate dev -> main release decision using the RUX-06 checklist, or route the next roadmap item.
+Choose whether to hold after main promotion, route the next roadmap item, or open a separate production runtime/deploy decision.
 
 Rules:
 - Do not send Paperclip webhooks.
@@ -337,7 +338,6 @@ Rules:
 - Do not create Trello cards, Calendar events, or Google Tasks.
 - Do not change W1 deployment/access or W2 visual redesign.
 - Do not expose secrets.
-- Do not merge `dev -> main` without a separate PM release decision.
 - Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
 
 Expected output:
@@ -393,3 +393,4 @@ Expected output:
 | 2026-05-14 | Accepted V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |
 | 2026-05-14 | Recorded V0.3 RUX acceptance through `V0.3-RUX-06` and later closed it on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM / Integration Owner |
 | 2026-05-14 | Closed V0.3 RUX complete on `origin/dev@02fe7cf` and dev/demo runtime after runtime QA pass | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |
