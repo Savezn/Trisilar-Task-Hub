@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02` live connector code and live interop accepted; `V0.2-W3-03` controlled live enablement policy PM Accepted; runtime webhook gate remains disabled by default
+**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02` live connector code and live interop accepted; `V0.2-W3-03` controlled live enablement policy PM Accepted; true external sender window passed; runtime webhook gate remains disabled by default
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -498,6 +498,18 @@ PM post-window decision:
 - Paperclip Owner sends the live payload from the actual Paperclip sender through Cloudflare Access service-token and HMAC signing.
 - QA Owner verifies pending task creation, same-payload replay, invalid signature, invalid source, and invalid environment.
 
+True external sender window result:
+
+- Window: `V0.2-W3-03 true external Paperclip sender window 2026-05-14`.
+- Sender path: Paperclip runtime host/env sent to the public Task Hub Cloudflare URL with Cloudflare Access service-token headers and Task Hub HMAC headers.
+- Task Hub runtime: `dev@a89c26a`.
+- `PAPERCLIP_WEBHOOK_ENABLED=false` before the window, `true` only during the window, and `false` after rollback.
+- Request `pc_true_external_20260514064709` and agent run `run_true_external_20260514064709` returned HTTP `201`.
+- Review Queue session `0e8f8b2e-d767-44ef-854c-538481c124c8` was created with task `ef72316d-148d-4c4a-b600-fc5bb14da928` and status `pending`.
+- Same-payload replay returned `200`; changed-payload replay returned `409`; invalid signature returned `401`; invalid source returned `403`; invalid environment returned `400`.
+- Final health check returned `200`; final disabled probe returned `403` with `Paperclip live webhook is disabled`.
+- Standing enablement remains held; keep `PAPERCLIP_WEBHOOK_ENABLED=false` unless PM explicitly approves a new named window or standing dev/demo enablement.
+
 ---
 
 ## Open Questions for PM / Paperclip Owner
@@ -548,3 +560,4 @@ Resolved runtime inputs:
 | 2026-05-14 | Planned and PM accepted `V0.2-W3-03` controlled live enablement policy with enablement criteria, rollback, owner permissions, monitoring/audit, and post-interop checklist; runtime gate remains disabled until a named live window starts | Codex PM |
 | 2026-05-14 | Completed limited `V0.2-W3-03` runtime-local signed canary window; canary/replay/negative checks passed and runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / QA |
 | 2026-05-14 | PM held standing enablement and routed next to a true external Paperclip sender window with Runtime Owner, Paperclip Owner, and QA Owner | Codex PM |
+| 2026-05-14 | Completed true external `V0.2-W3-03` Paperclip sender window from Paperclip runtime host/env through Cloudflare Access and HMAC; request `pc_true_external_20260514064709` created pending session `0e8f8b2e-d767-44ef-854c-538481c124c8`; replay/negative checks passed; runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / Paperclip Owner / QA |

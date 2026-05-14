@@ -112,16 +112,27 @@ Runtime gate status:
 
 PM accepted `V0.2-W3-03` controlled live enablement policy and ran a limited runtime-local signed canary window. The canary created Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` with task status `pending`, duplicate same-payload replay returned idempotent success, duplicate changed payload returned `409`, invalid signature returned `401`, invalid source returned `403`, invalid environment returned `400`, and the runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false`. This window did not re-run the external Cloudflare service-token sender path; that path remains covered by the earlier live-sender interop evidence.
 
-PM decision: hold standing enablement. Keep `PAPERCLIP_WEBHOOK_ENABLED=false` and schedule one true external Paperclip sender window before any standing dev/demo enablement.
+PM decision: hold standing enablement. Keep `PAPERCLIP_WEBHOOK_ENABLED=false` by default.
+
+True external sender window result on 2026-05-14:
+
+- Window: `V0.2-W3-03 true external Paperclip sender window 2026-05-14`.
+- Runtime Owner opened and closed `PAPERCLIP_WEBHOOK_ENABLED`; rollback returned it to `false`.
+- Paperclip runtime host/env sent through the public Cloudflare-protected Task Hub URL with service-token headers and HMAC signing.
+- Request `pc_true_external_20260514064709`; agent run `run_true_external_20260514064709`.
+- Created Review Queue session `0e8f8b2e-d767-44ef-854c-538481c124c8` and task `ef72316d-148d-4c4a-b600-fc5bb14da928`.
+- Created task status stayed `pending`; Review Queue human gate remained intact.
+- QA checks passed: create `201`, same-payload replay `200`, changed-payload replay `409`, invalid signature `401`, invalid source `403`, invalid environment `400`.
+- Final `/healthz` returned `200`; final disabled probe returned `403`; final runtime flag is `PAPERCLIP_WEBHOOK_ENABLED=false`.
 
 ```text
 Role: Runtime Owner / QA / Paperclip Owner
-Task: Schedule and run true external V0.2-W3-03 Paperclip sender window
+Task: Decide post-window path for V0.2-W3-03 Paperclip live enablement
 
 Required owners:
-- Runtime Owner: open/close `PAPERCLIP_WEBHOOK_ENABLED` and execute rollback.
-- Paperclip Owner: send the live payload from the actual Paperclip sender through Cloudflare Access service-token and HMAC signing.
-- QA Owner: verify pending task creation, same-payload replay, invalid signature, invalid source, and invalid environment.
+- PM Owner: decide whether to keep holding standing enablement or approve a new named limited window.
+- Runtime Owner: keep `PAPERCLIP_WEBHOOK_ENABLED=false` unless PM approves a named window.
+- QA Owner: if another window is approved, repeat pending task, replay, invalid signature, invalid source, and invalid environment checks.
 
 Accepted evidence:
 - Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
@@ -144,12 +155,8 @@ Window rules:
 - Keep Cloudflare Client ID/Secret and HMAC signing secret out of git, docs, logs, browser JavaScript, and chat.
 
 Expected output:
-- Window name/time and owner names.
-- Runtime flag state before/during/after.
-- Paperclip-sent request id and agent run id.
-- HTTP results for create, replay, and negative checks.
-- Review Queue session/task evidence.
-- Confirmation `PAPERCLIP_WEBHOOK_ENABLED=false` after the window.
+- PM decision: hold, approve another limited sender window, or approve standing dev/demo enablement.
+- If standing enablement is considered, record monitor owner, rollback owner, review cadence, and stop condition first.
 ```
 
-**Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM; W3-03 policy planned and accepted by Codex PM; limited window executed by Codex Runtime Owner / QA.
+**Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM; W3-03 policy planned and accepted by Codex PM; limited window executed by Codex Runtime Owner / QA; true external sender window executed by Codex Runtime Owner / Paperclip Owner / QA.
