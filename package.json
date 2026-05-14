@@ -16,6 +16,7 @@
     "verify:rux-trello": "node scripts/verify-rux-trello-connection-ux.js",
     "verify:rux-ai-trace": "node scripts/verify-rux-ai-trace-clarity.js",
     "verify:rux-decision-flow": "node scripts/verify-rux-today-tasks-decision-flow.js",
+    "verify:rux-browser-regression": "node scripts/verify-rux-browser-regression.js",
     "check:all": "node scripts/verify-frontend.js && npm run smoke",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,5 +31,8 @@
     "express": "^5.2.1",
     "googleapis": "^171.4.0",
     "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "playwright": "^1.60.0"
   }
 }

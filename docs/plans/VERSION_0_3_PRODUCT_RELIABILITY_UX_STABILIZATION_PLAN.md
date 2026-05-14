@@ -1,7 +1,7 @@
 # Version 0.3 Product Reliability + UX Stabilization Plan
 
 **Doc Role:** Active V0.3 phase plan
-**Status:** PM accepted; `V0.3-RUX-05` routed
+**Status:** PM accepted; `V0.3-RUX-05` QA pass / PM review pending
 **Version:** V0.3
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
@@ -125,7 +125,7 @@ V0.3-RUX-06
 | `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Active / `V0.3-RUX-02A` PM Accepted; `V0.3-RUX-03` PM Accepted | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | PM Accepted `b2425a4` | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | PM Accepted `d72f979` | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
-| `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | Routed | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
+| `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | QA pass / PM review pending | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
 | `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | Planned | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
 
 ---
@@ -412,8 +412,8 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: QA / Frontend / Dev
-Task: Implement and verify V0.3-RUX-05 Browser Regression + Responsive QA Gate.
+Role: PM
+Task: Review and accept V0.3-RUX-05 Browser Regression + Responsive QA Gate.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md
@@ -422,11 +422,11 @@ Read:
 - docs/reference/AI_AGENT_GOVERNANCE.md
 
 Do:
-- Add or formalize a repeatable browser regression gate for core user-facing routes.
-- Keep the gate runnable without production secrets by using controlled responses or local mock fixtures.
-- Capture desktop/mobile route load, console/page errors, and horizontal overflow.
-- Include `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, `/settings`, and `/docs`.
-- Preserve RUX-02A, RUX-03, and RUX-04 assertions where relevant.
+- Confirm the repeatable browser regression gate exists as `npm.cmd run verify:rux-browser-regression`.
+- Confirm the gate runs without production secrets by using controlled responses or local mock fixtures.
+- Confirm desktop/mobile route load, console/page errors, and horizontal overflow are captured.
+- Confirm `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, `/settings`, and `/docs` are included.
+- Confirm RUX-02A, RUX-03, and RUX-04 assertions are preserved where relevant.
 - Do not merge W3/V0.3 branches.
 - Keep W3 live enablement or Paperclip hardening on its own W3 branch/worktree.
 
@@ -450,3 +450,4 @@ If held:
 | 2026-05-14 | Routed `V0.3-RUX-03` handoff for `RUX-003` Docs/Paperclip trace clarity | Codex PM |
 | 2026-05-14 | Accepted `V0.3-RUX-03` at `b2425a4`; routed `V0.3-RUX-04` Today + Tasks Decision Flow | Codex PM |
 | 2026-05-14 | Accepted `V0.3-RUX-04` at `d72f979`; routed `V0.3-RUX-05` Browser Regression + Responsive QA Gate | Codex PM |
+| 2026-05-14 | Implemented and verified `V0.3-RUX-05`; routed to PM review | Codex Dev / QA |

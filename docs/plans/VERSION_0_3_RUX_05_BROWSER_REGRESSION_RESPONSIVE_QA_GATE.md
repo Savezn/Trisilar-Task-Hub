@@ -1,10 +1,10 @@
 # V0.3-RUX-05 Browser Regression + Responsive QA Gate
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** Routed - ready for QA / Frontend / Dev
+**Status:** QA pass - PM review pending
 **Owner:** QA / Frontend / Dev
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex Dev / QA
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md`, `../../CURRENT_SPRINT.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../testing/TEST_STRATEGY.md`, `../reference/AI_AGENT_GOVERNANCE.md`
 
 ---
@@ -120,11 +120,47 @@ If a new browser regression command is added, run it and record:
 
 ---
 
+## Implementation Summary
+
+`V0.3-RUX-05` added a repeatable browser regression gate:
+
+```powershell
+npm.cmd run verify:rux-browser-regression
+```
+
+The gate:
+
+- Starts a temporary local Task Hub server with a temporary `APP_DATA_DIR`.
+- Uses Playwright with controlled API fixtures instead of production credentials.
+- Checks desktop `1440x960` and mobile `390x844` viewports.
+- Covers `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, `/settings`, and `/docs`.
+- Captures console errors, page errors, and horizontal overflow.
+- Validates RUX-02A Trello disconnected copy, RUX-03 Docs trace labels, and RUX-04 Today/Tasks decision-flow cues where relevant.
+- Cleans up temporary runtime data after the run.
+
+No live Paperclip enablement, W3 webhook/service-auth/runtime change, secret exposure, broad UI redesign, or automatic write side effect was introduced.
+
+---
+
+## Verification Result
+
+| Check | Result |
+|---|---|
+| RED: `npm.cmd run verify:rux-browser-regression` before implementation | Failed as expected with missing script |
+| `npm.cmd run verify:rux-browser-regression` | Pass |
+| Route matrix | Pass for `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, `/settings`, `/docs` |
+| Desktop/mobile viewports | Pass |
+| Horizontal overflow | Pass |
+| Console/page errors | Pass |
+| Controlled fixture boundary | Pass - no production secrets required |
+
+---
+
 ## Next Recommended Session
 
 ```text
-Role: QA / Frontend / Dev
-Task: Implement and verify V0.3-RUX-05 Browser Regression + Responsive QA Gate.
+Role: PM
+Task: Review and accept V0.3-RUX-05 Browser Regression + Responsive QA Gate.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md
@@ -133,8 +169,8 @@ Read:
 - docs/reference/AI_AGENT_GOVERNANCE.md
 
 Guardrails:
-- Keep work scoped to repeatable browser regression and responsive QA evidence.
-- Use controlled/mock responses when live credentials are unavailable.
+- Confirm the browser regression command is repeatable and does not require production secrets.
+- Confirm the route matrix and desktop/mobile evidence meet acceptance.
 - Do not expose secrets, auth headers, tokens, or private credentialed URLs.
 - Do not enable live Paperclip.
 - Do not change W3 webhook/service-auth/runtime behavior.
@@ -148,3 +184,4 @@ Guardrails:
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-14 | Routed `V0.3-RUX-05` after PM accepting `V0.3-RUX-04` at `d72f979` | Codex PM |
+| 2026-05-14 | Implemented and verified repeatable browser regression gate; routed to PM review | Codex Dev / QA |
