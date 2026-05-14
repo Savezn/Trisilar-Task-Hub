@@ -3,8 +3,8 @@
 **Doc Role:** High-level roadmap index
 **Status:** Active
 **Owner:** PM
-**Last Updated:** 2026-05-13
-**Updated by:** Codex PM
+**Last Updated:** 2026-05-14
+**Updated by:** Codex PM / Documentation Architect
 
 This file tracks the broad roadmap. It does not replace `CURRENT_SPRINT.md`, version plans, QA logs, or ADRs.
 
@@ -17,6 +17,9 @@ This file tracks the broad roadmap. It does not replace `CURRENT_SPRINT.md`, ver
 | Current active task and next prompt | `CURRENT_SPRINT.md` |
 | Project-wide ladder and release gates | `docs/plans/PROJECT_LADDER.md` |
 | Version scope and workstreams | `docs/plans/VERSION_0_2_PLAN.md` |
+| Long-term operating model | `docs/reference/ORGANIZATION_OPERATING_MODEL.md` |
+| AI agent governance and role boundaries | `docs/reference/AI_AGENT_GOVERNANCE.md` and `docs/agents/` |
+| Parallel Codex development | `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` |
 | Parallel W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | QA history | `docs/logs/QA_LOG.md` |
 | Major decisions | `docs/logs/DECISION_LOG.md` and `docs/adr/` |
@@ -46,7 +49,7 @@ Historical details live in `docs/archive/VERSION_0_1_PLAN.md`, `docs/archive/DEV
 
 ### V0.2 - Company Access, UI Redesign, Paperclip Integration
 
-Status: Active. W2 full UI redesign is re-scoped into `V0.2-W2-01`-`V0.2-W2-06` (`W2a`-`W2f` aliases). `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. V0.2 should not be treated as release-ready until W1 Cloudflare-protected hosted dev/demo access, W2 full UI integration, and W3 mock/integration gates are accepted. `V0.2-W1-05` random ngrok + temporary Basic Auth is accepted for short manual teammate demo only. Task Hub is now configured on DigitalOcean behind Cloudflare at `https://taskhub.trisila.online`; `V0.2-W1-06`/`V0.2-W1-08` are accepted as dev/demo runtime complete; `V0.2-W1-07` service-auth topology is accepted. Paperclip runtime inputs are now confirmed for W3 planning: hosted base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check returned `200` from the Paperclip server. W3 live connector work is routed to `V0.2-W3-02`.
+Status: Active. W2 full UI redesign is re-scoped into `V0.2-W2-01`-`V0.2-W2-06` (`W2a`-`W2f` aliases). `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` random ngrok + temporary Basic Auth is accepted for short manual teammate demo only. Task Hub is configured on DigitalOcean behind Cloudflare at `https://taskhub.trisila.online`; `V0.2-W1-06`/`V0.2-W1-08` are accepted as dev/demo runtime complete; `V0.2-W1-07` service-auth topology is accepted. Paperclip runtime inputs are confirmed, W3 live connector and interop are PM accepted, and runtime `PAPERCLIP_WEBHOOK_ENABLED=false` remains the default until PM approves standing live enablement.
 
 Workstreams:
 
@@ -55,8 +58,8 @@ Workstreams:
 | W0 Branch / Environment / CI Setup | Establish `dev`, branch model, worktree workflow | Done |
 | W1 Company Access + Deployment | Make Trisilar teammates able to access stable Task Hub dev/demo safely | `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` accepted for dev/demo runtime; `V0.2-W1-07` accepted |
 | W2 Full UI Redesign | Redesign the full app UI with a durable design system | W2-06 integrated / PM accepted on `origin/dev@523c948` |
-| W3 Paperclip Multi-Agent Integration | Connect Task Hub to the Paperclip multi-agent system | Mock accepted; live webhook connector routed to `V0.2-W3-02` after runtime inputs confirmed |
-| W4 Integration QA | Merge workstreams into `dev` and verify combined behavior | Planned |
+| W3 Paperclip Multi-Agent Integration | Connect Task Hub to the Paperclip multi-agent system | Mock and live connector accepted; runtime gate disabled by default |
+| W4 Integration QA | Merge workstreams into `dev` and verify combined behavior | W3 integrated on `origin/dev@a89c26a`; release candidate QA/PM decision still required |
 | W5 V0.2 Release | Promote from `dev` to `main` after acceptance | Planned |
 
 Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
@@ -68,9 +71,9 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 | L0 | V0.1 Local MVP | Complete |
 | L1 | V0.2 Access Foundation | Active |
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` |
-| L3 | V0.2 Paperclip Foundation | Mock accepted / W3-02 live connector routed |
-| L4 | V0.2 Integration Release | Planned |
-| L5 | V0.3 Reliability Hardening | Planned |
+| L3 | V0.2 Paperclip Foundation | W3-02 live connector accepted / runtime gate disabled by default |
+| L4 | V0.2 Integration Release | Active |
+| L5 | V0.3 Product Reliability + UX Stabilization | Draft model ready for PM review |
 | L6 | V0.4 Live AI Operations | Planned |
 | L7 | V0.5 Team Operating System | Future |
 
@@ -84,6 +87,8 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 - Paperclip contract, attribution, review queue, and audit trail.
 - Automated browser regression coverage.
 - Trello/Paperclip mock data for deterministic tests.
+- UX issue intake and route-by-route usability review.
+- Agent role docs and future Codex skill extraction after PM approval.
 - Team onboarding docs for non-developer use.
 
 ---
@@ -96,7 +101,8 @@ These items are not blockers for the current `V0.2-W2-02`/W1 runtime work. They 
 |---|---|---|
 | Automated test suite | Current coverage is mostly smoke and structural verification. Unit, integration, and browser regression tests are not yet systematic. | Expand from `docs/testing/TEST_STRATEGY.md`: route tests, Trello model tests, deterministic fixtures, browser navigation regression, and CI gates. |
 | Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |
-| Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only. Task Hub now has an accepted DigitalOcean + Cloudflare dev/demo runtime with private bind, server-only secrets, stable `APP_DATA_DIR`, and accepted Paperclip service-auth topology. Paperclip runtime inputs are confirmed without exposing secrets. | Route `V0.2-W3-02` live Paperclip -> Task Hub webhook connector; keep production/release-grade promotion out of scope until QA/PM accepts the live connector. |
+| Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only. Task Hub now has an accepted DigitalOcean + Cloudflare dev/demo runtime with private bind, server-only secrets, stable `APP_DATA_DIR`, and accepted Paperclip service-auth topology. Paperclip runtime inputs are confirmed without exposing secrets. | Keep `PAPERCLIP_WEBHOOK_ENABLED=false` until PM approves standing live enablement; keep production/release-grade promotion gated by integration QA and PM acceptance. |
+| V0.3 operating model | Long-term role ownership now needs to move beyond W1/W2/W3 labels. | PM review of `docs/reference/ORGANIZATION_OPERATING_MODEL.md`, `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and `docs/agents/`; then decide whether to create a reusable Codex workflow skill. |
 | Historical document encoding | Some archive/log files still contain mojibake from earlier encoding corruption. | Run a separate UTF-8 repair task on archive/log docs only; use targeted edits and preserve historical meaning. |
 
 ---

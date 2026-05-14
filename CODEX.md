@@ -3,8 +3,8 @@
 **Doc Role:** Codex-specific agent extensions
 **Status:** Active
 **Universal Rules:** Read `.ai-instructions.md` first.
-**Last Updated:** 2026-05-08
-**Updated by:** Codex PM
+**Last Updated:** 2026-05-14
+**Updated by:** Codex PM / Documentation Architect
 
 This file intentionally avoids duplicating the shared project workflow. Shared rules live in `.ai-instructions.md`, `CONTRIBUTING.md`, `docs/reference/PROJECT_CONTEXT.md`, and `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md`.
 
@@ -20,6 +20,7 @@ This file intentionally avoids duplicating the shared project workflow. Shared r
 - Do not revert unrelated user/agent changes.
 - For docs-only changes, run `git diff --check` and state that runtime checks were skipped.
 - For code/config/route/integration changes, run `node server.js` in one terminal and `npm.cmd run check:all` in another.
+- For V0.3 role/parallel work, use `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and the relevant file under `docs/agents/`.
 
 ---
 
@@ -45,6 +46,9 @@ Every final handoff for repository work should include:
 - `docs/plans/VERSION_0_2_PLAN.md`
 - `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`
 - `docs/reference/PROJECT_CONTEXT.md`
+- `docs/reference/ORGANIZATION_OPERATING_MODEL.md`
+- `docs/reference/AI_AGENT_GOVERNANCE.md`
+- `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`
 - `docs/reference/ARCHITECTURE.md`
 - `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md`
 - `docs/reference/FILE_ORGANIZATION.md`

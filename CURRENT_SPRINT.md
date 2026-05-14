@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2-W3-02 Live Paperclip Connector Acceptance
-**Status:** Active
+**Phase:** V0.3 Project Operating Model and Agent Structure
+**Status:** Draft ready for PM review
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
@@ -23,9 +23,10 @@
 | V0.2 W2 Full UI Redesign | `V0.2-W2-06` integrated on `origin/dev@523c948` / PM Accepted | Settings, OKR, and Weekly Focus polish passed feature QA, Dev Integration, and Integration QA on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | V0.2 W3 live Paperclip connector | Code + live interop PM Accepted / runtime gate closed | `c1e4df2` added the signed inbound webhook. QA passed local verification, then live sender interop returned HTTP `201` for request `pc_live_interop_20260514115714`, created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`, and kept the task `pending`. Runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after the test. Secret values remain excluded. |
-| V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
+| V0.2 Integration Merge | PM Accepted on `dev`; W3 integration is on `origin/dev@a89c26a` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
+| V0.3 operating model and agent structure | Draft branch `feature/project-operating-model-agent-structure` | New reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. |
 
 ---
 
@@ -38,6 +39,7 @@
 | W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
+| V0.3 Operating Model | Project operating model and long-term agent team structure | Draft ready for PM review on `feature/project-operating-model-agent-structure` | PM |
 
 ---
 
@@ -57,6 +59,10 @@
 | Product/UX scope | `MVP_PRD.md` |
 | Historical roadmap/progress tracker | `docs/archive/DEVELOPMENT_HISTORY.md` |
 | File/function lookup hints | `docs/reference/KEY_FILE_MAP.md` |
+| Long-term organization operating model | `docs/reference/ORGANIZATION_OPERATING_MODEL.md` |
+| AI agent governance and role boundaries | `docs/reference/AI_AGENT_GOVERNANCE.md` |
+| Parallel Codex branch/worktree model | `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` |
+| Role-specific agent handoffs | `docs/agents/` |
 
 ---
 
@@ -97,42 +103,38 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W3 Post-Acceptance
+## Next Action - V0.3 Operating Model Review
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated and PM accepted, so W2 is complete on `dev`. `V0.2-W1-06`, `V0.2-W1-08`, and `V0.2-W1-07` remain accepted for dev/demo runtime and service-auth planning.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. V0.2 W1/W2/W3 dev/demo foundations are accepted, and W3 live interop passed with `PAPERCLIP_WEBHOOK_ENABLED=false` restored after the test. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
 
-Runtime evidence on 2026-05-14: Paperclip is running as `paperclip.service` on local runtime port `3100`; `https://paperclip.trisila.online` is the hosted Paperclip base URL; `/healthz` is the confirmed Paperclip health path; allowed non-secret identifiers are `paperclip-do-dev` and `dev`; the Task Hub Cloudflare Access service-token check from the Paperclip server returned `/healthz` status `200`. The W3 live connector code at `c1e4df2` and live signed interop test are PM accepted. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
+V0.3 now has a draft operating-model and agent-structure package:
 
-Runtime gate status:
+- `docs/reference/ORGANIZATION_OPERATING_MODEL.md`
+- `docs/reference/AI_AGENT_GOVERNANCE.md`
+- `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`
+- `docs/agents/`
 
-- Task Hub dev/demo runtime is temporarily deployed from `feature/w3-paperclip-integration@c1e4df2` for W3 interop verification.
-- Paperclip Settings connection is configured and secret-backed under `APP_DATA_DIR`.
-- `PAPERCLIP_WEBHOOK_ENABLED=false` after the interop test.
-- Do not enable live webhook traffic permanently until PM approves a controlled live enablement policy.
+These docs define the long-term model:
 
 ```text
-Role: PM / Integration
-Task: Decide W3 post-acceptance path
-
-Decision needed:
-1. Merge `feature/w3-paperclip-integration` into `dev` after final branch acceptance, or
-2. Plan a controlled live enablement policy before any permanent runtime enablement.
-
-Accepted evidence:
-- Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
-- QA local verification passed for webhook, contract, mock route, connection settings, docs, frontend, and smoke.
-- Live interop returned HTTP `201` for request `pc_live_interop_20260514115714`.
-- Created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`.
-- Created task stayed `pending`; human approval gate remained intact.
-- Runtime gate was closed after test: `PAPERCLIP_WEBHOOK_ENABLED=false`.
-
-Rules:
-- Do not deploy production.
-- Do not merge to main.
-- Do not commit or print secrets.
-- Do not enable permanent live Paperclip traffic until PM approves the live enablement policy.
-- Preserve Review Queue human gate and existing mock/local Docs behavior.
-- Keep Cloudflare Client ID/Secret and HMAC signing secret out of git, docs, logs, browser JavaScript, and chat.
+Trello = execution surface
+Task Hub = command center and review/control layer
+Review Queue = human approval gate
+Paperclip and future AI agents = controlled intake sources
+Runtime governance = access, secrets, monitoring, rollback, audit
+Codex agents = development workforce operating through branches/worktrees
 ```
 
-**Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM.
+```text
+Role: PM
+Task: Review and accept V0.3 project operating model and long-term agent team structure.
+
+If accepted:
+- Decide whether to create `trisilar-task-hub-workflow` Codex skill from the finalized docs.
+- Decide whether to start V0.3 Product Reliability + UX Stabilization planning.
+
+If held:
+- List exact docs or role boundaries that need revision.
+```
+
+**Attribution:** V0.3 operating model draft prepared by Codex PM / Documentation Architect.

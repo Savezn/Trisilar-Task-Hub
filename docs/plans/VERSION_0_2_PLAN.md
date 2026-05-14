@@ -3,11 +3,11 @@
 **Doc Role:** Active version plan
 **Status:** Active - canonical task IDs adopted; old W1/W2/W3 short labels kept as aliases
 **Version:** V0.2
-**Planning Stage:** W3-02 live connector accepted; runtime live gate disabled by default
+**Planning Stage:** W3-02 live connector accepted and integrated on `origin/dev`; runtime live gate disabled by default; V0.3 operating model review routed next
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely while moving from manual demo access toward stable Cloudflare-protected hosted dev/demo runtime for Task Hub and service-auth with hosted Paperclip.
 
 ---
@@ -40,9 +40,12 @@ Project ladder position:
 ```text
 L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
+-> L5 V0.3 Product Reliability + UX Stabilization
 ```
 
 V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. Paperclip runtime inputs are confirmed for W3 planning: hosted base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check returned `200` from the Paperclip server. W3 live connector code and live sender interop are accepted at `c1e4df2`, but runtime `PAPERCLIP_WEBHOOK_ENABLED=false` remains the default until PM approves a controlled live enablement policy. Production/release-grade promotion remains out of scope.
+
+After V0.2, long-term role ownership moves from only W1/W2/W3 workstreams to the V0.3 operating model in `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, and `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`.
 
 ---
 
@@ -77,6 +80,7 @@ Not in scope for W0:
 | `feature/w1-*` | Company access/deployment | Starts from `dev` |
 | `feature/w2-*` | UI redesign | Starts from `dev` |
 | `feature/w3-*` | Paperclip integration | Starts from `dev` |
+| `feature/project-*`, `feature/ux-*`, `feature/ai-*`, `feature/runtime-*` | V0.3 role/scope branches when PM assigns them | Starts from `dev` unless PM says otherwise |
 | `hotfix/*` | Emergency production fix | Starts from `main`, then merges back to `dev` |
 
 Flow:
@@ -307,30 +311,18 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted; route the next PM session to merge W3 into `dev` after final branch acceptance or to plan controlled live enablement policy.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted, and W3 is integrated on `origin/dev@a89c26a`. The next PM session should review the V0.3 operating model and long-term agent team structure before starting V0.3 Product Reliability + UX Stabilization or a controlled live enablement policy.
 
 ```text
-Role: PM / Integration
-Task: Decide W3 post-acceptance path
+Role: PM
+Task: Review and accept V0.3 project operating model and long-term agent team structure.
 
-Decision needed:
-1. Merge `feature/w3-paperclip-integration` into `dev` after final branch acceptance, or
-2. Plan controlled live enablement policy before any permanent runtime enablement.
+If accepted:
+- Decide whether to create `trisilar-task-hub-workflow` Codex skill from the finalized docs.
+- Decide whether to start V0.3 Product Reliability + UX Stabilization planning.
 
-Accepted evidence:
-- Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
-- QA local verification passed for webhook, contract, mock route, connection settings, docs, frontend, and smoke.
-- Live interop returned HTTP `201` for request `pc_live_interop_20260514115714`.
-- Created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`.
-- Created task stayed `pending`; human approval gate remained intact.
-- Runtime gate was closed after test: `PAPERCLIP_WEBHOOK_ENABLED=false`.
-
-Rules:
-- Do not deploy production.
-- Do not merge to main.
-- Do not commit or print secrets.
-- Do not enable permanent live Paperclip traffic until PM approves the live enablement policy.
-- Preserve Review Queue human gate and existing mock/local Docs behavior.
+If held:
+- List exact docs or role boundaries that need revision.
 ```
 
 ---
@@ -366,3 +358,4 @@ Rules:
 | 2026-05-13 | Accepted `V0.2-W2-06` integration on `origin/dev@523c948`; marked W2 full UI redesign complete on the integrated `dev` line | Codex PM |
 | 2026-05-14 | Recorded Paperclip runtime inputs and Task Hub service-token `/healthz` success from the Paperclip server; routed next implementation to `V0.2-W3-02` live Paperclip -> Task Hub webhook connector | Codex PM / Runtime |
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
+| 2026-05-14 | Routed post-V0.2 planning to V0.3 operating model and long-term agent structure review | Codex PM / Documentation Architect |
