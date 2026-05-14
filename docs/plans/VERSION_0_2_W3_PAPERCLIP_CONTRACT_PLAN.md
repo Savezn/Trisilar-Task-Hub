@@ -516,6 +516,12 @@ Standing dev/demo enablement planning decision:
 - Current runtime rule remains `PAPERCLIP_WEBHOOK_ENABLED=false` until PM accepts this standing policy and confirms owners.
 - Standing enablement is dev/demo only; it is not production, not a `main` merge, and not permission for auto-approval or external side effects before human Review Queue approval.
 
+Plain-language PM summary:
+
+ตอนนี้ W3 พิสูจน์แล้วว่า Paperclip ส่งงานเข้า Task Hub ได้จริงผ่านทางที่ปลอดภัยกว่าการ hardcode คือผ่าน Cloudflare Access และ HMAC signature งานที่ส่งเข้ามาถูกบันทึกพร้อม audit/trace และเข้า Review Queue เป็นสถานะ `pending` เท่านั้น คนยังต้องตรวจและ approve ก่อนถึงจะเกิดผลกับ Trello, Calendar, หรือ Google Tasks
+
+เหตุผลที่ยังไม่เปิด `PAPERCLIP_WEBHOOK_ENABLED=true` แบบถาวร คือการเปิดถาวรแปลว่า Task Hub จะยอมรับงานจาก Paperclip ได้ตลอดช่วง dev/demo ดังนั้นต้องมี owner คอยดู, วิธีปิดกลับทันที, และเงื่อนไขหยุดที่ทุกคนเข้าใจตรงกันก่อน การวาง policy รอบนี้จึงเป็นขั้นก่อนเปิดใช้งานยืนระยะ ไม่ใช่การเปิด live production
+
 Named owner plan:
 
 | Owner | Named role for standing policy | Responsibility |
