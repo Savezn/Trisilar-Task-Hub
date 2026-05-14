@@ -316,17 +316,18 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention, operations hardening, and copy polish on latest `origin/dev`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only. V0.3 operating model and long-term agent team structure are PM accepted and merged to `dev@ed9fae0`; V0.3 Product Reliability + UX Stabilization is PM accepted through `V0.3-RUX-06` and is now routed to a dedicated integration candidate branch/worktree.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention, operations hardening, and copy polish on latest `origin/dev`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only. V0.3 operating model and long-term agent team structure are PM accepted and merged to `dev@ed9fae0`; V0.3 Product Reliability + UX Stabilization is complete on `origin/dev@02fe7cf` and dev/demo runtime.
 
 ```text
-Role: Dev / QA / Integration
-Task: Verify V0.3 Product Reliability + UX Stabilization integrated candidate
+Role: PM
+Task: Decide the next project route after V0.3 completion
 
-Branch:
-codex/integrate-v03-rux-into-dev
+Completed baseline:
+origin/dev@02fe7cf
+dev/demo runtime deployed from dev@02fe7cf
 
 Goal:
-Integrate accepted V0.3 RUX work onto latest dev while preserving W1 runtime, W2 UI, and W3 Paperclip operations behavior.
+Choose whether to hold on dev, open a separate dev -> main release decision using the RUX-06 checklist, or route the next roadmap item.
 
 Rules:
 - Do not send Paperclip webhooks.
@@ -336,14 +337,11 @@ Rules:
 - Do not create Trello cards, Calendar events, or Google Tasks.
 - Do not change W1 deployment/access or W2 visual redesign.
 - Do not expose secrets.
-- Do not merge W3 sibling branches into V0.3 feature branches or V0.3 branches into W3 branches.
+- Do not merge `dev -> main` without a separate PM release decision.
 - Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
 
 Expected output:
-- integration branch commit hash and PR.
-- V0.3 RUX verification evidence.
-- W3 preservation evidence.
-- PM/Integration Owner decision on whether to merge candidate into dev.
+- Next named phase or release decision.
 ```
 
 ---
@@ -393,4 +391,5 @@ Expected output:
 | 2026-05-14 | Merged and deployed `V0.2-W3-05` at `dev@2c302dc`; W3 Paperclip Foundation is complete for V0.2 while standing dev/demo read-only monitoring continues | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Routed post-V0.2 planning to V0.3 operating model and long-term agent structure review | Codex PM / Documentation Architect |
 | 2026-05-14 | Accepted V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |
-| 2026-05-14 | Recorded V0.3 RUX acceptance through `V0.3-RUX-06` and routed next to dedicated dev integration candidate QA | Codex PM / Integration Owner |
+| 2026-05-14 | Recorded V0.3 RUX acceptance through `V0.3-RUX-06` and later closed it on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM / Integration Owner |
+| 2026-05-14 | Closed V0.3 RUX complete on `origin/dev@02fe7cf` and dev/demo runtime after runtime QA pass | Codex PM / Runtime Owner / QA |

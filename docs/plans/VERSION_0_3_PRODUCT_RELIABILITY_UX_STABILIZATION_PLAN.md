@@ -1,7 +1,7 @@
 # Version 0.3 Product Reliability + UX Stabilization Plan
 
 **Doc Role:** Active V0.3 phase plan
-**Status:** PM accepted through `V0.3-RUX-06`; dev integration candidate in progress
+**Status:** Complete on `origin/dev@02fe7cf` and dev/demo runtime
 **Version:** V0.3
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
@@ -126,7 +126,7 @@ V0.3-RUX-06
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | PM Accepted `b2425a4` | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | PM Accepted `d72f979` | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
 | `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | PM Accepted `0af9417` | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
-| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | PM Accepted `df29307`; routed at `5a90cc7`; integration candidate in progress | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
+| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | PM Accepted `df29307`; routed at `5a90cc7`; completed on dev/dev-demo at `02fe7cf` | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
 
 ---
 
@@ -412,8 +412,8 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: Integration Owner
-Task: Resolve V0.3 integration prerequisite before any V0.3 dev/main promotion.
+Role: PM
+Task: Decide the next project route after V0.3 completion.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
@@ -421,13 +421,20 @@ Read:
 - docs/testing/TEST_STRATEGY.md
 - docs/reference/AI_AGENT_GOVERNANCE.md
 
-Acceptance criteria:
-- Confirm accepted operating-model branch `feature/project-operating-model-agent-structure` is integrated into `dev` before V0.3 integration.
-- Confirm `origin/dev` contains operating-model base `96826f7` before integrating V0.3.
-- Preserve V0.3/W3 branch boundary.
-- After the prerequisite is satisfied, integrate accepted V0.3 into `dev` and run the RUX-06 release checklist on the integrated candidate.
+Completed baseline:
+- V0.3 RUX integrated through PR #18 and merged to `origin/dev@02fe7cf`.
+- Dev/demo runtime deployed from `dev@02fe7cf`.
+- Runtime QA passed health/config/reviews, Cloudflare Access anonymous block, and read-only Paperclip operations.
+
+Decision options:
+- Hold on dev and continue routine read-only monitoring.
+- Open a separate PM release decision for `dev -> main` using the RUX-06 checklist.
+- Route the next roadmap item, likely V0.4 Live AI Operations or a focused post-V0.3 hardening item.
+
+Rules:
 - Do not merge `dev` to `main` without a separate PM release decision.
-- Do not deploy production, expose secrets, change runtime flags, or enable standing live Paperclip.
+- Do not deploy production, expose secrets, change runtime flags, or enable additional live Paperclip behavior from this closeout.
+- Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
 
 If held:
 - List exact integration blocker, branch contamination risk, conflict, missing operating-model acceptance evidence, or release checklist gap.
@@ -442,7 +449,7 @@ If held:
 | 2026-05-14 | Created V0.3 Product Reliability + UX Stabilization draft plan | Codex PM |
 | 2026-05-14 | Accepted V0.3 Product Reliability + UX Stabilization plan and routed `V0.3-RUX-01` | Codex PM |
 | 2026-05-14 | Started `V0.3-RUX-01` with intake model, findings log, route inventory, and baseline checklist | Codex PM |
-| 2026-05-14 | Accepted V0.3 RUX through `V0.3-RUX-06`; operating-model prerequisite merged to `dev@ed9fae0`; routed next to integrated candidate QA | Codex PM / Integration Owner |
+| 2026-05-14 | Accepted V0.3 RUX through `V0.3-RUX-06`; operating-model prerequisite merged to `dev@ed9fae0`; later integrated and closed on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM / Integration Owner |
 | 2026-05-14 | Recorded first desktop/mobile baseline findings and routed next to PM triage | Codex UX / QA |
 | 2026-05-14 | Triaged baseline findings and routed grouped Trello connection-state work as `V0.3-RUX-02A` | Codex PM |
 | 2026-05-14 | Implemented and verified `V0.3-RUX-02A`; routed to PM acceptance | Codex Dev / UX / Runtime |
@@ -453,4 +460,5 @@ If held:
 | 2026-05-14 | Implemented and verified `V0.3-RUX-05`; routed to PM review | Codex Dev / QA |
 | 2026-05-14 | Accepted `V0.3-RUX-05` at `0af9417`; routed `V0.3-RUX-06` Release Checklist for dev -> main | Codex PM |
 | 2026-05-14 | Drafted and docs-verified `V0.3-RUX-06` Release Checklist for dev -> main; routed to PM review | Codex PM / QA / Integration / Runtime |
-| 2026-05-14 | Accepted `V0.3-RUX-06` at `df29307`; routed next to Integration Owner for operating-model prerequisite handling before V0.3 integration | Codex PM |
+| 2026-05-14 | Accepted `V0.3-RUX-06` at `df29307`; routed to Integration Owner and later closed on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM |
+| 2026-05-14 | Integrated V0.3 RUX through PR #18, deployed `dev@02fe7cf` to dev/demo, passed runtime QA, and closed V0.3 complete on dev/dev-demo | Codex PM / Runtime Owner / QA |
