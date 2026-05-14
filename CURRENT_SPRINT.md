@@ -147,6 +147,16 @@ Standing dev/demo observation window start result on 2026-05-14:
 - QA checks passed: create `201`, same-payload replay `200`, changed-payload replay `409`, invalid signature `401`, invalid source `403`, invalid environment `400`.
 - Runtime is intentionally left `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window.
 
+Standing dev/demo daily monitor report on 2026-05-14:
+
+- Runtime flag remained `PAPERCLIP_WEBHOOK_ENABLED=true`; Task Hub local `/healthz` and public Cloudflare-protected `/healthz` both returned `200`.
+- Paperclip Settings remained `connected` with `hasSecret=true`; API response did not return the signing secret.
+- Daily monitor request `pc_daily_monitor_20260514093549`; agent run `run_daily_monitor_20260514093549`.
+- Created Review Queue session `16a813e7-c077-4f14-9f24-74c0bf738512` and task `1dbf72ec-0c17-44db-a644-0ced753bf2ee`.
+- Created task status stayed `pending`; same-payload replay returned `200`, changed-payload replay returned `409`, invalid signature returned `401`, invalid source returned `403`, and invalid environment returned `400`.
+- Paperclip-created task counts moved from 4 pending / 0 approved / 0 rejected / 0 Trello-linked to 5 pending / 0 approved / 0 rejected / 0 Trello-linked.
+- No stop condition observed; no rollback was triggered.
+
 ```text
 Role: Runtime Owner / QA / Paperclip Owner
 Task: Monitor V0.2-W3-03 Standing Dev/Demo Observation Window
