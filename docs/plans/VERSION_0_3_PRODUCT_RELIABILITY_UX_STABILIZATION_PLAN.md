@@ -1,7 +1,7 @@
 # Version 0.3 Product Reliability + UX Stabilization Plan
 
 **Doc Role:** Active V0.3 phase plan
-**Status:** PM accepted; `V0.3-RUX-06` QA pass / PM review pending
+**Status:** PM accepted; `V0.3-RUX-06` PM accepted; integration prerequisite pending
 **Version:** V0.3
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
@@ -126,7 +126,7 @@ V0.3-RUX-06
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | PM Accepted `b2425a4` | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | PM Accepted `d72f979` | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
 | `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | PM Accepted `0af9417` | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
-| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | QA pass / PM review pending | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
+| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | PM Accepted `df29307`; integration prerequisite pending | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
 
 ---
 
@@ -412,8 +412,8 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: PM
-Task: Review and accept V0.3-RUX-06 Release Checklist for dev -> main.
+Role: Integration Owner
+Task: Resolve V0.3 integration prerequisite before any V0.3 dev/main promotion.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
@@ -422,14 +422,15 @@ Read:
 - docs/reference/AI_AGENT_GOVERNANCE.md
 
 Acceptance criteria:
-- Confirm one checklist artifact is sufficient for a future `dev -> main` PM decision.
-- Confirm accepted V0.3 commits, branch/stacking dependencies, exact verification commands, browser route matrix, runtime/access gates, and rollback notes are covered.
-- Confirm product QA, browser regression, Paperclip/Review Queue checks, and runtime/deployment evidence are separated.
-- Confirm the PM decision block is explicit.
-- Confirm no W3/V0.3 branch merge, dev/main merge, production deploy, live Paperclip enablement, runtime flag change, or secret exposure occurred.
+- Confirm accepted operating-model branch `feature/project-operating-model-agent-structure` is integrated into `dev` before V0.3 integration.
+- Confirm `origin/dev` contains operating-model base `96826f7` before integrating V0.3.
+- Preserve V0.3/W3 branch boundary.
+- After the prerequisite is satisfied, integrate accepted V0.3 into `dev` and run the RUX-06 release checklist on the integrated candidate.
+- Do not merge `dev` to `main` without a separate PM release decision.
+- Do not deploy production, expose secrets, change runtime flags, or enable standing live Paperclip.
 
 If held:
-- List exact release checklist gap, evidence blocker, integration dependency, or PM gate.
+- List exact integration blocker, branch contamination risk, conflict, missing operating-model acceptance evidence, or release checklist gap.
 ```
 
 ---
@@ -451,3 +452,4 @@ If held:
 | 2026-05-14 | Implemented and verified `V0.3-RUX-05`; routed to PM review | Codex Dev / QA |
 | 2026-05-14 | Accepted `V0.3-RUX-05` at `0af9417`; routed `V0.3-RUX-06` Release Checklist for dev -> main | Codex PM |
 | 2026-05-14 | Drafted and docs-verified `V0.3-RUX-06` Release Checklist for dev -> main; routed to PM review | Codex PM / QA / Integration / Runtime |
+| 2026-05-14 | Accepted `V0.3-RUX-06` at `df29307`; routed next to Integration Owner for operating-model prerequisite handling before V0.3 integration | Codex PM |

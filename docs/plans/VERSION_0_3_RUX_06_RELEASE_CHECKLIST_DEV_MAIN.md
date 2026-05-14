@@ -1,10 +1,10 @@
 # V0.3-RUX-06 Release Checklist for dev -> main
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** QA pass - PM review pending
+**Status:** PM accepted - integration prerequisite pending
 **Owner:** PM / QA / Integration / Runtime
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / QA / Integration / Runtime
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md`, `../../CURRENT_SPRINT.md`, `../logs/QA_LOG.md`, `../logs/DECISION_LOG.md`, `../testing/TEST_STRATEGY.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `PROJECT_LADDER.md`
 
 ---
@@ -87,7 +87,7 @@ Use this checklist when PM is ready to decide whether accepted V0.3 work can mov
 | `V0.3-RUX-03` | Review Queue / Docs AI trace clarity accepted at `b2425a4` | PM Accepted |
 | `V0.3-RUX-04` | Today + Tasks decision-flow clarity accepted at `d72f979` | PM Accepted |
 | `V0.3-RUX-05` | Browser regression + responsive QA gate accepted at `0af9417` | PM Accepted |
-| `V0.3-RUX-06` | This release checklist is completed for PM review | Pending PM review |
+| `V0.3-RUX-06` | This release checklist is completed and PM accepted at `df29307` | PM Accepted |
 
 ### 3. Integration Order
 
@@ -239,23 +239,52 @@ If implementation changes code or package scripts, also run the relevant command
 
 ## Completion Result
 
-`V0.3-RUX-06` produced the release checklist artifact above. No merge, production deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge was performed.
+`V0.3-RUX-06` produced the release checklist artifact above and PM accepted it at `df29307`. No merge, production deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge was performed.
 
 Verification:
 
 ```powershell
 git diff --check
+git merge-base --is-ancestor 96826f7 origin/dev
 ```
 
 Runtime checks skipped: docs-only change.
+
+Integration prerequisite check:
+
+```text
+origin/dev does not contain operating-model base 96826f7
+```
+
+This means V0.3 integration remains held until the accepted operating-model branch is integrated into `dev`.
+
+---
+
+## PM Acceptance
+
+```text
+Status: Accepted
+Accepted by: Codex PM
+Date: 2026-05-14
+Accepted commit: df29307
+
+Acceptance confirmed:
+- One release checklist artifact is sufficient for a future PM dev -> main decision.
+- Accepted V0.3 evidence, branch/stacking dependency, W3 boundary, verification commands, browser matrix, Paperclip/Review Queue gate, runtime/access gate, rollback notes, and PM decision format are covered.
+- This phase performed no merge, deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge.
+
+Integration hold:
+- origin/dev does not yet contain operating-model base 96826f7.
+- Integration Owner must integrate the accepted operating-model branch into dev before integrating this V0.3 branch.
+```
 
 ---
 
 ## Next Recommended Session
 
 ```text
-Role: PM
-Task: Review and accept V0.3-RUX-06 Release Checklist for dev -> main.
+Role: Integration Owner
+Task: Resolve V0.3 integration prerequisite before any V0.3 dev/main promotion.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
@@ -265,17 +294,18 @@ Read:
 - docs/logs/DECISION_LOG.md
 - docs/reference/AI_AGENT_GOVERNANCE.md
 - docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md
+- docs/plans/PROJECT_LADDER.md
 
 Acceptance criteria:
-- Confirm one checklist artifact is sufficient for future PM `dev -> main` decision.
-- Confirm accepted V0.3 evidence, branch/stacking dependency, W3 boundary, verification commands, browser matrix, Paperclip/Review Queue gate, runtime/access gate, rollback notes, and PM decision format are covered.
-- Confirm this phase performed no merge, deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge.
-
-If accepted:
-- Route next to Integration Owner only after the operating-model branch is integrated into `dev`.
+- Confirm the accepted operating-model branch is integrated into `dev` before V0.3 integration.
+- Confirm V0.3 remains isolated from W3 sibling branches.
+- Do not merge this V0.3 branch into `dev` until the operating-model prerequisite is satisfied.
+- After prerequisite is satisfied, integrate accepted V0.3 into `dev` and run the RUX-06 release checklist on the integrated candidate.
+- Do not merge `dev` to `main` without PM release decision.
+- Do not deploy production, expose secrets, or enable standing live Paperclip.
 
 If held:
-- List the exact release checklist gap, evidence blocker, integration dependency, runtime gate, or PM decision field that needs revision.
+- List exact integration blocker, branch contamination risk, conflict, missing operating-model acceptance evidence, or release checklist gap.
 ```
 
 ---
@@ -286,3 +316,4 @@ If held:
 |---|---|---|
 | 2026-05-14 | Routed `V0.3-RUX-06` after PM accepting `V0.3-RUX-05` at `0af9417` | Codex PM |
 | 2026-05-14 | Drafted release checklist artifact, runtime/Paperclip gates, rollback notes, and PM decision block for `V0.3-RUX-06` | Codex PM / QA / Integration / Runtime |
+| 2026-05-14 | PM accepted `V0.3-RUX-06` at `df29307` and routed next to Integration Owner for operating-model prerequisite handling | Codex PM |
