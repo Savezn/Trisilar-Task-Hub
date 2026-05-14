@@ -3,8 +3,8 @@
 **Doc Role:** Verification policy and automated test suite roadmap
 **Status:** Active
 **Owner:** QA / Dev
-**Last Updated:** 2026-05-08
-**Updated by:** Codex PM
+**Last Updated:** 2026-05-14
+**Updated by:** Codex QA
 
 This document defines how agents verify changes today and how the automated test suite should grow.
 
@@ -39,6 +39,9 @@ npm run smoke
 | `scripts/smoke-test.js` | Local endpoint smoke checks |
 | `scripts/verify-paperclip-contract.js` | Paperclip contract verification when relevant |
 | `scripts/verify-paperclip-mock.js` | Paperclip mock verification when relevant |
+| `scripts/verify-paperclip-docs.js` | Paperclip Docs and Docs-to-Review workflow verification when relevant |
+| `scripts/verify-rux-trello-connection-ux.js` | V0.3 RUX Trello connection-state and failure-copy verification |
+| `scripts/verify-rux-ai-trace-clarity.js` | V0.3 RUX Docs/Paperclip trace readability and Review Queue linked-doc clarity verification |
 
 Use `node --check <file>` for targeted JavaScript syntax checks when changing individual files.
 

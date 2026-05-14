@@ -14,6 +14,7 @@
     "verify:paperclip-webhook": "node scripts/verify-paperclip-webhook.js",
     "verify:paperclip-mock": "node scripts/verify-paperclip-mock.js",
     "verify:rux-trello": "node scripts/verify-rux-trello-connection-ux.js",
+    "verify:rux-ai-trace": "node scripts/verify-rux-ai-trace-clarity.js",
     "check:all": "node scripts/verify-frontend.js && npm run smoke",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

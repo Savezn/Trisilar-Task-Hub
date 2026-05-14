@@ -2,7 +2,7 @@
 
 **Doc Role:** Append-only QA and completion history
 **Status:** Active log
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex QA
 
 This file preserves historical QA rounds, completed sprint work, bug fixes, and deferred items moved from `CURRENT_SPRINT.md` to keep the active sprint file short.
 
@@ -66,6 +66,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.2-W2-05 - Calendar + Planner Integration | Integration QA Pass / PM Accepted | `dev@3fca059` |
 | V0.2-W2-06 - Settings + OKR + Weekly Focus Polish | Integration QA Pass / PM Accepted | `origin/dev@523c948` |
 | V0.3-RUX-02A - Trello Connection State + Failure Copy | QA Pass / PM Accepted | `516b33e` |
+| V0.3-RUX-03 - Review Queue + AI Trace Clarity | QA Pass / PM review pending | This branch |
 
 ---
 
@@ -124,6 +125,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-13 | R46 | Pass / PM Accepted | `V0.2-W2-06` Settings + OKR + Weekly Focus Polish QA Recheck pass at `bd3e441`; branch/commit verified; `check:all`, Paperclip contract/mock verification, Settings config save paths, OKR drilldown/back, Weekly Focus Review navigation, W2 route smoke, desktop/mobile/mobile-small overflow 0, unexpected console errors 0, and page errors 0 passed. Local Trello 401s were credential/env noise. Reviewed by Codex QA Recheck; Accepted by Codex PM |
 | 2026-05-13 | R47 | Pass / PM Accepted | `V0.2-W2-06` Integration QA pass on `origin/dev@523c948`; clean detached worktree verified; `npm.cmd run check:all` passed; controlled W2 browser smoke passed for `/settings`, `/okr`, `/focus`, `/today`, `/review`, `/all`, `/boards`, `/calendar`, and `/planner` across desktop/mobile/mobile-small; max horizontal overflow 0; console/page errors 0; Settings save paths, OKR drilldown/back, Weekly Focus owner filter, and Weekly Focus to Review navigation passed. W1 deployment/access and W3 Paperclip behavior were intentionally not tested in this W2-only pass. Reviewed by Codex Integration QA; Accepted by Codex PM |
 | 2026-05-14 | R48 | Pass / PM Accepted - V0.3-RUX-02A Trello connection-state clarity | `verify:rux-trello`, `verify-frontend`, and `PORT=3094 check:all` passed. Browser QA on `/today`, `/all`, `/boards`, `/okr`, `/focus`, and `/settings` verified product-facing Trello verification copy, no `.env` or API-key UI wording, and no false Trello connected/ready sidebar or Settings state. Regression routes `/review`, `/calendar`, `/planner`, and `/docs` also rendered across desktop/mobile. Horizontal overflow 0, console errors 0, and page errors 0. Accepted by Codex PM at `516b33e`; no W3 merge, Paperclip live-enablement change, or secret exposure. |
+| 2026-05-14 | R49 | Pass / PM review pending - V0.3-RUX-03 Review Queue + AI Trace Clarity | `verify:rux-ai-trace`, `verify:paperclip-contract`, `verify:paperclip-mock`, `verify:paperclip-docs`, and server-backed `check:all` passed. Browser QA on `/docs` and `/review` verified labeled Docs Type/Agent/Status/Link chips, `Missing local Review Queue task`, split `SOURCE SYSTEM` / `SOURCE MODE`, and Review Queue linked docs with Type/Status/Run/Agent context. Regression routes `/today`, `/all`, `/boards`, and `/settings` also rendered across desktop/mobile with controlled local API responses. Horizontal overflow 0, console errors 0, page errors 0; no `Not_found`, collapsed `agent-tracemock`, live Paperclip enablement, W3 merge, automatic side effect, or secret exposure. |
 
 ---
 

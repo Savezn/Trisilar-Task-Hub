@@ -289,6 +289,8 @@ function formatReviewSource(source) {
     manual_upload: "Manual upload",
     discord: "Discord",
     paperclip_mock: "Paperclip mock",
+    paperclip_webhook: "Paperclip webhook",
+    paperclip_docs_mock: "Paperclip docs mock",
   };
   return map[source] || source || "Manual";
 }
@@ -351,6 +353,9 @@ function getLinkedPaperclipDocs(session, task, docsIndex) {
       title: doc.title,
       status: doc.status,
       artifactType: doc.artifactType,
+      agentName: doc.agent?.agentName,
+      agentRunId: doc.agent?.runId,
+      sourceSystem: "paperclip",
     }));
 }
 
@@ -362,7 +367,13 @@ function renderLinkedPaperclipDocs(linkedDocs) {
       ${linkedDocs.map(doc => `
         <button type="button" class="review-linked-doc" onclick="openLinkedPaperclipDoc('${esc(doc.artifactId)}')">
           <span>${esc(doc.title || doc.artifactId)}</span>
-          <small>Open in Docs - ${esc(formatDocsLabel(doc.artifactType || "document"))} - ${esc(formatDocsLabel(doc.status || "ready"))}</small>
+          <small class="review-linked-doc-meta">
+            <span>Open in Docs</span>
+            <span>Type: ${esc(formatDocsLabel(doc.artifactType || "document"))}</span>
+            <span>Status: ${esc(formatDocsLabel(doc.status || "ready"))}</span>
+            <span>Run: ${esc(doc.agentRunId || "No agent run")}</span>
+            <span>Agent: ${esc(doc.agentName || "Paperclip agent")}</span>
+          </small>
         </button>
       `).join("")}
     </div>
