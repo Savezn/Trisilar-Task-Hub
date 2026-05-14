@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02` live connector code and live interop accepted; runtime webhook gate remains disabled by default
+**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02` live connector code and live interop accepted; `V0.2-W3-03` controlled live enablement policy PM Accepted; true external sender window passed; standing dev/demo observation window active
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -35,6 +35,7 @@ PM runtime clarification:
 - Task Hub is accepted as a stable hosted dev/demo URL on DigitalOcean behind Cloudflare at `https://taskhub.trisila.online`.
 - Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
 - `V0.2-W3-02` live webhook work is now implemented and accepted after Paperclip runtime inputs and Task Hub service-token reachability were confirmed.
+- W3 was merged into `dev` at `a89c26a`; permanent runtime enablement is intentionally separate from code merge.
 - Runtime `PAPERCLIP_WEBHOOK_ENABLED` remains `false` after interop; permanent live enablement requires separate PM policy approval.
 - Do not treat the old random ngrok Task Hub URL as a Paperclip endpoint.
 - Do not add live Paperclip calls in W1 or W2.
@@ -367,7 +368,8 @@ npm.cmd run verify:paperclip-mock
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
 | `V0.2-W3-02` | W3 sequence 2 | PM Accepted | Live webhook route, signed request validation, connection gate, idempotency, local QA, and live sender interop verified |
-| `V0.2-W3-03` | W3 sequence 3 | Future | Controlled live enablement policy and additional source signature/replay hardening after merge/integration acceptance |
+| `V0.2-W3-03` | W3 sequence 3 | PM Accepted | Controlled live enablement policy, rollback procedure, owner permissions, monitoring/audit expectations, and additional source signature/replay hardening after merge/integration acceptance |
+| `V0.2-W3-04` | W3 sequence 4 | Planned | Paperclip Review Queue cleanup for accumulated live/canary test sessions, with safe archive/reject workflow and no bypass of human approval gates |
 
 Details:
 
@@ -375,7 +377,273 @@ Details:
 - `V0.2-W3-01` introduced no live Paperclip external calls.
 - `V0.2-W3-02` added authenticated `POST /api/integrations/paperclip/webhook`, reused the same normalizer and audit path, validated service-auth/source context plus signed webhook headers, and kept the route disabled by default after QA/PM approval.
 - Live interop evidence: HTTP `201` for request `pc_live_interop_20260514115714`; Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`; created task stayed `pending`; runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false`.
+- `V0.2-W3-03` is a policy/runbook gate before permanent enablement. It must not add a new Paperclip network call or bypass Review Queue human approval.
+- `V0.2-W3-04` is a cleanup/hygiene phase for Paperclip-originated Review Queue test sessions after live interop, canary, and monitor runs. It must not approve tasks automatically, must not create Trello/Calendar/Google side effects, and must preserve audit traceability.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
+
+---
+
+## V0.2-W3-03 Controlled Live Enablement Policy
+
+Goal: allow the accepted Paperclip live webhook to be enabled in a controlled dev/demo runtime window only when PM, Runtime Owner, Paperclip Owner, and QA have agreed on the enablement checklist and rollback path.
+
+Non-goals:
+
+- Do not enable production traffic.
+- Do not commit or print Cloudflare service-token values, HMAC signing secrets, or Paperclip runtime secrets.
+- Do not add outbound Task Hub -> Paperclip calls.
+- Do not let Paperclip create Trello cards, Calendar events, or Google Tasks without human Review Queue approval.
+- Do not change W1 deployment/access or W2 visual redesign scope.
+
+### Enablement Criteria
+
+All criteria must be true before setting `PAPERCLIP_WEBHOOK_ENABLED=true` for a standing runtime window:
+
+| Gate | Required evidence |
+|---|---|
+| Code baseline | `dev` includes W3 merge commit `a89c26a` or a later PM-approved commit. |
+| Runtime baseline | Task Hub runtime is deployed from `dev`, service is healthy, and `APP_DATA_DIR` persistence is confirmed. |
+| Feature flag baseline | `PAPERCLIP_WEBHOOK_ENABLED=false` is confirmed before the enablement change. |
+| Settings gate | Paperclip Settings shows connected state with `hasSecret=true`; the secret value is not visible in frontend or API responses. |
+| Paperclip sender | Paperclip Owner confirms the live sender uses Cloudflare Access service-token headers and the accepted HMAC canonical format. |
+| Source allowlist | Runtime allows only approved source id `paperclip-do-dev` and environment `dev` unless PM records a new approved source. |
+| Verification | `verify:paperclip-webhook`, `verify:paperclip-contract`, `verify:paperclip-mock`, `verify:paperclip-connection`, `verify:paperclip-docs`, `verify`, and `check:all` pass on the code baseline. |
+| QA canary | A fresh signed live canary creates one pending Review Queue session and no duplicate on replay. |
+| Human gate | Created tasks remain `pending`; no Trello, Calendar, or Google Tasks side effect occurs before approval. |
+| Rollback owner | A named Runtime Owner is available to disable the flag, restart the service, rotate the secret, and block sender access if needed. |
+
+### Owner Permissions
+
+| Role | Allowed action | Not allowed |
+|---|---|---|
+| PM | Approve or hold a live enablement window; decide whether the window is temporary or standing. | Directly expose or store secrets in docs/chat/git. |
+| Runtime Owner | Set `PAPERCLIP_WEBHOOK_ENABLED`, restart/redeploy Task Hub, rotate runtime secrets, and confirm service health. | Change Paperclip payload semantics or Review Queue approval rules. |
+| Paperclip Owner | Enable/disable Paperclip sender, confirm source ids, send live canary payloads, and rotate sender-side secrets. | Send unbounded transcript dumps or bypass Task Hub webhook contract. |
+| QA | Run local verification, live canary verification, replay/idempotency checks, and Review Queue human-gate checks. | Approve permanent enablement without PM decision. |
+| Dev | Fix code defects found by QA and update tests/docs. | Enable runtime traffic as an implementation side effect. |
+
+### Enablement Procedure
+
+1. PM records an enablement window and names the Runtime Owner, Paperclip Owner, and QA owner.
+2. Runtime Owner confirms Task Hub is on `dev@a89c26a` or later, service health is green, and `PAPERCLIP_WEBHOOK_ENABLED=false`.
+3. QA runs the full W3 verification command set on the same code baseline.
+4. Paperclip Owner confirms sender configuration: Task Hub URL, webhook path, Cloudflare Access service-token headers, source id, environment, request id, timestamp, agent run id, and HMAC signing format.
+5. Runtime Owner sets `PAPERCLIP_WEBHOOK_ENABLED=true` in the runtime environment only and restarts/redeploys Task Hub if required.
+6. QA runs one live canary from Paperclip with bounded excerpt data, `syncCalendar=false`, `syncGoogleTasks=false`, and a unique `requestId`.
+7. QA confirms HTTP success, persisted audit trail, pending Review Queue task, and no external side effects.
+8. QA replays the same `requestId` with the same payload and confirms no duplicate session.
+9. QA sends or simulates a mismatched replay, invalid signature, timestamp-skew, and disallowed source/environment request if the runtime window permits negative testing.
+10. PM either approves a standing dev/demo enablement window or instructs Runtime Owner to disable the flag after the test.
+
+### Rollback Procedure
+
+Use rollback immediately if invalid payloads are accepted, duplicate sessions are created, Review Queue human gate is bypassed, secrets are exposed, Paperclip sends unexpected data volume, or Task Hub health degrades.
+
+1. Runtime Owner sets `PAPERCLIP_WEBHOOK_ENABLED=false` and restarts/redeploys Task Hub if the process reads env on start.
+2. Paperclip Owner pauses the live sender.
+3. Runtime Owner confirms the webhook returns disabled response for live requests.
+4. Runtime Owner disconnects Paperclip Settings or rotates the shared webhook secret if signing trust is in doubt.
+5. Runtime Owner disables or rotates Cloudflare Access service-token credentials if edge access trust is in doubt.
+6. QA records affected `requestId`, `agentRunId`, session id, task ids, and audit events. Do not record secret values.
+7. PM decides whether any pending interop-created Review Queue tasks should remain for inspection, be rejected manually, or be archived according to retention policy.
+8. Dev receives a defect prompt only if code changes are required; otherwise the issue remains runtime/config owned.
+
+### Monitoring And Audit Expectations
+
+- Runtime logs may include request id, source id, environment, agent run id, result status, idempotency result, and error category.
+- Runtime logs must not include HMAC secrets, Cloudflare Access secrets, full auth headers, or unbounded raw transcript text.
+- Review session audit trail must include `paperclip_payload_received`, `review_session_created`, and task-level diff events for accepted payloads.
+- Rejected live requests should be auditable by reason category: disabled flag, disconnected settings, missing secret, invalid signature, timestamp skew, disallowed source, disallowed environment, contract validation failure, duplicate mismatch, or unsupported payload.
+- PM should review a short enablement report after the first standing window: accepted count, rejected count by reason, duplicate count, pending task count, approved task count, rejected task count, and any rollback events.
+
+### Post-Interop Checklist Before Permanent Enablement
+
+- W3 branch is merged into `dev` and deployed from `dev`.
+- Paperclip Settings connection is enabled with a write-only shared secret.
+- `PAPERCLIP_WEBHOOK_ENABLED=true` is approved for the named window only.
+- Paperclip Owner confirms live sender version and sample payload shape.
+- QA confirms live canary, replay/idempotency, audit trail, and Review Queue pending state.
+- PM records whether the runtime should stay enabled, be disabled after the test, or move to another limited observation window.
+- If enabled beyond a single test, PM records who owns daily monitoring and who can execute rollback.
+
+### V0.2-W3-03 Acceptance Criteria
+
+- Controlled enablement policy is documented in W3 and V0.2 planning docs.
+- Runtime enablement requires PM approval and named Runtime Owner.
+- Rollback has clear owner actions and includes feature flag, Paperclip sender, shared secret, and Cloudflare service-token controls.
+- Monitoring/audit rules preserve traceability without leaking secrets or unbounded source text.
+- Human Review Queue approval remains the only path to Trello/Calendar/Google side effects.
+- Default runtime policy remains `PAPERCLIP_WEBHOOK_ENABLED=false` unless PM explicitly approves a live window.
+
+PM acceptance:
+
+- `V0.2-W3-03` policy is accepted as the required gate before any standing live runtime enablement.
+- Acceptance does not itself enable `PAPERCLIP_WEBHOOK_ENABLED=true`.
+- Next runtime work must be a named limited enablement window with Runtime Owner, Paperclip Owner, and QA owner recorded before the flag changes.
+
+Limited window result:
+
+- Runtime-local signed canary window passed on Task Hub `dev@a89c26a`.
+- `PAPERCLIP_WEBHOOK_ENABLED=true` was loaded only for the window, then returned to `false`.
+- Canary request `pc_w3_03_window_20260514062346` returned HTTP `201`.
+- Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` was created with task status `pending`.
+- Same-payload replay returned idempotent success; changed replay returned `409`; invalid signature returned `401`; invalid source returned `403`; invalid environment returned `400`.
+- Final health check returned `200`; final disabled probe returned `403`.
+- The limited window did not re-run the external Cloudflare service-token sender path; earlier live interop remains the evidence for that path.
+
+PM post-window decision:
+
+- Hold standing enablement.
+- Keep `PAPERCLIP_WEBHOOK_ENABLED=false`.
+- Schedule one true external Paperclip sender window before any standing dev/demo enablement.
+- Runtime Owner opens/closes the feature flag and owns rollback.
+- Paperclip Owner sends the live payload from the actual Paperclip sender through Cloudflare Access service-token and HMAC signing.
+- QA Owner verifies pending task creation, same-payload replay, invalid signature, invalid source, and invalid environment.
+
+True external sender window result:
+
+- Window: `V0.2-W3-03 true external Paperclip sender window 2026-05-14`.
+- Sender path: Paperclip runtime host/env sent to the public Task Hub Cloudflare URL with Cloudflare Access service-token headers and Task Hub HMAC headers.
+- Task Hub runtime: `dev@a89c26a`.
+- `PAPERCLIP_WEBHOOK_ENABLED=false` before the window, `true` only during the window, and `false` after rollback.
+- Request `pc_true_external_20260514064709` and agent run `run_true_external_20260514064709` returned HTTP `201`.
+- Review Queue session `0e8f8b2e-d767-44ef-854c-538481c124c8` was created with task `ef72316d-148d-4c4a-b600-fc5bb14da928` and status `pending`.
+- Same-payload replay returned `200`; changed-payload replay returned `409`; invalid signature returned `401`; invalid source returned `403`; invalid environment returned `400`.
+- Final health check returned `200`; final disabled probe returned `403` with `Paperclip live webhook is disabled`.
+- At this point, standing enablement remained held until PM approved the later standing dev/demo observation window.
+
+Standing dev/demo enablement planning decision:
+
+- Planning started with runtime disabled until PM accepted the standing policy and confirmed owners.
+- PM later accepted the standing policy and started a named dev/demo observation window.
+- Standing enablement is dev/demo only; it is not production, not a `main` merge, and not permission for auto-approval or external side effects before human Review Queue approval.
+
+Plain-language PM summary:
+
+ตอนนี้ W3 พิสูจน์แล้วว่า Paperclip ส่งงานเข้า Task Hub ได้จริงผ่านทางที่ปลอดภัยกว่าการ hardcode คือผ่าน Cloudflare Access และ HMAC signature งานที่ส่งเข้ามาถูกบันทึกพร้อม audit/trace และเข้า Review Queue เป็นสถานะ `pending` เท่านั้น คนยังต้องตรวจและ approve ก่อนถึงจะเกิดผลกับ Trello, Calendar, หรือ Google Tasks
+
+เหตุผลที่ยังไม่เปิด `PAPERCLIP_WEBHOOK_ENABLED=true` แบบถาวร คือการเปิดถาวรแปลว่า Task Hub จะยอมรับงานจาก Paperclip ได้ตลอดช่วง dev/demo ดังนั้นต้องมี owner คอยดู, วิธีปิดกลับทันที, และเงื่อนไขหยุดที่ทุกคนเข้าใจตรงกันก่อน การวาง policy รอบนี้จึงเป็นขั้นก่อนเปิดใช้งานยืนระยะ ไม่ใช่การเปิด live production
+
+Named owner plan:
+
+| Owner | Named role for standing policy | Responsibility |
+|---|---|---|
+| PM Owner | Codex PM / project PM | Approve or hold standing dev/demo enablement and review weekly summary before any broader rollout. |
+| Monitor Owner | QA Owner | Run daily/weekly monitoring checklist, inspect Review Queue samples, and report abnormal accepted/rejected payload patterns. |
+| Rollback Owner | Runtime Owner | Disable `PAPERCLIP_WEBHOOK_ENABLED`, restart/redeploy Task Hub if needed, pause trust paths, and confirm disabled webhook response. |
+| Paperclip Owner | Paperclip runtime sender owner | Keep sender bounded to approved source/environment, pause sender on rollback, and rotate sender-side secret if requested. |
+
+Daily monitoring checklist while standing dev/demo enablement is active:
+
+1. Confirm Task Hub `/healthz` returns `200`.
+2. Confirm `PAPERCLIP_WEBHOOK_ENABLED=true` only if a PM-approved standing window is active.
+3. Review Paperclip-originated Review Queue sessions created since the previous check.
+4. Confirm every Paperclip-created task remains `pending` until a human approves or rejects it.
+5. Check accepted/rejected webhook counts by reason category, including invalid signature, source, environment, contract validation, and duplicate mismatch.
+6. Check duplicate request handling: same-payload replay should not create a new session; changed-payload replay should remain rejected.
+7. Confirm no secret values, service-token values, auth headers, or unbounded transcript text appear in docs, logs, browser responses, or screenshots.
+
+Weekly monitoring checklist:
+
+1. Summarize accepted payload count, rejected payload count by reason, replay count, duplicate mismatch count, pending tasks, approved tasks, rejected tasks, and rollback events.
+2. Review a sample of Paperclip audit trails for request id, source id, environment, agent run id, session id, and task id traceability.
+3. Confirm Paperclip sender still uses only approved source id `paperclip-do-dev` and environment `dev`.
+4. Confirm Paperclip Settings still reports connected state with `hasSecret=true` without returning the secret value.
+5. Decide whether to continue standing dev/demo enablement, narrow it to named test windows, or disable it.
+
+Stop conditions:
+
+- Any invalid payload is accepted.
+- Duplicate request handling creates an incorrect duplicate session.
+- Review Queue human approval gate is bypassed.
+- Task Hub health degrades, service restarts repeatedly, or `/healthz` fails.
+- Paperclip sends unexpected, unbounded, or production-like sensitive source data.
+- Secret, service-token, signing header, or runtime credential exposure is suspected.
+- Paperclip source id or environment differs from the PM-approved allowlist.
+- Trello, Google Calendar, or Google Tasks side effects occur before human approval.
+
+Rollback steps:
+
+1. Runtime Owner sets `PAPERCLIP_WEBHOOK_ENABLED=false`.
+2. Runtime Owner restarts/redeploys Task Hub if the process reads env on start.
+3. Paperclip Owner pauses the Paperclip sender.
+4. Runtime Owner confirms the webhook returns disabled response for live requests.
+5. Runtime Owner rotates the shared webhook secret if signing trust is in doubt.
+6. Runtime Owner disables or rotates Cloudflare Access service-token credentials if edge access trust is in doubt.
+7. QA records affected request ids, agent run ids, session ids, task ids, and rejection categories without recording secret values.
+8. PM decides whether any pending Paperclip-created tasks remain for inspection, are manually rejected, or are archived.
+
+PM acceptance criteria for standing dev/demo observation:
+
+- PM names Monitor Owner and Rollback Owner.
+- Runtime Owner confirms Task Hub is deployed from `dev@a89c26a` or later and preflight flag is `false`.
+- Paperclip Settings is connected with `hasSecret=true`; secret value remains write-only.
+- Paperclip Owner confirms the live sender uses Cloudflare Access service-token headers and accepted HMAC canonical format.
+- QA confirms the latest true external sender window evidence remains acceptable or reruns a canary if runtime/config changed.
+- Monitoring checklist, stop conditions, and rollback steps are recorded in this plan and `CURRENT_SPRINT.md`.
+- PM explicitly records the named dev/demo observation window before Runtime Owner enables the flag.
+
+Standing dev/demo observation window start result:
+
+- PM accepted the standing dev/demo policy and named `V0.2-W3-03 Standing Dev/Demo Observation Window - 2026-05-14`.
+- Runtime Owner confirmed Task Hub was on `dev@a89c26a`, service health was `200`, Paperclip Settings was connected with `hasSecret=true`, and preflight flag was `PAPERCLIP_WEBHOOK_ENABLED=false`.
+- Runtime Owner set `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window.
+- Standing observation request `pc_standing_observation_20260514092342` and agent run `run_standing_observation_20260514092342` returned HTTP `201`.
+- Review Queue session `884fec91-26e9-40e9-91af-6a11f91f317f` was created with task `025630e8-d52b-4ef3-b7ac-0cb858342497` and status `pending`.
+- Same-payload replay returned `200`; changed-payload replay returned `409`; invalid signature returned `401`; invalid source returned `403`; invalid environment returned `400`.
+- Post-start Task Hub health returned `200`.
+- Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` only for this dev/demo observation window; rollback owner must set it to `false` immediately if any stop condition occurs.
+
+Post-observation PM decision:
+
+- Two follow-up monitor canaries passed with no stop condition and kept all created Review Queue tasks `pending`.
+- Paperclip task count reached 6 pending / 0 approved / 0 rejected / 0 Trello-linked.
+- Keep standing dev/demo enablement active for the current dev/demo observation path.
+- Change routine monitoring to read-only so monitoring does not keep adding pending canary tasks.
+- Read-only monitoring must check flag state, Task Hub health, Paperclip service health, Settings connection state, recent Paperclip-created sessions, pending/approved/rejected counts, Trello-linked side-effect count, and abnormal webhook/audit patterns.
+- Active signed canaries remain allowed only when PM/QA explicitly requests one, after runtime/config changes, after Paperclip sender changes, or when read-only evidence suggests a possible regression.
+- If any stop condition appears, Runtime Owner must set `PAPERCLIP_WEBHOOK_ENABLED=false` immediately and QA must record affected request/session/task ids without recording secrets.
+
+---
+
+## V0.2-W3-04 Paperclip Review Queue Cleanup
+
+Goal: clean up Paperclip live interop, canary, and monitor test sessions that accumulated in Review Queue while preserving auditability and the human approval gate.
+
+Scope:
+
+- Identify Paperclip-originated review sessions created by W3 live interop, limited window, true external sender window, standing observation, and monitor canaries.
+- Add or use a safe workflow for marking Paperclip test sessions/tasks as test-cleanup handled without approving them into Trello, Calendar, or Google Tasks.
+- Preserve request id, agent run id, session id, task id, source environment, and audit trail.
+- Keep live Paperclip webhook runtime monitoring separate from cleanup.
+- Keep mock/docs routes unchanged unless a cleanup view needs read-only labeling.
+
+Guardrails:
+
+- Do not send new Paperclip webhooks.
+- Do not create new canary tasks.
+- Do not auto-approve Paperclip tasks.
+- Do not create Trello cards, Calendar events, or Google Tasks.
+- Do not change W1 deployment/access or W2 visual redesign scope.
+- Do not delete audit evidence needed to reconstruct live interop and monitor history.
+- Do not expose secret values in UI, API response, logs, docs, or chat.
+
+Expected Dev output:
+
+- A Review Queue cleanup path that lets a human safely reject/archive Paperclip test sessions or tasks.
+- Clear labels so reviewers can distinguish Paperclip live/canary/test sessions from real Paperclip work.
+- Verification proving cleanup does not bypass the Review Queue human gate and does not trigger Trello/Calendar/Google side effects.
+- QA prompt covering pending/approved/rejected/Trello-linked counts before and after cleanup.
+
+Acceptance criteria:
+
+- Paperclip test sessions can be cleaned up without approving them.
+- Review Queue human gate remains intact.
+- Audit trail records cleanup action and actor/system context.
+- Paperclip request/session/task trace remains discoverable after cleanup.
+- Existing live webhook, mock route, Docs page, and Settings behavior remain unchanged.
+- No outbound Paperclip network call is added.
+- No W1/W2 scope is changed.
 
 ---
 
@@ -424,3 +692,11 @@ Resolved runtime inputs:
 | 2026-05-13 | Held W3 live connector planning while the Paperclip server is offline; non-blocked V0.2 work is routed back to W2-06 | Codex PM |
 | 2026-05-14 | Recorded Paperclip runtime inputs, confirmed `/healthz`, and confirmed Task Hub service-token `/healthz` reachability from the Paperclip server; routed `V0.2-W3-02` live webhook connector | Codex PM / Runtime |
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
+| 2026-05-14 | Planned and PM accepted `V0.2-W3-03` controlled live enablement policy with enablement criteria, rollback, owner permissions, monitoring/audit, and post-interop checklist; runtime gate remains disabled until a named live window starts | Codex PM |
+| 2026-05-14 | Completed limited `V0.2-W3-03` runtime-local signed canary window; canary/replay/negative checks passed and runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / QA |
+| 2026-05-14 | PM held standing enablement and routed next to a true external Paperclip sender window with Runtime Owner, Paperclip Owner, and QA Owner | Codex PM |
+| 2026-05-14 | Completed true external `V0.2-W3-03` Paperclip sender window from Paperclip runtime host/env through Cloudflare Access and HMAC; request `pc_true_external_20260514064709` created pending session `0e8f8b2e-d767-44ef-854c-538481c124c8`; replay/negative checks passed; runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / Paperclip Owner / QA |
+| 2026-05-14 | Started standing dev/demo enablement policy planning with Monitor Owner, Rollback Owner, daily/weekly monitoring, stop conditions, rollback steps, and PM acceptance criteria; runtime remains `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex PM |
+| 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; runtime is `PAPERCLIP_WEBHOOK_ENABLED=true`; canary/replay/negative checks passed and created pending session `884fec91-26e9-40e9-91af-6a11f91f317f` | Codex Runtime Owner / QA / Paperclip Owner |
+| 2026-05-14 | PM continued standing dev/demo enablement but changed routine monitoring to read-only after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |
+| 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup to safely handle accumulated live/canary test sessions without auto-approval or external side effects | Codex PM |

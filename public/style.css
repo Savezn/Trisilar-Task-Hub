@@ -977,6 +977,21 @@ a { text-decoration: none; }
   color: var(--text-faint);
 }
 
+.chip-paperclip-test {
+  background: rgba(249, 115, 22, 0.12);
+  color: #9a3412;
+}
+
+.chip-paperclip-live {
+  background: rgba(14, 165, 233, 0.12);
+  color: #075985;
+}
+
+.chip-cleanup {
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+
 /* ════════════════════════════════════════════════════════════
    ALL TASKS PAGE
    ════════════════════════════════════════════════════════════ */
@@ -4077,6 +4092,39 @@ a { text-decoration: none; }
   font-size: 13px;
   line-height: 1.45;
   overflow-wrap: anywhere;
+}
+
+.review-paperclip-context {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 8px;
+  background: rgba(248, 250, 252, 0.88);
+  color: var(--ink-3);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.review-paperclip-context strong {
+  color: var(--ink);
+}
+
+.review-paperclip-context small {
+  color: var(--ink-4);
+  overflow-wrap: anywhere;
+}
+
+.review-paperclip-context.is-test {
+  border-color: rgba(249, 115, 22, 0.24);
+  background: rgba(255, 247, 237, 0.72);
+}
+
+.review-paperclip-context.is-live {
+  border-color: rgba(14, 165, 233, 0.22);
+  background: rgba(240, 249, 255, 0.7);
 }
 
 .review-task-meta-row {
