@@ -56,7 +56,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted and integrated; W2-06 Integration QA/PM accepted on `dev` |
 | L3 | V0.2 Paperclip Foundation | W3-02 code + live interop PM Accepted / runtime gate closed | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, and preserved human gate without uncontrolled side effects | Contract/mock verification passed; W3-02 signed webhook and live interop passed; runtime `PAPERCLIP_WEBHOOK_ENABLED=false` until PM approves controlled live enablement |
 | L4 | V0.2 Integration Release | Active / W3 integrated on `origin/dev@a89c26a` | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
-| L5 | V0.3 Product Reliability + UX Stabilization | Active / `V0.3-RUX-06` routed | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A, RUX-03, RUX-04, and RUX-05 are PM accepted; current route is release checklist |
+| L5 | V0.3 Product Reliability + UX Stabilization | Active / `V0.3-RUX-06` QA pass / PM review pending | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A, RUX-03, RUX-04, and RUX-05 are PM accepted; current route is PM review of the release checklist |
 | L6 | V0.4 Live AI Operations | Planned | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Live connector QA with controlled production-like data |
 | L7 | V0.5 Team Operating System | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
 
@@ -224,7 +224,7 @@ V0.2 W1/W2/W3 dev/demo foundations accepted
 -> V0.3-RUX-02A and V0.3-RUX-03 PM accepted
 -> V0.3-RUX-04 Today + Tasks Decision Flow PM accepted
 -> V0.3-RUX-05 Browser Regression + Responsive QA Gate PM accepted
--> V0.3-RUX-06 Release Checklist for dev -> main routed
+-> V0.3-RUX-06 Release Checklist for dev -> main QA pass / PM review pending
 ```
 
 Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not keep live webhook enabled without PM policy approval. V0.3 operating model and Product Reliability + UX Stabilization plan are accepted. V0.3 may proceed in parallel with W3 only through separate branches/worktrees, with Integration Owner-controlled merges into `dev`.
@@ -263,3 +263,4 @@ Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose 
 | 2026-05-14 | Accepted `V0.3-RUX-04` at `d72f979`; routed `V0.3-RUX-05` Browser Regression + Responsive QA Gate | Codex PM |
 | 2026-05-14 | Implemented and verified `V0.3-RUX-05` Browser Regression + Responsive QA Gate; routed to PM review | Codex Dev / QA |
 | 2026-05-14 | Accepted `V0.3-RUX-05` at `0af9417`; routed `V0.3-RUX-06` Release Checklist for dev -> main | Codex PM |
+| 2026-05-14 | Drafted and docs-verified `V0.3-RUX-06` Release Checklist for dev -> main; routed to PM review | Codex PM / QA / Integration / Runtime |

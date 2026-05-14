@@ -69,6 +69,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.3-RUX-03 - Review Queue + AI Trace Clarity | QA Pass / PM Accepted | `b2425a4` |
 | V0.3-RUX-04 - Today + Tasks Decision Flow | QA Pass / PM Accepted | `d72f979` |
 | V0.3-RUX-05 - Browser Regression + Responsive QA Gate | QA Pass / PM Accepted | `0af9417` |
+| V0.3-RUX-06 - Release Checklist for dev -> main | QA Pass / PM review pending | pending |
 
 ---
 
@@ -132,6 +133,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-14 | R51 | PM Accepted / Routed - V0.3-RUX-04 Today + Tasks Decision Flow | PM accepted `d72f979` for `V0.3-RUX-04`. Acceptance confirmed Today top-work cues, Tasks source/context/owner/due/status/next-action visibility, pending Review human-gate preservation, hidden-board filtering, desktop/mobile browser evidence, and no live Paperclip enablement, W3 merge, automatic side effect, or secret exposure. Routed next to `V0.3-RUX-05` Browser Regression + Responsive QA Gate. |
 | 2026-05-14 | R52 | Pass / PM review pending - V0.3-RUX-05 Browser Regression + Responsive QA Gate | RED check first failed with missing `verify:rux-browser-regression` script. Implementation added Playwright browser gate and `npm.cmd run verify:rux-browser-regression` passed. The gate starts a temporary local server, uses controlled API fixtures, checks desktop `1440x960` and mobile `390x844`, covers `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, `/settings`, and `/docs`, captures console/page errors, checks horizontal overflow, verifies RUX-02A/RUX-03/RUX-04 assertions where relevant, and uses no production secrets. |
 | 2026-05-14 | R53 | PM Accepted / Routed - V0.3-RUX-05 Browser Regression + Responsive QA Gate | PM accepted `0af9417` for `V0.3-RUX-05`. Acceptance confirmed repeatable browser regression gate, controlled fixtures/no production secrets, desktop/mobile coverage, route matrix coverage, console/page/overflow checks, and relevant RUX assertions. No live Paperclip enablement, W3 merge, automatic side effect, or secret exposure. Routed next to `V0.3-RUX-06` Release Checklist for `dev -> main`. |
+| 2026-05-14 | R54 | Pass / PM review pending - V0.3-RUX-06 Release Checklist for dev -> main | Docs-only checklist artifact completed in `docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md`. It covers source branch, stacked operating-model dependency, accepted V0.3 evidence, integration order, verification commands, browser route matrix, Paperclip/Review Queue gate, runtime/access gate, rollback/hold plan, and PM decision block. Runtime checks skipped because no behavior/config files changed; verification is `git diff --check`. No merge, production deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge occurred. |
 
 ---
 

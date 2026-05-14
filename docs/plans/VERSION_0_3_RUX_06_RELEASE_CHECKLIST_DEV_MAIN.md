@@ -1,10 +1,10 @@
 # V0.3-RUX-06 Release Checklist for dev -> main
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** Routed - ready for PM / QA / Integration / Runtime
+**Status:** QA pass - PM review pending
 **Owner:** PM / QA / Integration / Runtime
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / QA / Integration / Runtime
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md`, `../../CURRENT_SPRINT.md`, `../logs/QA_LOG.md`, `../logs/DECISION_LOG.md`, `../testing/TEST_STRATEGY.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `PROJECT_LADDER.md`
 
 ---
@@ -64,6 +64,147 @@ The next step is not to merge yet. The next step is a release checklist artifact
 
 ---
 
+## Draft Release Checklist Artifact
+
+Use this checklist when PM is ready to decide whether accepted V0.3 work can move toward `dev -> main`. This checklist is an evidence gate only. It does not merge, deploy, enable live Paperclip, or change runtime secrets.
+
+### 1. Release Boundary
+
+| Check | Required state | Evidence |
+|---|---|---|
+| Source branch | `feature/v0.3-product-reliability-ux-stabilization` | `git status --short --branch` shows the expected branch and no unrelated dirty files. |
+| Worktree | `trisilar-task-hub-v03-product-reliability-ux` | Work is isolated from W3 and main runtime worktrees. |
+| Stacked base | `feature/project-operating-model-agent-structure@96826f7` | Operating-model branch must be accepted and integrated before this V0.3 branch is integrated. |
+| W3 boundary | No W3 sibling branch merged into V0.3; no V0.3 branch merged into W3 | Integration Owner confirms with branch history when preparing the release candidate. |
+| Release action | No direct `main` merge from this phase | PM acceptance and Integration Owner action are separate later steps. |
+
+### 2. Accepted V0.3 Evidence
+
+| Phase | Required evidence | Status |
+|---|---|---|
+| `V0.3-RUX-01` | Intake model, route inventory, baseline checklist, and findings log exist | Baseline complete |
+| `V0.3-RUX-02A` | Trello connection-state and failure-copy clarity accepted at `516b33e` | PM Accepted |
+| `V0.3-RUX-03` | Review Queue / Docs AI trace clarity accepted at `b2425a4` | PM Accepted |
+| `V0.3-RUX-04` | Today + Tasks decision-flow clarity accepted at `d72f979` | PM Accepted |
+| `V0.3-RUX-05` | Browser regression + responsive QA gate accepted at `0af9417` | PM Accepted |
+| `V0.3-RUX-06` | This release checklist is completed for PM review | Pending PM review |
+
+### 3. Integration Order
+
+| Step | Owner | Required result |
+|---|---|---|
+| 1 | Integration Owner | Confirm operating-model branch is accepted and merged into `dev` before V0.3 integration. |
+| 2 | Integration Owner | Integrate accepted V0.3 branch into `dev` without merging W3 branches into V0.3 or V0.3 branches into W3. |
+| 3 | QA / Release Owner | Run repo, product, Paperclip/Review Queue, browser, and runtime evidence checks on the integrated `dev` candidate. |
+| 4 | Runtime / Access Owner | Confirm runtime flags, access boundaries, and rollback readiness without exposing secrets. |
+| 5 | PM | Decide `Accept`, `Hold`, or `Reject` for `dev -> main`. |
+
+### 4. Verification Commands
+
+Run from the integrated release candidate unless PM explicitly marks a command not applicable.
+
+```powershell
+node server.js
+npm.cmd run check:all
+npm.cmd run verify:rux-trello
+npm.cmd run verify:rux-ai-trace
+npm.cmd run verify:rux-decision-flow
+npm.cmd run verify:rux-browser-regression
+npm.cmd run verify:paperclip-contract
+npm.cmd run verify:paperclip-mock
+npm.cmd run verify:paperclip-docs
+```
+
+When W3 live connector behavior is part of the candidate, also run:
+
+```powershell
+npm.cmd run verify:paperclip-connection
+npm.cmd run verify:paperclip-webhook
+```
+
+Do not run live interop with real service credentials unless Runtime / Access Owner explicitly assigns that check. If live interop is run, record only redacted request ids, HTTP status, Review Queue session id, pending task status, and the fact that no Trello/Google side effect occurred.
+
+### 5. Browser Route Matrix
+
+`verify:rux-browser-regression` must cover:
+
+| Route | Required evidence |
+|---|---|
+| `/today` | Loads on desktop/mobile, Trello disconnected copy is product-facing, decision cues remain visible. |
+| `/review` | Loads on desktop/mobile, Review Queue remains human-gated. |
+| `/all` | Loads on desktop/mobile, task source/context/next action remain visible. |
+| `/boards` | Loads on desktop/mobile, board state does not show false Trello connected state. |
+| `/calendar` | Loads on desktop/mobile without page errors. |
+| `/planner` | Loads on desktop/mobile without page errors. |
+| `/okr` | Loads on desktop/mobile, Trello failure copy stays product-facing when disconnected. |
+| `/focus` | Loads on desktop/mobile, Trello failure copy stays product-facing when disconnected. |
+| `/settings` | Loads on desktop/mobile, connection state does not falsely report ready after auth failure. |
+| `/docs` | Loads on desktop/mobile, Docs/Paperclip trace labels remain readable. |
+
+For every route, record console/page errors and horizontal overflow result.
+
+### 6. Paperclip / Review Queue Gate
+
+| Check | Required result |
+|---|---|
+| Contract | Valid Paperclip payloads pass contract checks; invalid payloads return field-level errors. |
+| Mock route | Mock intake creates Review Queue work without live Paperclip dependency. |
+| Docs trace | Linked docs show source, type/status, run/agent metadata, and missing local review-task state clearly. |
+| Human approval | AI-originated work remains pending until a human approves it. |
+| Side effects | No Trello, Google Tasks, or Calendar write happens before human approval. |
+| Auditability | Request id, source, agent/run metadata, Review Queue session, and decision history remain traceable. |
+
+### 7. Runtime / Access Gate
+
+| Check | Required result |
+|---|---|
+| Runtime flag | `PAPERCLIP_WEBHOOK_ENABLED=false` remains default unless PM explicitly accepts a controlled live enablement policy. |
+| Secrets | No API token, OAuth secret, Cloudflare Access Client Secret, HMAC signing secret, auth header, or private credentialed URL appears in git, docs, browser JavaScript, or chat handoff. |
+| Access | Runtime / Access Owner verifies hosted dev/demo access gate when release candidate includes runtime evidence. |
+| Persistence | `APP_DATA_DIR` persistence is confirmed for hosted candidate when runtime is in scope. |
+| Server-only env | Trello/Google/Paperclip credentials stay server-side only. |
+| Live Paperclip | Standing live enablement remains out of scope unless PM creates and accepts a separate Runtime / AI Integration task. |
+
+### 8. Rollback / Hold Plan
+
+If any gate fails before `main` promotion:
+
+- Hold the release candidate.
+- Do not merge to `main`.
+- Record the blocker in `docs/logs/QA_LOG.md` and `docs/logs/DECISION_LOG.md`.
+- Route the blocker to the owning role: PM, QA, Dev, Integration, Runtime, UX, or AI Integration.
+- Fix on a scoped branch/worktree, then rerun the failed gate plus relevant regressions.
+
+If a later `main` promotion has already happened and a release blocker is found:
+
+- PM decides whether to hotfix or revert.
+- Integration Owner reverts the merge commit or applies a scoped hotfix branch from `main`.
+- Backport the accepted fix to `dev`.
+- QA reruns the failed gate and the release smoke matrix.
+
+### 9. PM Release Decision Block
+
+Use this block for the future PM release decision:
+
+```text
+Decision: Accept / Hold / Reject
+Date:
+Candidate branch / commit:
+Accepted source commits:
+Integrated dev commit:
+Verified by:
+Verification commands:
+Browser route matrix:
+Paperclip / Review Queue gate:
+Runtime / access gate:
+Secret handling:
+Rollback readiness:
+Reason:
+Next owner:
+```
+
+---
+
 ## Acceptance Criteria
 
 - A PM can decide future `dev -> main` promotion from one checklist artifact.
@@ -96,11 +237,25 @@ If implementation changes code or package scripts, also run the relevant command
 
 ---
 
+## Completion Result
+
+`V0.3-RUX-06` produced the release checklist artifact above. No merge, production deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge was performed.
+
+Verification:
+
+```powershell
+git diff --check
+```
+
+Runtime checks skipped: docs-only change.
+
+---
+
 ## Next Recommended Session
 
 ```text
-Role: PM / QA / Integration / Runtime
-Task: Draft V0.3-RUX-06 Release Checklist for dev -> main.
+Role: PM
+Task: Review and accept V0.3-RUX-06 Release Checklist for dev -> main.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
@@ -111,13 +266,16 @@ Read:
 - docs/reference/AI_AGENT_GOVERNANCE.md
 - docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md
 
-Guardrails:
-- Do not merge this branch into dev or main.
-- Do not merge W3 branches into V0.3 or V0.3 branches into W3.
-- Do not deploy production.
-- Do not expose secrets, tokens, auth headers, private credentialed URLs, or HMAC values.
-- Do not enable live Paperclip.
-- Keep reusable trisilar-task-hub-workflow Codex skill deferred.
+Acceptance criteria:
+- Confirm one checklist artifact is sufficient for future PM `dev -> main` decision.
+- Confirm accepted V0.3 evidence, branch/stacking dependency, W3 boundary, verification commands, browser matrix, Paperclip/Review Queue gate, runtime/access gate, rollback notes, and PM decision format are covered.
+- Confirm this phase performed no merge, deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge.
+
+If accepted:
+- Route next to Integration Owner only after the operating-model branch is integrated into `dev`.
+
+If held:
+- List the exact release checklist gap, evidence blocker, integration dependency, runtime gate, or PM decision field that needs revision.
 ```
 
 ---
@@ -127,3 +285,4 @@ Guardrails:
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-14 | Routed `V0.3-RUX-06` after PM accepting `V0.3-RUX-05` at `0af9417` | Codex PM |
+| 2026-05-14 | Drafted release checklist artifact, runtime/Paperclip gates, rollback notes, and PM decision block for `V0.3-RUX-06` | Codex PM / QA / Integration / Runtime |

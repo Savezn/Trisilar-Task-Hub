@@ -1,7 +1,7 @@
 # Version 0.3 Product Reliability + UX Stabilization Plan
 
 **Doc Role:** Active V0.3 phase plan
-**Status:** PM accepted; `V0.3-RUX-06` routed
+**Status:** PM accepted; `V0.3-RUX-06` QA pass / PM review pending
 **Version:** V0.3
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
@@ -126,7 +126,7 @@ V0.3-RUX-06
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | PM Accepted `b2425a4` | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | PM Accepted `d72f979` | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
 | `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | PM Accepted `0af9417` | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
-| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | Routed | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
+| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | QA pass / PM review pending | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
 
 ---
 
@@ -412,8 +412,8 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: PM / QA / Integration / Runtime
-Task: Draft V0.3-RUX-06 Release Checklist for dev -> main.
+Role: PM
+Task: Review and accept V0.3-RUX-06 Release Checklist for dev -> main.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
@@ -421,14 +421,12 @@ Read:
 - docs/testing/TEST_STRATEGY.md
 - docs/reference/AI_AGENT_GOVERNANCE.md
 
-Do:
-- Draft a release checklist artifact for future `dev -> main` promotion.
-- Include accepted V0.3 commits, branch/stacking dependencies, verification commands, runtime gates, and rollback notes.
-- Separate product QA, browser regression, Paperclip/Review Queue checks, and runtime/deployment evidence.
-- Make the PM decision block explicit.
-- Do not merge W3/V0.3 branches.
-- Do not merge this branch into dev or main.
-- Keep W3 live enablement or Paperclip hardening on its own W3 branch/worktree.
+Acceptance criteria:
+- Confirm one checklist artifact is sufficient for a future `dev -> main` PM decision.
+- Confirm accepted V0.3 commits, branch/stacking dependencies, exact verification commands, browser route matrix, runtime/access gates, and rollback notes are covered.
+- Confirm product QA, browser regression, Paperclip/Review Queue checks, and runtime/deployment evidence are separated.
+- Confirm the PM decision block is explicit.
+- Confirm no W3/V0.3 branch merge, dev/main merge, production deploy, live Paperclip enablement, runtime flag change, or secret exposure occurred.
 
 If held:
 - List exact release checklist gap, evidence blocker, integration dependency, or PM gate.
@@ -452,3 +450,4 @@ If held:
 | 2026-05-14 | Accepted `V0.3-RUX-04` at `d72f979`; routed `V0.3-RUX-05` Browser Regression + Responsive QA Gate | Codex PM |
 | 2026-05-14 | Implemented and verified `V0.3-RUX-05`; routed to PM review | Codex Dev / QA |
 | 2026-05-14 | Accepted `V0.3-RUX-05` at `0af9417`; routed `V0.3-RUX-06` Release Checklist for dev -> main | Codex PM |
+| 2026-05-14 | Drafted and docs-verified `V0.3-RUX-06` Release Checklist for dev -> main; routed to PM review | Codex PM / QA / Integration / Runtime |
