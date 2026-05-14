@@ -222,7 +222,7 @@ V0.2 W1/W2/W3 dev/demo foundations accepted
 -> V0.3-RUX-01 baseline created
 -> UX/QA route-by-route baseline findings
 -> V0.3-RUX-02A and V0.3-RUX-03 PM accepted
--> V0.3-RUX-04 Today + Tasks Decision Flow routed
+-> V0.3-RUX-04 Today + Tasks Decision Flow QA pass / PM review pending
 ```
 
 Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not keep live webhook enabled without PM policy approval. V0.3 operating model and Product Reliability + UX Stabilization plan are accepted. V0.3 may proceed in parallel with W3 only through separate branches/worktrees, with Integration Owner-controlled merges into `dev`.
@@ -257,3 +257,4 @@ Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose 
 | 2026-05-14 | Started `V0.3-RUX-01` and created the intake model, findings log, route inventory, and baseline checklist | Codex PM |
 | 2026-05-14 | Implemented and verified `V0.3-RUX-03` Docs/Paperclip trace clarity; routed to PM review | Codex Dev / UX / QA |
 | 2026-05-14 | Accepted `V0.3-RUX-03` at `b2425a4`; routed `V0.3-RUX-04` Today + Tasks Decision Flow | Codex PM |
+| 2026-05-14 | Implemented and verified `V0.3-RUX-04` Today + Tasks Decision Flow; routed to PM review | Codex Dev / UX / QA |

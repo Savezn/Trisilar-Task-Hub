@@ -1,10 +1,10 @@
 # V0.3-RUX-04 Today + Tasks Decision Flow
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** Routed - ready for UX / Frontend / QA
+**Status:** QA pass - PM review pending
 **Owner:** UX / Frontend / QA
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex Dev / UX / QA
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `../../CURRENT_SPRINT.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../testing/TEST_STRATEGY.md`
 
 ---
@@ -124,28 +124,63 @@ Record:
 
 ---
 
+## Implementation Summary
+
+`V0.3-RUX-04` was implemented as a scoped Today / Tasks decision-flow clarity patch.
+
+Changed:
+
+- Today now labels the start point with visible source/context/next-action cues.
+- Today pending Review copy now says `Needs human approval` and `Review before execution`, preserving the Review Queue as the human gate.
+- Tasks rows now expose `Source: Trello`, board/list context, owner, due state, status, and next action in dense desktop/mobile rows.
+- A focused verification gate was added as `npm.cmd run verify:rux-decision-flow`.
+
+No live Paperclip enablement, W3 webhook/service-auth/runtime changes, secrets, private credential URLs, or automatic Trello/Calendar/Google Tasks write paths were added.
+
+---
+
+## Verification Result
+
+| Check | Result |
+|---|---|
+| `node --check public/js/pages/today.js` | Pass |
+| `node --check public/js/pages/all-tasks.js` | Pass |
+| `npm.cmd run verify:rux-decision-flow` | Pass |
+| `npm.cmd run verify:rux-trello` | Pass |
+| `npm.cmd run verify:rux-ai-trace` | Pass |
+| `npm.cmd run check:all` with local temporary server | Pass |
+| Browser QA `/today` desktop/mobile | Pass - source/context/next-action, top-work cue, pending Review human gate visible |
+| Browser QA `/all` desktop/mobile | Pass - source/context/owner/due/status/next-action visible |
+| Browser regression `/review`, `/docs`, `/boards`, `/settings` | Pass |
+| Hidden-board filtering controlled QA | Pass - hidden board card stayed filtered |
+| Horizontal overflow / console errors / page errors | Pass - no overflow, console errors `0`, page errors `0` |
+
+---
+
 ## Next Recommended Session
 
 ```text
-Role: UX / Frontend / QA
-Task: Implement and verify V0.3-RUX-04 Today + Tasks Decision Flow.
+Role: PM
+Task: Review and accept V0.3-RUX-04 Today + Tasks Decision Flow.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md
 - docs/logs/V0_3_RUX_FINDINGS.md
-- docs/testing/TEST_STRATEGY.md
-- docs/reference/AI_AGENT_GOVERNANCE.md
 
 Guardrails:
-- Keep changes scoped to Today and Tasks decision-flow clarity.
-- Preserve Trello hidden-board/workspace filtering.
-- Preserve Review Queue as the human approval gate.
-- Preserve V0.3-RUX-02A connection-state copy.
+- Confirm changes stayed scoped to Today and Tasks decision-flow clarity.
+- Confirm Trello hidden-board/workspace filtering and V0.3-RUX-02A connection-state copy are preserved.
+- Confirm Review Queue remains the human approval gate.
 - Do not enable live Paperclip.
 - Do not change W3 webhook/service-auth behavior.
-- Do not create automatic Trello/Calendar/Google Tasks side effects.
 - Do not expose secrets or private credential values.
 - Do not merge W3/V0.3 branches.
+
+Acceptance:
+- Today top work is identifiable from visible priority, due state, source, context, and next-action cues.
+- Tasks preserves source, board/list context, owner, due state, status, and next action across dense desktop/mobile views.
+- Pending Review remains visible without implying unapproved AI work is execution work.
+- Browser QA evidence is sufficient for PM acceptance.
 ```
 
 ---
@@ -155,3 +190,4 @@ Guardrails:
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-14 | Routed `V0.3-RUX-04` for Today + Tasks decision-flow clarity after `V0.3-RUX-03` PM acceptance | Codex PM |
+| 2026-05-14 | Implemented and verified Today + Tasks source/context/next-action cues; routed to PM review | Codex Dev / UX / QA |

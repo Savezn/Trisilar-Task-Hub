@@ -85,6 +85,31 @@ function renderAllTasks(cards) {
       : "is-active";
   }
 
+  function taskSourceLabel() {
+    return "Source: Trello";
+  }
+
+  function taskDecisionContext(card) {
+    return `Context: ${[card.boardName || "No board", card.listName || "No list"].filter(Boolean).join(" / ")}`;
+  }
+
+  function taskNextActionLabel(card) {
+    if (card.dueComplete) return "Next action: reopen if needed";
+    if (isOverdue(card)) return "Next action: reschedule or finish";
+    if (isToday(card)) return "Next action: do today";
+    if (isUpcoming(card)) return "Next action: plan next";
+    if (!card.due) return "Next action: prioritize or schedule";
+    return "Next action: open task";
+  }
+
+  function taskDecisionMeta(card) {
+    return `
+      <span class="task-source-pill">${taskSourceLabel(card)}</span>
+      <span class="task-context-label">${esc(taskDecisionContext(card))}</span>
+      <span class="task-next-action">${esc(taskNextActionLabel(card))}</span>
+    `;
+  }
+
   function counts() {
     return {
       all: allCards.length,
@@ -205,6 +230,7 @@ function renderAllTasks(cards) {
             ${chips ? `<span class="task-label-chips">${chips}</span>` : ""}
             ${checklistMeta(card)}
             ${card.desc ? `<span class="task-row-mini">${icon("inbox")}Description</span>` : ""}
+            ${taskDecisionMeta(card)}
           </div>
         </div>
         <div class="task-board-cell">
@@ -215,7 +241,7 @@ function renderAllTasks(cards) {
         <div>${dueCell(card)}</div>
         <div class="task-row-status">
           <span class="task-status-pill ${statusClass(card)}">${esc(statusLabel(card))}</span>
-          <button class="btn btn-ghost btn-xs task-open-btn" type="button" data-action="open" title="Open card">${icon("external")}</button>
+          <button class="btn btn-ghost btn-xs task-open-btn" type="button" data-action="open" title="Open task">${icon("external")}</button>
         </div>
       </div>`;
   }
@@ -369,7 +395,7 @@ function renderAllTasks(cards) {
           <div>
             <div class="tasks-kicker">${icon("inbox")} Cross-board inbox</div>
             <h1 class="tasks-title">Tasks</h1>
-            <p class="tasks-subtitle">${rows.length} of ${allCards.length} tasks visible across ${boardsCount} board${boardsCount === 1 ? "" : "s"}.</p>
+            <p class="tasks-subtitle">${rows.length} of ${allCards.length} tasks visible across ${boardsCount} board${boardsCount === 1 ? "" : "s"}. Use source, owner, due state, and next action to choose work.</p>
           </div>
           <button class="btn btn-ghost btn-sm at-export-btn" id="at-export-btn" title="Export filtered tasks as CSV">${icon("upload")} Export CSV</button>
         </div>
