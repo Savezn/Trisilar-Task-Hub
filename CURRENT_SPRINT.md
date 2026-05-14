@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.3 Product Reliability + UX Stabilization
-**Status:** V0.3 RUX plan PM accepted; `V0.3-RUX-01` baseline review findings recorded
+**Status:** V0.3 RUX baseline triaged; `V0.3-RUX-02A` routed
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
@@ -41,7 +41,7 @@
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 | V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted | PM complete |
-| V0.3 RUX | `V0.3-RUX-01` UX Issue Intake + Reliability Baseline | Baseline findings recorded | PM |
+| V0.3 RUX | `V0.3-RUX-02A` Trello Connection State + Failure Copy | Routed | Dev / UX / Runtime |
 
 ---
 
@@ -54,6 +54,7 @@
 | Full V0.2 branch/workstream plan | `docs/plans/VERSION_0_2_PLAN.md` |
 | V0.3 Product Reliability + UX Stabilization plan | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` |
 | V0.3-RUX-01 intake model and baseline checklist | `docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` |
+| V0.3-RUX-02A first routed implementation task | `docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md` |
 | V0.3 RUX findings log | `docs/logs/V0_3_RUX_FINDINGS.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | W2 full UI redesign phase plan | `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` |
@@ -108,7 +109,7 @@ Parallel rule:
 
 ---
 
-## Next Action - PM Triage V0.3-RUX-01 Baseline Findings
+## Next Action - V0.3-RUX-02A Trello Connection State + Failure Copy
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. V0.2 W1/W2/W3 dev/demo foundations are accepted, and W3 live interop passed with `PAPERCLIP_WEBHOOK_ENABLED=false` restored after the test. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
 
@@ -139,29 +140,26 @@ PM decisions:
 - W3 sibling branches must not merge into V0.3 branches, and V0.3 branches must not merge into W3 branches.
 
 ```text
-Role: PM
-Task: Triage V0.3-RUX-01 baseline findings and route the first scoped fix/review tasks.
+Role: Dev / UX / Runtime
+Task: Implement V0.3-RUX-02A Trello Connection State + Failure Copy.
 
 Owned files:
-- CURRENT_SPRINT.md
-- docs/plans/PROJECT_LADDER.md
-- docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md
-- docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md
-- docs/logs/V0_3_RUX_FINDINGS.md
-- docs/logs/DECISION_LOG.md
-- docs/logs/QA_LOG.md if QA evidence is produced
+- docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md
+- docs/logs/V0_3_RUX_FINDINGS.md for status updates
+- focused code files only after Dev confirms exact scope
 
 Acceptance criteria:
-- Review `RUX-001` through `RUX-003` in docs/logs/V0_3_RUX_FINDINGS.md.
-- Confirm severity, owner, and suggested phase for each finding.
-- Decide whether `RUX-001` and `RUX-002` should be grouped into one scoped UX/Runtime task or split.
-- Route the first implementation task without merging W3/V0.3 branches.
-- Keep reusable Codex skill extraction deferred.
+- No visible app surface reports Trello as connected or ready after Trello API auth failure.
+- Trello-dependent routes use product-facing failure copy, not `.env` or raw API-key wording.
+- Today, Tasks, Boards Monitor, OKR / Portfolio, Weekly Focus, and Settings preserve useful route context when Trello is unavailable.
+- Review Queue, Calendar, Planner, and Docs are not regressed.
+- No secrets, tokens, auth headers, or private credentialed URLs are exposed.
+- V0.3/W3 branch boundary remains intact.
 
 If held:
-- List what evidence, ownership decision, or branch boundary must be clarified before routing.
+- List exact implementation ambiguity, runtime dependency, or test-data blocker.
 ```
 
-**Current RUX-01 artifacts:** `docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` and `docs/logs/V0_3_RUX_FINDINGS.md`. First baseline findings: `RUX-001` through `RUX-003`.
+**Current RUX artifacts:** `RUX-001` and `RUX-002` are grouped into `V0.3-RUX-02A`. `RUX-003` remains triaged for later `V0.3-RUX-03`.
 
 **Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM. `V0.3-RUX-01` baseline created by Codex PM.

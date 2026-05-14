@@ -118,7 +118,7 @@ V0.3-RUX-02
 | ID | Phase | Owner Role | Status | Outcome |
 |---|---|---|---|---|
 | `V0.3-RUX-01` | UX Issue Intake + Reliability Baseline | PM / UX / QA | Baseline findings recorded | Create the issue intake model, severity labels, route inventory, first baseline audit checklist, and initial findings batch |
-| `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Planned | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
+| `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Active / `V0.3-RUX-02A` routed | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | Planned | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | Planned | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
 | `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | Planned | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
@@ -408,23 +408,22 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: PM
-Task: Triage V0.3-RUX-01 baseline findings and route the first scoped fix/review tasks.
+Role: Dev / UX / Runtime
+Task: Implement V0.3-RUX-02A Trello Connection State + Failure Copy.
 
 Read:
-- docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md
+- docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md
 - docs/logs/V0_3_RUX_FINDINGS.md
 
 Do:
-- Review `RUX-001` through `RUX-003`.
-- Confirm severity, owner, and phase.
-- Decide whether Trello connection-state findings should be grouped or split.
-- Route the first scoped task.
+- Fix grouped `RUX-001` and `RUX-002` only.
+- Preserve route context and avoid raw `.env` wording in product UI.
+- Verify affected routes on desktop and mobile.
 - Do not merge W3/V0.3 branches.
 - Keep W3 live enablement or Paperclip hardening on its own W3 branch/worktree.
 
 If held:
-- List what evidence, ownership decision, or branch boundary must be clarified before routing.
+- List exact implementation ambiguity, runtime dependency, or test-data blocker.
 ```
 
 ---
@@ -437,3 +436,4 @@ If held:
 | 2026-05-14 | Accepted V0.3 Product Reliability + UX Stabilization plan and routed `V0.3-RUX-01` | Codex PM |
 | 2026-05-14 | Started `V0.3-RUX-01` with intake model, findings log, route inventory, and baseline checklist | Codex PM |
 | 2026-05-14 | Recorded first desktop/mobile baseline findings and routed next to PM triage | Codex UX / QA |
+| 2026-05-14 | Triaged baseline findings and routed grouped Trello connection-state work as `V0.3-RUX-02A` | Codex PM |
