@@ -108,6 +108,7 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` | V0.3 Product Reliability + UX Stabilization phase plan |
 | `plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` | V0.3-RUX-01 issue intake model, route inventory, owner map, and baseline checklist |
 | `plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md` | V0.3-RUX-02A scoped handoff for Trello connection-state and route failure-copy clarity |
+| `plans/VERSION_0_3_RUX_03_REVIEW_QUEUE_AI_TRACE_CLARITY.md` | V0.3-RUX-03 scoped handoff for Review Queue and Paperclip/AI trace clarity |
 | `agents/PM.md` | PM / Product Owner role guide |
 | `agents/UX_OWNER.md` | UX / Product Experience Owner role guide |
 | `agents/DEV_FRONTEND.md` | Frontend Product Dev role guide |
