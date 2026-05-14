@@ -100,7 +100,7 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
 | W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime inputs confirmed for W3 planning | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948` | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | PM Accepted through `V0.2-W3-05`; Dev Integration next | `V0.2-W3-01` done; `V0.2-W3-02` live connector/interops accepted; `V0.2-W3-03` standing dev/demo observation active with read-only monitoring; `V0.2-W3-04` cleanup and `V0.2-W3-04a` audit retention merged to `dev@7ea4650`; `V0.2-W3-05` operations status accepted at `b0d70ff` | Contract-first mock adapter, attribution/audit sync, live connector, cleanup, and read-only live operations hardening |
+| W3 | Paperclip Multi-Agent Integration | PM Accepted through `V0.2-W3-05`; integrated on latest `origin/dev` | `V0.2-W3-01` done; `V0.2-W3-02` live connector/interops accepted; `V0.2-W3-03` standing dev/demo observation active with read-only monitoring; `V0.2-W3-04` cleanup and `V0.2-W3-04a` audit retention merged to `dev@7ea4650`; `V0.2-W3-05` operations status and copy polish are on `origin/dev@2c302dc` | Contract-first mock adapter, attribution/audit sync, live connector, cleanup, and read-only live operations hardening |
 
 ---
 
@@ -262,7 +262,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 **Priority:** P1 after W0
 **Owner Role:** Integration Dev
-**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02` live connector code and live interop accepted at `c1e4df2` and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy PM Accepted; standing dev/demo observation active with read-only monitor; `V0.2-W3-04` cleanup and `V0.2-W3-04a` audit retention PM Accepted and merged to `dev@7ea4650`; `V0.2-W3-05` QA Pass / PM Accepted at `b0d70ff`
+**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02` live connector code and live interop accepted at `c1e4df2` and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy PM Accepted; standing dev/demo observation active with read-only monitor; `V0.2-W3-04` cleanup and `V0.2-W3-04a` audit retention PM Accepted and merged to `dev@7ea4650`; `V0.2-W3-05` QA Pass / PM Accepted and integrated on latest `origin/dev`
 
 **Scope:**
 - Integration contract.
@@ -282,7 +282,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 - Runtime `PAPERCLIP_WEBHOOK_ENABLED=true` remains active for dev/demo observation and must be rolled back to `false` if stop conditions occur.
 - After two follow-up canaries passed and pending Paperclip tasks reached 6, routine monitoring is read-only unless PM/QA requests an active signed canary or runtime/config changes require one.
 - `V0.2-W3-04` and `V0.2-W3-04a` are accepted and merged to `dev@7ea4650`. Runtime cleanup changed accumulated Paperclip live/canary/test Review Queue sessions from 6 pending / 0 approved / 0 rejected / 0 Trello-linked to 0 pending / 0 approved / 6 rejected / 0 Trello-linked, with cleanup audit retained.
-- `V0.2-W3-05` is accepted at `b0d70ff`. It adds read-only operations/status visibility so routine monitoring does not require creating canary tasks.
+- `V0.2-W3-05` is accepted and integrated on latest `origin/dev`. It adds read-only operations/status visibility so routine monitoring does not require creating canary tasks.
 
 ---
 
@@ -316,17 +316,17 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention and merged to `dev@7ea4650`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only. V0.3 operating model and long-term agent team structure are also PM accepted; V0.3 Product Reliability + UX Stabilization planning remains a separate branch/worktree route and must not merge W3 sibling branches into V0.3.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention, operations hardening, and copy polish on latest `origin/dev`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only. V0.3 operating model and long-term agent team structure are PM accepted and merged to `dev@ed9fae0`; V0.3 Product Reliability + UX Stabilization is PM accepted through `V0.3-RUX-06` and is now routed to a dedicated integration candidate branch/worktree.
 
 ```text
-Role: Dev / Integration
-Task: Merge accepted V0.2-W3-05 Paperclip Live Operations Hardening into dev
+Role: Dev / QA / Integration
+Task: Verify V0.3 Product Reliability + UX Stabilization integrated candidate
 
 Branch:
-feature/w3-paperclip-integration
+codex/integrate-v03-rux-into-dev
 
 Goal:
-Merge accepted W3-05 into dev so the read-only Paperclip operations/status surface can be deployed to the dev/demo runtime.
+Integrate accepted V0.3 RUX work onto latest dev while preserving W1 runtime, W2 UI, and W3 Paperclip operations behavior.
 
 Rules:
 - Do not send Paperclip webhooks.
@@ -336,11 +336,14 @@ Rules:
 - Do not create Trello cards, Calendar events, or Google Tasks.
 - Do not change W1 deployment/access or W2 visual redesign.
 - Do not expose secrets.
+- Do not merge W3 sibling branches into V0.3 feature branches or V0.3 branches into W3 branches.
+- Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
 
 Expected output:
-- dev merge commit hash.
-- Verification evidence.
-- Runtime Owner next action to deploy dev and run read-only monitor.
+- integration branch commit hash and PR.
+- V0.3 RUX verification evidence.
+- W3 preservation evidence.
+- PM/Integration Owner decision on whether to merge candidate into dev.
 ```
 
 ---
@@ -386,6 +389,7 @@ Expected output:
 | 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup for accumulated live/canary test sessions without auto-approval or external side effects | Codex PM |
 | 2026-05-14 | Accepted `V0.2-W3-04` and `V0.2-W3-04a`; cleanup and audit retention guard merged to `dev@7ea4650`, deployed to runtime, and cleaned Paperclip test artifacts from 6 pending to 0 pending / 6 rejected / 0 Trello-linked | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Planned `V0.2-W3-05` Paperclip Live Operations Hardening as a read-only operations/status surface for standing dev/demo monitoring without canary creation or outbound Paperclip calls | Codex PM |
-| 2026-05-14 | Accepted `V0.2-W3-05` at `b0d70ff`; operations status is read-only, secret-safe, and ready for Dev Integration into `dev` | Codex PM / QA |
+| 2026-05-14 | Accepted `V0.2-W3-05` at `b0d70ff`; operations status is read-only, secret-safe, and integrated on latest `origin/dev` | Codex PM / QA / Integration Owner |
 | 2026-05-14 | Routed post-V0.2 planning to V0.3 operating model and long-term agent structure review | Codex PM / Documentation Architect |
 | 2026-05-14 | Accepted V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |
+| 2026-05-14 | Recorded V0.3 RUX acceptance through `V0.3-RUX-06` and routed next to dedicated dev integration candidate QA | Codex PM / Integration Owner |

@@ -110,10 +110,9 @@ function renderDocsPage(payload, reviewSessions = []) {
     };
     item.innerHTML = `
       <span class="docs-item-title">${esc(doc.title)}</span>
-      <span class="docs-item-meta">${esc(doc.artifactType)} - ${esc(doc.agent?.agentName || "Paperclip agent")}</span>
-      ${(doc.linkedTasks || []).length ? `<span class="docs-item-linked">${(doc.linkedTasks || []).length} linked task${doc.linkedTasks.length === 1 ? "" : "s"}</span>` : ""}
-      ${relatedStatuses.length ? `<span class="docs-item-status">${relatedStatuses.map(item => esc(item.status || "unknown")).join(", ")}</span>` : ""}
-      <span class="docs-item-tags">${(doc.tags || []).slice(0, 3).map(tag => `<em>${esc(tag)}</em>`).join("")}</span>
+      ${renderDocsListTraceChips(doc, relatedStatuses)}
+      ${renderDocsListLinkedState(doc, relatedStatuses)}
+      ${renderDocsTagChips(doc.tags || [])}
     `;
     list.appendChild(item);
   });
@@ -236,6 +235,47 @@ function formatDocsLabel(value) {
   return String(value || "").replace(/[_-]+/g, " ").replace(/\b\w/g, char => char.toUpperCase());
 }
 
+function renderDocsListTraceChips(doc, relatedStatuses = []) {
+  const linkedState = relatedStatuses.length
+    ? relatedStatuses.map(task => docsLinkedTaskStateLabel(task)).join(", ")
+    : "No linked Review Queue task";
+  return `
+    <span class="docs-item-meta">
+      ${docsTraceChip("Type", formatDocsLabel(doc.artifactType || "document"))}
+      ${docsTraceChip("Agent", doc.agent?.agentName || "Paperclip agent")}
+      ${docsTraceChip("Status", formatDocsLabel(doc.status || "ready"))}
+      ${docsTraceChip("Link", linkedState)}
+    </span>
+  `;
+}
+
+function renderDocsListLinkedState(doc, relatedStatuses = []) {
+  if (!relatedStatuses.length) {
+    return '<span class="docs-item-linked docs-item-unlinked">No linked Review Queue task</span>';
+  }
+  const count = Array.isArray(doc.linkedTasks) ? doc.linkedTasks.length : relatedStatuses.length;
+  const states = relatedStatuses.map(task => docsLinkedTaskStateLabel(task)).join(" | ");
+  return `<span class="docs-item-linked">${count} linked task${count === 1 ? "" : "s"} - ${esc(states)}</span>`;
+}
+
+function renderDocsTagChips(tags = []) {
+  if (!tags.length) return "";
+  return `
+    <span class="docs-item-tags" aria-label="Document tags">
+      ${tags.slice(0, 3).map(tag => `<em><span>Tag</span>${esc(formatDocsLabel(tag))}</em>`).join("")}
+    </span>
+  `;
+}
+
+function docsTraceChip(label, value, className = "") {
+  return `
+    <span class="docs-trace-chip ${esc(className)}">
+      <span class="docs-trace-chip-label">${esc(label)}</span>
+      <strong>${esc(value || "None")}</strong>
+    </span>
+  `;
+}
+
 function renderDocsViewer(doc, source, reviewSessions = []) {
   const viewer = $("docs-viewer");
   if (!viewer || !doc) return;
@@ -245,7 +285,8 @@ function renderDocsViewer(doc, source, reviewSessions = []) {
     <div class="docs-viewer-header">
       <div>
         <div class="docs-doc-meta">
-          <span class="chip chip-source">${esc(doc.status || "ready")}</span>
+          ${docsTraceChip("Status", formatDocsLabel(doc.status || "ready"), "chip-source")}
+          ${docsTraceChip("Type", formatDocsLabel(doc.artifactType || "document"))}
           <span>${esc(generated)}</span>
         </div>
         <h2>${esc(doc.title)}</h2>
@@ -265,7 +306,8 @@ function renderDocsViewer(doc, source, reviewSessions = []) {
 function renderDocsMetadataPanel(doc, source, relatedStatuses = []) {
   const generated = doc.generatedAt ? formatThaiDateTime(doc.generatedAt) : "No timestamp";
   const rows = [
-    ["Source", `${source?.system || "paperclip"} / ${source?.environment || "mock"}`],
+    ["Source system", source?.system || "paperclip"],
+    ["Source mode", source?.environment || "mock"],
     ["Workspace", source?.workspaceId || "local fixture"],
     ["Thread", source?.threadId || ""],
     ["Artifact", doc.artifactId || ""],
@@ -297,7 +339,7 @@ function renderDocsRelatedTaskStatus(relatedStatuses) {
         <div class="docs-related-status-row${task.found ? "" : " docs-related-status-missing"}">
           <div>
             <strong>${esc(task.title || task.externalTaskId)}</strong>
-            <small>${task.found ? esc(task.sessionTitle) : "Review task is not in this local store"}</small>
+            <small>${task.found ? esc(task.sessionTitle) : "Missing local Review Queue task"}</small>
           </div>
           <span class="chip ${docsTaskStatusClass(task.status)}">${esc(docsReviewStatusLabel(task.status))}</span>
           <small>${esc(task.owner || "Unassigned")}</small>
@@ -321,9 +363,18 @@ function docsReviewStatusLabel(status) {
     pending: "Pending human review",
     approved: "Approved",
     rejected: "Rejected",
-    not_found: "Missing locally",
+    not_found: "Missing local Review Queue task",
   };
   return map[status] || formatDocsLabel(status);
+}
+
+function docsLinkedTaskStateLabel(task) {
+  if (!task) return "No linked Review Queue task";
+  if (!task.found) return "Missing local Review Queue task";
+  const status = docsReviewStatusLabel(task.status || "pending");
+  if (task.relationship === "manual_reference") return `Manually attached - ${status}`;
+  if (task.relationship === "created_from_doc") return `Created from doc - ${status}`;
+  return status;
 }
 
 function docsRelationshipLabel(relationship) {
@@ -345,7 +396,7 @@ function renderDocsLinkedTasks(doc, relatedStatuses) {
         <div class="docs-linked-task-row">
           <button type="button" class="docs-linked-task" onclick='openLinkedReviewTask(${JSON.stringify(task).replace(/'/g, "&apos;")})'>
             <span>${esc(task.title || task.externalTaskId)}</span>
-            <small>${esc(docsRelationshipLabel(task.relationship))} - ${esc(docsReviewStatusLabel(task.status))}</small>
+            <small>${esc(docsRelationshipLabel(task.relationship))} - ${esc(docsLinkedTaskStateLabel(task))}</small>
             <small class="docs-linked-task-id">${esc(task.externalTaskId || task.requestId)}</small>
           </button>
           <div class="docs-linked-task-actions">

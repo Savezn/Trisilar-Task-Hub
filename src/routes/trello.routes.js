@@ -20,7 +20,45 @@ function makeTrelloRoutes({ trello, normalizeCard, buildCfNames, cacheGet, cache
     res.status(status).json({ error: friendlyError(e) });
   }
 
+  function trelloCredentialsConfigured() {
+    return Boolean(process.env.TRELLO_API_KEY && process.env.TRELLO_TOKEN);
+  }
+
+  function trelloStatusPayload(state, error = null) {
+    const configured = trelloCredentialsConfigured();
+    const verified = state === "verified";
+    return {
+      configured,
+      verified,
+      connected: verified,
+      state: configured ? state : "disconnected",
+      error,
+    };
+  }
+
   // ── Workspaces ────────────────────────────────────────────────────────────────
+
+  router.get("/trello/status", async (req, res) => {
+    if (!trelloCredentialsConfigured()) {
+      return res.json(trelloStatusPayload(
+        "disconnected",
+        "Trello credentials need Runtime setup before board and task data can load."
+      ));
+    }
+
+    try {
+      await trello.getBoards();
+      res.json(trelloStatusPayload("verified"));
+    } catch (e) {
+      const status = trelloErrorStatus(e);
+      if (status === 401) return res.json(trelloStatusPayload("invalid", friendlyError(e)));
+      if (status === 429) {
+        res.set("Retry-After", "60");
+        return res.json(trelloStatusPayload("rate_limited", friendlyError(e)));
+      }
+      return res.json(trelloStatusPayload("unavailable", friendlyError(e)));
+    }
+  });
 
   router.get("/workspaces", async (req, res) => {
     try {
