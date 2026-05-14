@@ -313,7 +313,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy is PM accepted. A limited runtime-local signed canary, true external sender window, standing dev/demo observation start, and two follow-up canaries passed. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is now read-only.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy is PM accepted. A limited runtime-local signed canary, true external sender window, standing dev/demo observation start, and two follow-up canaries passed. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is now read-only. V0.3 operating model and long-term agent team structure are also PM accepted; V0.3 Product Reliability + UX Stabilization planning remains a separate branch/worktree route and must not merge W3 sibling branches into V0.3.
 
 ```text
 Role: Dev
@@ -380,3 +380,5 @@ Expected output:
 | 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; request `pc_standing_observation_20260514092342` created pending session `884fec91-26e9-40e9-91af-6a11f91f317f`, replay/negative checks passed, health stayed `200`, and runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window | Codex PM / Runtime Owner / QA / Paperclip Owner |
 | 2026-05-14 | PM kept standing dev/demo enablement active but changed routine monitoring to read-only after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |
 | 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup for accumulated live/canary test sessions without auto-approval or external side effects | Codex PM |
+| 2026-05-14 | Routed post-V0.2 planning to V0.3 operating model and long-term agent structure review | Codex PM / Documentation Architect |
+| 2026-05-14 | Accepted V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |

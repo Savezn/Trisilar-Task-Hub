@@ -26,6 +26,7 @@
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
+| V0.3 operating model and agent structure | PM Accepted / integrated prerequisite branch | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
 
 ---
 
@@ -48,6 +49,7 @@
 | W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; W3 merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled policy accepted; standing dev/demo observation active with read-only monitor; `V0.2-W3-04` cleanup planned | PM / Dev / QA / Runtime Owner |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
+| V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted / integrated prerequisite branch | PM complete |
 
 ---
 
@@ -67,6 +69,10 @@
 | Product/UX scope | `MVP_PRD.md` |
 | Historical roadmap/progress tracker | `docs/archive/DEVELOPMENT_HISTORY.md` |
 | File/function lookup hints | `docs/reference/KEY_FILE_MAP.md` |
+| Long-term organization operating model | `docs/reference/ORGANIZATION_OPERATING_MODEL.md` |
+| AI agent governance and role boundaries | `docs/reference/AI_AGENT_GOVERNANCE.md` |
+| Parallel Codex branch/worktree model | `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` |
+| Role-specific agent handoffs | `docs/agents/` |
 
 ---
 

@@ -3,8 +3,8 @@
 **Doc Role:** Contribution workflow for humans and AI agents
 **Status:** Active
 **Owner:** PM
-**Last Updated:** 2026-05-08
-**Updated by:** Codex PM
+**Last Updated:** 2026-05-14
+**Updated by:** Codex PM / Documentation Architect
 
 This repository uses a small-team, multi-agent workflow. The goal is to keep implementation fast without losing traceability, branch hygiene, or release confidence.
 
@@ -22,6 +22,7 @@ git status --short --branch
 
 4. Confirm the assigned role, branch, and worktree.
 5. Confirm the owned files for the task.
+6. For V0.3 role-based work, confirm the relevant role guide under `docs/agents/`.
 
 Do not begin edits if the current folder or branch does not match the task.
 
@@ -42,7 +43,7 @@ feature/* -> dev -> main
 | `feature/w3-*` | Paperclip integration work |
 | `hotfix/*` | Urgent production fixes |
 
-Parallel workstreams must use separate git worktree folders. Do not run W1/W2/W3 in the same working directory.
+Parallel workstreams must use separate git worktree folders. Do not run W1/W2/W3 in the same working directory. For V0.3 role-based parallel Codex work, use `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`.
 
 ---
 

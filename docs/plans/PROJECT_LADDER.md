@@ -4,8 +4,8 @@
 **Status:** Active
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Runtime
-**Related Docs:** `../../TODO.md`, `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `../reference/PROJECT_CONTEXT.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Integration Owner
+**Related Docs:** `../../TODO.md`, `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `../reference/PROJECT_CONTEXT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`
 
 ---
 
@@ -32,14 +32,18 @@ Stable local command center
 -> broader team operations
 ```
 
-The product model stays:
+The product model now uses this long-term operating model:
 
 ```text
-Project Boards = execution surfaces
-Task Hub = command center, review queue, portfolio/focus layer
+Trello = execution surface
+Task Hub = command center and review/control layer
+Review Queue = human approval gate
+Paperclip and future AI agents = controlled intake sources
+Runtime governance = access, secrets, monitoring, rollback, audit
+Codex agents = development workforce operating through branches/worktrees
 ```
 
-Do not expand into a heavy project-management platform. Each ladder level should reduce coordination overhead for a small team using Trello, AI agents, and review gates.
+Do not expand into a heavy project-management platform. Each ladder level should reduce coordination overhead for a small team using Trello, AI agents, and review gates. See `../reference/ORGANIZATION_OPERATING_MODEL.md` for the durable model.
 
 ---
 
@@ -52,7 +56,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted and integrated; W2-06 Integration QA/PM accepted on `dev` |
 | L3 | V0.2 Paperclip Foundation | W3-02 code + live interop PM Accepted / W3-03 policy PM Accepted / standing dev-demo observation active / W3-04 cleanup planned | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, and a planned cleanup path for accumulated test sessions | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3 merged to `dev` at `a89c26a`; limited, true external, and standing observation canaries passed; runtime `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation; W3-04 cleanup is next |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
-| L5 | V0.3 Reliability Hardening | Planned | Automated tests, deterministic fixtures, browser regression, CI gate, backend structure hardening | Test strategy implemented enough to reduce manual QA risk |
+| L5 | V0.3 Product Reliability + UX Stabilization | Operating model PM accepted / planning routed | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | PM creates and accepts V0.3 scope before implementation starts |
 | L6 | V0.4 Live AI Operations | Planned | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Live connector QA with controlled production-like data |
 | L7 | V0.5 Team Operating System | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
 
@@ -156,15 +160,23 @@ Promote only a coherent internal preview release, not partial work labeled as do
 
 ## Future Level Details
 
-### L5 - V0.3 Reliability Hardening
+### L5 - V0.3 Product Reliability + UX Stabilization
 
 Focus:
 
-- Route and model tests.
-- Deterministic Trello/Paperclip fixtures.
-- Browser regression for navigation and visual overflow.
-- CI verification gate.
-- Scoped backend module migration from root modules into `src/` when justified by tests and ADRs.
+- UX issue intake and prioritization.
+- Route-by-route usability review.
+- Review Queue flow clarity.
+- Docs / Review / Task linking clarity.
+- Today and Tasks decision-flow polish.
+- Mobile/desktop regression checks.
+- Empty/error/loading state clarity.
+- Audit/trace visibility for AI-originated work.
+- Test coverage and repeatable browser regression.
+- Release checklist for `dev -> main`.
+- Scoped backend module migration from root modules into `src/` only when justified by tests and ADRs.
+
+V0.3 should stabilize the human workflow before expanding live AI automation. A system with many AI-generated tasks will be hard to trust if review, task linking, and daily decision flow are unclear.
 
 ### L6 - V0.4 Live AI Operations
 
@@ -215,9 +227,11 @@ Paperclip runtime inputs confirmed
 -> runtime gate is PAPERCLIP_WEBHOOK_ENABLED=true for dev/demo observation
 -> routine monitoring is read-only unless PM/QA requests active probing
 -> V0.2-W3-04 Paperclip Review Queue cleanup planned
+-> V0.3 operating model and long-term agent roles accepted
+-> V0.3 Product Reliability + UX Stabilization planning routed
 ```
 
-This is now a W3 post-acceptance route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not keep live webhook enabled without PM policy approval.
+This is now a W3 post-acceptance route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not keep live webhook enabled without PM policy approval. V0.3 operating model is accepted; Product Reliability + UX Stabilization planning remains a separate V0.3 branch/worktree route.
 
 ---
 
@@ -250,3 +264,5 @@ This is now a W3 post-acceptance route. Do not reopen W1 Task Hub runtime work, 
 | 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; runtime `PAPERCLIP_WEBHOOK_ENABLED=true`; canary/replay/negative checks passed and Review Queue human gate remained intact | Codex PM / Runtime Owner / QA / Paperclip Owner |
 | 2026-05-14 | Continued standing dev/demo observation with read-only routine monitoring after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |
 | 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup as the next L3 hygiene step before further Paperclip feature expansion | Codex PM |
+| 2026-05-14 | Added V0.3 Product Reliability + UX Stabilization and long-term agent operating model review route | Codex PM / Documentation Architect |
+| 2026-05-14 | Accepted the V0.3 operating model and routed next to V0.3 Product Reliability + UX Stabilization planning; deferred reusable Codex skill extraction | Codex PM |
