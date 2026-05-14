@@ -185,6 +185,16 @@ Standing dev/demo read-only monitor report on 2026-05-14:
 - No processed task was missing approval/rejection audit; no abnormal webhook/audit pattern was found.
 - No stop condition observed; no rollback was triggered.
 
+Standing dev/demo read-only monitor follow-up on 2026-05-14:
+
+- Runtime flag remained `PAPERCLIP_WEBHOOK_ENABLED=true`; Task Hub `/healthz` returned `200`.
+- `taskhub-dashboard.service` and `paperclip.service` were both `active`.
+- Paperclip Settings API returned `connected` with `hasSecret=true`; API response did not return the signing secret.
+- Paperclip Review Queue counts stayed at 6 sessions / 6 tasks: 6 pending, 0 approved, 0 rejected, 0 Trello-linked side effects.
+- Audit trail counts remained consistent: 6 payload received events, 6 review session created events, 6 task diff resolved events, 5 duplicate ignored events, and 5 duplicate rejected events.
+- No processed task was missing approval/rejection audit; no abnormal webhook/audit pattern was found.
+- No canary task was created; no signed webhook was sent; no stop condition observed; no rollback was triggered.
+
 ```text
 Role: Runtime Owner / QA / Paperclip Owner
 Task: Monitor V0.2-W3-03 Standing Dev/Demo Observation Window
