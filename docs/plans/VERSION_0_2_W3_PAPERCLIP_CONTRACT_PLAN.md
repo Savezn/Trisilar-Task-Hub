@@ -5,8 +5,8 @@
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Runtime
-**Related Docs:** `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../../MVP_PRD.md`
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM
+**Related Docs:** `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../deployment/DIGITALOCEAN_DASHBOARD_HANDOVER.md`, `../../MVP_PRD.md`
 
 ---
 
@@ -39,6 +39,7 @@ PM runtime clarification:
 - Runtime `PAPERCLIP_WEBHOOK_ENABLED` remains `false` after interop; permanent live enablement requires separate PM policy approval.
 - Do not treat the old random ngrok Task Hub URL as a Paperclip endpoint.
 - Do not add live Paperclip calls in W1 or W2.
+- The DigitalOcean Dashboard handoff preserves a local Paperclip Docs API boundary for future runtime work. If Task Hub reads that API, browser code must call Task Hub backend routes only and `DOCS_API_TOKEN` must stay server-side.
 
 ---
 

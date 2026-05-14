@@ -5,8 +5,8 @@
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Runtime
-**Related Docs:** `DEPLOYMENT_SETUP.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../plans/VERSION_0_2_PLAN.md`, `../../README.md`
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM
+**Related Docs:** `DEPLOYMENT_SETUP.md`, `DIGITALOCEAN_DASHBOARD_HANDOVER.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../plans/VERSION_0_2_PLAN.md`, `../../README.md`
 
 ---
 
@@ -15,6 +15,8 @@
 This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
 Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo fallback only. Task Hub is now accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access at `https://taskhub.trisila.online`. Paperclip is hosted on DigitalOcean behind Cloudflare by the Paperclip owner, and runtime inputs are confirmed for W3 planning.
+
+For preserved DigitalOcean Dashboard host facts and the Paperclip Docs API boundary, see `DIGITALOCEAN_DASHBOARD_HANDOVER.md`. That handoff is reference material for reliability work and does not change the accepted dev/demo status by itself.
 
 ---
 
@@ -122,6 +124,8 @@ Use this path for `V0.2-W1-08`. PM decision is to host Task Hub on DigitalOcean 
 | `APP_BASE_URL` | `https://taskhub.trisila.online` |
 | `GOOGLE_REDIRECT_URI` | `https://taskhub.trisila.online/auth/callback` |
 | `APP_DATA_DIR` | `/home/trisilar/dashboard-data` |
+| `DOCS_API_URL` | `http://127.0.0.1:3201` when Task Hub backend proxy for Paperclip documents is enabled |
+| `DOCS_API_TOKEN` | Server-only Paperclip Docs API credential when Task Hub backend proxy is enabled |
 
 Verification:
 
@@ -132,6 +136,7 @@ Verification:
 - Approved teammate access passes Cloudflare Access and loads the app.
 - Runtime JSON files persist under `APP_DATA_DIR` after app restart.
 - `/planner` handles Google Tasks disconnected/reconnect state without blocking Trello deadlines.
+- If the Paperclip Docs API proxy is enabled, browser code calls Task Hub only and `DOCS_API_TOKEN` stays server-side.
 - No production service is deployed.
 - No secrets are committed.
 

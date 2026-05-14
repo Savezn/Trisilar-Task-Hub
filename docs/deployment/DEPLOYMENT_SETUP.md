@@ -5,8 +5,8 @@
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Runtime
-**Related Docs:** `../../README.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `DEV_ENVIRONMENT_DEPLOYMENT.md`, `../plans/VERSION_0_2_PLAN.md`
+**Last Updated:** 2026-05-15 - **Updated by:** Codex PM
+**Related Docs:** `../../README.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `DEV_ENVIRONMENT_DEPLOYMENT.md`, `DIGITALOCEAN_DASHBOARD_HANDOVER.md`, `../plans/VERSION_0_2_PLAN.md`
 
 ---
 
@@ -142,6 +142,8 @@ Configure these in the platform dashboard only. Do not commit real values.
 
 Use this for the W1 hosted dev/demo runtime. PM decision is to host Task Hub on DigitalOcean behind Cloudflare. Task Hub is now configured on the existing Droplet and routed through Cloudflare Access at `https://taskhub.trisila.online`; QA passed and PM accepted `V0.2-W1-06`/`V0.2-W1-08` as dev/demo runtime complete after PR #9 merged to `dev` at `91ee327`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner and should be recorded as a service-auth dependency.
 
+The DigitalOcean Dashboard handoff is preserved in `DIGITALOCEAN_DASHBOARD_HANDOVER.md`. Treat it as an operational reference for host layout, the historical dashboard app directory, and the Paperclip Docs API boundary. It does not reopen W1 deployment acceptance or authorize a production promotion by itself.
+
 | Setting | Value |
 |---|---|
 | Droplet role | Dev/demo runtime only |
@@ -168,6 +170,8 @@ Required server-only environment variable names:
 - `TRELLO_API_KEY`
 - `TRELLO_TOKEN`
 - `HOST`
+- `DOCS_API_URL` when the Task Hub backend proxies Paperclip document content.
+- `DOCS_API_TOKEN` when the Task Hub backend proxies Paperclip document content.
 
 Rules:
 
@@ -179,6 +183,7 @@ Rules:
 - Put Cloudflare Access in front before teammate preview.
 - Use confirmed hosted Paperclip base URL, health path, and service-auth requirements for W3 planning.
 - Keep W3 live integration disabled until W3 implementation and QA verify signed webhook behavior.
+- Keep `DOCS_API_TOKEN` server-only if a Task Hub backend proxy reads Paperclip document content; do not expose it to browser code, client-visible environment variables, static assets, logs, screenshots, or chat.
 
 ---
 
