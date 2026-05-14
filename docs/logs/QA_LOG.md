@@ -67,7 +67,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.2-W2-06 - Settings + OKR + Weekly Focus Polish | Integration QA Pass / PM Accepted | `origin/dev@523c948` |
 | V0.3-RUX-02A - Trello Connection State + Failure Copy | QA Pass / PM Accepted | `516b33e` |
 | V0.3-RUX-03 - Review Queue + AI Trace Clarity | QA Pass / PM Accepted | `b2425a4` |
-| V0.3-RUX-04 - Today + Tasks Decision Flow | QA Pass / PM review pending | pending |
+| V0.3-RUX-04 - Today + Tasks Decision Flow | QA Pass / PM Accepted | `d72f979` |
 
 ---
 
@@ -128,6 +128,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | 2026-05-14 | R48 | Pass / PM Accepted - V0.3-RUX-02A Trello connection-state clarity | `verify:rux-trello`, `verify-frontend`, and `PORT=3094 check:all` passed. Browser QA on `/today`, `/all`, `/boards`, `/okr`, `/focus`, and `/settings` verified product-facing Trello verification copy, no `.env` or API-key UI wording, and no false Trello connected/ready sidebar or Settings state. Regression routes `/review`, `/calendar`, `/planner`, and `/docs` also rendered across desktop/mobile. Horizontal overflow 0, console errors 0, and page errors 0. Accepted by Codex PM at `516b33e`; no W3 merge, Paperclip live-enablement change, or secret exposure. |
 | 2026-05-14 | R49 | Pass / PM Accepted - V0.3-RUX-03 Review Queue + AI Trace Clarity | `verify:rux-ai-trace`, `verify:paperclip-contract`, `verify:paperclip-mock`, `verify:paperclip-docs`, and server-backed `check:all` passed. Browser QA on `/docs` and `/review` verified labeled Docs Type/Agent/Status/Link chips, `Missing local Review Queue task`, split `SOURCE SYSTEM` / `SOURCE MODE`, and Review Queue linked docs with Type/Status/Run/Agent context. Regression routes `/today`, `/all`, `/boards`, and `/settings` also rendered across desktop/mobile with controlled local API responses. Horizontal overflow 0, console errors 0, page errors 0; no `Not_found`, collapsed `agent-tracemock`, live Paperclip enablement, W3 merge, automatic side effect, or secret exposure. Accepted by Codex PM at `b2425a4`. |
 | 2026-05-14 | R50 | Pass / PM review pending - V0.3-RUX-04 Today + Tasks Decision Flow | `node --check` for Today/Tasks modules, `verify:rux-decision-flow`, `verify:rux-trello`, `verify:rux-ai-trace`, and server-backed `check:all` passed. Browser QA verified `/today` and `/all` across desktop/mobile with visible source/context/next-action cues, owner/due/status context, and pending Review human-gate copy. Regression routes `/review`, `/docs`, `/boards`, and `/settings` passed. Hidden board card stayed filtered; horizontal overflow 0, console errors 0, page errors 0; no live Paperclip enablement, W3 merge, automatic side effect, or secret exposure. |
+| 2026-05-14 | R51 | PM Accepted / Routed - V0.3-RUX-04 Today + Tasks Decision Flow | PM accepted `d72f979` for `V0.3-RUX-04`. Acceptance confirmed Today top-work cues, Tasks source/context/owner/due/status/next-action visibility, pending Review human-gate preservation, hidden-board filtering, desktop/mobile browser evidence, and no live Paperclip enablement, W3 merge, automatic side effect, or secret exposure. Routed next to `V0.3-RUX-05` Browser Regression + Responsive QA Gate. |
 
 ---
 

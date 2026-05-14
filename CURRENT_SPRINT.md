@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.3 Product Reliability + UX Stabilization
-**Status:** `V0.3-RUX-04` QA pass; PM review pending
+**Status:** `V0.3-RUX-05` routed; ready for QA / Frontend / Dev
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
@@ -27,7 +27,7 @@
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
 | V0.3 operating model and agent structure | PM Accepted on branch `feature/project-operating-model-agent-structure` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
-| V0.3 Product Reliability + UX Stabilization plan | PM Accepted; `V0.3-RUX-02A` and `V0.3-RUX-03` PM Accepted; `V0.3-RUX-04` QA pass / PM review pending | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` defines RUX phase ladder, parallel W3 boundary, UX intake, route review, Review Queue clarity, audit trace visibility, browser regression, and `dev -> main` release checklist. |
+| V0.3 Product Reliability + UX Stabilization plan | PM Accepted; `V0.3-RUX-02A`, `V0.3-RUX-03`, and `V0.3-RUX-04` PM Accepted; `V0.3-RUX-05` routed | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` defines RUX phase ladder, parallel W3 boundary, UX intake, route review, Review Queue clarity, audit trace visibility, browser regression, and `dev -> main` release checklist. |
 
 ---
 
@@ -41,7 +41,7 @@
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 | V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted | PM complete |
-| V0.3 RUX | `V0.3-RUX-04` Today + Tasks Decision Flow | QA pass | PM |
+| V0.3 RUX | `V0.3-RUX-05` Browser Regression + Responsive QA Gate | Routed | QA / Frontend / Dev |
 
 ---
 
@@ -57,6 +57,7 @@
 | V0.3-RUX-02A first routed implementation task | `docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md` |
 | V0.3-RUX-03 AI trace clarity handoff | `docs/plans/VERSION_0_3_RUX_03_REVIEW_QUEUE_AI_TRACE_CLARITY.md` |
 | V0.3-RUX-04 Today + Tasks decision-flow handoff | `docs/plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md` |
+| V0.3-RUX-05 browser regression gate handoff | `docs/plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md` |
 | V0.3 RUX findings log | `docs/logs/V0_3_RUX_FINDINGS.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | W2 full UI redesign phase plan | `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` |
@@ -111,7 +112,7 @@ Parallel rule:
 
 ---
 
-## Next Action - PM Review V0.3-RUX-04
+## Next Action - V0.3-RUX-05 Browser Regression + Responsive QA Gate
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. V0.2 W1/W2/W3 dev/demo foundations are accepted, and W3 live interop passed with `PAPERCLIP_WEBHOOK_ENABLED=false` restored after the test. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
 
@@ -142,27 +143,29 @@ PM decisions:
 - W3 sibling branches must not merge into V0.3 branches, and V0.3 branches must not merge into W3 branches.
 
 ```text
-Role: PM
-Task: Review and accept V0.3-RUX-04 Today + Tasks Decision Flow.
+Role: QA / Frontend / Dev
+Task: Implement and verify V0.3-RUX-05 Browser Regression + Responsive QA Gate.
 
 Owned files:
-- docs/plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md
+- docs/plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md
+- docs/testing/TEST_STRATEGY.md
 - docs/logs/V0_3_RUX_FINDINGS.md
 - docs/logs/QA_LOG.md
 
 Acceptance criteria:
-- Confirm Today and Tasks scanning clarity improved without broad redesign.
-- Confirm source, board/list/project context, owner, due state, status, and next action are visible enough for daily decisions.
-- Confirm pending Review visibility does not imply unapproved AI work is already execution work.
-- Confirm hidden-board/workspace filtering and V0.3-RUX-02A disconnected-state copy were preserved.
+- Add or formalize a repeatable browser regression gate for core user-facing routes.
+- The gate can run without production secrets using controlled responses or local mock fixtures.
+- Desktop and mobile viewports are checked.
+- Console errors, page errors, and horizontal overflow are captured.
+- Route matrix covers `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, `/settings`, and `/docs`.
+- RUX-02A Trello connection-state copy, RUX-03 trace clarity, and RUX-04 Today/Tasks cues are covered where relevant.
 - No secrets, tokens, auth headers, private credentialed URLs, or W3 live enablement changes.
-- Focused browser QA for `/today` and `/all` passed on desktop/mobile, with regression checks for `/review`, `/docs`, `/boards`, and `/settings`.
 - V0.3/W3 branch boundary remains intact.
 
 If held:
-- List exact Today/Tasks ambiguity, route evidence blocker, data dependency, or acceptance gate that needs revision.
+- List exact route-matrix gap, fixture blocker, browser automation blocker, or acceptance gate that needs revision.
 ```
 
-**Current RUX artifacts:** `RUX-001` and `RUX-002` are PM Accepted under `V0.3-RUX-02A` at `516b33e`. `RUX-003` is PM Accepted under `V0.3-RUX-03` at `b2425a4`. `RUX-004` is QA pass under `V0.3-RUX-04` and awaits PM review.
+**Current RUX artifacts:** `RUX-001` and `RUX-002` are PM Accepted under `V0.3-RUX-02A` at `516b33e`. `RUX-003` is PM Accepted under `V0.3-RUX-03` at `b2425a4`. `RUX-004` is PM Accepted under `V0.3-RUX-04` at `d72f979`. `V0.3-RUX-05` is routed for browser regression and responsive QA gate work.
 
-**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM. `V0.3-RUX-01` baseline created by Codex PM. `V0.3-RUX-02A` implemented and verified by Codex Dev / UX / Runtime, accepted by Codex PM. `V0.3-RUX-03` implemented and verified by Codex Dev / UX / QA, accepted by Codex PM. `V0.3-RUX-04` implemented and verified by Codex Dev / UX / QA.
+**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM. `V0.3-RUX-01` baseline created by Codex PM. `V0.3-RUX-02A` implemented and verified by Codex Dev / UX / Runtime, accepted by Codex PM. `V0.3-RUX-03` implemented and verified by Codex Dev / UX / QA, accepted by Codex PM. `V0.3-RUX-04` implemented and verified by Codex Dev / UX / QA, accepted by Codex PM.

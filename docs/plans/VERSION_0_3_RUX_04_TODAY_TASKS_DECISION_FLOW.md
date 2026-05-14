@@ -1,10 +1,10 @@
 # V0.3-RUX-04 Today + Tasks Decision Flow
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** QA pass - PM review pending
+**Status:** PM Accepted
 **Owner:** UX / Frontend / QA
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex Dev / UX / QA
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `../../CURRENT_SPRINT.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../testing/TEST_STRATEGY.md`
 
 ---
@@ -157,30 +157,45 @@ No live Paperclip enablement, W3 webhook/service-auth/runtime changes, secrets, 
 
 ---
 
+## PM Acceptance
+
+```text
+Status: Accepted
+Accepted by: Codex PM
+Date: 2026-05-14
+Accepted commit: d72f979
+
+Acceptance confirmed:
+- Today top work is identifiable from visible priority, due state, source, context, and next-action cues.
+- Tasks preserves source, board/list context, owner, due state, status, and next action across dense desktop/mobile views.
+- Pending Review remains visible without implying unapproved AI work is already execution work.
+- Hidden-board filtering, V0.3-RUX-02A connection-state copy, and RUX-03 trace clarity remained covered by verification.
+- Browser QA evidence covered /today and /all across desktop/mobile plus /review, /docs, /boards, and /settings regression.
+- No live Paperclip enablement, W3 branch merge, automatic write side effect, secret exposure, or W3 service-auth/runtime change occurred.
+```
+
+---
+
 ## Next Recommended Session
 
 ```text
-Role: PM
-Task: Review and accept V0.3-RUX-04 Today + Tasks Decision Flow.
+Role: QA / Frontend / Dev
+Task: Implement and verify V0.3-RUX-05 Browser Regression + Responsive QA Gate.
 
 Read:
-- docs/plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md
+- docs/plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md
 - docs/logs/V0_3_RUX_FINDINGS.md
+- docs/testing/TEST_STRATEGY.md
+- docs/reference/AI_AGENT_GOVERNANCE.md
 
 Guardrails:
-- Confirm changes stayed scoped to Today and Tasks decision-flow clarity.
-- Confirm Trello hidden-board/workspace filtering and V0.3-RUX-02A connection-state copy are preserved.
-- Confirm Review Queue remains the human approval gate.
+- Build a repeatable browser regression gate without production secrets.
+- Keep live dependencies controlled or mockable when local credentials are unavailable.
+- Preserve Review Queue as the human approval gate.
 - Do not enable live Paperclip.
 - Do not change W3 webhook/service-auth behavior.
 - Do not expose secrets or private credential values.
 - Do not merge W3/V0.3 branches.
-
-Acceptance:
-- Today top work is identifiable from visible priority, due state, source, context, and next-action cues.
-- Tasks preserves source, board/list context, owner, due state, status, and next action across dense desktop/mobile views.
-- Pending Review remains visible without implying unapproved AI work is execution work.
-- Browser QA evidence is sufficient for PM acceptance.
 ```
 
 ---
@@ -191,3 +206,4 @@ Acceptance:
 |---|---|---|
 | 2026-05-14 | Routed `V0.3-RUX-04` for Today + Tasks decision-flow clarity after `V0.3-RUX-03` PM acceptance | Codex PM |
 | 2026-05-14 | Implemented and verified Today + Tasks source/context/next-action cues; routed to PM review | Codex Dev / UX / QA |
+| 2026-05-14 | Accepted `V0.3-RUX-04` at `d72f979`; routed next to `V0.3-RUX-05` browser regression gate | Codex PM |
