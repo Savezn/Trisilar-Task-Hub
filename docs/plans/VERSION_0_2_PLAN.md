@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. Paperclip runtime inputs are confirmed for W3 planning: hosted base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check returned `200` from the Paperclip server. W3 live connector code and live sender interop are accepted at `c1e4df2` and merged to `dev` at `a89c26a`, but runtime `PAPERCLIP_WEBHOOK_ENABLED=false` remains the default until PM approves a controlled live enablement policy. Production/release-grade promotion remains out of scope.
+V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. Paperclip runtime inputs are confirmed for W3 planning: hosted base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check returned `200` from the Paperclip server. W3 live connector code and live sender interop are accepted at `c1e4df2` and merged to `dev` at `a89c26a`, but runtime `PAPERCLIP_WEBHOOK_ENABLED=false` remains the default after PM held standing enablement. Production/release-grade promotion remains out of scope.
 
 ---
 
@@ -274,7 +274,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 - W3 live connector work is accepted at `c1e4df2` after Paperclip runtime inputs and Task Hub service-token reachability were confirmed.
 - W3 was merged into `dev` at `a89c26a`; live runtime enablement is a separate PM-controlled policy gate.
 - Live interop returned HTTP `201` for request `pc_live_interop_20260514115714`; it created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a` and kept the task `pending`.
-- Keep `PAPERCLIP_WEBHOOK_ENABLED=false` until PM approves controlled live enablement.
+- Keep `PAPERCLIP_WEBHOOK_ENABLED=false` while standing enablement is held.
 
 ---
 
@@ -308,15 +308,16 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy is PM accepted. A limited runtime-local signed canary window passed and returned the runtime gate to `PAPERCLIP_WEBHOOK_ENABLED=false`. Route the next session to PM for a post-window decision.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy is PM accepted. A limited runtime-local signed canary window passed and returned the runtime gate to `PAPERCLIP_WEBHOOK_ENABLED=false`. PM holds standing enablement and routes the next session to a true external Paperclip sender window.
 
 ```text
-Role: PM
-Task: Decide V0.2-W3-03 post-window path
+Role: Runtime Owner / QA / Paperclip Owner
+Task: Schedule and run true external V0.2-W3-03 Paperclip sender window
 
-Decision needed:
-1. Keep live Paperclip disabled and schedule a true external Paperclip sender window, or
-2. Approve a standing dev/demo enablement window with named daily monitoring and rollback owner.
+Required owners:
+1. Runtime Owner opens/closes `PAPERCLIP_WEBHOOK_ENABLED` and owns rollback.
+2. Paperclip Owner sends the live payload from the actual Paperclip sender through Cloudflare Access service-token and HMAC signing.
+3. QA Owner verifies pending task creation, same-payload replay, invalid signature, invalid source, and invalid environment.
 
 Accepted evidence:
 - Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
@@ -375,3 +376,4 @@ Rules:
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
 | 2026-05-14 | PM accepted `V0.2-W3-03` controlled live enablement policy after W3 merge to `dev` at `a89c26a`; default runtime gate remains `PAPERCLIP_WEBHOOK_ENABLED=false` until a named live window starts | Codex PM |
 | 2026-05-14 | Completed limited `V0.2-W3-03` runtime-local signed canary window; request `pc_w3_03_window_20260514062346` created pending session `7dd7d2a3-377c-4336-ba75-ba1c312635d2`, replay/negative checks passed, and runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / QA |
+| 2026-05-14 | PM held standing Paperclip enablement; keep `PAPERCLIP_WEBHOOK_ENABLED=false` and schedule one true external Paperclip sender window with Runtime Owner, Paperclip Owner, and QA Owner | Codex PM |

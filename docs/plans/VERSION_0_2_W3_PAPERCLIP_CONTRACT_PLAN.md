@@ -489,6 +489,15 @@ Limited window result:
 - Final health check returned `200`; final disabled probe returned `403`.
 - The limited window did not re-run the external Cloudflare service-token sender path; earlier live interop remains the evidence for that path.
 
+PM post-window decision:
+
+- Hold standing enablement.
+- Keep `PAPERCLIP_WEBHOOK_ENABLED=false`.
+- Schedule one true external Paperclip sender window before any standing dev/demo enablement.
+- Runtime Owner opens/closes the feature flag and owns rollback.
+- Paperclip Owner sends the live payload from the actual Paperclip sender through Cloudflare Access service-token and HMAC signing.
+- QA Owner verifies pending task creation, same-payload replay, invalid signature, invalid source, and invalid environment.
+
 ---
 
 ## Open Questions for PM / Paperclip Owner
@@ -538,3 +547,4 @@ Resolved runtime inputs:
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
 | 2026-05-14 | Planned and PM accepted `V0.2-W3-03` controlled live enablement policy with enablement criteria, rollback, owner permissions, monitoring/audit, and post-interop checklist; runtime gate remains disabled until a named live window starts | Codex PM |
 | 2026-05-14 | Completed limited `V0.2-W3-03` runtime-local signed canary window; canary/replay/negative checks passed and runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / QA |
+| 2026-05-14 | PM held standing enablement and routed next to a true external Paperclip sender window with Runtime Owner, Paperclip Owner, and QA Owner | Codex PM |

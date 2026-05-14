@@ -36,7 +36,7 @@
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime inputs now confirmed for W3 planning | PM complete |
 | W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
-| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; W3 merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy PM Accepted; limited window QA Pass; runtime gate remains disabled by default | PM |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; W3 merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy PM Accepted; limited window QA Pass; PM holds standing enablement and keeps runtime gate disabled | Runtime Owner / QA / Paperclip Owner |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -97,7 +97,7 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W3-03 Post-Window Decision
+## Next Action - True External Paperclip Sender Window
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated and PM accepted, so W2 is complete on `dev`. `V0.2-W1-06`, `V0.2-W1-08`, and `V0.2-W1-07` remain accepted for dev/demo runtime and service-auth planning.
 
@@ -112,13 +112,16 @@ Runtime gate status:
 
 PM accepted `V0.2-W3-03` controlled live enablement policy and ran a limited runtime-local signed canary window. The canary created Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` with task status `pending`, duplicate same-payload replay returned idempotent success, duplicate changed payload returned `409`, invalid signature returned `401`, invalid source returned `403`, invalid environment returned `400`, and the runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false`. This window did not re-run the external Cloudflare service-token sender path; that path remains covered by the earlier live-sender interop evidence.
 
-```text
-Role: PM
-Task: Decide V0.2-W3-03 post-window path
+PM decision: hold standing enablement. Keep `PAPERCLIP_WEBHOOK_ENABLED=false` and schedule one true external Paperclip sender window before any standing dev/demo enablement.
 
-Decision needed:
-1. Keep live Paperclip disabled and schedule a true external Paperclip sender window, or
-2. Approve a standing dev/demo enablement window with named daily monitoring and rollback owner.
+```text
+Role: Runtime Owner / QA / Paperclip Owner
+Task: Schedule and run true external V0.2-W3-03 Paperclip sender window
+
+Required owners:
+- Runtime Owner: open/close `PAPERCLIP_WEBHOOK_ENABLED` and execute rollback.
+- Paperclip Owner: send the live payload from the actual Paperclip sender through Cloudflare Access service-token and HMAC signing.
+- QA Owner: verify pending task creation, same-payload replay, invalid signature, invalid source, and invalid environment.
 
 Accepted evidence:
 - Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
@@ -139,6 +142,14 @@ Window rules:
 - Keep `PAPERCLIP_WEBHOOK_ENABLED=false` unless PM explicitly names another window.
 - Preserve Review Queue human gate and existing mock/local Docs behavior.
 - Keep Cloudflare Client ID/Secret and HMAC signing secret out of git, docs, logs, browser JavaScript, and chat.
+
+Expected output:
+- Window name/time and owner names.
+- Runtime flag state before/during/after.
+- Paperclip-sent request id and agent run id.
+- HTTP results for create, replay, and negative checks.
+- Review Queue session/task evidence.
+- Confirmation `PAPERCLIP_WEBHOOK_ENABLED=false` after the window.
 ```
 
 **Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM; W3-03 policy planned and accepted by Codex PM; limited window executed by Codex Runtime Owner / QA.
