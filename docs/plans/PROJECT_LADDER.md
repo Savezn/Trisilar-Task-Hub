@@ -50,7 +50,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
 | L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; W1.5/W1.7 dev-demo runtime accepted; W1.6 service-auth accepted; Paperclip runtime inputs confirmed | Teammates can access stable dev/demo Task Hub safely with environment, persistence, and access-control boundaries; Paperclip runtime health and Task Hub service-token reachability are confirmed for W3 planning; random ngrok remains manual-demo-only | Production/release-grade promotion remains out of scope |
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted and integrated; W2-06 Integration QA/PM accepted on `dev` |
-| L3 | V0.2 Paperclip Foundation | W3-02 code + live interop PM Accepted / W3-03 policy PM Accepted / standing dev-demo observation active / W3-04 cleanup planned | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, and a planned cleanup path for accumulated test sessions | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3 merged to `dev` at `a89c26a`; limited, true external, and standing observation canaries passed; runtime `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation; W3-04 cleanup is next |
+| L3 | V0.2 Paperclip Foundation | Accepted through W3-04a / W3-05 planned | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, safe cleanup for accumulated test sessions, and retained traceability | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3-03 standing dev/demo observation active; W3-04/W3-04a cleanup merged to `dev@7ea4650`; runtime cleanup completed with 0 pending / 6 rejected / 0 Trello-linked; W3-05 operations hardening is next |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
 | L5 | V0.3 Reliability Hardening | Planned | Automated tests, deterministic fixtures, browser regression, CI gate, backend structure hardening | Test strategy implemented enough to reduce manual QA risk |
 | L6 | V0.4 Live AI Operations | Planned | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Live connector QA with controlled production-like data |
@@ -214,7 +214,10 @@ Paperclip runtime inputs confirmed
 -> two follow-up canaries passed with 0 Trello-linked side effects
 -> runtime gate is PAPERCLIP_WEBHOOK_ENABLED=true for dev/demo observation
 -> routine monitoring is read-only unless PM/QA requests active probing
--> V0.2-W3-04 Paperclip Review Queue cleanup planned
+-> V0.2-W3-04 Paperclip Review Queue cleanup accepted and merged to dev@7ea4650
+-> V0.2-W3-04a cleanup audit retention accepted and merged to dev@7ea4650
+-> runtime cleanup completed: 0 pending / 0 approved / 6 rejected / 0 Trello-linked
+-> V0.2-W3-05 Paperclip Live Operations Hardening planned
 ```
 
 This is now a W3 post-acceptance route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not keep live webhook enabled without PM policy approval.
@@ -250,3 +253,5 @@ This is now a W3 post-acceptance route. Do not reopen W1 Task Hub runtime work, 
 | 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; runtime `PAPERCLIP_WEBHOOK_ENABLED=true`; canary/replay/negative checks passed and Review Queue human gate remained intact | Codex PM / Runtime Owner / QA / Paperclip Owner |
 | 2026-05-14 | Continued standing dev/demo observation with read-only routine monitoring after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |
 | 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup as the next L3 hygiene step before further Paperclip feature expansion | Codex PM |
+| 2026-05-14 | Accepted `V0.2-W3-04` and `V0.2-W3-04a`; cleanup and audit retention merged to `dev@7ea4650`, deployed to runtime, and cleaned Paperclip test artifacts from 6 pending to 0 pending / 6 rejected / 0 Trello-linked | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Planned `V0.2-W3-05` Paperclip Live Operations Hardening as the next L3 operations visibility step | Codex PM |
