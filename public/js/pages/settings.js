@@ -102,7 +102,7 @@ function showSettingsPage() {
               <div>
                 <div class="settings-section-kicker">Agent connector</div>
                 <h3 class="settings-section-title">Paperclip Integration</h3>
-                <p class="settings-section-desc">Manage connection state and runtime secret rotation before live webhook work is enabled.</p>
+                <p class="settings-section-desc">Manage connection state, runtime secret rotation, and live webhook readiness.</p>
               </div>
             </div>
             <div class="settings-section-body" id="settings-paperclip-body">
@@ -229,7 +229,7 @@ function renderPaperclipConnection(connection, operations = null) {
   const counts = ops.reviewQueue || {};
   const warnings = Array.isArray(ops.warnings) ? ops.warnings : [];
   const statusText = connected
-    ? "Ready for future live webhook validation. Shared secret is configured."
+    ? "Ready for signed webhook validation. Shared secret is configured."
     : connection.status === "disabled"
       ? "Disconnected. Future live webhook requests must be rejected."
       : "Paste a shared secret to enable future live webhook validation.";
@@ -259,7 +259,7 @@ function renderPaperclipConnection(connection, operations = null) {
       <input id="paperclip-shared-secret" class="form-input" type="password" placeholder="${connected ? "Enter a new secret to rotate" : "Enter shared secret from Paperclip"}" autocomplete="off">
     </div>
     <div class="form-group">
-      <label>Future webhook URL</label>
+      <label>Webhook URL</label>
       <input class="form-input" type="text" value="${esc(connection.webhookUrl || connection.webhookPath || "")}" readonly>
     </div>
     <div class="paperclip-ops-panel" aria-label="Paperclip operations status">
