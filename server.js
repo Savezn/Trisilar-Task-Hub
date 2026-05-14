@@ -32,7 +32,11 @@ const makeGoogleTasksRoutes = require("./src/routes/google-tasks.routes");
 const makeTrelloRoutes      = require("./src/routes/trello.routes");
 
 const app = express();
-app.use(express.json());
+app.use(express.json({
+  verify: (req, _res, buf) => {
+    req.rawBody = buf.toString("utf8");
+  },
+}));
 app.use(express.static(path.join(__dirname, "public")));
 
 // ── API Mount ─────────────────────────────────────────────────────────────────

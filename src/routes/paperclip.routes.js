@@ -19,8 +19,13 @@ const {
   connectPaperclipConnection,
   disconnectPaperclipConnection,
   publicPaperclipConnection,
+  readPaperclipConnectionRaw,
   rotatePaperclipSecret,
 } = require("../integrations/paperclip/connection-config");
+const {
+  assertPaperclipWebhookRequest,
+  PaperclipWebhookAuthError,
+} = require("../integrations/paperclip/webhook-auth");
 
 module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
   const router = express.Router();
@@ -38,6 +43,24 @@ module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
   function sendWorkflowError(res, error) {
     const status = Number.isInteger(error.statusCode) ? error.statusCode : 500;
     return res.status(status).json({ error: status === 500 ? friendlyError(error) : error.message });
+  }
+
+  function sendWebhookError(res, error) {
+    const status = Number.isInteger(error.statusCode) ? error.statusCode : 500;
+    return res.status(status).json({ error: status === 500 ? friendlyError(error) : error.message });
+  }
+
+  function liveContractOptions() {
+    const allowedEnvironment = process.env.PAPERCLIP_ALLOWED_ENVIRONMENT;
+    if (!allowedEnvironment || !allowedEnvironment.trim()) {
+      const error = new Error("PAPERCLIP_ALLOWED_ENVIRONMENT must be configured");
+      error.statusCode = 503;
+      throw error;
+    }
+    return {
+      allowedEnvironments: [allowedEnvironment.trim()],
+      source: "paperclip_webhook",
+    };
   }
 
   function loadMockDocsPayload() {
@@ -90,6 +113,91 @@ module.exports = function paperclipRoutes({ store, diff, friendlyError }) {
     }
     return { ...sessionInput, tasks };
   }
+
+  router.post("/integrations/paperclip/webhook", async (req, res) => {
+    try {
+      const connection = readPaperclipConnectionRaw();
+      const webhook = assertPaperclipWebhookRequest(req, { secret: connection.secret });
+      if (connection.status !== "connected") {
+        return res.status(403).json({ error: "Paperclip Settings connection must be connected" });
+      }
+
+      const options = liveContractOptions();
+      const validation = validatePaperclipPayload(req.body, options);
+      if (!validation.ok) {
+        return res.status(400).json({
+          error: "Invalid Paperclip contract payload",
+          errors: validation.errors,
+        });
+      }
+
+      const existing = typeof store.getSessionByRequestId === "function"
+        ? store.getSessionByRequestId(validation.value.requestId)
+        : store.getAllSessions().find(session => session.requestId === validation.value.requestId);
+      if (existing) {
+        if (
+          existing.source === "paperclip_webhook"
+          && existing.payloadHash
+          && existing.payloadHash === webhook.payloadHash
+        ) {
+          const updated = store.appendSessionAuditEvent?.(
+            existing.id,
+            auditEvent("paperclip_duplicate_payload_ignored", {
+              requestId: validation.value.requestId,
+              payloadHash: webhook.payloadHash,
+            })
+          ) || existing;
+          return res.status(200).json({ ...updated, idempotent: true });
+        }
+
+        store.appendSessionAuditEvent?.(
+          existing.id,
+          auditEvent("paperclip_duplicate_payload_rejected", {
+            requestId: validation.value.requestId,
+            payloadHash: webhook.payloadHash,
+            existingPayloadHash: existing.payloadHash || null,
+          })
+        );
+        return res.status(409).json({
+          error: existing.source === "paperclip_webhook"
+            ? "Duplicate Paperclip requestId with different payload"
+            : "Duplicate Paperclip requestId already exists",
+          requestId: validation.value.requestId,
+          existingSessionId: existing.id,
+        });
+      }
+
+      const sessionInput = await resolveDiffs({
+        ...toReviewSessionInput(req.body, options),
+        payloadHash: webhook.payloadHash,
+        auditTrail: [
+          auditEvent("paperclip_payload_received", {
+            requestId: validation.value.requestId,
+            contractVersion: validation.value.contractVersion,
+            sourceId: webhook.source,
+            agentRunId: validation.value.agent.runId,
+            payloadHash: webhook.payloadHash,
+            receivedTimestamp: webhook.timestamp,
+          }),
+        ],
+      });
+      const session = store.createSession(sessionInput);
+      const updated = store.appendSessionAuditEvent?.(
+        session.id,
+        auditEvent("review_session_created", {
+          sessionId: session.id,
+          sourceEnvironment: session.externalSource?.environment || null,
+          taskCount: session.tasks.length,
+        })
+      ) || session;
+      return res.status(201).json(updated);
+    } catch (e) {
+      if (e instanceof PaperclipWebhookAuthError) {
+        return sendWebhookError(res, e);
+      }
+      return sendWebhookError(res, e);
+    }
+  });
 
   router.post("/integrations/paperclip/mock/review-session", async (req, res) => {
     try {
