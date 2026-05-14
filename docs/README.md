@@ -104,6 +104,7 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `plans/PROJECT_LADDER.md` | Project-wide roadmap ladder and release gates |
 | `plans/VERSION_0_2_PLAN.md` | V0.2 branch/workstream plan |
 | `plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md` | V0.2 W1 company access, no-domain ngrok demo, stable Cloudflare Access, and no-cost preview phase ladder |
+| `plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` | V0.3 Product Reliability + UX Stabilization phase plan |
 | `agents/PM.md` | PM / Product Owner role guide |
 | `agents/UX_OWNER.md` | UX / Product Experience Owner role guide |
 | `agents/DEV_FRONTEND.md` | Frontend Product Dev role guide |
