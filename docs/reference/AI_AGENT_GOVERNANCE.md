@@ -1,10 +1,10 @@
 # AI Agent Governance - Trisilar Task Hub
 
 **Doc Role:** Governance model for AI-originated work, role boundaries, Review Queue safety, and agent attribution
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** PM / Documentation Workflow Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `ORGANIZATION_OPERATING_MODEL.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../agents/PM.md`, `../plans/PROJECT_LADDER.md`
 
 ---
@@ -12,6 +12,21 @@
 ## Purpose
 
 This document defines how AI agents may participate in Trisilar Task Hub operations and development without losing human control, auditability, branch hygiene, or secret safety.
+
+---
+
+## PM Acceptance - 2026-05-14
+
+PM accepts this governance model as the long-term role and safety boundary for AI-assisted operations and repo work.
+
+Accepted decisions:
+
+- Review Queue remains mandatory before external side effects.
+- AI-originated work must preserve source, request id, agent run id, evidence, linked context, and audit trail.
+- Runtime flags and secrets remain owned by Runtime / Access Owner.
+- QA remains read-only while acting as QA.
+- Integration Owner owns accepted-branch merges into `dev`.
+- The reusable `trisilar-task-hub-workflow` Codex skill is deferred until these docs prove useful in real PM/Dev/QA/Runtime sessions.
 
 ---
 
@@ -154,7 +169,7 @@ external side effect result
 
 ## Future Skill Extraction
 
-Do not create a reusable Codex skill from these docs until PM explicitly asks.
+Do not create a reusable Codex skill from these docs until PM explicitly asks. PM decision on 2026-05-14: defer the skill and use these docs in real sessions first.
 
 Recommended sequence:
 
@@ -171,3 +186,4 @@ The future skill should teach agents how to work in this repo. It should not con
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-14 | Created AI agent governance draft for V0.3 PM review | Codex PM / Documentation Architect |
+| 2026-05-14 | PM accepted AI agent governance and deferred reusable skill extraction | Codex PM |

@@ -1,10 +1,10 @@
 # Runtime / Access Owner
 
 **Doc Role:** Role guide for hosted runtime, access, secrets, and rollback ownership
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** Runtime / Access Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../deployment/README.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../plans/PROJECT_LADDER.md`
 
 ---

@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.3 Project Operating Model and Agent Structure
-**Status:** Draft ready for PM review
+**Phase:** V0.3 Product Reliability + UX Stabilization Planning
+**Status:** Operating model PM accepted; V0.3 planning routed
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
@@ -26,7 +26,7 @@
 | V0.2 Integration Merge | PM Accepted on `dev`; W3 integration is on `origin/dev@a89c26a` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
-| V0.3 operating model and agent structure | Draft branch `feature/project-operating-model-agent-structure` | New reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. |
+| V0.3 operating model and agent structure | PM Accepted on branch `feature/project-operating-model-agent-structure` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
 
 ---
 
@@ -39,7 +39,8 @@
 | W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
-| V0.3 Operating Model | Project operating model and long-term agent team structure | Draft ready for PM review on `feature/project-operating-model-agent-structure` | PM |
+| V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted | PM complete |
+| V0.3 Planning | Product Reliability + UX Stabilization plan | Routed next | PM |
 
 ---
 
@@ -103,11 +104,11 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.3 Operating Model Review
+## Next Action - V0.3 Product Reliability + UX Stabilization Planning
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. V0.2 W1/W2/W3 dev/demo foundations are accepted, and W3 live interop passed with `PAPERCLIP_WEBHOOK_ENABLED=false` restored after the test. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
 
-V0.3 now has a draft operating-model and agent-structure package:
+V0.3 operating model and long-term agent team structure are PM accepted:
 
 - `docs/reference/ORGANIZATION_OPERATING_MODEL.md`
 - `docs/reference/AI_AGENT_GOVERNANCE.md`
@@ -125,16 +126,28 @@ Runtime governance = access, secrets, monitoring, rollback, audit
 Codex agents = development workforce operating through branches/worktrees
 ```
 
+PM decisions:
+
+- Do not create the reusable `trisilar-task-hub-workflow` Codex skill yet.
+- Use the accepted role docs in real PM/Dev/QA/Runtime sessions first.
+- Start V0.3 Product Reliability + UX Stabilization planning next.
+
 ```text
 Role: PM
-Task: Review and accept V0.3 project operating model and long-term agent team structure.
+Task: Create V0.3 Product Reliability + UX Stabilization plan.
 
-If accepted:
-- Decide whether to create `trisilar-task-hub-workflow` Codex skill from the finalized docs.
-- Decide whether to start V0.3 Product Reliability + UX Stabilization planning.
+Owned files:
+- CURRENT_SPRINT.md
+- docs/plans/PROJECT_LADDER.md
+- docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md
+- docs/logs/DECISION_LOG.md
 
-If held:
-- List exact docs or role boundaries that need revision.
+Acceptance criteria:
+- Define V0.3 scope, non-goals, and phase ladder.
+- Include UX issue intake and route-by-route usability review.
+- Include Review Queue, Docs/Review/Task linking, Today/Tasks decision-flow, mobile/desktop regression, audit trace visibility, browser regression, and dev->main release checklist.
+- Preserve Trello as execution surface and Review Queue as human approval gate.
+- Do not enable live Paperclip traffic or create the Codex skill in this planning task.
 ```
 
-**Attribution:** V0.3 operating model draft prepared by Codex PM / Documentation Architect.
+**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM.

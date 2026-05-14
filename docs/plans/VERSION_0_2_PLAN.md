@@ -3,7 +3,7 @@
 **Doc Role:** Active version plan
 **Status:** Active - canonical task IDs adopted; old W1/W2/W3 short labels kept as aliases
 **Version:** V0.2
-**Planning Stage:** W3-02 live connector accepted and integrated on `origin/dev`; runtime live gate disabled by default; V0.3 operating model review routed next
+**Planning Stage:** W3-02 live connector accepted and integrated on `origin/dev`; runtime live gate disabled by default; V0.3 operating model accepted and V0.3 planning routed next
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
@@ -311,18 +311,22 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted, and W3 is integrated on `origin/dev@a89c26a`. The next PM session should review the V0.3 operating model and long-term agent team structure before starting V0.3 Product Reliability + UX Stabilization or a controlled live enablement policy.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted, and W3 is integrated on `origin/dev@a89c26a`. V0.3 operating model and long-term agent team structure are PM accepted. The next PM session should create the V0.3 Product Reliability + UX Stabilization plan.
 
 ```text
 Role: PM
-Task: Review and accept V0.3 project operating model and long-term agent team structure.
+Task: Create V0.3 Product Reliability + UX Stabilization plan.
 
-If accepted:
-- Decide whether to create `trisilar-task-hub-workflow` Codex skill from the finalized docs.
-- Decide whether to start V0.3 Product Reliability + UX Stabilization planning.
+Decisions already made:
+- V0.3 operating model accepted.
+- Reusable `trisilar-task-hub-workflow` Codex skill deferred.
+- V0.3 Product Reliability + UX Stabilization planning starts next.
 
-If held:
-- List exact docs or role boundaries that need revision.
+Rules:
+- Preserve Trello as execution surface.
+- Preserve Review Queue as human approval gate.
+- Do not enable standing live Paperclip traffic.
+- Do not create the reusable Codex skill in the planning task.
 ```
 
 ---
@@ -359,3 +363,4 @@ If held:
 | 2026-05-14 | Recorded Paperclip runtime inputs and Task Hub service-token `/healthz` success from the Paperclip server; routed next implementation to `V0.2-W3-02` live Paperclip -> Task Hub webhook connector | Codex PM / Runtime |
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
 | 2026-05-14 | Routed post-V0.2 planning to V0.3 operating model and long-term agent structure review | Codex PM / Documentation Architect |
+| 2026-05-14 | Accepted V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |

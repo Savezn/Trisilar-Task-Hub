@@ -1,10 +1,10 @@
 # Codex Parallel Development Model - Trisilar Task Hub
 
 **Doc Role:** Branch/worktree and ownership model for parallel Codex development
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** PM / Integration Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `BRANCH_ENVIRONMENT_WORKFLOW.md`, `AI_AGENT_GOVERNANCE.md`, `../agents/INTEGRATION_OWNER.md`, `../../CONTRIBUTING.md`
 
 ---
@@ -12,6 +12,21 @@
 ## Purpose
 
 This document defines when parallel Codex work is useful, when it is unsafe, and how agents must isolate branches, worktrees, roles, and write scopes.
+
+---
+
+## PM Acceptance - 2026-05-14
+
+PM accepts this model as the long-term Codex parallel development rule set.
+
+Accepted decisions:
+
+- One agent = one role = one branch = one worktree = one ownership scope.
+- Agents start from `dev` unless PM assigns another base.
+- Feature agents must not merge sibling feature branches into each other.
+- Dev agents stage specific files only and must not use `git add .`.
+- Integration Owner owns accepted-branch merges into `dev`.
+- Branch contamination checks should be used when a known sibling risk exists.
 
 ---
 
@@ -183,3 +198,4 @@ Feature agents do not merge sibling branches into each other. Integration Owner 
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-14 | Created parallel Codex development model for V0.3 PM review | Codex PM / Documentation Architect |
+| 2026-05-14 | PM accepted the long-term parallel Codex branch/worktree model | Codex PM |

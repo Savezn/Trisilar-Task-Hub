@@ -1,10 +1,10 @@
 # PM / Product Owner
 
 **Doc Role:** Role guide for PM and Product Owner sessions
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** PM
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../plans/PROJECT_LADDER.md`, `../../CURRENT_SPRINT.md`
 
 ---

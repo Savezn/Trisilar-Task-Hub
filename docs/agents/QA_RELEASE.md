@@ -1,10 +1,10 @@
 # QA / Release Owner
 
 **Doc Role:** Role guide for QA and release-readiness sessions
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** QA / Release Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../testing/TEST_STRATEGY.md`, `../logs/QA_LOG.md`, `../reference/AI_AGENT_GOVERNANCE.md`
 
 ---

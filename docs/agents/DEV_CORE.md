@@ -1,10 +1,10 @@
 # Core Workflow / Backend Dev
 
 **Doc Role:** Role guide for backend and workflow implementation sessions
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** Core Workflow / Backend Dev
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../reference/ARCHITECTURE.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../testing/TEST_STRATEGY.md`
 
 ---

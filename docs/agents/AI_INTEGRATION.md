@@ -1,10 +1,10 @@
 # AI Integration Owner
 
 **Doc Role:** Role guide for Paperclip and future AI integration ownership
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** AI Integration Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../plans/VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`
 
 ---

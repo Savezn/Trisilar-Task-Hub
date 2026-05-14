@@ -1,10 +1,10 @@
 # Integration Owner
 
 **Doc Role:** Role guide for integrating accepted branches into `dev`
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** Integration Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../testing/TEST_STRATEGY.md`
 
 ---

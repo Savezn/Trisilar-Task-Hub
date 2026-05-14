@@ -1,10 +1,10 @@
 # Documentation / Agent Workflow Owner
 
 **Doc Role:** Role guide for durable docs, handoff quality, and future skill extraction
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** Documentation / Agent Workflow Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../reference/FILE_ORGANIZATION.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`
 
 ---

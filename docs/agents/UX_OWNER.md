@@ -1,10 +1,10 @@
 # UX / Product Experience Owner
 
 **Doc Role:** Role guide for UX and product experience ownership
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** UX / Product Experience Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../../MVP_PRD.md`, `../plans/PROJECT_LADDER.md`
 
 ---

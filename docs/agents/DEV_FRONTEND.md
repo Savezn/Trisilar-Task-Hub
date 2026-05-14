@@ -1,10 +1,10 @@
 # Frontend Product Dev
 
 **Doc Role:** Role guide for frontend implementation sessions
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** Frontend Product Dev
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../reference/ARCHITECTURE.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../testing/TEST_STRATEGY.md`
 
 ---

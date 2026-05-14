@@ -1,10 +1,10 @@
 # Organization Operating Model - Trisilar Task Hub
 
 **Doc Role:** Durable operating model for humans, Task Hub, Trello, Review Queue, runtime governance, and AI intake
-**Status:** Draft for PM review
+**Status:** PM accepted
 **Owner:** PM / Product Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `PROJECT_CONTEXT.md`, `AI_AGENT_GOVERNANCE.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../plans/PROJECT_LADDER.md`
 
 ---
@@ -12,6 +12,23 @@
 ## Purpose
 
 This document defines the long-term project operating model for Trisilar Task Hub after the V0.2 W1/W2/W3 buildout. It is the stable reference for how daily operations, AI-generated intake, human review, runtime ownership, and Codex-based development should work together.
+
+---
+
+## PM Acceptance - 2026-05-14
+
+PM accepts this operating model as the V0.3 long-term direction.
+
+Accepted decisions:
+
+- Keep Trello as the execution surface.
+- Keep Task Hub as the command center and review/control layer.
+- Preserve Review Queue as the human approval gate.
+- Treat Paperclip and future AI agents as controlled intake sources.
+- Treat runtime governance as a named ownership lane.
+- Treat Codex agents as a development workforce that operates through scoped branches and worktrees.
+- Start V0.3 Product Reliability + UX Stabilization planning next.
+- Do not create the reusable `trisilar-task-hub-workflow` Codex skill yet; use these docs in real sessions first.
 
 ---
 
@@ -165,3 +182,4 @@ Do not jump straight into larger AI automation if the core human workflow is con
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-14 | Created V0.3 operating model draft for PM review | Codex PM / Documentation Architect |
+| 2026-05-14 | PM accepted the V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |
