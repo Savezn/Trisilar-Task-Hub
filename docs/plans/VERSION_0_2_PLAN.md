@@ -308,18 +308,15 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy is PM accepted. Route the next session to Runtime Owner + QA for a limited live enablement window only.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy is PM accepted. A limited runtime-local signed canary window passed and returned the runtime gate to `PAPERCLIP_WEBHOOK_ENABLED=false`. Route the next session to PM for a post-window decision.
 
 ```text
-Role: Runtime Owner / QA / Paperclip Owner
-Task: Prepare limited V0.2-W3-03 Paperclip live enablement window
+Role: PM
+Task: Decide V0.2-W3-03 post-window path
 
-Preflight:
-1. Confirm Task Hub runtime is deployed from `dev@a89c26a` or later.
-2. Confirm `PAPERCLIP_WEBHOOK_ENABLED=false` before starting.
-3. Confirm Paperclip Settings is connected and secret-backed without exposing the secret.
-4. Confirm Paperclip sender uses Cloudflare Access service-token headers and accepted HMAC canonical format.
-5. Confirm named rollback owner is available before any flag change.
+Decision needed:
+1. Keep live Paperclip disabled and schedule a true external Paperclip sender window, or
+2. Approve a standing dev/demo enablement window with named daily monitoring and rollback owner.
 
 Accepted evidence:
 - Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
@@ -329,6 +326,10 @@ Accepted evidence:
 - Created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`.
 - Created task stayed `pending`; human approval gate remained intact.
 - Runtime gate was closed after test: `PAPERCLIP_WEBHOOK_ENABLED=false`.
+- Limited runtime-local canary returned HTTP `201` for request `pc_w3_03_window_20260514062346`.
+- Limited canary Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` stayed `pending`.
+- Replay and negative checks passed; runtime gate was closed again with disabled probe returning `403`.
+- External Cloudflare service-token sender was not re-run in the limited window; earlier live interop remains the evidence for that path.
 
 Rules:
 - Do not deploy production.
@@ -336,8 +337,7 @@ Rules:
 - Do not commit or print secrets.
 - Do not enable permanent live Paperclip traffic until PM approves the live enablement policy.
 - Preserve Review Queue human gate and existing mock/local Docs behavior.
-- Set `PAPERCLIP_WEBHOOK_ENABLED=true` only inside the named test window.
-- Restore `PAPERCLIP_WEBHOOK_ENABLED=false` after the test unless PM explicitly approves a standing window.
+- Keep `PAPERCLIP_WEBHOOK_ENABLED=false` unless PM explicitly names another window or standing enablement.
 ```
 
 ---
@@ -374,3 +374,4 @@ Rules:
 | 2026-05-14 | Recorded Paperclip runtime inputs and Task Hub service-token `/healthz` success from the Paperclip server; routed next implementation to `V0.2-W3-02` live Paperclip -> Task Hub webhook connector | Codex PM / Runtime |
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
 | 2026-05-14 | PM accepted `V0.2-W3-03` controlled live enablement policy after W3 merge to `dev` at `a89c26a`; default runtime gate remains `PAPERCLIP_WEBHOOK_ENABLED=false` until a named live window starts | Codex PM |
+| 2026-05-14 | Completed limited `V0.2-W3-03` runtime-local signed canary window; request `pc_w3_03_window_20260514062346` created pending session `7dd7d2a3-377c-4336-ba75-ba1c312635d2`, replay/negative checks passed, and runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / QA |

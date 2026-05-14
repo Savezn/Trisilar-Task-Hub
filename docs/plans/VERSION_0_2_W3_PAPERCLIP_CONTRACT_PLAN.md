@@ -479,6 +479,16 @@ PM acceptance:
 - Acceptance does not itself enable `PAPERCLIP_WEBHOOK_ENABLED=true`.
 - Next runtime work must be a named limited enablement window with Runtime Owner, Paperclip Owner, and QA owner recorded before the flag changes.
 
+Limited window result:
+
+- Runtime-local signed canary window passed on Task Hub `dev@a89c26a`.
+- `PAPERCLIP_WEBHOOK_ENABLED=true` was loaded only for the window, then returned to `false`.
+- Canary request `pc_w3_03_window_20260514062346` returned HTTP `201`.
+- Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` was created with task status `pending`.
+- Same-payload replay returned idempotent success; changed replay returned `409`; invalid signature returned `401`; invalid source returned `403`; invalid environment returned `400`.
+- Final health check returned `200`; final disabled probe returned `403`.
+- The limited window did not re-run the external Cloudflare service-token sender path; earlier live interop remains the evidence for that path.
+
 ---
 
 ## Open Questions for PM / Paperclip Owner
@@ -527,3 +537,4 @@ Resolved runtime inputs:
 | 2026-05-14 | Recorded Paperclip runtime inputs, confirmed `/healthz`, and confirmed Task Hub service-token `/healthz` reachability from the Paperclip server; routed `V0.2-W3-02` live webhook connector | Codex PM / Runtime |
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
 | 2026-05-14 | Planned and PM accepted `V0.2-W3-03` controlled live enablement policy with enablement criteria, rollback, owner permissions, monitoring/audit, and post-interop checklist; runtime gate remains disabled until a named live window starts | Codex PM |
+| 2026-05-14 | Completed limited `V0.2-W3-03` runtime-local signed canary window; canary/replay/negative checks passed and runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / QA |
