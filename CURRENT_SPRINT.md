@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.3 Product Reliability + UX Stabilization
-**Status:** V0.3 RUX plan PM accepted; `V0.3-RUX-01` active with baseline artifacts created
+**Status:** V0.3 RUX plan PM accepted; `V0.3-RUX-01` baseline review findings recorded
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
@@ -41,7 +41,7 @@
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 | V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted | PM complete |
-| V0.3 RUX | `V0.3-RUX-01` UX Issue Intake + Reliability Baseline | Active / baseline created | PM / UX / QA |
+| V0.3 RUX | `V0.3-RUX-01` UX Issue Intake + Reliability Baseline | Baseline findings recorded | PM |
 
 ---
 
@@ -108,7 +108,7 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.3-RUX-01 Baseline Route Review
+## Next Action - PM Triage V0.3-RUX-01 Baseline Findings
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. V0.2 W1/W2/W3 dev/demo foundations are accepted, and W3 live interop passed with `PAPERCLIP_WEBHOOK_ENABLED=false` restored after the test. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
 
@@ -139,8 +139,8 @@ PM decisions:
 - W3 sibling branches must not merge into V0.3 branches, and V0.3 branches must not merge into W3 branches.
 
 ```text
-Role: UX / QA
-Task: Use V0.3-RUX-01 intake model to run the first route-by-route baseline review.
+Role: PM
+Task: Triage V0.3-RUX-01 baseline findings and route the first scoped fix/review tasks.
 
 Owned files:
 - CURRENT_SPRINT.md
@@ -152,16 +152,16 @@ Owned files:
 - docs/logs/QA_LOG.md if QA evidence is produced
 
 Acceptance criteria:
-- Use the RUX-01 route inventory and checklist.
-- Review Today, Review Queue, Tasks, Boards Monitor, Calendar, Planner, OKR / Portfolio, Weekly Focus, Settings, and Docs if user-facing.
-- Record findings in docs/logs/V0_3_RUX_FINDINGS.md using the RUX-01 intake format.
-- Keep QA read-only if acting as QA.
-- Include no behavior, runtime, secret, or branch-integration changes.
+- Review `RUX-001` through `RUX-003` in docs/logs/V0_3_RUX_FINDINGS.md.
+- Confirm severity, owner, and suggested phase for each finding.
+- Decide whether `RUX-001` and `RUX-002` should be grouped into one scoped UX/Runtime task or split.
+- Route the first implementation task without merging W3/V0.3 branches.
+- Keep reusable Codex skill extraction deferred.
 
 If held:
-- List the missing route evidence, runtime blocker, or review-scope ambiguity that prevents the baseline review.
+- List what evidence, ownership decision, or branch boundary must be clarified before routing.
 ```
 
-**Current RUX-01 artifacts:** `docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` and `docs/logs/V0_3_RUX_FINDINGS.md`.
+**Current RUX-01 artifacts:** `docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` and `docs/logs/V0_3_RUX_FINDINGS.md`. First baseline findings: `RUX-001` through `RUX-003`.
 
 **Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM. `V0.3-RUX-01` baseline created by Codex PM.

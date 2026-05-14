@@ -117,7 +117,7 @@ V0.3-RUX-02
 
 | ID | Phase | Owner Role | Status | Outcome |
 |---|---|---|---|---|
-| `V0.3-RUX-01` | UX Issue Intake + Reliability Baseline | PM / UX / QA | Active / baseline created | Create the issue intake model, severity labels, route inventory, and first baseline audit checklist |
+| `V0.3-RUX-01` | UX Issue Intake + Reliability Baseline | PM / UX / QA | Baseline findings recorded | Create the issue intake model, severity labels, route inventory, first baseline audit checklist, and initial findings batch |
 | `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Planned | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | Planned | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | Planned | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
@@ -408,22 +408,23 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: UX / QA
-Task: Use V0.3-RUX-01 intake model to run the first route-by-route baseline review.
+Role: PM
+Task: Triage V0.3-RUX-01 baseline findings and route the first scoped fix/review tasks.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md
 - docs/logs/V0_3_RUX_FINDINGS.md
 
 Do:
-- Review each route in the RUX-01 inventory.
-- Record findings in docs/logs/V0_3_RUX_FINDINGS.md.
-- Keep QA read-only if acting as QA.
-- Do not patch UI or runtime during the baseline review.
+- Review `RUX-001` through `RUX-003`.
+- Confirm severity, owner, and phase.
+- Decide whether Trello connection-state findings should be grouped or split.
+- Route the first scoped task.
+- Do not merge W3/V0.3 branches.
 - Keep W3 live enablement or Paperclip hardening on its own W3 branch/worktree.
 
 If held:
-- List the missing route evidence, runtime blocker, or review-scope ambiguity that prevents the baseline review.
+- List what evidence, ownership decision, or branch boundary must be clarified before routing.
 ```
 
 ---
@@ -435,3 +436,4 @@ If held:
 | 2026-05-14 | Created V0.3 Product Reliability + UX Stabilization draft plan | Codex PM |
 | 2026-05-14 | Accepted V0.3 Product Reliability + UX Stabilization plan and routed `V0.3-RUX-01` | Codex PM |
 | 2026-05-14 | Started `V0.3-RUX-01` with intake model, findings log, route inventory, and baseline checklist | Codex PM |
+| 2026-05-14 | Recorded first desktop/mobile baseline findings and routed next to PM triage | Codex UX / QA |
