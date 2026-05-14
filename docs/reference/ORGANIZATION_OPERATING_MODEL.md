@@ -27,7 +27,7 @@ Accepted decisions:
 - Treat Paperclip and future AI agents as controlled intake sources.
 - Treat runtime governance as a named ownership lane.
 - Treat Codex agents as a development workforce that operates through scoped branches and worktrees.
-- Start V0.3 Product Reliability + UX Stabilization planning next.
+- Use the accepted V0.3 Product Reliability + UX Stabilization plan and route next to `V0.3-RUX-01`.
 - Do not create the reusable `trisilar-task-hub-workflow` Codex skill yet; use these docs in real sessions first.
 
 ---
@@ -183,3 +183,4 @@ Do not jump straight into larger AI automation if the core human workflow is con
 |---|---|---|
 | 2026-05-14 | Created V0.3 operating model draft for PM review | Codex PM / Documentation Architect |
 | 2026-05-14 | PM accepted the V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |
+| 2026-05-14 | Updated operating-model routing after V0.3 RUX plan acceptance; next route is `V0.3-RUX-01` | Codex PM |

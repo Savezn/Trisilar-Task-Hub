@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.3 Product Reliability + UX Stabilization Planning
-**Status:** V0.3 RUX plan draft ready for PM review
+**Phase:** V0.3 Product Reliability + UX Stabilization
+**Status:** V0.3 RUX plan PM accepted; `V0.3-RUX-01` routed to PM / UX / QA
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
@@ -27,7 +27,7 @@
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
 | V0.3 operating model and agent structure | PM Accepted on branch `feature/project-operating-model-agent-structure` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
-| V0.3 Product Reliability + UX Stabilization plan | Draft ready for PM review | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` defines RUX phase ladder, parallel W3 boundary, UX intake, route review, Review Queue clarity, audit trace visibility, browser regression, and `dev -> main` release checklist. |
+| V0.3 Product Reliability + UX Stabilization plan | PM Accepted; `V0.3-RUX-01` routed | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` defines RUX phase ladder, parallel W3 boundary, UX intake, route review, Review Queue clarity, audit trace visibility, browser regression, and `dev -> main` release checklist. |
 
 ---
 
@@ -41,7 +41,7 @@
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 | V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted | PM complete |
-| V0.3 Planning | Product Reliability + UX Stabilization plan | Draft ready for PM review | PM |
+| V0.3 RUX | `V0.3-RUX-01` UX Issue Intake + Reliability Baseline | Routed | PM / UX / QA |
 
 ---
 
@@ -106,7 +106,7 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.3 Product Reliability + UX Stabilization Plan Review
+## Next Action - V0.3-RUX-01 UX Issue Intake + Reliability Baseline
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. V0.2 W1/W2/W3 dev/demo foundations are accepted, and W3 live interop passed with `PAPERCLIP_WEBHOOK_ENABLED=false` restored after the test. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
 
@@ -132,28 +132,31 @@ PM decisions:
 
 - Do not create the reusable `trisilar-task-hub-workflow` Codex skill yet.
 - Use the accepted role docs in real PM/Dev/QA/Runtime sessions first.
-- V0.3 Product Reliability + UX Stabilization draft plan is ready for PM review.
+- V0.3 Product Reliability + UX Stabilization plan is PM accepted.
+- V0.3 may proceed in parallel with W3 only through separate branches/worktrees.
+- W3 sibling branches must not merge into V0.3 branches, and V0.3 branches must not merge into W3 branches.
 
 ```text
-Role: PM
-Task: Review and accept V0.3 Product Reliability + UX Stabilization plan.
+Role: PM / UX / QA
+Task: V0.3-RUX-01 UX Issue Intake + Reliability Baseline
 
 Owned files:
 - CURRENT_SPRINT.md
 - docs/plans/PROJECT_LADDER.md
 - docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md
 - docs/logs/DECISION_LOG.md
+- docs/logs/QA_LOG.md if QA evidence is produced
 
 Acceptance criteria:
-- Confirm the plan covers UX issue intake, route-by-route usability review, Review Queue clarity, audit trace visibility, browser regression, and dev->main release checklist.
-- Confirm V0.3 may proceed in parallel with W3 only through separate branches/worktrees.
-- Confirm reusable Codex skill remains deferred.
-
-If accepted:
-- Route `V0.3-RUX-01` to PM / UX / QA for UX Issue Intake + Reliability Baseline.
+- Create the V0.3 issue intake format with route, symptom, user impact, source evidence, suggested owner, priority, and acceptance criteria.
+- Define issue categories and severity labels.
+- Create a route inventory covering Today, Review Queue, Tasks, Boards Monitor, Calendar, Planner, OKR / Portfolio, Weekly Focus, Settings, and Docs if user-facing.
+- Decide where V0.3 findings are recorded.
+- Produce the baseline route review checklist.
+- Include no behavior, runtime, secret, or branch-integration changes.
 
 If held:
-- List exact phases, ownership boundaries, or acceptance gates that need revision.
+- List the missing intake fields, route inventory gaps, ownership ambiguity, or recording-location decision that must be fixed.
 ```
 
-**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted by Codex PM.
+**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM.

@@ -3,7 +3,7 @@
 **Doc Role:** Active version plan
 **Status:** Active - canonical task IDs adopted; old W1/W2/W3 short labels kept as aliases
 **Version:** V0.2
-**Planning Stage:** W3-02 live connector accepted and integrated on `origin/dev`; runtime live gate disabled by default; V0.3 operating model accepted and V0.3 planning routed next
+**Planning Stage:** W3-02 live connector accepted and integrated on `origin/dev`; runtime live gate disabled by default; V0.3 operating model and V0.3 RUX plan accepted; `V0.3-RUX-01` routed next
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
@@ -311,22 +311,23 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted, and W3 is integrated on `origin/dev@a89c26a`. V0.3 operating model and long-term agent team structure are PM accepted. The next PM session should create the V0.3 Product Reliability + UX Stabilization plan.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted, and W3 is integrated on `origin/dev@a89c26a`. V0.3 operating model, long-term agent team structure, and Product Reliability + UX Stabilization plan are PM accepted. The next session should run `V0.3-RUX-01` UX Issue Intake + Reliability Baseline.
 
 ```text
-Role: PM
-Task: Create V0.3 Product Reliability + UX Stabilization plan.
+Role: PM / UX / QA
+Task: V0.3-RUX-01 UX Issue Intake + Reliability Baseline.
 
 Decisions already made:
 - V0.3 operating model accepted.
+- V0.3 Product Reliability + UX Stabilization plan accepted.
 - Reusable `trisilar-task-hub-workflow` Codex skill deferred.
-- V0.3 Product Reliability + UX Stabilization planning starts next.
+- V0.3 may proceed in parallel with W3 only through separate branches/worktrees.
 
 Rules:
 - Preserve Trello as execution surface.
 - Preserve Review Queue as human approval gate.
 - Do not enable standing live Paperclip traffic.
-- Do not create the reusable Codex skill in the planning task.
+- Do not create the reusable Codex skill in `V0.3-RUX-01`.
 ```
 
 ---
@@ -364,3 +365,4 @@ Rules:
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
 | 2026-05-14 | Routed post-V0.2 planning to V0.3 operating model and long-term agent structure review | Codex PM / Documentation Architect |
 | 2026-05-14 | Accepted V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |
+| 2026-05-14 | Accepted V0.3 Product Reliability + UX Stabilization plan and routed `V0.3-RUX-01` | Codex PM |

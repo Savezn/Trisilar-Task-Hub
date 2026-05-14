@@ -56,7 +56,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted and integrated; W2-06 Integration QA/PM accepted on `dev` |
 | L3 | V0.2 Paperclip Foundation | W3-02 code + live interop PM Accepted / runtime gate closed | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, and preserved human gate without uncontrolled side effects | Contract/mock verification passed; W3-02 signed webhook and live interop passed; runtime `PAPERCLIP_WEBHOOK_ENABLED=false` until PM approves controlled live enablement |
 | L4 | V0.2 Integration Release | Active / W3 integrated on `origin/dev@a89c26a` | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
-| L5 | V0.3 Product Reliability + UX Stabilization | Draft plan ready for PM review | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | PM accepts V0.3 scope before implementation starts |
+| L5 | V0.3 Product Reliability + UX Stabilization | PM accepted; `V0.3-RUX-01` routed | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | `V0.3-RUX-01` creates the intake model, route inventory, and reliability baseline before implementation starts |
 | L6 | V0.4 Live AI Operations | Planned | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Live connector QA with controlled production-like data |
 | L7 | V0.5 Team Operating System | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
 
@@ -218,10 +218,11 @@ V0.2 W1/W2/W3 dev/demo foundations accepted
 -> W3 live connector and interop accepted
 -> W3 integrated on origin/dev@a89c26a
 -> V0.3 operating model and long-term agent roles accepted
--> PM review of V0.3 Product Reliability + UX Stabilization plan
+-> V0.3 Product Reliability + UX Stabilization plan accepted
+-> V0.3-RUX-01 UX Issue Intake + Reliability Baseline
 ```
 
-Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not keep live webhook enabled without PM policy approval. V0.3 operating model is accepted, and the V0.3 Product Reliability + UX Stabilization plan is ready for PM review.
+Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not keep live webhook enabled without PM policy approval. V0.3 operating model and Product Reliability + UX Stabilization plan are accepted. V0.3 may proceed in parallel with W3 only through separate branches/worktrees, with Integration Owner-controlled merges into `dev`.
 
 ---
 
@@ -249,3 +250,4 @@ Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose 
 | 2026-05-14 | Added V0.3 Product Reliability + UX Stabilization and long-term agent operating model review route | Codex PM / Documentation Architect |
 | 2026-05-14 | Accepted the V0.3 operating model and routed next to V0.3 Product Reliability + UX Stabilization planning; deferred reusable Codex skill extraction | Codex PM |
 | 2026-05-14 | Created the V0.3 Product Reliability + UX Stabilization draft plan and routed it to PM review | Codex PM |
+| 2026-05-14 | Accepted the V0.3 Product Reliability + UX Stabilization plan and routed `V0.3-RUX-01` to PM / UX / QA | Codex PM |
