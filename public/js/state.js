@@ -2,11 +2,21 @@
 const S = {
   boards: [],
   config: { groups: [], hiddenBoards: [], allowedWorkspaceIds: [] },
+  trelloStatus: {
+    configured: false,
+    verified: false,
+    connected: false,
+    state: "unknown",
+    error: "Trello connection has not been verified yet.",
+  },
   draftConfig: null,
   currentBoardId: null,
   currentGroupId: null,
   currentLists: [],
-  mode: "today",   // "today" | "review" | "all" | "board" | "group" | "calendar" | "planner" | "okr" | "focus" | "settings"
+  mode: "today",   // "today" | "review" | "all" | "board" | "group" | "calendar" | "docs" | "planner" | "okr" | "focus" | "settings"
+  docsSelectedArtifactId: null,
+  paperclipDocsIndex: null,
+  pendingReviewTaskLink: null,
   focusOwner: "",  // P7-5: selected owner id in Weekly Focus (persists across re-renders)
   allCardsCache: null,
   editing: null,

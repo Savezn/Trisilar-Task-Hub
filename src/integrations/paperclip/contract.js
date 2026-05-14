@@ -167,7 +167,18 @@ function normalizeTask(task, index, agent, errors) {
   };
 }
 
-function normalizePaperclipPayload(payload) {
+function normalizeOptions(options = {}) {
+  const allowedEnvironments = Array.isArray(options.allowedEnvironments) && options.allowedEnvironments.length > 0
+    ? options.allowedEnvironments.map(value => String(value).trim()).filter(Boolean)
+    : ["mock"];
+  return {
+    allowedEnvironments,
+    source: hasText(options.source) ? options.source.trim() : "paperclip_mock",
+  };
+}
+
+function normalizePaperclipPayload(payload, options = {}) {
+  const normalizedOptions = normalizeOptions(options);
   const errors = [];
   const input = requireObject(payload, "payload", errors);
   const source = requireObject(input.source, "source", errors);
@@ -189,8 +200,14 @@ function normalizePaperclipPayload(payload) {
   if (normalizedSource.system && normalizedSource.system !== "paperclip") {
     errors.push({ path: "source.system", message: "Must be paperclip" });
   }
-  if (normalizedSource.environment && normalizedSource.environment !== "mock") {
-    errors.push({ path: "source.environment", message: "Must be mock until live connector work is approved" });
+  if (
+    normalizedSource.environment
+    && !normalizedOptions.allowedEnvironments.includes(normalizedSource.environment)
+  ) {
+    errors.push({
+      path: "source.environment",
+      message: `Must be one of: ${normalizedOptions.allowedEnvironments.join(", ")}`,
+    });
   }
 
   const agent = {
@@ -231,9 +248,9 @@ function normalizePaperclipPayload(payload) {
   };
 }
 
-function validatePaperclipPayload(payload) {
+function validatePaperclipPayload(payload, options = {}) {
   try {
-    return { ok: true, value: normalizePaperclipPayload(payload), errors: [] };
+    return { ok: true, value: normalizePaperclipPayload(payload, options), errors: [] };
   } catch (error) {
     if (error instanceof PaperclipContractError) {
       return { ok: false, value: null, errors: error.errors };
@@ -242,12 +259,13 @@ function validatePaperclipPayload(payload) {
   }
 }
 
-function toReviewSessionInput(payload) {
-  const normalized = normalizePaperclipPayload(payload);
+function toReviewSessionInput(payload, options = {}) {
+  const normalizedOptions = normalizeOptions(options);
+  const normalized = normalizePaperclipPayload(payload, options);
 
   return {
     title: normalized.reviewSession.title,
-    source: "paperclip_mock",
+    source: normalizedOptions.source,
     summary: normalized.reviewSession.summary,
     transcript: normalized.reviewSession.transcript,
     requestId: normalized.requestId,

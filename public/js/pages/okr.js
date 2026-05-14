@@ -13,10 +13,14 @@ async function showOKRPage() {
   const content = $("board-content");
   content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading OKR data...</div>';
   try {
+    if (!isTrelloVerified()) {
+      content.innerHTML = trelloRouteUnavailableHtml("OKR Progress");
+      return;
+    }
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
     renderOKRPage(getAllowedCards(), S.boards || []);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">${esc(e.message)}</p></div>`;
+    content.innerHTML = trelloRouteUnavailableHtml("OKR Progress");
   }
 }
 

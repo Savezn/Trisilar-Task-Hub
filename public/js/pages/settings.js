@@ -13,9 +13,9 @@ function showSettingsPage() {
 
     const calConnected = CAL.status?.connected;
     const config = S.config || {};
+    const trelloConnection = trelloConnectionSummary();
     const hiddenCount = (config.hiddenBoards || []).length;
     const workspaceCount = (config.allowedWorkspaceIds || []).length;
-    const boardCount = S.boards?.length || 0;
 
     const page = document.createElement("div");
     page.className = "settings-page";
@@ -27,9 +27,9 @@ function showSettingsPage() {
           <p class="settings-subtitle">Manage connected services, visible workspaces, board scope, monitor labels, and business-unit grouping.</p>
         </div>
         <div class="settings-command-stats" aria-label="Settings summary">
-          <div class="settings-stat-card is-ok">
+          <div class="settings-stat-card ${trelloConnection.statClass}">
             <span class="settings-stat-label">Trello</span>
-            <strong>${boardCount ? "Connected" : "Ready"}</strong>
+            <strong>${esc(trelloConnection.label)}</strong>
           </div>
           <div class="settings-stat-card ${calConnected ? "is-ok" : "is-muted"}">
             <span class="settings-stat-label">Calendar</span>
@@ -49,6 +49,7 @@ function showSettingsPage() {
       <div class="settings-layout">
         <aside class="settings-nav-panel" aria-label="Settings sections">
           <button type="button" class="settings-nav-button" data-target="settings-integrations">${icon("gitMerge")} Integrations</button>
+          <button type="button" class="settings-nav-button" data-target="settings-paperclip">${icon("sparkles")} Paperclip</button>
           <button type="button" class="settings-nav-button" data-target="settings-workspaces">${icon("layout")} Workspaces</button>
           <button type="button" class="settings-nav-button" data-target="settings-visibility">${icon("checkSquare")} Board Visibility</button>
           <button type="button" class="settings-nav-button" data-target="settings-teams">${icon("target")} Monitor Teams</button>
@@ -69,9 +70,9 @@ function showSettingsPage() {
                 <span class="settings-integration-icon">${icon("layout")}</span>
                 <div class="integration-info">
                   <div class="integration-name">Trello</div>
-                  <div class="integration-desc">Connected via configured API credentials.</div>
+                  <div class="integration-desc">${esc(trelloConnection.description)}</div>
                 </div>
-                <span class="settings-status-chip is-connected">Connected</span>
+                <span class="settings-status-chip ${trelloConnection.chipClass}">${esc(trelloConnection.label)}</span>
               </div>
               <div class="integration-row">
                 <span class="settings-integration-icon">${icon("calendar")}</span>
@@ -93,6 +94,19 @@ function showSettingsPage() {
                   ? '<span class="settings-status-chip is-shared">Shared OAuth</span>'
                   : '<button type="button" class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Calendar</button>'}
               </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="settings-paperclip">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-kicker">Agent connector</div>
+                <h3 class="settings-section-title">Paperclip Integration</h3>
+                <p class="settings-section-desc">Manage connection state, runtime secret rotation, and live webhook readiness.</p>
+              </div>
+            </div>
+            <div class="settings-section-body" id="settings-paperclip-body">
+              <div class="loading-box"><span class="spinner"></span> Loading Paperclip connection...</div>
             </div>
           </section>
 
@@ -159,6 +173,7 @@ function showSettingsPage() {
     renderSettingsVisibility();
     renderSettingsTeams();
     renderSettingsGroups();
+    loadPaperclipConnection();
     loadSettingsWorkspaces();
 
     page.querySelectorAll(".settings-nav-button").forEach(btn => {
@@ -182,6 +197,163 @@ function showSettingsPage() {
   } catch (e) {
     console.error("[Settings Error]", e);
     $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Settings error</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+function paperclipStatusChip(status) {
+  if (status === "connected") return '<span class="chip chip-done">Connected</span>';
+  if (status === "disabled") return '<span class="chip chip-soon">Disabled</span>';
+  return '<span class="chip chip-soon">Not connected</span>';
+}
+
+async function loadPaperclipConnection() {
+  const container = $("settings-paperclip-body");
+  if (!container) return;
+  try {
+    const [connection, operations] = await Promise.all([
+      api.get("/api/integrations/paperclip/connection"),
+      api.get("/api/integrations/paperclip/operations/status").catch(() => null),
+    ]);
+    renderPaperclipConnection(connection, operations);
+  } catch (e) {
+    container.innerHTML = `<p style="color:var(--danger)">Connection status failed: ${esc(e.message)}</p>`;
+  }
+}
+
+function renderPaperclipConnection(connection, operations = null) {
+  const container = $("settings-paperclip-body");
+  if (!container) return;
+  const connected = connection.status === "connected";
+  const ops = operations || {};
+  const live = ops.liveWebhook || {};
+  const counts = ops.reviewQueue || {};
+  const warnings = Array.isArray(ops.warnings) ? ops.warnings : [];
+  const statusText = connected
+    ? "Ready for signed webhook validation. Shared secret is configured."
+    : connection.status === "disabled"
+      ? "Disconnected. Future live webhook requests must be rejected."
+      : "Paste a shared secret to enable future live webhook validation.";
+
+  container.innerHTML = `
+    <div class="integration-row" style="padding-top:0">
+      <span class="integration-icon">PC</span>
+      <div class="integration-info">
+        <div class="integration-name">Paperclip</div>
+        <div class="integration-desc">${esc(statusText)}</div>
+      </div>
+      <div class="integration-status-dot ${connected ? "dot-green" : "dot-gray"}"></div>
+      ${paperclipStatusChip(connection.status)}
+    </div>
+    <div class="form-row" style="margin-top:14px">
+      <div class="form-group">
+        <label for="paperclip-workspace-id">Workspace ID <span class="label-hint">optional</span></label>
+        <input id="paperclip-workspace-id" class="form-input" type="text" value="${esc(connection.workspaceId || "")}" placeholder="Paperclip workspace id">
+      </div>
+      <div class="form-group">
+        <label for="paperclip-label">Label <span class="label-hint">optional</span></label>
+        <input id="paperclip-label" class="form-input" type="text" value="${esc(connection.label || "")}" placeholder="Internal label">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="paperclip-shared-secret">Shared secret <span class="label-hint">write-only, not returned after save</span></label>
+      <input id="paperclip-shared-secret" class="form-input" type="password" placeholder="${connected ? "Enter a new secret to rotate" : "Enter shared secret from Paperclip"}" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>Webhook URL</label>
+      <input class="form-input" type="text" value="${esc(connection.webhookUrl || connection.webhookPath || "")}" readonly>
+    </div>
+    <div class="paperclip-ops-panel" aria-label="Paperclip operations status">
+      <div class="paperclip-ops-header">
+        <div>
+          <div class="settings-section-kicker">Live operations</div>
+          <h4>Read-only status</h4>
+        </div>
+        <span class="chip ${live.enabled ? "chip-warning" : "chip-soon"}">${live.enabled ? "Webhook enabled" : "Webhook disabled"}</span>
+      </div>
+      <div class="paperclip-ops-grid">
+        <div><span>Source</span><strong>${esc(live.allowedSourceId || "Not configured")}</strong></div>
+        <div><span>Environment</span><strong>${esc(live.allowedEnvironment || "Not configured")}</strong></div>
+        <div><span>Pending</span><strong>${counts.pending ?? 0}</strong></div>
+        <div><span>Rejected</span><strong>${counts.rejected ?? 0}</strong></div>
+        <div><span>Cleaned test artifacts</span><strong>${counts.cleanedSessions ?? 0}</strong></div>
+        <div><span>Trello-linked</span><strong>${counts.trelloLinked ?? 0}</strong></div>
+      </div>
+      ${renderPaperclipOpsAudit(ops.audit)}
+      ${warnings.length ? `
+        <div class="paperclip-ops-warnings">
+          ${warnings.map(warning => `
+            <div class="paperclip-ops-warning ${warning.level === "danger" ? "is-danger" : ""}">
+              <strong>${esc(warning.code || "warning")}</strong>
+              <span>${esc(warning.message || "")}</span>
+            </div>
+          `).join("")}
+        </div>
+      ` : '<div class="settings-empty-inline">No Paperclip stop-condition warning found.</div>'}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" id="paperclip-connect-btn">${connected ? "Update Connection" : "Connect Paperclip"}</button>
+      <button class="btn btn-sm" id="paperclip-rotate-btn" ${connected ? "" : "disabled"}>Rotate Secret</button>
+      <button class="btn btn-danger btn-sm" id="paperclip-disconnect-btn" ${connected ? "" : "disabled"}>Disconnect</button>
+    </div>
+  `;
+
+  $("paperclip-connect-btn").onclick = connectPaperclip;
+  $("paperclip-rotate-btn").onclick = rotatePaperclipSecret;
+  $("paperclip-disconnect-btn").onclick = disconnectPaperclip;
+}
+
+function renderPaperclipOpsAudit(audit = {}) {
+  const accepted = audit.accepted || {};
+  const rejected = audit.rejected || {};
+  const replay = audit.replay || {};
+  const cleanup = audit.cleanup || {};
+  return `
+    <div class="paperclip-audit-strip" aria-label="Paperclip audit summary">
+      <span>Accepted ${Object.values(accepted).reduce((sum, value) => sum + Number(value || 0), 0)}</span>
+      <span>Rejected ${Object.values(rejected).reduce((sum, value) => sum + Number(value || 0), 0)}</span>
+      <span>Replay ${Object.values(replay).reduce((sum, value) => sum + Number(value || 0), 0)}</span>
+      <span>Cleanup ${Object.values(cleanup).reduce((sum, value) => sum + Number(value || 0), 0)}</span>
+    </div>
+  `;
+}
+
+function paperclipConnectionPayload() {
+  return {
+    workspaceId: $("paperclip-workspace-id")?.value || "",
+    label: $("paperclip-label")?.value || "",
+    sharedSecret: $("paperclip-shared-secret")?.value || "",
+  };
+}
+
+async function connectPaperclip() {
+  try {
+    await api.post("/api/integrations/paperclip/connection/connect", paperclipConnectionPayload());
+    toast("Paperclip connected");
+    await loadPaperclipConnection();
+  } catch (e) {
+    toast("Paperclip connect failed: " + e.message, true);
+  }
+}
+
+async function rotatePaperclipSecret() {
+  try {
+    await api.post("/api/integrations/paperclip/connection/rotate-secret", {
+      sharedSecret: $("paperclip-shared-secret")?.value || "",
+    });
+    toast("Paperclip secret rotated");
+    await loadPaperclipConnection();
+  } catch (e) {
+    toast("Paperclip rotate failed: " + e.message, true);
+  }
+}
+
+async function disconnectPaperclip() {
+  try {
+    await api.post("/api/integrations/paperclip/connection/disconnect", {});
+    toast("Paperclip disconnected");
+    await loadPaperclipConnection();
+  } catch (e) {
+    toast("Paperclip disconnect failed: " + e.message, true);
   }
 }
 
@@ -337,6 +509,11 @@ function renderSettingsGroups() {
 async function loadSettingsWorkspaces() {
   const container = $("settings-ws-body");
   if (!container) return;
+  if (!isTrelloVerified()) {
+    const trelloConnection = trelloConnectionSummary();
+    container.innerHTML = `<div class="settings-empty-inline">${esc(trelloConnection.description)}</div>`;
+    return;
+  }
   try {
     const workspaces = await api.get("/api/workspaces");
     if (!workspaces.length) {

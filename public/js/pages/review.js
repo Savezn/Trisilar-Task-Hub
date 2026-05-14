@@ -13,7 +13,9 @@ async function showReviewPage() {
 
   try {
     const sessions = await api.get("/api/reviews");
+    expandLinkedReviewSession(sessions);
     renderReviewPage(sessions);
+    focusPendingReviewTaskLink(sessions);
     updateReviewBadge().catch(() => {});
   } catch (e) {
     content.innerHTML = `<div class="empty-state review-empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Failed to load Review Queue</h3><p>${esc(e.message)}</p></div>`;
@@ -131,6 +133,18 @@ function buildSessionCard(session) {
   const selectedSet   = S.reviewSelected.get(session.id) || new Set();
   const allVisibleSelected = pendingTasks.length > 0 && pendingTasks.every(t => selectedSet.has(t.id));
   const dateStr = formatThaiDateTime(session.createdAt, false);
+  const paperclipMeta = getPaperclipReviewMeta(session);
+  const sourceIcon = paperclipMeta.isPaperclip ? icon("gitMerge") : icon("upload");
+  const paperclipBadge = paperclipMeta.isPaperclip
+    ? `<span class="chip ${paperclipMeta.isTestOrCanary ? "chip-paperclip-test" : "chip-paperclip-live"}">${esc(paperclipMeta.label)}</span>`
+    : "";
+  const cleanupBadge = session.paperclipCleanup?.status === "cleaned"
+    ? `<span class="chip chip-cleanup">Cleanup archived</span>`
+    : "";
+  const dismissLocked = isPaperclipCleanupLocked(session);
+  const cleanupButton = paperclipMeta.isCleanupEligible && pendingTasks.length
+    ? `<button class="btn btn-danger btn-sm" onclick="cleanupPaperclipTestSession('${session.id}')">${icon("x")} Cleanup test</button>`
+    : "";
 
   const card = document.createElement("div");
   card.className = `review-session-card${expanded ? " active" : ""}`;
@@ -139,7 +153,7 @@ function buildSessionCard(session) {
   const hdr = document.createElement("div");
   hdr.className = "review-session-header";
   hdr.innerHTML = `
-    <div class="review-session-mark">${session.source === "paperclip_mock" ? icon("gitMerge") : icon("upload")}</div>
+    <div class="review-session-mark">${sourceIcon}</div>
     <input type="checkbox" class="review-task-checkbox" title="Select visible pending tasks"
       ${pendingTasks.length ? "" : "disabled"}
       ${allVisibleSelected ? "checked" : ""}
@@ -150,6 +164,8 @@ function buildSessionCard(session) {
         <span>${dateStr}</span>
         <span class="review-meta-dot">-</span>
         <span class="chip chip-source">${esc(formatReviewSource(session.source))}</span>
+        ${paperclipBadge}
+        ${cleanupBadge}
         <span class="review-meta-dot">-</span>
         <span>${tasks.length} tasks extracted</span>
       </div>
@@ -161,7 +177,8 @@ function buildSessionCard(session) {
       <button class="btn btn-ghost btn-sm review-expand-btn" onclick="toggleReviewSession('${session.id}')">
         ${expanded ? "Collapse" : "Review"}
       </button>
-      ${allProcessed
+      ${cleanupButton}
+      ${allProcessed && !dismissLocked
         ? `<button class="btn btn-ghost btn-sm" style="color:var(--text-muted)" onclick="dismissReviewSession('${session.id}')">${icon("x")} Dismiss</button>`
         : ""}
     </div>
@@ -181,13 +198,16 @@ function buildSessionCard(session) {
 async function loadSessionTasks(sessionId, taskListEl) {
   taskListEl.innerHTML = '<div class="loading-box review-inline-loading"><span class="spinner"></span></div>';
   try {
-    const session = await api.get(`/api/reviews/${sessionId}`);
+    const [session, paperclipDocsIndex] = await Promise.all([
+      api.get(`/api/reviews/${sessionId}`),
+      loadPaperclipDocsIndex(),
+    ]);
     taskListEl.innerHTML = "";
     const tasks = session.tasks || [];
     if (!tasks.length) {
       taskListEl.innerHTML = '<div class="review-task-empty">No tasks in this session.</div>';
     } else {
-      tasks.forEach(task => taskListEl.appendChild(buildTaskCard(session, task)));
+      tasks.forEach(task => taskListEl.appendChild(buildTaskCard(session, task, paperclipDocsIndex)));
     }
     taskListEl.dataset.loaded = "1";
   } catch (e) {
@@ -195,14 +215,15 @@ async function loadSessionTasks(sessionId, taskListEl) {
   }
 }
 
-function buildTaskCard(session, task) {
+function buildTaskCard(session, task, paperclipDocsIndex = []) {
   const el = document.createElement("div");
   el.id = `task-${task.id}`;
   el.dataset.sessionId = session.id;
+  const linkedDocs = getLinkedPaperclipDocs(session, task, paperclipDocsIndex);
 
   if (task.status !== "pending") {
     el.className = "review-task-card task-processed";
-    el.innerHTML = buildProcessedTaskHTML(task);
+    el.innerHTML = buildProcessedTaskHTML(task, linkedDocs);
     return el;
   }
 
@@ -218,6 +239,7 @@ function buildTaskCard(session, task) {
   const reasoning = task.reasoning || task.description || task.sourceText || "";
   const boardLabel = reviewBoardName(task.targetBoardId);
   const dueLabel = task.deadline ? formatThaiDateTime(task.deadline) : "No due date";
+  const paperclipContext = renderPaperclipReviewContext(session);
 
   el.innerHTML = `
     <div class="review-task-header">
@@ -237,6 +259,7 @@ function buildTaskCard(session, task) {
         ${matchHint}
       </div>
     </div>
+    ${paperclipContext}
     <div class="review-task-meta-row">
       <span><span class="label">Owner</span>${esc(task.owner || "Unassigned")}</span>
       <span><span class="label">Due</span>${esc(dueLabel)}</span>
@@ -244,6 +267,7 @@ function buildTaskCard(session, task) {
       <span><span class="label">Priority</span><span class="chip ${reviewPriorityClass(task.priority)}">${icon("flag")}${esc(task.priority || "medium")}</span></span>
     </div>
     ${reasoning ? `<div class="review-reasoning"><strong>AI:</strong> ${esc(reasoning)}</div>` : ""}
+    ${renderLinkedPaperclipDocs(linkedDocs)}
     <div class="review-task-actions">
       <label class="review-toggle-label">
         <input type="checkbox" ${task.syncCalendar ? "checked" : ""}
@@ -282,8 +306,54 @@ function formatReviewSource(source) {
     manual_upload: "Manual upload",
     discord: "Discord",
     paperclip_mock: "Paperclip mock",
+    paperclip_webhook: "Paperclip live",
+    paperclip_docs_mock: "Paperclip docs",
   };
   return map[source] || source || "Manual";
+}
+
+function getPaperclipReviewMeta(session) {
+  const source = String(session?.source || "").toLowerCase();
+  const externalSystem = String(session?.externalSource?.system || "").toLowerCase();
+  const requestId = String(session?.requestId || "").toLowerCase();
+  const agentRole = String(session?.agent?.agentRole || "").toLowerCase();
+  const title = String(session?.title || "").toLowerCase();
+  const auditTypes = (session?.auditTrail || []).map(event => String(event.type || "").toLowerCase());
+  const isPaperclip = source.startsWith("paperclip_")
+    || externalSystem === "paperclip"
+    || requestId.startsWith("pc_")
+    || auditTypes.some(type => type.startsWith("paperclip_"));
+  const isTestOrCanary = /^(pc_live_interop_|pc_interop_|pc_canary_|pc_live_canary_|pc_daily_monitor_|pc_monitor_|pc_standing_|pc_true_external_|pc_w3_03_|pc_cleanup_)/.test(requestId)
+    || /^(interop_test|canary|daily_monitor|monitor|live_canary)$/.test(agentRole)
+    || /(live interop|interop test|canary|daily monitor|monitor canary|standing observation)/.test(title);
+  return {
+    isPaperclip,
+    isTestOrCanary,
+    isCleanupEligible: isPaperclip && isTestOrCanary && session?.paperclipCleanup?.status !== "cleaned",
+    label: isTestOrCanary ? "Paperclip test/canary" : "Paperclip live work",
+  };
+}
+
+function isPaperclipCleanupLocked(session) {
+  return session?.paperclipCleanup?.status === "cleaned" && getPaperclipReviewMeta(session).isPaperclip;
+}
+
+function renderPaperclipReviewContext(session) {
+  const meta = getPaperclipReviewMeta(session);
+  if (!meta.isPaperclip) return "";
+  const requestId = session.requestId || "No request ID";
+  const agentRunId = session.agent?.runId || "No agent run ID";
+  const env = session.externalSource?.environment || "unknown env";
+  const helpText = meta.isTestOrCanary
+    ? "This is test/canary Paperclip work. Use cleanup or reject, do not approve into external tools."
+    : "This is real Paperclip work. Keep human approval before any Trello, Calendar, or Google Tasks side effect.";
+  return `
+    <div class="review-paperclip-context ${meta.isTestOrCanary ? "is-test" : "is-live"}">
+      <strong>${esc(meta.label)}</strong>
+      <span>${esc(helpText)}</span>
+      <small>Request ${esc(requestId)} - Run ${esc(agentRunId)} - ${esc(env)}</small>
+    </div>
+  `;
 }
 
 function reviewBoardName(boardId) {
@@ -295,7 +365,7 @@ function reviewListLabel(task) {
   return task.targetListName || task.listName || "Selected list";
 }
 
-function buildProcessedTaskHTML(task) {
+function buildProcessedTaskHTML(task, linkedDocs = []) {
   const approved  = task.status === "approved";
   const color     = approved ? "var(--success)" : "var(--text-faint)";
   const label     = approved ? "Approved" : "Rejected";
@@ -316,9 +386,95 @@ function buildProcessedTaskHTML(task) {
           ${trelloTip}
         </div>
         ${reasonTip}
+        ${renderLinkedPaperclipDocs(linkedDocs)}
       </div>
     </div>
   `;
+}
+
+async function loadPaperclipDocsIndex() {
+  if (Array.isArray(S.paperclipDocsIndex)) return S.paperclipDocsIndex;
+  try {
+    const payload = await api.get("/api/integrations/paperclip/mock/docs");
+    S.paperclipDocsIndex = Array.isArray(payload.documents) ? payload.documents : [];
+  } catch (_error) {
+    S.paperclipDocsIndex = [];
+  }
+  return S.paperclipDocsIndex;
+}
+
+function getLinkedPaperclipDocs(session, task, docsIndex) {
+  if (!session?.requestId || !task?.externalTaskId || !Array.isArray(docsIndex)) return [];
+  return docsIndex
+    .filter(doc => (doc.linkedTasks || []).some(link =>
+      link.requestId === session.requestId && link.externalTaskId === task.externalTaskId
+    ))
+    .map(doc => ({
+      artifactId: doc.artifactId,
+      title: doc.title,
+      status: doc.status,
+      artifactType: doc.artifactType,
+      agentName: doc.agent?.agentName,
+      agentRunId: doc.agent?.runId,
+      sourceSystem: "paperclip",
+    }));
+}
+
+function renderLinkedPaperclipDocs(linkedDocs) {
+  if (!linkedDocs.length) return "";
+  return `
+    <div class="review-linked-docs">
+      <span class="review-linked-docs-label">${icon("layout")} Paperclip docs</span>
+      ${linkedDocs.map(doc => `
+        <button type="button" class="review-linked-doc" onclick="openLinkedPaperclipDoc('${esc(doc.artifactId)}')">
+          <span>${esc(doc.title || doc.artifactId)}</span>
+          <small class="review-linked-doc-meta">
+            <span>Open in Docs</span>
+            <span>Type: ${esc(formatDocsLabel(doc.artifactType || "document"))}</span>
+            <span>Status: ${esc(formatDocsLabel(doc.status || "ready"))}</span>
+            <span>Run: ${esc(doc.agentRunId || "No agent run")}</span>
+            <span>Agent: ${esc(doc.agentName || "Paperclip agent")}</span>
+          </small>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function openLinkedPaperclipDoc(artifactId) {
+  S.docsSelectedArtifactId = artifactId;
+  navigateTo("docs");
+}
+
+function expandLinkedReviewSession(sessions) {
+  const link = S.pendingReviewTaskLink;
+  if (!link?.requestId || !Array.isArray(sessions)) return;
+  const session = sessions.find(item => item.requestId === link.requestId);
+  if (session?.id) S.reviewExpanded.add(session.id);
+}
+
+function focusPendingReviewTaskLink(sessions) {
+  const link = S.pendingReviewTaskLink;
+  if (!link?.requestId || !link?.externalTaskId || !Array.isArray(sessions)) return;
+  const session = sessions.find(item => item.requestId === link.requestId);
+  if (!session?.id) {
+    toast("Linked Review Queue task is not available in this local store", true);
+    return;
+  }
+
+  setTimeout(async () => {
+    const taskList = $(`task-list-${session.id}`);
+    if (taskList && !taskList.dataset.loaded) await loadSessionTasks(session.id, taskList);
+    const latest = await api.get(`/api/reviews/${session.id}`);
+    const task = (latest.tasks || []).find(item => item.externalTaskId === link.externalTaskId);
+    const taskEl = task ? $(`task-${task.id}`) : null;
+    if (taskEl) {
+      taskEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      taskEl.classList.add("review-task-linked-focus");
+      setTimeout(() => taskEl.classList.remove("review-task-linked-focus"), 2400);
+    }
+    S.pendingReviewTaskLink = null;
+  }, 120);
 }
 
 // Review drawer foundation shared by V0.2-W2-02 and later W2 task surfaces.
@@ -567,6 +723,32 @@ async function rejectReviewTask(sessionId, taskId) {
   } catch (e) {
     toast("Error: " + e.message, true);
     if (rejBtn) { rejBtn.innerHTML = `${icon("x")} Reject`; rejBtn.disabled = false; }
+  }
+}
+
+async function cleanupPaperclipTestSession(sessionId) {
+  const card = $(`session-${sessionId}`);
+  const title = card?.querySelector(".review-session-title")?.textContent || "this Paperclip test session";
+  if (!confirm(`Cleanup ${title}? Pending test tasks will be rejected and kept for audit. No Trello, Calendar, or Google Tasks actions will run.`)) return;
+  const btn = card?.querySelector(".review-session-controls .btn-danger");
+  if (btn) {
+    btn.textContent = "Cleaning...";
+    btn.disabled = true;
+  }
+  try {
+    const result = await api.post(`/api/reviews/${sessionId}/paperclip-test-cleanup`, {
+      reason: "Reviewer cleanup of Paperclip test/canary Review Queue artifacts",
+    });
+    S.reviewSelected.delete(sessionId);
+    S.reviewExpanded.add(sessionId);
+    toast(`Cleaned ${result.paperclipCleanup?.cleanedTaskCount || 0} Paperclip test task${result.paperclipCleanup?.cleanedTaskCount === 1 ? "" : "s"}`);
+    await showReviewPage();
+  } catch (e) {
+    toast("Cleanup failed: " + e.message, true);
+    if (btn) {
+      btn.innerHTML = `${icon("x")} Cleanup test`;
+      btn.disabled = false;
+    }
   }
 }
 

@@ -3,8 +3,8 @@
 **Doc Role:** Durable product and operating context
 **Status:** Active
 **Owner:** PM
-**Last Updated:** 2026-05-08
-**Updated by:** Codex PM
+**Last Updated:** 2026-05-14
+**Updated by:** Codex PM / Documentation Architect
 
 This document gives agents the stable context needed to make local decisions without re-deriving the product model every session.
 
@@ -12,11 +12,15 @@ This document gives agents the stable context needed to make local decisions wit
 
 ## Product Summary
 
-Trisilar Task Hub is a local-first team command center that aggregates execution work from Trello and related operational systems. It is not intended to replace project boards. The durable operating model is:
+Trisilar Task Hub is a local-first team command center that aggregates execution work from Trello and related operational systems. It is not intended to replace project boards. The durable operating model is now detailed in `ORGANIZATION_OPERATING_MODEL.md`:
 
 ```text
-Project Boards = execution surfaces
-Task Hub = command center, portfolio view, review queue, and focus layer
+Trello = execution surface
+Task Hub = command center and review/control layer
+Review Queue = human approval gate
+Paperclip and future AI agents = controlled intake sources
+Runtime governance = access, secrets, monitoring, rollback, audit
+Codex agents = development workforce operating through branches/worktrees
 ```
 
 The app supports daily work, review flow, board health, OKR/portfolio visibility, weekly focus planning, and team coordination.
@@ -31,7 +35,7 @@ The app supports daily work, review flow, board health, OKR/portfolio visibility
 | Google Calendar | Calendar/connect status and scheduling context |
 | Google Tasks | Task sync target/source where configured |
 | AI Review Queue | Review/QA workflow for AI-agent output |
-| Paperclip | Planned V0.2 multi-agent integration |
+| Paperclip | Controlled AI intake source through Task Hub Review Queue; live webhook remains disabled by default unless PM accepts standing enablement |
 
 ---
 
@@ -58,7 +62,7 @@ V0.2 has three parallel goals:
 2. Full UI redesign with consistent navigation, layout, and design system.
 3. Paperclip multi-agent integration for AI team handoff, attribution, and review flow.
 
-These workstreams must run from separate branches and worktrees.
+These workstreams must run from separate branches and worktrees. V0.3 long-term role ownership is documented in `AI_AGENT_GOVERNANCE.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and `../agents/`.
 
 ---
 

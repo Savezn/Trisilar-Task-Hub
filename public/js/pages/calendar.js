@@ -74,7 +74,7 @@ async function renderCalendar() {
         CAL.status?.connected
           ? api.get(`/api/calendar/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`).catch(() => [])
           : Promise.resolve([]),
-        CAL.selectedBoardIds.length
+        isTrelloVerified() && CAL.selectedBoardIds.length
           ? api.post("/api/boards/cards", { boardIds: CAL.selectedBoardIds })
           : Promise.resolve([]),
       ]);

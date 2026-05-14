@@ -18,6 +18,10 @@ async function showTodayPage() {
   content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading tasks...</div>';
 
   try {
+    if (!isTrelloVerified()) {
+      content.innerHTML = trelloRouteUnavailableHtml("Today");
+      return;
+    }
     const todayStart    = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const tomorrowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
 
@@ -31,7 +35,7 @@ async function showTodayPage() {
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
     renderTodayPage(getAllowedCards(), dateStr, sessions, calEvents);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Error: ${esc(e.message)}</p></div>`;
+    content.innerHTML = trelloRouteUnavailableHtml("Today");
   }
 }
 
@@ -50,6 +54,25 @@ function relativeDue(isoString) {
   if (days < 0) return `${Math.abs(days)}d overdue`;
   if (days <= 7) return `In ${days}d ${time}`;
   return formatThaiDateTime(isoString);
+}
+
+function todayContextLabel(card) {
+  return [card.boardName || "Trello", card.listName || "No list"].filter(Boolean).join(" / ");
+}
+
+function todayNextActionLabel(card, state) {
+  if (state === "overdue") return "Next action: reschedule or mark done";
+  if (state === "today") return "Next action: do today or mark done";
+  if (state === "upcoming") return "Next action: plan next";
+  return card.dueComplete ? "Next action: reopen if needed" : "Next action: open task";
+}
+
+function buildTodayDecisionCue(card, state) {
+  return `
+    <span class="today-decision-chip">Source: Trello</span>
+    <span class="today-decision-chip">Context: ${esc(todayContextLabel(card))}</span>
+    <span class="today-decision-chip today-next-action">${esc(todayNextActionLabel(card, state))}</span>
+  `;
 }
 
 function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
@@ -98,7 +121,7 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
       <div>
         <div class="today-kicker">${esc(dateStr)}</div>
         <div class="today-title">Daily command center</div>
-        <div class="today-subtitle">${totalAttention} items need attention: ${overdue.length} overdue, ${dueToday.length} due today, ${pendingCount} pending review.</div>
+        <div class="today-subtitle">Start here: ${totalAttention} items need attention across Trello and Review Queue: ${overdue.length} overdue, ${dueToday.length} due today, ${pendingCount} pending review.</div>
       </div>
       <div class="today-header-actions">
         <button class="btn btn-primary btn-sm" type="button" data-today-action="focus-quick-add">${typeof icon === "function" ? icon("plus") : ""}Quick add</button>
@@ -134,14 +157,16 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
 
   if (hero) {
     const isHeroOverdue = overdue.some(c => c.id === hero.id);
+    const heroState = isHeroOverdue ? "overdue" : dueToday.some(c => c.id === hero.id) ? "today" : "upcoming";
     const focus = document.createElement("div");
     focus.className = "today-focus-card";
     focus.innerHTML = `
-      <div class="today-focus-eyebrow">${typeof icon === "function" ? icon(isHeroOverdue ? "alert" : "target") : ""}${isHeroOverdue ? "Most overdue" : "Next up"} · ${esc(hero.boardName || "Trello")}</div>
+      <div class="today-focus-eyebrow">${typeof icon === "function" ? icon(isHeroOverdue ? "alert" : "target") : ""}Start here - ${isHeroOverdue ? "Most overdue" : "Next up"} - Source: Trello</div>
       <div class="today-focus-time">${esc(relativeDue(hero.due))}</div>
       <div class="today-focus-title">${esc(hero.name)}</div>
       <div class="today-focus-meta">
-        <span>${esc(hero.listName || "No list")}</span>
+        <span>Context: ${esc(todayContextLabel(hero))}</span>
+        <span>${esc(todayNextActionLabel(hero, heroState))}</span>
         ${hero.dueComplete ? "<span>Done</span>" : ""}
       </div>
       <div class="today-focus-actions">
@@ -216,8 +241,9 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
     const reviewCard = document.createElement("div");
     reviewCard.className = "today-review-card";
     reviewCard.innerHTML = `
-      <div class="today-focus-eyebrow" style="color:var(--purple)">${typeof icon === "function" ? icon("sparkles") : ""}AI Review · ${pendingCount} task${pendingCount === 1 ? "" : "s"}</div>
+      <div class="today-focus-eyebrow" style="color:var(--purple)">${typeof icon === "function" ? icon("sparkles") : ""}Needs human approval - ${pendingCount} pending task${pendingCount === 1 ? "" : "s"}</div>
       <div class="today-review-card-title">${esc(firstSession?.title || "Meeting tasks waiting for review")}</div>
+      <div class="today-review-note">Review before execution. Pending items are not active Trello work until approved.</div>
       <div class="today-review-card-meta">
         <span>${activeReviewSessions} active session${activeReviewSessions === 1 ? "" : "s"}</span>
         <button class="btn btn-primary btn-sm" type="button" data-today-action="review">Review</button>
@@ -412,6 +438,7 @@ function buildTodayRow(card, chipClass, chipLabel) {
   const dueText = card.due ? relativeDue(card.due) : "";
   const dueDateVal = card.due ? card.due.slice(0, 10) : "";
   const isOverdue = chipClass === "chip-overdue";
+  const state = chipClass === "chip-overdue" ? "overdue" : chipClass === "chip-today" ? "today" : "upcoming";
 
   row.innerHTML = `
     <div class="today-task-main">
@@ -425,6 +452,7 @@ function buildTodayRow(card, chipClass, chipLabel) {
             ? `<input type="date" class="today-date-picker" value="${dueDateVal}" title="Reschedule">`
             : `<span class="today-task-due">${esc(dueText)}</span>`}
         </span>
+        <span class="today-decision-line">${buildTodayDecisionCue(card, state)}</span>
       </span>
     </div>
     <div class="today-task-actions">

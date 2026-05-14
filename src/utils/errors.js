@@ -8,7 +8,7 @@ function friendlyError(e) {
     msg.includes("unauthorized")  || msg.includes("401") ||
     msg.includes("not authorized")
   ) {
-    return "Trello connection failed. Check API key in .env";
+    return "Trello connection needs Runtime verification. Credentials are missing, expired, or invalid.";
   }
   if (
     msg.includes("invalid_grant") || msg.includes("invalid grant") ||

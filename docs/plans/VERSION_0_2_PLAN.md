@@ -3,10 +3,10 @@
 **Doc Role:** Active version plan
 **Status:** Active - canonical task IDs adopted; old W1/W2/W3 short labels kept as aliases
 **Version:** V0.2
-**Planning Stage:** W2-06 integrated and PM accepted on dev
+**Planning Stage:** W3-02 live connector accepted; runtime live gate disabled by default
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../../MVP_PRD.md`, `VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md`, `VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../logs/DECISION_LOG.md`
 **Theme:** Enable parallel agents safely while moving from manual demo access toward stable Cloudflare-protected hosted dev/demo runtime for Task Hub and service-auth with hosted Paperclip.
 
@@ -42,7 +42,7 @@ L1 Access Foundation + L2 Full UI Redesign + L3 Paperclip Foundation
 -> L4 V0.2 Integration Release
 ```
 
-V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Paperclip is now hosted on DigitalOcean behind Cloudflare by the Paperclip owner, but Paperclip runtime verification is held while the Paperclip server is offline. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. W3 live connector work still needs Paperclip owner inputs before implementation planning.
+V0.2 is not release-ready until W1 stable access-gated preview evidence, W2 full UI redesign integration acceptance through `V0.2-W2-06` (`W2f`), and W3 mock/integration verification are all accepted. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`, completing the W2 full UI redesign line on `dev`. `V0.2-W1-05` is accepted as a random ngrok URL manual demo path only; it does not replace the stable access gate. Task Hub is accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access; W1 service-auth topology is accepted. Paperclip runtime inputs are confirmed for W3 planning: hosted base URL `https://paperclip.trisila.online`, health path `/healthz`, source id `paperclip-do-dev`, environment `dev`, local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check returned `200` from the Paperclip server. W3 live connector code and live sender interop are accepted at `c1e4df2` and merged to `dev` at `a89c26a`; limited, true external, standing observation, and two follow-up canaries passed. Runtime `PAPERCLIP_WEBHOOK_ENABLED=true` remains active for dev/demo observation, but routine monitoring is now read-only to avoid adding unnecessary pending canary tasks. Production/release-grade promotion remains out of scope.
 
 ---
 
@@ -98,9 +98,9 @@ W0 first -> W1/W2/W3 parallel -> integration QA on dev -> release to main
 | ID | Workstream | Owner Role | Status | Scope |
 |---|---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Dev / PM | Done `9dbb47b` / QA Pass | Create `dev`, define env/deploy/PR rules, add verification gate |
-| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while server is offline | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
+| W1 | Company Access + Deployment | Platform Dev / PM | `V0.2-W1-01`-`V0.2-W1-03` done; `V0.2-W1-04` accepted/amended; `V0.2-W1-05` accepted demo-only; `V0.2-W1-06`/`V0.2-W1-08` QA Pass / PM Accepted for dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime inputs confirmed for W3 planning | Internal access, teammate preview, hosted dev/demo runtime, env/secrets, future agent access pattern |
 | W2 | Full UI Redesign | Frontend Dev | `V0.2-W2-01` accepted `b5f67fb`; `V0.2-W2-02` accepted `d33d8f7`; `V0.2-W2-03` accepted `ea807fd`; `V0.2-W2-04` accepted `47ebd84` and integrated on `dev@0b77aed`; `V0.2-W2-05` accepted `4638df7` and integrated on `dev@3fca059`; `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948` | Design system, shell/nav, page-by-page redesign, responsive QA |
-| W3 | Paperclip Multi-Agent Integration | Integration Dev | `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev`; live connector blocked while Paperclip server is offline and owner inputs remain unconfirmed | Contract-first mock adapter, attribution/audit sync; live connector waits for stable hosted runtime and auth |
+| W3 | Paperclip Multi-Agent Integration | Complete for V0.2 / standing dev-demo monitor active | `V0.2-W3-01` done; `V0.2-W3-02` live connector/interops accepted; `V0.2-W3-03` standing dev/demo observation active with read-only monitoring; `V0.2-W3-04` cleanup and `V0.2-W3-04a` audit retention merged to `dev@7ea4650`; `V0.2-W3-05` operations status and copy polish merged/deployed at `dev@2c302dc`; closeout status is on `origin/dev@ff20e48` | Contract-first mock adapter, attribution/audit sync, live connector, cleanup, and read-only live operations hardening |
 
 ---
 
@@ -137,8 +137,11 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | Canonical ID | Alias | Status | Scope |
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Done `1d1f638` | Contract definitions, mock adapter route, idempotency/audit persistence, and mock verification |
-| `V0.2-W3-02` | W3 sequence 2 | Blocked / Future | Live webhook route after Paperclip server is online and owner inputs are confirmed |
-| `V0.2-W3-03` | W3 sequence 3 | Future | Additional source signature and replay hardening after the first live webhook is verified |
+| `V0.2-W3-02` | W3 sequence 2 | PM Accepted | Live webhook route, signed request validation, connection gate, idempotency, local QA, and live sender interop verified |
+| `V0.2-W3-03` | W3 sequence 3 | PM Accepted | Controlled live enablement policy, rollback, owner permissions, monitoring/audit, and additional source signature/replay hardening after merge/integration acceptance |
+| `V0.2-W3-04` | W3 sequence 4 | PM Accepted / merged to `dev@7ea4650` | Paperclip Review Queue cleanup for accumulated live/canary test sessions without auto-approval or external side effects |
+| `V0.2-W3-04a` | W3 sequence 4a | PM Accepted / merged to `dev@7ea4650` | Cleanup audit retention guard for cleaned Paperclip test/canary sessions |
+| `V0.2-W3-05` | W3 sequence 5 | QA Pass / PM Accepted | Read-only Paperclip live operations/status hardening for standing dev/demo monitoring |
 
 Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them in chat, normalize the next PM update to the canonical `V0.2-W3-XX` form.
 
@@ -259,7 +262,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 **Priority:** P1 after W0
 **Owner Role:** Integration Dev
-**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; live connector remains blocked until runtime/auth topology is stable
+**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02` live connector code and live interop accepted at `c1e4df2` and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy PM Accepted; standing dev/demo observation active with read-only monitor; `V0.2-W3-04` cleanup and `V0.2-W3-04a` audit retention PM Accepted and merged to `dev@7ea4650`; `V0.2-W3-05` QA Pass / PM Accepted, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`
 
 **Scope:**
 - Integration contract.
@@ -271,7 +274,15 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 - Task Hub is accepted as a stable hosted dev/demo URL through DigitalOcean + Cloudflare.
 - Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
-- W3 live connector work can proceed after Paperclip owner inputs are confirmed.
+- W3 live connector work is accepted at `c1e4df2` after Paperclip runtime inputs and Task Hub service-token reachability were confirmed.
+- W3 was merged into `dev` at `a89c26a`; live runtime enablement is a separate PM-controlled policy gate.
+- Live interop returned HTTP `201` for request `pc_live_interop_20260514115714`; it created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a` and kept the task `pending`.
+- Limited and true external sender windows passed; true external request `pc_true_external_20260514064709` created pending session `0e8f8b2e-d767-44ef-854c-538481c124c8`.
+- Standing dev/demo observation window started; request `pc_standing_observation_20260514092342` created pending session `884fec91-26e9-40e9-91af-6a11f91f317f`.
+- Runtime `PAPERCLIP_WEBHOOK_ENABLED=true` remains active for dev/demo observation and must be rolled back to `false` if stop conditions occur.
+- After two follow-up canaries passed and pending Paperclip tasks reached 6, routine monitoring is read-only unless PM/QA requests an active signed canary or runtime/config changes require one.
+- `V0.2-W3-04` and `V0.2-W3-04a` are accepted and merged to `dev@7ea4650`. Runtime cleanup changed accumulated Paperclip live/canary/test Review Queue sessions from 6 pending / 0 approved / 0 rejected / 0 Trello-linked to 0 pending / 0 approved / 6 rejected / 0 Trello-linked, with cleanup audit retained.
+- `V0.2-W3-05` is accepted, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`. It adds read-only operations/status visibility so routine monitoring does not require creating canary tasks.
 
 ---
 
@@ -305,20 +316,32 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. Do not route W1 deployment/access work or W3 Paperclip work from this W2 handoff.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention, operations hardening, and copy polish on latest `origin/dev`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only. V0.3 operating model and long-term agent team structure are PM accepted and merged to `dev@ed9fae0`; V0.3 Product Reliability + UX Stabilization is complete on dev/dev-demo and PM accepted for main promotion through PR #20.
 
 ```text
 Role: PM
-Task: V0.2-W2-06 W2 Workstream Hold / Complete
-Alias: W2f
+Task: Decide the next project route after V0.3 main release acceptance
 
-Context:
-`V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`. This completes W2 full UI redesign on `dev`.
+Completed baseline:
+origin/dev@e05eb66
+release candidate PR #20 at 5eb23ef
+dev/demo runtime deployed from dev@e05eb66
+
+Goal:
+Choose whether to hold after main promotion, route the next roadmap item, or open a separate production runtime/deploy decision.
 
 Rules:
-- Do not start W1 deployment/access work from this W2 handoff.
-- Do not start W3 Paperclip work from this W2 handoff.
-- Do not start new W2 implementation unless PM opens a new W2-only phase.
+- Do not send Paperclip webhooks.
+- Do not create canary tasks.
+- Do not add outbound Paperclip network calls.
+- Do not auto-approve tasks.
+- Do not create Trello cards, Calendar events, or Google Tasks.
+- Do not change W1 deployment/access or W2 visual redesign.
+- Do not expose secrets.
+- Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
+
+Expected output:
+- Next named phase or release decision.
 ```
 
 ---
@@ -352,3 +375,22 @@ Rules:
 | 2026-05-13 | Held W1 Paperclip runtime verification because the Paperclip server is offline; kept Task Hub runtime accepted and routed non-blocked work to `V0.2-W2-06` | Codex PM |
 | 2026-05-13 | Accepted `V0.2-W2-06` Settings + OKR + Weekly Focus Polish at `bd3e441`; routed next to Dev Integration into `dev` | Codex PM |
 | 2026-05-13 | Accepted `V0.2-W2-06` integration on `origin/dev@523c948`; marked W2 full UI redesign complete on the integrated `dev` line | Codex PM |
+| 2026-05-14 | Recorded Paperclip runtime inputs and Task Hub service-token `/healthz` success from the Paperclip server; routed next implementation to `V0.2-W3-02` live Paperclip -> Task Hub webhook connector | Codex PM / Runtime |
+| 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
+| 2026-05-14 | PM accepted `V0.2-W3-03` controlled live enablement policy after W3 merge to `dev` at `a89c26a`; default runtime gate remains `PAPERCLIP_WEBHOOK_ENABLED=false` until a named live window starts | Codex PM |
+| 2026-05-14 | Completed limited `V0.2-W3-03` runtime-local signed canary window; request `pc_w3_03_window_20260514062346` created pending session `7dd7d2a3-377c-4336-ba75-ba1c312635d2`, replay/negative checks passed, and runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / QA |
+| 2026-05-14 | PM held standing Paperclip enablement; keep `PAPERCLIP_WEBHOOK_ENABLED=false` and schedule one true external Paperclip sender window with Runtime Owner, Paperclip Owner, and QA Owner | Codex PM |
+| 2026-05-14 | Completed true external `V0.2-W3-03` Paperclip sender window from Paperclip runtime host/env through Cloudflare Access and HMAC; request `pc_true_external_20260514064709` created pending session `0e8f8b2e-d767-44ef-854c-538481c124c8`, replay/negative checks passed, and runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex Runtime Owner / Paperclip Owner / QA |
+| 2026-05-14 | Started planning `V0.2-W3-03` standing dev/demo enablement policy with Monitor Owner, Rollback Owner, daily/weekly monitoring, stop conditions, rollback steps, and PM acceptance criteria; runtime remains `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex PM |
+| 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; request `pc_standing_observation_20260514092342` created pending session `884fec91-26e9-40e9-91af-6a11f91f317f`, replay/negative checks passed, health stayed `200`, and runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window | Codex PM / Runtime Owner / QA / Paperclip Owner |
+| 2026-05-14 | PM kept standing dev/demo enablement active but changed routine monitoring to read-only after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |
+| 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup for accumulated live/canary test sessions without auto-approval or external side effects | Codex PM |
+| 2026-05-14 | Accepted `V0.2-W3-04` and `V0.2-W3-04a`; cleanup and audit retention guard merged to `dev@7ea4650`, deployed to runtime, and cleaned Paperclip test artifacts from 6 pending to 0 pending / 6 rejected / 0 Trello-linked | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Planned `V0.2-W3-05` Paperclip Live Operations Hardening as a read-only operations/status surface for standing dev/demo monitoring without canary creation or outbound Paperclip calls | Codex PM |
+| 2026-05-14 | Accepted `V0.2-W3-05` at `b0d70ff`; operations status is read-only, secret-safe, and integrated on latest `origin/dev` | Codex PM / QA / Integration Owner |
+| 2026-05-14 | Merged and deployed `V0.2-W3-05` at `dev@2c302dc`; W3 Paperclip Foundation is complete for V0.2 while standing dev/demo read-only monitoring continues | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Routed post-V0.2 planning to V0.3 operating model and long-term agent structure review | Codex PM / Documentation Architect |
+| 2026-05-14 | Accepted V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |
+| 2026-05-14 | Recorded V0.3 RUX acceptance through `V0.3-RUX-06` and later closed it on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM / Integration Owner |
+| 2026-05-14 | Closed V0.3 RUX complete on `origin/dev@02fe7cf` and dev/demo runtime after runtime QA pass | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |
