@@ -83,6 +83,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.2-W3-04 - Paperclip Review Queue Cleanup | QA Pass / PM Accepted | `1af8273` |
 | V0.2-W3-04a - Paperclip Cleanup Audit Retention | QA Pass / PM Accepted / merged to dev | `dev@7ea4650` |
 | V0.2-W3-05 - Paperclip Live Operations Hardening | QA Pass / PM Accepted / merged and deployed | `dev@2c302dc`, `ff20e48` |
+| V0.2 Release / Integration Cleanup QA | QA Pass / branch cleanup complete | `origin/dev@8027324` |
 
 ---
 
@@ -91,6 +92,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 
 | Date | Round | Result | Notes |
 |---|---|---|---|
+| 2026-05-14 | V0.2 release/integration cleanup QA | Pass | Clean QA worktree `codex/v02-release-integration-qa` from `origin/dev@8027324`; `npm ci`, `check:all` with isolated server, Paperclip contract/mock/webhook/cleanup/docs/operations/connection checks, RUX browser regression, AI trace clarity, Today/Tasks decision flow, and Trello connection UX checks passed. Stale W1/W2/W3 worktree metadata, folders, local branches, and remote workstream branches were removed after verification. |
 | 2026-05-06 | R1 | ✅ Pass | B10–B15 pass ทุกข้อ |
 | 2026-05-06 | R2 | ✅ Pass | B16, B17 pass; B18 found & fixed ใน P9-4 session |
 | 2026-05-06 | R3 | ✅ Pass | P9-4 (Boards Monitor Label Filter) pass ทุกข้อ |

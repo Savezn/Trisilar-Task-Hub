@@ -21,6 +21,7 @@
 | V0.2 W3 Paperclip mock/docs/settings/live connector | PM Accepted through `V0.2-W3-05`; merged/deployed on `dev@2c302dc` | Contract, mock route, Docs, Settings gate, live webhook, live interop, cleanup, cleanup audit retention, and read-only operations status accepted |
 | V0.2 W3 runtime cleanup | Complete | Runtime deployed from `dev@7ea4650`; Paperclip test/canary sessions cleaned from 6 pending to 0 pending / 6 rejected / 0 Trello-linked |
 | V0.2 W3 standing dev/demo observation | Active with read-only monitor automation | `PAPERCLIP_WEBHOOK_ENABLED=true` on dev/demo; active signed canary only on PM/QA request or after runtime/sender changes |
+| V0.2 branch/worktree residue | Cleaned after release/integration QA | Stale W1/W2/W3 worktrees, folders, local branches, and remote workstream branches removed after QA passed on `origin/dev@8027324` |
 | Latest W3 dev closeout | `origin/dev@ff20e48` | `V0.2-W3-05` operations status and settings copy polish merged/deployed at `dev@2c302dc`; W3 foundation closeout status is on latest `dev` |
 | V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
 | V0.3 Product Reliability + UX Stabilization | PM accepted for main promotion through PR #20 | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, and release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`. Production deploy remains a separate runtime decision. |
@@ -96,10 +97,10 @@ Completed V0.3 integration branch/worktree:
 - Branch: `codex/integrate-v03-rux-into-dev`
 - Worktree: `trisilar-task-hub-operating-model-integration`
 
-Required W3 branch/worktree for W3-only work:
+Historical W3 branch/worktree:
 
-- Branch: `feature/w3-paperclip-integration`
-- Worktree: `trisilar-task-hub-w3-paperclip`
+- Branch: `feature/w3-paperclip-integration` (deleted after merge/QA cleanup)
+- Worktree: `trisilar-task-hub-w3-paperclip` (deleted after merge/QA cleanup)
 
 Parallel rule:
 
