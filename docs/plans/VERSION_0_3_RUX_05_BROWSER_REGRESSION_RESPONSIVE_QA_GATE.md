@@ -1,10 +1,10 @@
 # V0.3-RUX-05 Browser Regression + Responsive QA Gate
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** QA pass - PM review pending
+**Status:** PM Accepted
 **Owner:** QA / Frontend / Dev
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex Dev / QA
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md`, `../../CURRENT_SPRINT.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../testing/TEST_STRATEGY.md`, `../reference/AI_AGENT_GOVERNANCE.md`
 
 ---
@@ -156,21 +156,42 @@ No live Paperclip enablement, W3 webhook/service-auth/runtime change, secret exp
 
 ---
 
+## PM Acceptance
+
+```text
+Status: Accepted
+Accepted by: Codex PM
+Date: 2026-05-14
+Accepted commit: 0af9417
+
+Acceptance confirmed:
+- `npm.cmd run verify:rux-browser-regression` is a repeatable browser regression gate.
+- The gate runs without production secrets by using controlled fixtures and a temporary local server.
+- Desktop and mobile viewports are checked.
+- Console errors, page errors, and horizontal overflow are captured.
+- Route matrix covers /today, /review, /all, /boards, /calendar, /planner, /okr, /focus, /settings, and /docs.
+- RUX-02A Trello connection-state copy, RUX-03 Docs trace clarity, and RUX-04 Today/Tasks cues are covered where relevant.
+- No live Paperclip enablement, W3 service-auth/runtime change, secret exposure, broad UI redesign, automatic write side effect, or W3/V0.3 cross-merge occurred.
+```
+
+---
+
 ## Next Recommended Session
 
 ```text
-Role: PM
-Task: Review and accept V0.3-RUX-05 Browser Regression + Responsive QA Gate.
+Role: PM / QA / Integration / Runtime
+Task: Draft and verify V0.3-RUX-06 Release Checklist for dev -> main.
 
 Read:
-- docs/plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md
+- docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
 - docs/testing/TEST_STRATEGY.md
 - docs/logs/V0_3_RUX_FINDINGS.md
+- docs/logs/QA_LOG.md
 - docs/reference/AI_AGENT_GOVERNANCE.md
 
 Guardrails:
-- Confirm the browser regression command is repeatable and does not require production secrets.
-- Confirm the route matrix and desktop/mobile evidence meet acceptance.
+- Keep this as a release checklist and PM decision artifact, not a merge or deployment.
+- Separate product QA evidence from runtime gate evidence.
 - Do not expose secrets, auth headers, tokens, or private credentialed URLs.
 - Do not enable live Paperclip.
 - Do not change W3 webhook/service-auth/runtime behavior.
@@ -185,3 +206,4 @@ Guardrails:
 |---|---|---|
 | 2026-05-14 | Routed `V0.3-RUX-05` after PM accepting `V0.3-RUX-04` at `d72f979` | Codex PM |
 | 2026-05-14 | Implemented and verified repeatable browser regression gate; routed to PM review | Codex Dev / QA |
+| 2026-05-14 | Accepted `V0.3-RUX-05` at `0af9417`; routed next to `V0.3-RUX-06` release checklist | Codex PM |

@@ -1,13 +1,13 @@
 # Version 0.3 Product Reliability + UX Stabilization Plan
 
 **Doc Role:** Active V0.3 phase plan
-**Status:** PM accepted; `V0.3-RUX-05` QA pass / PM review pending
+**Status:** PM accepted; `V0.3-RUX-06` routed
 **Version:** V0.3
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
 **Created:** 2026-05-14
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `PROJECT_LADDER.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md`, `VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md`, `../../TODO.md`, `../../MVP_PRD.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`, `../logs/V0_3_RUX_FINDINGS.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `PROJECT_LADDER.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md`, `VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md`, `VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md`, `../../TODO.md`, `../../MVP_PRD.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`, `../logs/V0_3_RUX_FINDINGS.md`
 **Theme:** Stabilize the human workflow and release confidence before expanding larger AI automation.
 
 ---
@@ -125,8 +125,8 @@ V0.3-RUX-06
 | `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Active / `V0.3-RUX-02A` PM Accepted; `V0.3-RUX-03` PM Accepted | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | PM Accepted `b2425a4` | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | PM Accepted `d72f979` | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
-| `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | QA pass / PM review pending | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
-| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | Planned | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
+| `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | PM Accepted `0af9417` | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
+| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | Routed | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
 
 ---
 
@@ -412,26 +412,26 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: PM
-Task: Review and accept V0.3-RUX-05 Browser Regression + Responsive QA Gate.
+Role: PM / QA / Integration / Runtime
+Task: Draft V0.3-RUX-06 Release Checklist for dev -> main.
 
 Read:
-- docs/plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md
+- docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
 - docs/logs/V0_3_RUX_FINDINGS.md
 - docs/testing/TEST_STRATEGY.md
 - docs/reference/AI_AGENT_GOVERNANCE.md
 
 Do:
-- Confirm the repeatable browser regression gate exists as `npm.cmd run verify:rux-browser-regression`.
-- Confirm the gate runs without production secrets by using controlled responses or local mock fixtures.
-- Confirm desktop/mobile route load, console/page errors, and horizontal overflow are captured.
-- Confirm `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, `/settings`, and `/docs` are included.
-- Confirm RUX-02A, RUX-03, and RUX-04 assertions are preserved where relevant.
+- Draft a release checklist artifact for future `dev -> main` promotion.
+- Include accepted V0.3 commits, branch/stacking dependencies, verification commands, runtime gates, and rollback notes.
+- Separate product QA, browser regression, Paperclip/Review Queue checks, and runtime/deployment evidence.
+- Make the PM decision block explicit.
 - Do not merge W3/V0.3 branches.
+- Do not merge this branch into dev or main.
 - Keep W3 live enablement or Paperclip hardening on its own W3 branch/worktree.
 
 If held:
-- List exact route-matrix gap, fixture blocker, browser automation blocker, or acceptance gate.
+- List exact release checklist gap, evidence blocker, integration dependency, or PM gate.
 ```
 
 ---
@@ -451,3 +451,4 @@ If held:
 | 2026-05-14 | Accepted `V0.3-RUX-03` at `b2425a4`; routed `V0.3-RUX-04` Today + Tasks Decision Flow | Codex PM |
 | 2026-05-14 | Accepted `V0.3-RUX-04` at `d72f979`; routed `V0.3-RUX-05` Browser Regression + Responsive QA Gate | Codex PM |
 | 2026-05-14 | Implemented and verified `V0.3-RUX-05`; routed to PM review | Codex Dev / QA |
+| 2026-05-14 | Accepted `V0.3-RUX-05` at `0af9417`; routed `V0.3-RUX-06` Release Checklist for dev -> main | Codex PM |
