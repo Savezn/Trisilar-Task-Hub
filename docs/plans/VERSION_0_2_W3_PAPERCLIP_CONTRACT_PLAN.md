@@ -770,3 +770,4 @@ Resolved runtime inputs:
 | 2026-05-14 | Accepted `V0.2-W3-04` and `V0.2-W3-04a`; cleanup and audit retention guard merged to `dev@7ea4650`, deployed to runtime, and cleaned Paperclip test artifacts from 6 pending to 0 pending / 6 rejected / 0 Trello-linked | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Planned `V0.2-W3-05` Paperclip Live Operations Hardening as a read-only operations/status surface for standing dev/demo monitoring without canary creation or outbound Paperclip calls | Codex PM |
 | 2026-05-14 | Accepted `V0.2-W3-05` at `b0d70ff`; read-only operations status passed QA and is integrated on latest `origin/dev` | Codex PM / QA / Integration Owner |
+| 2026-05-14 | Merged and deployed `V0.2-W3-05` at `dev@2c302dc`; operations status and Settings copy polish are live on dev/demo with read-only monitor counts 0 pending / 0 approved / 6 rejected / 0 Trello-linked and no danger warnings | Codex PM / Runtime Owner / QA |

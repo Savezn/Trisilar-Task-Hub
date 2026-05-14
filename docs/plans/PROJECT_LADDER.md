@@ -54,7 +54,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L0 | V0.1 Local MVP | Complete | Stable local Task Hub with modularized routes/pages, Today, Review Queue, Calendar, Planner, OKR, Weekly Focus, and release acceptance | V0.1 release acceptance passed |
 | L1 | V0.2 Access Foundation | Active / W1.4 demo accepted; W1.5/W1.7 dev-demo runtime accepted; W1.6 service-auth accepted; Paperclip runtime inputs confirmed | Teammates can access stable dev/demo Task Hub safely with environment, persistence, and access-control boundaries; Paperclip runtime health and Task Hub service-token reachability are confirmed for W3 planning; random ngrok remains manual-demo-only | Production/release-grade promotion remains out of scope |
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted and integrated; W2-06 Integration QA/PM accepted on `dev` |
-| L3 | V0.2 Paperclip Foundation | Accepted through W3-05 / integrated on latest `origin/dev` | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, safe cleanup for accumulated test sessions, retained traceability, and read-only operations visibility | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3-03 standing dev/demo observation active; W3-04/W3-04a cleanup merged to `dev@7ea4650`; runtime cleanup completed with 0 pending / 6 rejected / 0 Trello-linked; W3-05 operations status and copy polish are on `origin/dev@2c302dc` |
+| L3 | V0.2 Paperclip Foundation | Complete for V0.2 / standing dev-demo monitor active | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, safe cleanup for accumulated test sessions, retained traceability, and read-only operations visibility | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3-03 standing dev/demo observation active; W3-04/W3-04a cleanup merged to `dev@7ea4650`; runtime cleanup completed with 0 pending / 6 rejected / 0 Trello-linked; W3-05 operations status and copy polish merged/deployed at `dev@2c302dc`; closeout status is on `origin/dev@ff20e48` |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
 | L5 | V0.3 Product Reliability + UX Stabilization | PM accepted through RUX-06 / integration candidate in progress | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted; current gate is integrated candidate QA on latest `dev` before any `dev -> main` decision |
 | L6 | V0.4 Live AI Operations | Planned | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Live connector QA with controlled production-like data |
@@ -230,7 +230,7 @@ Paperclip runtime inputs confirmed
 -> V0.2-W3-04a cleanup audit retention accepted and merged to dev@7ea4650
 -> runtime cleanup completed: 0 pending / 0 approved / 6 rejected / 0 Trello-linked
 -> V0.2-W3-05 Paperclip Live Operations Hardening accepted at b0d70ff
--> W3-05 integrated on latest origin/dev
+-> V0.2-W3-05 merged/deployed at dev@2c302dc and closed out at origin/dev@ff20e48
 -> V0.3 operating model and long-term agent roles accepted
 -> V0.3 operating model merged to dev at ed9fae0
 -> V0.3 Product Reliability + UX Stabilization accepted through V0.3-RUX-06
@@ -273,6 +273,7 @@ This is now a V0.3 integration route. Do not reopen W1 Task Hub runtime work, do
 | 2026-05-14 | Accepted `V0.2-W3-04` and `V0.2-W3-04a`; cleanup and audit retention merged to `dev@7ea4650`, deployed to runtime, and cleaned Paperclip test artifacts from 6 pending to 0 pending / 6 rejected / 0 Trello-linked | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Planned `V0.2-W3-05` Paperclip Live Operations Hardening as the next L3 operations visibility step | Codex PM |
 | 2026-05-14 | Accepted `V0.2-W3-05` at `b0d70ff`; read-only operations visibility is integrated on latest `origin/dev` | Codex PM / QA / Integration Owner |
+| 2026-05-14 | Merged and deployed `V0.2-W3-05` to `dev@2c302dc`; L3 Paperclip Foundation is complete for V0.2 while standing dev/demo read-only monitoring continues | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Added V0.3 Product Reliability + UX Stabilization and long-term agent operating model review route | Codex PM / Documentation Architect |
 | 2026-05-14 | Accepted the V0.3 operating model and routed next to V0.3 Product Reliability + UX Stabilization planning; deferred reusable Codex skill extraction | Codex PM |
 | 2026-05-14 | Recorded V0.3 RUX PM acceptance through RUX-06 and routed next to integrated candidate QA on latest `dev` | Codex PM / Integration Owner |
