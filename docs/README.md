@@ -100,11 +100,13 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `archive/ARCHITECTURE_ANALYSIS_V0_1.md` | Archived V0.1 architecture analysis |
 | `design/ui-design-v1-0/` | UI redesign prototype artifact |
 | `logs/QA_LOG.md` | QA rounds, completed work archive, bug fixes, deferred items |
+| `logs/V0_3_RUX_FINDINGS.md` | V0.3 Product Reliability + UX findings log |
 | `logs/DECISION_LOG.md` | PM decisions and phase context |
 | `plans/PROJECT_LADDER.md` | Project-wide roadmap ladder and release gates |
 | `plans/VERSION_0_2_PLAN.md` | V0.2 branch/workstream plan |
 | `plans/VERSION_0_2_W1_COMPANY_ACCESS_DEPLOYMENT_PLAN.md` | V0.2 W1 company access, no-domain ngrok demo, stable Cloudflare Access, and no-cost preview phase ladder |
 | `plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` | V0.3 Product Reliability + UX Stabilization phase plan |
+| `plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` | V0.3-RUX-01 issue intake model, route inventory, owner map, and baseline checklist |
 | `agents/PM.md` | PM / Product Owner role guide |
 | `agents/UX_OWNER.md` | UX / Product Experience Owner role guide |
 | `agents/DEV_FRONTEND.md` | Frontend Product Dev role guide |

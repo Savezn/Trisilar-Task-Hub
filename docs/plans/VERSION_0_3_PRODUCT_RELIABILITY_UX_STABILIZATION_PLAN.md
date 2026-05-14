@@ -1,13 +1,13 @@
 # Version 0.3 Product Reliability + UX Stabilization Plan
 
 **Doc Role:** Active V0.3 phase plan
-**Status:** PM accepted; `V0.3-RUX-01` routed
+**Status:** PM accepted; `V0.3-RUX-01` active / baseline created
 **Version:** V0.3
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
 **Created:** 2026-05-14
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `PROJECT_LADDER.md`, `VERSION_0_2_PLAN.md`, `../../TODO.md`, `../../MVP_PRD.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `PROJECT_LADDER.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `../../TODO.md`, `../../MVP_PRD.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`, `../logs/V0_3_RUX_FINDINGS.md`
 **Theme:** Stabilize the human workflow and release confidence before expanding larger AI automation.
 
 ---
@@ -117,7 +117,7 @@ V0.3-RUX-02
 
 | ID | Phase | Owner Role | Status | Outcome |
 |---|---|---|---|---|
-| `V0.3-RUX-01` | UX Issue Intake + Reliability Baseline | PM / UX / QA | Routed | Create the issue intake model, severity labels, route inventory, and first baseline audit checklist |
+| `V0.3-RUX-01` | UX Issue Intake + Reliability Baseline | PM / UX / QA | Active / baseline created | Create the issue intake model, severity labels, route inventory, and first baseline audit checklist |
 | `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Planned | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | Planned | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | Planned | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
@@ -408,19 +408,22 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: PM / UX / QA
-Task: V0.3-RUX-01 UX Issue Intake + Reliability Baseline
+Role: UX / QA
+Task: Use V0.3-RUX-01 intake model to run the first route-by-route baseline review.
+
+Read:
+- docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md
+- docs/logs/V0_3_RUX_FINDINGS.md
 
 Do:
-- Create the issue intake model.
-- Define issue categories and P0/P1/P2 severity labels.
-- Create the production route inventory and owner map.
-- Decide where V0.3 findings are recorded.
-- Produce the baseline route review checklist.
+- Review each route in the RUX-01 inventory.
+- Record findings in docs/logs/V0_3_RUX_FINDINGS.md.
+- Keep QA read-only if acting as QA.
+- Do not patch UI or runtime during the baseline review.
 - Keep W3 live enablement or Paperclip hardening on its own W3 branch/worktree.
 
 If held:
-- List the missing intake fields, route inventory gaps, ownership ambiguity, or recording-location decision that must be fixed.
+- List the missing route evidence, runtime blocker, or review-scope ambiguity that prevents the baseline review.
 ```
 
 ---
@@ -431,3 +434,4 @@ If held:
 |---|---|---|
 | 2026-05-14 | Created V0.3 Product Reliability + UX Stabilization draft plan | Codex PM |
 | 2026-05-14 | Accepted V0.3 Product Reliability + UX Stabilization plan and routed `V0.3-RUX-01` | Codex PM |
+| 2026-05-14 | Started `V0.3-RUX-01` with intake model, findings log, route inventory, and baseline checklist | Codex PM |

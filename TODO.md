@@ -74,7 +74,7 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` |
 | L3 | V0.2 Paperclip Foundation | W3-02 live connector accepted / runtime gate disabled by default |
 | L4 | V0.2 Integration Release | Active |
-| L5 | V0.3 Product Reliability + UX Stabilization | PM accepted; `V0.3-RUX-01` routed |
+| L5 | V0.3 Product Reliability + UX Stabilization | PM accepted; `V0.3-RUX-01` active / baseline created |
 | L6 | V0.4 Live AI Operations | Planned |
 | L7 | V0.5 Team Operating System | Future |
 
@@ -104,7 +104,7 @@ These items are not blockers for the current `V0.2-W2-02`/W1 runtime work. They 
 | Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |
 | Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only. Task Hub now has an accepted DigitalOcean + Cloudflare dev/demo runtime with private bind, server-only secrets, stable `APP_DATA_DIR`, and accepted Paperclip service-auth topology. Paperclip runtime inputs are confirmed without exposing secrets. | Keep `PAPERCLIP_WEBHOOK_ENABLED=false` until PM approves standing live enablement; keep production/release-grade promotion gated by integration QA and PM acceptance. |
 | V0.3 operating model | Long-term role ownership moves beyond W1/W2/W3 labels. | PM accepted `docs/reference/ORGANIZATION_OPERATING_MODEL.md`, `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and `docs/agents/`; reusable Codex workflow skill is deferred until the docs prove useful in real sessions. |
-| V0.3 Product Reliability + UX Stabilization | Human workflow reliability and UX clarity need a dedicated phase before larger AI automation. | PM accepted `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`; next route is `V0.3-RUX-01` to PM / UX / QA for UX Issue Intake + Reliability Baseline. |
+| V0.3 Product Reliability + UX Stabilization | Human workflow reliability and UX clarity need a dedicated phase before larger AI automation. | PM accepted `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`; `V0.3-RUX-01` baseline artifacts now live in `docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` and `docs/logs/V0_3_RUX_FINDINGS.md`. |
 | Historical document encoding | Some archive/log files still contain mojibake from earlier encoding corruption. | Run a separate UTF-8 repair task on archive/log docs only; use targeted edits and preserve historical meaning. |
 
 ---
