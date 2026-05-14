@@ -15,6 +15,30 @@ module.exports = function reviewRoutes({ store, diff, trello, friendlyError, cac
     return { type, actor: "system", at: new Date().toISOString(), ...fields };
   }
 
+  function classifyPaperclipReviewSession(session) {
+    const source = String(session?.source || "").toLowerCase();
+    const externalSystem = String(session?.externalSource?.system || "").toLowerCase();
+    const requestId = String(session?.requestId || "").toLowerCase();
+    const agentRole = String(session?.agent?.agentRole || "").toLowerCase();
+    const title = String(session?.title || "").toLowerCase();
+    const auditTypes = (session?.auditTrail || []).map(event => String(event.type || "").toLowerCase());
+    const isPaperclip = source.startsWith("paperclip_")
+      || externalSystem === "paperclip"
+      || requestId.startsWith("pc_")
+      || auditTypes.some(type => type.startsWith("paperclip_"));
+    const testRequestPattern = /^(pc_live_interop_|pc_interop_|pc_canary_|pc_live_canary_|pc_daily_monitor_|pc_monitor_|pc_standing_|pc_true_external_|pc_w3_03_|pc_cleanup_)/;
+    const testRolePattern = /^(interop_test|canary|daily_monitor|monitor|live_canary)$/;
+    const testTitlePattern = /(live interop|interop test|canary|daily monitor|monitor canary|standing observation)/;
+    const isTestOrCanary = testRequestPattern.test(requestId)
+      || testRolePattern.test(agentRole)
+      || testTitlePattern.test(title);
+    return {
+      isPaperclip,
+      isTestOrCanary,
+      label: isTestOrCanary ? "Paperclip test/canary" : "Paperclip live work",
+    };
+  }
+
   async function pushTaskToTrello(sessionId, task) {
     if (!task.targetListId) {
       store.appendTaskAuditEvent?.(
@@ -113,6 +137,30 @@ module.exports = function reviewRoutes({ store, diff, trello, friendlyError, cac
       if (!session) return res.status(404).json({ error: "Session not found" });
       res.json(session);
     } catch (e) { res.status(500).json({ error: friendlyError(e) }); }
+  });
+
+  router.post("/reviews/:id/paperclip-test-cleanup", (req, res) => {
+    try {
+      const session = store.getSession(req.params.id);
+      if (!session) return res.status(404).json({ error: "Session not found" });
+      const classification = classifyPaperclipReviewSession(session);
+      if (!classification.isPaperclip) {
+        return res.status(409).json({ error: "Session is not Paperclip-originated" });
+      }
+      if (!classification.isTestOrCanary) {
+        return res.status(409).json({ error: "Session is not a Paperclip test or canary session" });
+      }
+      if (typeof store.cleanupPaperclipTestSession !== "function") {
+        return res.status(500).json({ error: "Paperclip cleanup store method unavailable" });
+      }
+
+      const reason = String(req.body?.reason || "Paperclip test/canary cleanup").slice(0, 500);
+      const updated = store.cleanupPaperclipTestSession(req.params.id, {
+        reason,
+        classification,
+      });
+      res.json(updated);
+    } catch (e) { res.status(notFound(e)).json({ error: e.message }); }
   });
 
   router.put("/reviews/:id/tasks/:taskId", (req, res) => {

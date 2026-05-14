@@ -133,6 +133,17 @@ function buildSessionCard(session) {
   const selectedSet   = S.reviewSelected.get(session.id) || new Set();
   const allVisibleSelected = pendingTasks.length > 0 && pendingTasks.every(t => selectedSet.has(t.id));
   const dateStr = formatThaiDateTime(session.createdAt, false);
+  const paperclipMeta = getPaperclipReviewMeta(session);
+  const sourceIcon = paperclipMeta.isPaperclip ? icon("gitMerge") : icon("upload");
+  const paperclipBadge = paperclipMeta.isPaperclip
+    ? `<span class="chip ${paperclipMeta.isTestOrCanary ? "chip-paperclip-test" : "chip-paperclip-live"}">${esc(paperclipMeta.label)}</span>`
+    : "";
+  const cleanupBadge = session.paperclipCleanup?.status === "cleaned"
+    ? `<span class="chip chip-cleanup">Cleanup archived</span>`
+    : "";
+  const cleanupButton = paperclipMeta.isCleanupEligible && pendingTasks.length
+    ? `<button class="btn btn-danger btn-sm" onclick="cleanupPaperclipTestSession('${session.id}')">${icon("x")} Cleanup test</button>`
+    : "";
 
   const card = document.createElement("div");
   card.className = `review-session-card${expanded ? " active" : ""}`;
@@ -141,7 +152,7 @@ function buildSessionCard(session) {
   const hdr = document.createElement("div");
   hdr.className = "review-session-header";
   hdr.innerHTML = `
-    <div class="review-session-mark">${session.source === "paperclip_mock" ? icon("gitMerge") : icon("upload")}</div>
+    <div class="review-session-mark">${sourceIcon}</div>
     <input type="checkbox" class="review-task-checkbox" title="Select visible pending tasks"
       ${pendingTasks.length ? "" : "disabled"}
       ${allVisibleSelected ? "checked" : ""}
@@ -152,6 +163,8 @@ function buildSessionCard(session) {
         <span>${dateStr}</span>
         <span class="review-meta-dot">-</span>
         <span class="chip chip-source">${esc(formatReviewSource(session.source))}</span>
+        ${paperclipBadge}
+        ${cleanupBadge}
         <span class="review-meta-dot">-</span>
         <span>${tasks.length} tasks extracted</span>
       </div>
@@ -163,6 +176,7 @@ function buildSessionCard(session) {
       <button class="btn btn-ghost btn-sm review-expand-btn" onclick="toggleReviewSession('${session.id}')">
         ${expanded ? "Collapse" : "Review"}
       </button>
+      ${cleanupButton}
       ${allProcessed
         ? `<button class="btn btn-ghost btn-sm" style="color:var(--text-muted)" onclick="dismissReviewSession('${session.id}')">${icon("x")} Dismiss</button>`
         : ""}
@@ -224,6 +238,7 @@ function buildTaskCard(session, task, paperclipDocsIndex = []) {
   const reasoning = task.reasoning || task.description || task.sourceText || "";
   const boardLabel = reviewBoardName(task.targetBoardId);
   const dueLabel = task.deadline ? formatThaiDateTime(task.deadline) : "No due date";
+  const paperclipContext = renderPaperclipReviewContext(session);
 
   el.innerHTML = `
     <div class="review-task-header">
@@ -243,6 +258,7 @@ function buildTaskCard(session, task, paperclipDocsIndex = []) {
         ${matchHint}
       </div>
     </div>
+    ${paperclipContext}
     <div class="review-task-meta-row">
       <span><span class="label">Owner</span>${esc(task.owner || "Unassigned")}</span>
       <span><span class="label">Due</span>${esc(dueLabel)}</span>
@@ -289,8 +305,50 @@ function formatReviewSource(source) {
     manual_upload: "Manual upload",
     discord: "Discord",
     paperclip_mock: "Paperclip mock",
+    paperclip_webhook: "Paperclip live",
+    paperclip_docs_mock: "Paperclip docs",
   };
   return map[source] || source || "Manual";
+}
+
+function getPaperclipReviewMeta(session) {
+  const source = String(session?.source || "").toLowerCase();
+  const externalSystem = String(session?.externalSource?.system || "").toLowerCase();
+  const requestId = String(session?.requestId || "").toLowerCase();
+  const agentRole = String(session?.agent?.agentRole || "").toLowerCase();
+  const title = String(session?.title || "").toLowerCase();
+  const auditTypes = (session?.auditTrail || []).map(event => String(event.type || "").toLowerCase());
+  const isPaperclip = source.startsWith("paperclip_")
+    || externalSystem === "paperclip"
+    || requestId.startsWith("pc_")
+    || auditTypes.some(type => type.startsWith("paperclip_"));
+  const isTestOrCanary = /^(pc_live_interop_|pc_interop_|pc_canary_|pc_live_canary_|pc_daily_monitor_|pc_monitor_|pc_standing_|pc_true_external_|pc_w3_03_|pc_cleanup_)/.test(requestId)
+    || /^(interop_test|canary|daily_monitor|monitor|live_canary)$/.test(agentRole)
+    || /(live interop|interop test|canary|daily monitor|monitor canary|standing observation)/.test(title);
+  return {
+    isPaperclip,
+    isTestOrCanary,
+    isCleanupEligible: isPaperclip && isTestOrCanary && session?.paperclipCleanup?.status !== "cleaned",
+    label: isTestOrCanary ? "Paperclip test/canary" : "Paperclip live work",
+  };
+}
+
+function renderPaperclipReviewContext(session) {
+  const meta = getPaperclipReviewMeta(session);
+  if (!meta.isPaperclip) return "";
+  const requestId = session.requestId || "No request ID";
+  const agentRunId = session.agent?.runId || "No agent run ID";
+  const env = session.externalSource?.environment || "unknown env";
+  const helpText = meta.isTestOrCanary
+    ? "This is test/canary Paperclip work. Use cleanup or reject, do not approve into external tools."
+    : "This is real Paperclip work. Keep human approval before any Trello, Calendar, or Google Tasks side effect.";
+  return `
+    <div class="review-paperclip-context ${meta.isTestOrCanary ? "is-test" : "is-live"}">
+      <strong>${esc(meta.label)}</strong>
+      <span>${esc(helpText)}</span>
+      <small>Request ${esc(requestId)} - Run ${esc(agentRunId)} - ${esc(env)}</small>
+    </div>
+  `;
 }
 
 function reviewBoardName(boardId) {
@@ -651,6 +709,32 @@ async function rejectReviewTask(sessionId, taskId) {
   } catch (e) {
     toast("Error: " + e.message, true);
     if (rejBtn) { rejBtn.innerHTML = `${icon("x")} Reject`; rejBtn.disabled = false; }
+  }
+}
+
+async function cleanupPaperclipTestSession(sessionId) {
+  const card = $(`session-${sessionId}`);
+  const title = card?.querySelector(".review-session-title")?.textContent || "this Paperclip test session";
+  if (!confirm(`Cleanup ${title}? Pending test tasks will be rejected and kept for audit. No Trello, Calendar, or Google Tasks actions will run.`)) return;
+  const btn = card?.querySelector(".review-session-controls .btn-danger");
+  if (btn) {
+    btn.textContent = "Cleaning...";
+    btn.disabled = true;
+  }
+  try {
+    const result = await api.post(`/api/reviews/${sessionId}/paperclip-test-cleanup`, {
+      reason: "Reviewer cleanup of Paperclip test/canary Review Queue artifacts",
+    });
+    S.reviewSelected.delete(sessionId);
+    S.reviewExpanded.add(sessionId);
+    toast(`Cleaned ${result.paperclipCleanup?.cleanedTaskCount || 0} Paperclip test task${result.paperclipCleanup?.cleanedTaskCount === 1 ? "" : "s"}`);
+    await showReviewPage();
+  } catch (e) {
+    toast("Cleanup failed: " + e.message, true);
+    if (btn) {
+      btn.innerHTML = `${icon("x")} Cleanup test`;
+      btn.disabled = false;
+    }
   }
 }
 

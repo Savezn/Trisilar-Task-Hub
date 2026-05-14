@@ -181,6 +181,65 @@ function appendTaskAuditEvent(sessionId, taskId, event) {
   return task;
 }
 
+function cleanupPaperclipTestSession(sessionId, options = {}) {
+  const sessions = read();
+  const session  = sessions.find(s => s.id === sessionId);
+  if (!session) throw new Error("Session not found");
+
+  const reason = String(options.reason || "Paperclip test cleanup").slice(0, 500);
+  const pendingTasks = (session.tasks || []).filter(t => t.status === "pending");
+  const skippedTasks = (session.tasks || []).filter(t => t.status !== "pending");
+  const cleanedTaskIds = [];
+
+  pendingTasks.forEach(task => {
+    task.status = "rejected";
+    appendEvent(task, auditEvent("task_rejected", {
+      actor: "reviewer",
+      reason,
+      cleanupType: "paperclip_test_cleanup",
+    }));
+    appendEvent(task, auditEvent("paperclip_test_task_cleanup_rejected", {
+      actor: "reviewer",
+      reason,
+      requestId: session.requestId || "",
+      sessionId: session.id,
+      taskId: task.id,
+      externalTaskId: task.externalTaskId || "",
+      agentRunId: session.agent?.runId || task.createdByAgent?.runId || "",
+      sourceEnvironment: session.externalSource?.environment || "",
+    }));
+    cleanedTaskIds.push(task.id);
+  });
+
+  session.paperclipCleanup = {
+    status: "cleaned",
+    reason,
+    cleanedAt: new Date().toISOString(),
+    cleanedTaskCount: cleanedTaskIds.length,
+    skippedTaskCount: skippedTasks.length,
+    cleanedTaskIds,
+    skippedTaskIds: skippedTasks.map(task => task.id),
+    requestId: session.requestId || "",
+    agentRunId: session.agent?.runId || "",
+    sourceEnvironment: session.externalSource?.environment || "",
+  };
+
+  appendEvent(session, auditEvent("paperclip_test_cleanup_applied", {
+    actor: "reviewer",
+    reason,
+    requestId: session.requestId || "",
+    sessionId: session.id,
+    agentRunId: session.agent?.runId || "",
+    sourceEnvironment: session.externalSource?.environment || "",
+    cleanedTaskCount: cleanedTaskIds.length,
+    skippedTaskCount: skippedTasks.length,
+    cleanedTaskIds,
+  }));
+
+  write(sessions);
+  return session;
+}
+
 function dismissSession(id) {
   const sessions = read();
   const idx = sessions.findIndex(s => s.id === id);
@@ -203,5 +262,6 @@ module.exports = {
   setTaskTrelloCardId,
   appendSessionAuditEvent,
   appendTaskAuditEvent,
+  cleanupPaperclipTestSession,
   dismissSession,
 };
