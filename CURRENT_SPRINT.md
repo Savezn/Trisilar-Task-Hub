@@ -1,9 +1,9 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2-W2-06 Integration PM Acceptance
+**Phase:** V0.2-W3-02 Live Paperclip Connector Planning
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Runtime
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -22,6 +22,7 @@
 | V0.2 W1 hosted dev/demo runtime | QA Pass / PM Accepted for dev/demo | Task Hub runs on the existing DigitalOcean Droplet from `dev@b9961fa`, binds `127.0.0.1:3000`, uses `APP_DATA_DIR=/home/trisilar/dashboard-data`, is routed at `https://taskhub.trisila.online` behind Cloudflare Access, and has Trello env configured server-side only. `V0.2-W1-06` and `V0.2-W1-08` are accepted as dev/demo runtime complete, not production/release-grade. |
 | V0.2 W2 Full UI Redesign | `V0.2-W2-06` integrated on `origin/dev@523c948` / PM Accepted | Settings, OKR, and Weekly Focus polish passed feature QA, Dev Integration, and Integration QA on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line |
 | V0.2 W3 Paperclip Mock Integration | PM Accepted `1d1f638` / merged to `dev` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
+| V0.2 W3 live Paperclip inputs | Runtime inputs confirmed / route W3-02 | `PAPERCLIP_BASE_URL=https://paperclip.trisila.online`, `PAPERCLIP_HEALTH_PATH=/healthz`, `PAPERCLIP_ALLOWED_SOURCE_ID=paperclip-do-dev`, `PAPERCLIP_ALLOWED_ENVIRONMENT=dev`, Paperclip local runtime port `3100`, service `paperclip.service`, and Task Hub service-token `/healthz` check from the Paperclip server returned `200`. Secret values remain excluded. |
 | V0.2 Integration Merge | PM Accepted on `dev` at `dde7ab0` | Implemented by Codex Dev; Reviewed by Codex QA; Accepted by Codex PM |
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
@@ -33,9 +34,9 @@
 | ID | Task | Status | Next Role |
 |---|---|---|---|
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
-| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime verification held while Paperclip server is offline | Hold / PM |
+| W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime inputs now confirmed for W3 planning | PM complete |
 | W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
-| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live path blocked until Paperclip owner inputs are confirmed after Paperclip server is online | Blocked |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector planning is routed after Paperclip runtime inputs and Task Hub service-token reachability were confirmed | Dev |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -96,24 +97,50 @@ Parallel rule:
 
 ---
 
-## Next Action - W2 Hold / Complete
+## Next Action - V0.2-W3-02 Live Paperclip -> Task Hub Webhook Connector
 
-Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated on `origin/dev@523c948` and PM accepted. This completes the W2 full UI redesign line on `dev`.
+Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated and PM accepted, so W2 is complete on `dev`. `V0.2-W1-06`, `V0.2-W1-08`, and `V0.2-W1-07` remain accepted for dev/demo runtime and service-auth planning.
 
-Integration QA evidence on 2026-05-13: clean detached worktree at `origin/dev@523c948`; `npm.cmd run check:all` passed; W2 browser smoke passed for `/settings`, `/okr`, `/focus`, `/today`, `/review`, `/all`, `/boards`, `/calendar`, and `/planner` across desktop/mobile/mobile-small; max horizontal overflow 0; console/page errors 0; Settings save paths, OKR drilldown/back, Weekly Focus owner filter, and Weekly Focus -> Review navigation passed with controlled W2 API responses. W1 deployment/access and W3 Paperclip behavior were intentionally not tested in this W2-only Integration QA pass.
+Runtime evidence on 2026-05-14: Paperclip is running as `paperclip.service` on local runtime port `3100`; `https://paperclip.trisila.online` is the hosted Paperclip base URL; `/healthz` is the confirmed Paperclip health path; allowed non-secret identifiers are `paperclip-do-dev` and `dev`; the Task Hub Cloudflare Access service-token check from the Paperclip server returned `/healthz` status `200`. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
 
 ```text
-Role: PM
-Task: V0.2-W2-06 W2 Workstream Hold / Complete
+Role: Dev
+Task: V0.2-W3-02 - Live Paperclip -> Task Hub Webhook Connector
 
-Status:
-W2 full UI redesign is complete on origin/dev@523c948.
+Context:
+W1 Task Hub dev/demo runtime and service-auth topology are accepted. Paperclip runtime inputs are confirmed:
+- PAPERCLIP_BASE_URL=https://paperclip.trisila.online
+- PAPERCLIP_HEALTH_PATH=/healthz
+- PAPERCLIP_ALLOWED_SOURCE_ID=paperclip-do-dev
+- PAPERCLIP_ALLOWED_ENVIRONMENT=dev
+- Paperclip service=paperclip.service
+- Paperclip local runtime port=3100
+- Task Hub service-token check from the Paperclip server returned 200 for /healthz
+- Do not expose Cloudflare Client ID/Secret or HMAC signing secret.
+
+Goal:
+Implement the authenticated live Paperclip -> Task Hub webhook without production deploy.
+
+Steps:
+1. Start from latest dev in the W3 worktree.
+2. Use the W3 branch/worktree from project policy: `feature/w3-paperclip-integration`, refreshed from latest `origin/dev` before editing.
+3. Add `POST /api/integrations/paperclip/webhook` using the existing Paperclip contract normalizer and review-store audit path.
+4. Require app-level HMAC validation and expected Paperclip source/environment identifiers.
+5. Validate `X-TaskHub-Request-Id`, `X-TaskHub-Timestamp`, `X-TaskHub-Signature`, `X-Paperclip-Source`, and `X-Paperclip-Agent-Run-Id`.
+6. Enforce timestamp skew and idempotency: same request id plus same payload creates no duplicate; same request id plus different payload rejects/logs.
+7. Keep `PAPERCLIP_WEBHOOK_ENABLED=false` by default until QA/PM approval.
+8. Add local/mock signed-request verification; do not require live Paperclip for unit-level checks.
+9. Route to QA with evidence for `/planner`, mock Paperclip behavior, and the new signed webhook path.
 
 Rules:
-- Do not start W1 deployment/access work from this W2 handoff.
-- Do not start W3 Paperclip work from this W2 handoff.
-- Do not start new W2 implementation unless PM opens a new W2-only phase.
-- If more W2 work is requested, define a new W2-only task with fresh scope and QA criteria.
+- Do not deploy production.
+- Do not merge to main.
+- Do not commit or print secrets.
+- Do not implement W2 UI redesign.
+- Preserve W1 dev/demo runtime.
+- Preserve existing mock Paperclip endpoint behavior.
+- No Trello/Google side effects before human approval.
+- Include attribution: Runtime inputs recorded by Codex PM / Runtime; implementation by Codex Dev.
 ```
 
-**Attribution:** `V0.2-W2-06` integrated by Codex Dev and accepted by Codex PM on `origin/dev@523c948` after Codex Integration QA pass.
+**Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; recorded by Codex PM / Runtime. W3-02 routed to Codex Dev.
