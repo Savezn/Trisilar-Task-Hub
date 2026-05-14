@@ -1,10 +1,10 @@
 # V0.3-RUX-03 Review Queue + AI Trace Clarity
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** QA pass - ready for PM review
+**Status:** PM Accepted
 **Owner:** UX / AI Integration / Frontend / QA
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex Dev / UX / QA
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `../../CURRENT_SPRINT.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../testing/TEST_STRATEGY.md`
 
 ---
@@ -153,32 +153,43 @@ Boundary confirmation:
 
 ---
 
+## PM Acceptance
+
+Accepted on 2026-05-14 at commit `b2425a4`.
+
+Acceptance basis:
+
+- `RUX-003` is resolved by human-readable Docs linked-task state and separated source/type/status/link trace chips.
+- Review Queue linked Paperclip docs now expose Type, Status, Run, and Agent context without changing approve/reject behavior.
+- QA evidence covers `/docs` and `/review` plus scoped regression routes across desktop/mobile with overflow `0`, console errors `0`, and page errors `0`.
+- No checked route exposed `Not_found` or collapsed `agent-tracemock` text.
+- No live Paperclip enablement, W3 webhook/service-auth/runtime change, automatic side effect, secret exposure, or W3/V0.3 cross-merge occurred.
+
+---
+
 ## Next Recommended Session
 
 ```text
-Role: PM
-Task: Review and accept V0.3-RUX-03 Review Queue + AI Trace Clarity for RUX-003.
+Role: UX / Frontend / QA
+Task: Implement and verify V0.3-RUX-04 Today + Tasks Decision Flow.
 
 Read:
-- docs/plans/VERSION_0_3_RUX_03_REVIEW_QUEUE_AI_TRACE_CLARITY.md
 - docs/logs/V0_3_RUX_FINDINGS.md
+- docs/plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md
 - docs/testing/TEST_STRATEGY.md
 - docs/reference/AI_AGENT_GOVERNANCE.md
 
 Guardrails:
-- Confirm changes stayed scoped to Docs/Paperclip trace readability and Review Queue linked-doc clarity.
+- Keep scope limited to Today/Tasks decision-flow clarity.
+- Preserve Trello hidden-board/workspace filtering and Review Queue human gate.
 - Do not enable live Paperclip.
 - Do not change W3 webhook/service-auth behavior.
 - Do not create automatic Trello/Calendar side effects.
 - Do not expose secrets or private credential values.
 - Do not merge W3/V0.3 branches.
 
-If accepted:
-- Mark RUX-003 as PM Accepted.
-- Route the next V0.3 RUX item from the accepted plan.
-
 If held:
-- List the exact copy, evidence, or route behavior that needs revision.
+- List the exact Today/Tasks ambiguity, data dependency, or acceptance gate that needs revision.
 ```
 
 ---
@@ -189,3 +200,4 @@ If held:
 |---|---|---|
 | 2026-05-14 | Routed `V0.3-RUX-03` for `RUX-003` Docs/Paperclip trace clarity | Codex PM |
 | 2026-05-14 | Implemented and verified `V0.3-RUX-03`; routed to PM review | Codex Dev / UX / QA |
+| 2026-05-14 | Accepted `V0.3-RUX-03` at `b2425a4`; routed next to `V0.3-RUX-04` planning | Codex PM |

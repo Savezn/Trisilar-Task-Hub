@@ -1,13 +1,13 @@
 # Version 0.3 Product Reliability + UX Stabilization Plan
 
 **Doc Role:** Active V0.3 phase plan
-**Status:** PM accepted; `V0.3-RUX-01` active / baseline created
+**Status:** PM accepted; `V0.3-RUX-04` routed
 **Version:** V0.3
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
 **Created:** 2026-05-14
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `PROJECT_LADDER.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `../../TODO.md`, `../../MVP_PRD.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`, `../logs/V0_3_RUX_FINDINGS.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `PROJECT_LADDER.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md`, `../../TODO.md`, `../../MVP_PRD.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`, `../logs/V0_3_RUX_FINDINGS.md`
 **Theme:** Stabilize the human workflow and release confidence before expanding larger AI automation.
 
 ---
@@ -107,6 +107,10 @@ Use canonical V0.3 IDs for this plan:
 ```text
 V0.3-RUX-01
 V0.3-RUX-02
+V0.3-RUX-03
+V0.3-RUX-04
+V0.3-RUX-05
+V0.3-RUX-06
 ```
 
 `RUX` means Product Reliability + UX Stabilization. Use priority separately as `Priority: P0/P1/P2`.
@@ -118,9 +122,9 @@ V0.3-RUX-02
 | ID | Phase | Owner Role | Status | Outcome |
 |---|---|---|---|---|
 | `V0.3-RUX-01` | UX Issue Intake + Reliability Baseline | PM / UX / QA | Baseline findings recorded | Create the issue intake model, severity labels, route inventory, first baseline audit checklist, and initial findings batch |
-| `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Active / `V0.3-RUX-02A` PM Accepted; `V0.3-RUX-03` routed | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
-| `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | Routed | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
-| `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | Planned | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
+| `V0.3-RUX-02` | Route-by-Route Usability Review | UX / QA | Active / `V0.3-RUX-02A` PM Accepted; `V0.3-RUX-03` PM Accepted | Review every production route for workflow clarity, copy, empty/error/loading states, and mobile/desktop usability |
+| `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | PM Accepted `b2425a4` | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
+| `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | Routed | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
 | `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | Planned | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
 | `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | Planned | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
 
@@ -408,24 +412,26 @@ Acceptance confirmed:
 ## Next Recommended Session
 
 ```text
-Role: UX / AI Integration / Frontend / QA
-Task: Implement and verify V0.3-RUX-03 Review Queue + AI Trace Clarity.
+Role: UX / Frontend / QA
+Task: Implement and verify V0.3-RUX-04 Today + Tasks Decision Flow.
 
 Read:
-- docs/plans/VERSION_0_3_RUX_03_REVIEW_QUEUE_AI_TRACE_CLARITY.md
+- docs/plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md
 - docs/logs/V0_3_RUX_FINDINGS.md
 - docs/testing/TEST_STRATEGY.md
+- docs/reference/AI_AGENT_GOVERNANCE.md
 
 Do:
-- Fix `RUX-003` only.
-- Improve Docs/Paperclip linked-task state, source/type/status chip readability, and Review Queue linked-doc clarity.
-- Preserve Review Queue human gate behavior and Paperclip runtime safety boundaries.
-- Run Paperclip contract/mock/docs verification plus focused browser QA for `/docs` and `/review`.
+- Improve Today and Tasks scanning clarity without broad redesign.
+- Preserve source, board/list/project context, owner, due state, and next action.
+- Preserve pending Review visibility without implying unapproved AI work is already execution work.
+- Preserve hidden-board/workspace filtering and V0.3-RUX-02A disconnected-state copy.
+- Run focused browser QA for `/today` and `/all` plus regression checks for `/review`, `/docs`, `/boards`, and `/settings`.
 - Do not merge W3/V0.3 branches.
 - Keep W3 live enablement or Paperclip hardening on its own W3 branch/worktree.
 
 If held:
-- List exact implementation ambiguity, route evidence blocker, or test-data dependency.
+- List exact Today/Tasks ambiguity, route evidence blocker, data dependency, or acceptance gate.
 ```
 
 ---
@@ -442,3 +448,4 @@ If held:
 | 2026-05-14 | Implemented and verified `V0.3-RUX-02A`; routed to PM acceptance | Codex Dev / UX / Runtime |
 | 2026-05-14 | Accepted `V0.3-RUX-02A` at `516b33e`; routed next to `V0.3-RUX-03` planning | Codex PM |
 | 2026-05-14 | Routed `V0.3-RUX-03` handoff for `RUX-003` Docs/Paperclip trace clarity | Codex PM |
+| 2026-05-14 | Accepted `V0.3-RUX-03` at `b2425a4`; routed `V0.3-RUX-04` Today + Tasks Decision Flow | Codex PM |

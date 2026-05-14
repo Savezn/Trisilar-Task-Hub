@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.3 Product Reliability + UX Stabilization
-**Status:** `V0.3-RUX-03` QA pass; PM review pending
+**Status:** `V0.3-RUX-04` routed; ready for UX / Frontend / QA
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
 
@@ -27,7 +27,7 @@
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
 | V0.3 operating model and agent structure | PM Accepted on branch `feature/project-operating-model-agent-structure` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
-| V0.3 Product Reliability + UX Stabilization plan | PM Accepted; `V0.3-RUX-02A` PM Accepted; `V0.3-RUX-03` QA pass / PM review pending | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` defines RUX phase ladder, parallel W3 boundary, UX intake, route review, Review Queue clarity, audit trace visibility, browser regression, and `dev -> main` release checklist. |
+| V0.3 Product Reliability + UX Stabilization plan | PM Accepted; `V0.3-RUX-02A` and `V0.3-RUX-03` PM Accepted; `V0.3-RUX-04` routed | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` defines RUX phase ladder, parallel W3 boundary, UX intake, route review, Review Queue clarity, audit trace visibility, browser regression, and `dev -> main` release checklist. |
 
 ---
 
@@ -41,7 +41,7 @@
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 | V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted | PM complete |
-| V0.3 RUX | `V0.3-RUX-03` Review Queue + AI Trace Clarity | QA pass / PM review pending | PM |
+| V0.3 RUX | `V0.3-RUX-04` Today + Tasks Decision Flow | Routed | UX / Frontend / QA |
 
 ---
 
@@ -55,6 +55,8 @@
 | V0.3 Product Reliability + UX Stabilization plan | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` |
 | V0.3-RUX-01 intake model and baseline checklist | `docs/plans/VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md` |
 | V0.3-RUX-02A first routed implementation task | `docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md` |
+| V0.3-RUX-03 AI trace clarity handoff | `docs/plans/VERSION_0_3_RUX_03_REVIEW_QUEUE_AI_TRACE_CLARITY.md` |
+| V0.3-RUX-04 Today + Tasks decision-flow handoff | `docs/plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md` |
 | V0.3 RUX findings log | `docs/logs/V0_3_RUX_FINDINGS.md` |
 | Durable W1/W2/W3 prompts | `docs/plans/VERSION_0_2_PARALLEL_WORKSTREAM_PROMPTS.md` |
 | W2 full UI redesign phase plan | `docs/plans/VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md` |
@@ -109,7 +111,7 @@ Parallel rule:
 
 ---
 
-## Next Action - PM Review / Accept V0.3-RUX-03
+## Next Action - V0.3-RUX-04 Today + Tasks Decision Flow
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. V0.2 W1/W2/W3 dev/demo foundations are accepted, and W3 live interop passed with `PAPERCLIP_WEBHOOK_ENABLED=false` restored after the test. Cloudflare Client ID/Secret and HMAC signing secret must not be exposed in chat, docs, logs, browser JavaScript, or git.
 
@@ -140,27 +142,28 @@ PM decisions:
 - W3 sibling branches must not merge into V0.3 branches, and V0.3 branches must not merge into W3 branches.
 
 ```text
-Role: PM
-Task: Review and accept V0.3-RUX-03 Review Queue + AI Trace Clarity.
+Role: UX / Frontend / QA
+Task: Implement and verify V0.3-RUX-04 Today + Tasks Decision Flow.
 
 Owned files:
-- docs/plans/VERSION_0_3_RUX_03_REVIEW_QUEUE_AI_TRACE_CLARITY.md
+- docs/plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md
 - docs/logs/V0_3_RUX_FINDINGS.md
 - docs/logs/QA_LOG.md
-- focused Docs / Review Queue / Paperclip trace files changed in this branch
+- focused Today / Tasks route files only after Dev confirms exact scope
 
 Acceptance criteria:
-- Fix `RUX-003` only.
-- Improve Docs/Paperclip linked-task state, source/type/status chip readability, and Review Queue linked-doc clarity.
-- Preserve Review Queue human gate behavior and Paperclip runtime safety boundaries.
+- Improve Today and Tasks scanning clarity without broad redesign.
+- Preserve source, board/list/project context, owner, due state, and next action.
+- Preserve pending Review visibility without implying unapproved AI work is already execution work.
+- Preserve hidden-board/workspace filtering and V0.3-RUX-02A disconnected-state copy.
 - No secrets, tokens, auth headers, private credentialed URLs, or W3 live enablement changes.
-- Paperclip contract/mock/docs verification and focused browser QA for `/docs` and `/review` pass.
+- Focused browser QA for `/today` and `/all` passes on desktop/mobile, with regression checks for `/review`, `/docs`, `/boards`, and `/settings`.
 - V0.3/W3 branch boundary remains intact.
 
 If held:
-- List exact copy, route evidence, acceptance gate, or ownership boundary that needs revision.
+- List exact Today/Tasks ambiguity, route evidence blocker, data dependency, or acceptance gate that needs revision.
 ```
 
-**Current RUX artifacts:** `RUX-001` and `RUX-002` are PM Accepted under `V0.3-RUX-02A` at `516b33e`. `RUX-003` is QA pass under `V0.3-RUX-03` and awaiting PM review.
+**Current RUX artifacts:** `RUX-001` and `RUX-002` are PM Accepted under `V0.3-RUX-02A` at `516b33e`. `RUX-003` is PM Accepted under `V0.3-RUX-03` at `b2425a4`. `V0.3-RUX-04` is routed for Today + Tasks decision-flow clarity.
 
-**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM. `V0.3-RUX-01` baseline created by Codex PM. `V0.3-RUX-02A` implemented and verified by Codex Dev / UX / Runtime, accepted by Codex PM. `V0.3-RUX-03` implemented and verified by Codex Dev / UX / QA.
+**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM. `V0.3-RUX-01` baseline created by Codex PM. `V0.3-RUX-02A` implemented and verified by Codex Dev / UX / Runtime, accepted by Codex PM. `V0.3-RUX-03` implemented and verified by Codex Dev / UX / QA, accepted by Codex PM.
