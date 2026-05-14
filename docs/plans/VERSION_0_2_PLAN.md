@@ -316,7 +316,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 ## Next Recommended Session
 
-Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention and merged to `dev@7ea4650`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only.
+Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted. W3 is accepted through cleanup/audit retention and merged to `dev@7ea4650`; runtime cleanup is complete. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is read-only. V0.3 operating model and long-term agent team structure are also PM accepted; V0.3 Product Reliability + UX Stabilization planning remains a separate branch/worktree route and must not merge W3 sibling branches into V0.3.
 
 ```text
 Role: Dev / Integration
@@ -387,3 +387,5 @@ Expected output:
 | 2026-05-14 | Accepted `V0.2-W3-04` and `V0.2-W3-04a`; cleanup and audit retention guard merged to `dev@7ea4650`, deployed to runtime, and cleaned Paperclip test artifacts from 6 pending to 0 pending / 6 rejected / 0 Trello-linked | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Planned `V0.2-W3-05` Paperclip Live Operations Hardening as a read-only operations/status surface for standing dev/demo monitoring without canary creation or outbound Paperclip calls | Codex PM |
 | 2026-05-14 | Accepted `V0.2-W3-05` at `b0d70ff`; operations status is read-only, secret-safe, and ready for Dev Integration into `dev` | Codex PM / QA |
+| 2026-05-14 | Routed post-V0.2 planning to V0.3 operating model and long-term agent structure review | Codex PM / Documentation Architect |
+| 2026-05-14 | Accepted V0.3 operating model and routed next to Product Reliability + UX Stabilization planning | Codex PM |

@@ -1,17 +1,17 @@
 # Branch and Environment Workflow
 
 **Doc Role:** Branch/environment operating reference
-**Status:** Active for V0.2 W0
+**Status:** Active for V0.2 and V0.3 branch/worktree governance
 **Owner:** Dev / PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-08 - **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../plans/VERSION_0_2_PLAN.md`, `../../README.md`
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Documentation Architect
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../plans/VERSION_0_2_PLAN.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `AI_AGENT_GOVERNANCE.md`, `../../README.md`
 
 ---
 
 ## Purpose
 
-This document defines the branch, environment, PR, and verification workflow required before V0.2 W1/W2/W3 can run in parallel.
+This document defines the branch, environment, PR, and verification workflow for feature work. For the long-term V0.3 Codex parallel development model, use this file together with `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`.
 
 ---
 
@@ -25,6 +25,7 @@ This document defines the branch, environment, PR, and verification workflow req
 | `feature/w1-*` | Company access/deployment | Starts from `dev`. |
 | `feature/w2-*` | UI redesign | Starts from `dev`. |
 | `feature/w3-*` | Paperclip integration | Starts from `dev`. |
+| `feature/project-*`, `feature/ux-*`, `feature/ai-*`, `feature/runtime-*` | V0.3 role/scope branches when PM assigns them | Starts from `dev` unless PM says otherwise. |
 | `hotfix/*` | Emergency production fix | Starts from `main`; merge or cherry-pick back to `dev` after release. |
 
 Recommended V0.2 workstream branches:
@@ -54,6 +55,14 @@ Recommended local worktree folders:
 | W2 Full UI Redesign | `trisilar-task-hub-w2-ui-redesign` | active `feature/w2-*` phase branch |
 | W3 Paperclip Multi-Agent Integration | `trisilar-task-hub-w3-paperclip` | `feature/w3-paperclip-integration` |
 
+V0.3 role/scope branches should use dedicated sibling worktrees with descriptive names. Example:
+
+```powershell
+git fetch origin
+git worktree add ..\trisilar-task-hub-project-operating-model -b feature/project-operating-model-agent-structure origin/dev
+git worktree list
+```
+
 Create or attach worktrees from the main repo folder:
 
 ```powershell
@@ -75,6 +84,28 @@ Flow:
 
 ```text
 feature/* -> dev -> QA/integration -> main -> production
+```
+
+---
+
+## Long-Term Parallel Role Model
+
+V0.3 uses the durable role model documented in `AI_AGENT_GOVERNANCE.md` and `../agents/`.
+
+Required rule:
+
+```text
+One agent = one role = one branch = one worktree = one ownership scope.
+```
+
+Agents must not run in the same working directory, share feature branches, or merge sibling feature branches into each other. Integration Owner owns accepted-branch merges into `dev`.
+
+When known sibling contamination risk exists, use the verification pattern in `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`:
+
+```powershell
+git status --short --branch
+git log --oneline --decorate --max-count=20
+git merge-base --is-ancestor <sibling-head> <current-branch>
 ```
 
 ---

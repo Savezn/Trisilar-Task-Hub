@@ -22,6 +22,7 @@
 | V0.2 W3 runtime cleanup | Complete | Runtime deployed from `dev@7ea4650`; Paperclip test/canary sessions cleaned from 6 pending to 0 pending / 6 rejected / 0 Trello-linked |
 | V0.2 W3 standing dev/demo observation | Active with read-only monitor automation | `PAPERCLIP_WEBHOOK_ENABLED=true` on dev/demo; active signed canary only on PM/QA request or after runtime/sender changes |
 | Latest W3 dev merge | `dev@7ea4650` | `V0.2-W3-04a` cleanup audit retention merged into `dev` |
+| V0.3 operating model and agent structure | PM Accepted / integrated prerequisite branch | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
 
 ---
 
@@ -47,6 +48,7 @@ W3-05 adds that operational hardening: PM/QA/Runtime Owner can now inspect live 
 | W3-03 | Controlled Paperclip live enablement | Standing dev/demo observation active; read-only monitor automation active | QA Owner / Runtime Owner monitor |
 | W3-04 | Paperclip Review Queue Cleanup | PM Accepted; merged to `dev@7ea4650`; runtime cleanup complete | PM complete |
 | W3-05 | Paperclip Live Operations Hardening | QA Pass / PM Accepted at `b0d70ff` | Dev Integration next |
+| V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted / integrated prerequisite branch | PM complete |
 
 ---
 
@@ -62,6 +64,10 @@ W3-05 adds that operational hardening: PM/QA/Runtime Owner can now inspect live 
 | QA history and completed work archive | `docs/logs/QA_LOG.md` |
 | PM decisions and phase context | `docs/logs/DECISION_LOG.md` |
 | File/function lookup hints | `docs/reference/KEY_FILE_MAP.md` |
+| Long-term organization operating model | `docs/reference/ORGANIZATION_OPERATING_MODEL.md` |
+| AI agent governance and role boundaries | `docs/reference/AI_AGENT_GOVERNANCE.md` |
+| Parallel Codex branch/worktree model | `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` |
+| Role-specific agent handoffs | `docs/agents/` |
 
 ---
 
