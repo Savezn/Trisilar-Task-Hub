@@ -1,6 +1,6 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.2-W3-03 Controlled Paperclip Live Enablement Policy
+**Phase:** V0.2-W3-03 Controlled Paperclip Live Enablement Policy Accepted
 **Status:** Active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
@@ -36,7 +36,7 @@
 | W0 | Branch / Environment / CI Setup | Done `9dbb47b` / QA Pass | PM complete |
 | W1 | Company Access + Deployment | `V0.2-W1-05` accepted as random ngrok URL manual demo only; `V0.2-W1-06`/`V0.2-W1-08` accepted as Cloudflare-protected DigitalOcean dev/demo runtime; `V0.2-W1-07` QA Pass / PM Accepted; Paperclip runtime inputs now confirmed for W3 planning | PM complete |
 | W2 | Full UI Redesign | `V0.2-W2-06` integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign complete on `dev` | PM complete / hold |
-| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; W3 merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy planned; runtime gate remains disabled by default | PM / Integration |
+| W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; W3 merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy PM Accepted; runtime gate remains disabled by default | Runtime Owner / QA |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 
 ---
@@ -97,7 +97,7 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.2-W3-03 Controlled Live Enablement Policy
+## Next Action - V0.2-W3-03 Limited Live Enablement Window
 
 Project ladder now lives in `docs/plans/PROJECT_LADDER.md`. `V0.2-W2-06` Settings + OKR + Weekly Focus Polish is integrated and PM accepted, so W2 is complete on `dev`. `V0.2-W1-06`, `V0.2-W1-08`, and `V0.2-W1-07` remain accepted for dev/demo runtime and service-auth planning.
 
@@ -110,16 +110,18 @@ Runtime gate status:
 - `PAPERCLIP_WEBHOOK_ENABLED=false` after the interop test.
 - Do not enable live webhook traffic permanently until PM approves a controlled live enablement policy.
 
-```text
-Role: PM / Integration
-Task: Review and accept V0.2-W3-03 controlled live enablement policy
+PM accepts `V0.2-W3-03` controlled live enablement policy. This acceptance does not enable live traffic. The default remains `PAPERCLIP_WEBHOOK_ENABLED=false` until PM names a runtime window and owner set.
 
-Policy scope:
-- Define criteria before `PAPERCLIP_WEBHOOK_ENABLED=true` can stay enabled beyond a single test.
-- Define rollback owner/actions for feature flag, Paperclip sender, shared secret, and Cloudflare service-token controls.
-- Define who may approve, execute, test, and monitor live enablement.
-- Define audit/monitoring expectations without logging secrets or unbounded transcript text.
-- Preserve Review Queue human approval as the only path to Trello/Calendar/Google side effects.
+```text
+Role: Runtime Owner / QA / Paperclip Owner
+Task: Prepare limited V0.2-W3-03 Paperclip live enablement window
+
+Preflight:
+- Runtime Owner confirms Task Hub is deployed from `dev@a89c26a` or later.
+- Runtime Owner confirms `PAPERCLIP_WEBHOOK_ENABLED=false` before starting.
+- Paperclip Settings remains connected with `hasSecret=true`; secret value is not exposed.
+- Paperclip Owner confirms sender uses Cloudflare Access service-token headers and accepted HMAC canonical format.
+- QA confirms rollback owner is available before the flag changes.
 
 Accepted evidence:
 - Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
@@ -130,18 +132,20 @@ Accepted evidence:
 - Created task stayed `pending`; human approval gate remained intact.
 - Runtime gate was closed after test: `PAPERCLIP_WEBHOOK_ENABLED=false`.
 
-Rules:
+Window rules:
 - Do not deploy production.
 - Do not merge to main.
 - Do not commit or print secrets.
-- Do not enable permanent live Paperclip traffic until PM approves the live enablement policy.
+- Set `PAPERCLIP_WEBHOOK_ENABLED=true` only for the named test window.
 - Preserve Review Queue human gate and existing mock/local Docs behavior.
 - Keep Cloudflare Client ID/Secret and HMAC signing secret out of git, docs, logs, browser JavaScript, and chat.
 
-Expected PM output:
-- Accept `V0.2-W3-03` policy, or list policy gaps.
-- If accepted, hand off to Runtime Owner + QA for a limited live enablement window only.
-- Default remains `PAPERCLIP_WEBHOOK_ENABLED=false` until the named window starts.
+Expected output:
+- Runtime Owner confirms flag change, service restart if needed, and health.
+- QA confirms signed live canary creates one pending Review Queue session.
+- QA confirms same-payload replay does not duplicate.
+- QA confirms invalid signature/source/environment is rejected if negative testing is in window scope.
+- Runtime Owner sets `PAPERCLIP_WEBHOOK_ENABLED=false` again unless PM explicitly approves a standing window.
 ```
 
-**Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM; W3-03 policy planned by Codex PM.
+**Attribution:** Paperclip runtime inputs confirmed by PM / Runtime; W3-02 implemented by Codex Dev; QA and live interop accepted by Codex PM; W3-03 policy planned and accepted by Codex PM.

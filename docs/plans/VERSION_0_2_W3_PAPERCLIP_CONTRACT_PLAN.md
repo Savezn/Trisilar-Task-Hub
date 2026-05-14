@@ -1,7 +1,7 @@
 # Version 0.2 W3 Paperclip Multi-Agent Integration Contract Plan
 
 **Doc Role:** W3-owned discovery and contract plan
-**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02` live connector code and live interop accepted; `V0.2-W3-03` controlled live enablement policy planned; runtime webhook gate remains disabled by default
+**Status:** `V0.2-W3-01` mock adapter accepted; `V0.2-W3-02` live connector code and live interop accepted; `V0.2-W3-03` controlled live enablement policy PM Accepted; runtime webhook gate remains disabled by default
 **Version:** V0.2 W3
 **Owner:** Integration Dev
 **Created:** 2026-05-08
@@ -368,7 +368,7 @@ npm.cmd run verify:paperclip-mock
 |---|---|---|---|
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
 | `V0.2-W3-02` | W3 sequence 2 | PM Accepted | Live webhook route, signed request validation, connection gate, idempotency, local QA, and live sender interop verified |
-| `V0.2-W3-03` | W3 sequence 3 | PM Planned | Controlled live enablement policy, rollback procedure, owner permissions, monitoring/audit expectations, and additional source signature/replay hardening after merge/integration acceptance |
+| `V0.2-W3-03` | W3 sequence 3 | PM Accepted | Controlled live enablement policy, rollback procedure, owner permissions, monitoring/audit expectations, and additional source signature/replay hardening after merge/integration acceptance |
 
 Details:
 
@@ -473,6 +473,12 @@ Use rollback immediately if invalid payloads are accepted, duplicate sessions ar
 - Human Review Queue approval remains the only path to Trello/Calendar/Google side effects.
 - Default runtime policy remains `PAPERCLIP_WEBHOOK_ENABLED=false` unless PM explicitly approves a live window.
 
+PM acceptance:
+
+- `V0.2-W3-03` policy is accepted as the required gate before any standing live runtime enablement.
+- Acceptance does not itself enable `PAPERCLIP_WEBHOOK_ENABLED=true`.
+- Next runtime work must be a named limited enablement window with Runtime Owner, Paperclip Owner, and QA owner recorded before the flag changes.
+
 ---
 
 ## Open Questions for PM / Paperclip Owner
@@ -520,4 +526,4 @@ Resolved runtime inputs:
 | 2026-05-13 | Held W3 live connector planning while the Paperclip server is offline; non-blocked V0.2 work is routed back to W2-06 | Codex PM |
 | 2026-05-14 | Recorded Paperclip runtime inputs, confirmed `/healthz`, and confirmed Task Hub service-token `/healthz` reachability from the Paperclip server; routed `V0.2-W3-02` live webhook connector | Codex PM / Runtime |
 | 2026-05-14 | Accepted `V0.2-W3-02` live webhook connector code and live signed sender interop; kept runtime `PAPERCLIP_WEBHOOK_ENABLED=false` after test | Codex PM / Paperclip Owner / QA |
-| 2026-05-14 | Planned `V0.2-W3-03` controlled live enablement policy with enablement criteria, rollback, owner permissions, monitoring/audit, and post-interop checklist | Codex PM |
+| 2026-05-14 | Planned and PM accepted `V0.2-W3-03` controlled live enablement policy with enablement criteria, rollback, owner permissions, monitoring/audit, and post-interop checklist; runtime gate remains disabled until a named live window starts | Codex PM |
