@@ -1,6 +1,7 @@
 // V0.2-W3-02a - Paperclip Docs Viewer Foundation.
 // V0.2-W3-02c - Paperclip Docs usability hardening.
 // V0.2-W3-02d - Paperclip Docs-to-Review workflow.
+// V0.2-W3-02e - Paperclip Docs traceability polish.
 // Implemented by: Codex Dev.
 async function showDocsPage() {
   S.mode = "docs";
@@ -253,7 +254,8 @@ function renderDocsViewer(doc, source, reviewSessions = []) {
     </div>
     ${renderDocsMetadataPanel(doc, source, relatedStatuses)}
     ${renderDocsRelatedTaskStatus(relatedStatuses)}
-      ${renderDocsLinkedTasks(doc, relatedStatuses)}
+    ${renderDocsLinkedTasks(doc, relatedStatuses)}
+    ${renderDocsTracePanel(doc, relatedStatuses)}
     ${renderDocsWorkflowPanel(doc, reviewSessions)}
     <div class="docs-content">${renderDocsMarkdown(doc.content?.text || "")}</div>
     ${renderDocsEvidence(doc.sourceEvidence || [])}
@@ -292,14 +294,15 @@ function renderDocsRelatedTaskStatus(relatedStatuses) {
     <div class="docs-related-status">
       <h3>Related Review Queue Status</h3>
       ${relatedStatuses.map(task => `
-        <div class="docs-related-status-row">
+        <div class="docs-related-status-row${task.found ? "" : " docs-related-status-missing"}">
           <div>
             <strong>${esc(task.title || task.externalTaskId)}</strong>
-            <small>${task.found ? esc(task.sessionTitle) : "Not available in local Review Queue"}</small>
+            <small>${task.found ? esc(task.sessionTitle) : "Review task is not in this local store"}</small>
           </div>
-          <span class="chip ${docsTaskStatusClass(task.status)}">${esc(formatDocsLabel(task.status))}</span>
+          <span class="chip ${docsTaskStatusClass(task.status)}">${esc(docsReviewStatusLabel(task.status))}</span>
           <small>${esc(task.owner || "Unassigned")}</small>
           <small>${task.deadline ? esc(formatThaiDateTime(task.deadline)) : "No due date"}</small>
+          ${task.found ? "" : '<small class="docs-related-missing-note">Mock link is preserved; create or attach a local Review Queue task to resolve it.</small>'}
         </div>
       `).join("")}
     </div>
@@ -313,6 +316,26 @@ function docsTaskStatusClass(status) {
   return "chip-source";
 }
 
+function docsReviewStatusLabel(status) {
+  const map = {
+    pending: "Pending human review",
+    approved: "Approved",
+    rejected: "Rejected",
+    not_found: "Missing locally",
+  };
+  return map[status] || formatDocsLabel(status);
+}
+
+function docsRelationshipLabel(relationship) {
+  const map = {
+    supports: "Supports task",
+    audit_context: "Audit context",
+    manual_reference: "Manually attached",
+    created_from_doc: "Created from this doc",
+  };
+  return map[relationship] || formatDocsLabel(relationship || "linked");
+}
+
 function renderDocsLinkedTasks(doc, relatedStatuses) {
   if (!relatedStatuses.length) return "";
   return `
@@ -322,13 +345,109 @@ function renderDocsLinkedTasks(doc, relatedStatuses) {
         <div class="docs-linked-task-row">
           <button type="button" class="docs-linked-task" onclick='openLinkedReviewTask(${JSON.stringify(task).replace(/'/g, "&apos;")})'>
             <span>${esc(task.title || task.externalTaskId)}</span>
-            <small>${esc(task.relationship || "supports")} - ${esc(task.externalTaskId || task.requestId)} - ${esc(formatDocsLabel(task.status))}</small>
+            <small>${esc(docsRelationshipLabel(task.relationship))} - ${esc(docsReviewStatusLabel(task.status))}</small>
+            <small class="docs-linked-task-id">${esc(task.externalTaskId || task.requestId)}</small>
           </button>
-          <button type="button" class="btn btn-ghost btn-sm" onclick='detachDocsTaskLink(${JSON.stringify(doc.artifactId)}, ${JSON.stringify(task).replace(/'/g, "&apos;")})'>Detach</button>
+          <div class="docs-linked-task-actions">
+            <button type="button" class="docs-mini-action" onclick='copyDocsTraceValue("requestId", ${JSON.stringify(task.requestId || "").replace(/'/g, "&apos;")})'>Copy request</button>
+            <button type="button" class="docs-mini-action" onclick='copyDocsTraceValue("externalTaskId", ${JSON.stringify(task.externalTaskId || "").replace(/'/g, "&apos;")})'>Copy task id</button>
+            ${task.found ? `<button type="button" class="docs-mini-action" onclick='openDocsTraceTarget("review", ${JSON.stringify(task).replace(/'/g, "&apos;")})'>Open review</button>` : ""}
+            <button type="button" class="btn btn-ghost btn-sm" onclick='detachDocsTaskLink(${JSON.stringify(doc.artifactId)}, ${JSON.stringify(task).replace(/'/g, "&apos;")})'>Detach</button>
+          </div>
         </div>
       `).join("")}
     </div>
   `;
+}
+
+function renderDocsTracePanel(doc, relatedStatuses = []) {
+  const runId = doc.agent?.runId || "";
+  const parentRunId = doc.agent?.parentRunId || "";
+  const primaryTask = relatedStatuses.find(task => task.found) || relatedStatuses[0] || {};
+  const traceRows = [
+    { label: "Artifact ID", value: doc.artifactId, action: "Open document", target: { type: "document", payload: doc.artifactId } },
+    { label: "Agent run ID", value: runId, action: "Filter run", target: { type: "run", payload: runId } },
+    { label: "Parent run", value: parentRunId || "None", action: parentRunId ? "Filter parent" : "", target: { type: "run", payload: parentRunId } },
+    { label: "Request ID", value: primaryTask.requestId || "No linked request", action: primaryTask.found ? "Open review" : "", target: { type: "review", payload: primaryTask } },
+    { label: "External task ID", value: primaryTask.externalTaskId || "No linked task", action: primaryTask.found ? "Open review" : "", target: { type: "review", payload: primaryTask } },
+  ];
+  const events = buildDocsTraceEvents(doc, relatedStatuses);
+  return `
+    <div class="docs-trace-panel">
+      <div class="docs-trace-head">
+        <h3>Trace & Audit</h3>
+        <span>${events.length} event${events.length === 1 ? "" : "s"}</span>
+      </div>
+      <div class="docs-trace-grid">
+        ${traceRows.map(row => renderDocsTraceRow(row)).join("")}
+      </div>
+      <div class="docs-trace-timeline">
+        ${events.map(event => `
+          <div class="docs-trace-event">
+            <span>${esc(event.label)}</span>
+            <strong>${esc(event.detail)}</strong>
+            <small>${esc(event.time)}</small>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderDocsTraceRow(row) {
+  const value = row.value || "";
+  const target = row.target || {};
+  return `
+    <div class="docs-trace-row">
+      <span>${esc(row.label)}</span>
+      <strong>${esc(value)}</strong>
+      <div>
+        <button type="button" class="docs-mini-action" onclick='copyDocsTraceValue(${JSON.stringify(row.label)}, ${JSON.stringify(value).replace(/'/g, "&apos;")})'>Copy</button>
+        ${row.action ? `<button type="button" class="docs-mini-action" onclick='openDocsTraceTarget(${JSON.stringify(target.type)}, ${JSON.stringify(target.payload).replace(/'/g, "&apos;")})'>${esc(row.action)}</button>` : ""}
+      </div>
+    </div>
+  `;
+}
+
+function buildDocsTraceEvents(doc, relatedStatuses = []) {
+  const events = [
+    {
+      label: "Document normalized",
+      detail: `${doc.artifactType || "document"} from ${doc.agent?.agentName || "Paperclip agent"}`,
+      time: doc.generatedAt ? formatThaiDateTime(doc.generatedAt) : "No timestamp",
+    },
+    {
+      label: "Document review status",
+      detail: docsReviewStatusLabel(doc.reviewStatus || "new"),
+      time: "Local state",
+    },
+  ];
+  relatedStatuses.forEach(task => {
+    events.push({
+      label: task.relationship === "created_from_doc" ? "Created Review Queue task" : "Linked Review Queue task",
+      detail: `${task.title || task.externalTaskId} - ${docsRelationshipLabel(task.relationship)} - ${docsReviewStatusLabel(task.status)}`,
+      time: task.found ? (task.deadline ? `Due ${formatThaiDateTime(task.deadline)}` : "Available locally") : "Missing locally",
+    });
+  });
+  (doc.workflowAuditTrail || []).slice(-4).forEach(event => {
+    events.push({
+      label: docsTraceEventLabel(event.type),
+      detail: [event.relationship, event.reviewStatus, event.externalTaskId].filter(Boolean).join(" - ") || "Local audit event",
+      time: event.at ? formatThaiDateTime(event.at) : "Local state",
+    });
+  });
+  return events.slice(-6);
+}
+
+function docsTraceEventLabel(type) {
+  const map = {
+    paperclip_doc_link_attached: "Attached document link",
+    paperclip_doc_link_detached: "Detached document link",
+    paperclip_doc_status_changed: "Updated document status",
+    paperclip_doc_review_session_created: "Created Review Queue session",
+    paperclip_doc_review_task_created: "Created Review Queue task",
+  };
+  return map[type] || formatDocsLabel(type || "Trace event");
 }
 
 function renderDocsWorkflowPanel(doc, reviewSessions = []) {
@@ -436,6 +555,8 @@ async function attachDocsTaskLink(artifactId) {
 
 async function detachDocsTaskLink(artifactId, link) {
   if (!artifactId || !link?.requestId || !link?.externalTaskId) return;
+  const ok = window.confirm(`Confirm detach "${link.title || link.externalTaskId}" from this Paperclip document?`);
+  if (!ok) return;
   try {
     await api.req("DELETE", `/api/integrations/paperclip/mock/docs/${artifactId}/attachments`, {
       requestId: link.requestId,
@@ -464,6 +585,48 @@ function openLinkedReviewTask(link) {
     externalTaskId: link?.externalTaskId || "",
   };
   navigateTo("review");
+}
+
+async function copyDocsTraceValue(label, value) {
+  const text = String(value || "");
+  if (!text || text === "None" || text.startsWith("No linked")) {
+    toast(`No ${label} to copy`, true);
+    return;
+  }
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const area = document.createElement("textarea");
+      area.value = text;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+    }
+    toast(`${label} copied`);
+  } catch (error) {
+    toast(`Failed to copy ${label}: ${error.message}`, true);
+  }
+}
+
+function openDocsTraceTarget(type, payload) {
+  if (type === "review") {
+    openLinkedReviewTask(payload || {});
+    return;
+  }
+  if (type === "run") {
+    const runId = String(payload || "");
+    if (!runId) return;
+    updateDocsFilter("query", runId);
+    toast("Filtered Docs by agent run");
+    return;
+  }
+  if (type === "document") {
+    S.docsSelectedArtifactId = String(payload || "");
+    renderDocsPage(S.docsPayload || { documents: [] }, S.docsReviewSessions || []);
+    toast("Document selected");
+  }
 }
 
 function renderDocsMarkdown(text) {

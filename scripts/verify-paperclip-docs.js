@@ -289,11 +289,18 @@ async function main() {
     assert(docsPage.includes("attachDocsTaskLink"));
     assert(docsPage.includes("detachDocsTaskLink"));
     assert(docsPage.includes("updateDocsReviewStatus"));
+    assert(docsPage.includes("renderDocsTracePanel"));
+    assert(docsPage.includes("copyDocsTraceValue"));
+    assert(docsPage.includes("openDocsTraceTarget"));
+    assert(docsPage.includes("Review task is not in this local store"));
+    assert(docsPage.includes("Confirm detach"));
+    assert(docsPage.includes("Created Review Queue task"));
     pass("Docs page renders linked task affordances");
 
     const reviewPage = fs.readFileSync(path.join(__dirname, "..", "public", "js", "pages", "review.js"), "utf8");
     assert(reviewPage.includes("loadPaperclipDocsIndex"));
     assert(reviewPage.includes("renderLinkedPaperclipDocs"));
+    assert(reviewPage.includes("Open in Docs"));
     pass("Review Queue renders linked Paperclip docs without changing approvals");
 
     console.log("Paperclip docs viewer verification passed.");

@@ -362,7 +362,7 @@ function renderLinkedPaperclipDocs(linkedDocs) {
       ${linkedDocs.map(doc => `
         <button type="button" class="review-linked-doc" onclick="openLinkedPaperclipDoc('${esc(doc.artifactId)}')">
           <span>${esc(doc.title || doc.artifactId)}</span>
-          <small>${esc(doc.artifactType || "document")} - ${esc(doc.status || "ready")}</small>
+          <small>Open in Docs - ${esc(formatDocsLabel(doc.artifactType || "document"))} - ${esc(formatDocsLabel(doc.status || "ready"))}</small>
         </button>
       `).join("")}
     </div>
