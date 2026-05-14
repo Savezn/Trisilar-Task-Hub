@@ -1,7 +1,7 @@
 # V0.3-RUX-06 Release Checklist for dev -> main
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** PM accepted - dev integration candidate in progress
+**Status:** PM accepted - V0.3 complete on dev/dev-demo; dev -> main not yet approved
 **Owner:** PM / QA / Integration / Runtime
 **Created:** 2026-05-14
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
@@ -239,7 +239,7 @@ If implementation changes code or package scripts, also run the relevant command
 
 ## Completion Result
 
-`V0.3-RUX-06` produced the release checklist artifact above and PM accepted it at `df29307`. No merge, production deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge was performed.
+`V0.3-RUX-06` produced the release checklist artifact above and PM accepted it at `df29307`. After the operating-model prerequisite merged, V0.3 RUX was integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to the dev/demo runtime, and accepted complete after runtime QA. No production deploy, `main` merge, runtime flag change, new live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge was performed.
 
 Verification:
 
@@ -248,15 +248,29 @@ git diff --check
 git merge-base --is-ancestor 96826f7 origin/dev
 ```
 
-Runtime checks skipped: docs-only change.
+Runtime checks after dev/demo deployment:
+
+```text
+dev/demo source: dev@02fe7cf
+taskhub-dashboard.service: active
+local /healthz: 200
+local /api/config: 200
+local /api/reviews: 200
+anonymous public /healthz: Cloudflare Access 302
+Paperclip operations mode: read_only
+Paperclip connection: connected, hasSecret=true, secretPreview=configured
+Review Queue counts: 6 sessions / 6 tasks, 0 pending, 0 approved, 6 rejected, 6 cleaned, 0 Trello-linked
+Warnings: standing_dev_demo_enabled only
+```
 
 Integration prerequisite check:
 
 ```text
-origin/dev does not contain operating-model base 96826f7
+origin/dev contains operating-model base 96826f7 after merge commit ed9fae0
+origin/dev contains accepted V0.3 RUX after merge commit 02fe7cf
 ```
 
-This means V0.3 integration remains held until the accepted operating-model branch is integrated into `dev`.
+This means V0.3 is complete on `dev` and dev/demo. A `dev -> main` promotion still requires a separate PM release decision using this checklist.
 
 ---
 
@@ -273,9 +287,11 @@ Acceptance confirmed:
 - Accepted V0.3 evidence, branch/stacking dependency, W3 boundary, verification commands, browser matrix, Paperclip/Review Queue gate, runtime/access gate, rollback notes, and PM decision format are covered.
 - This phase performed no merge, deploy, runtime flag change, live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge.
 
-Integration hold:
+Integration closeout:
 - origin/dev contains operating-model base 96826f7 after merge commit ed9fae0.
-- Integration Owner must integrate the accepted operating-model branch into dev before integrating this V0.3 branch.
+- V0.3 RUX is integrated through PR #18 and merged at `origin/dev@02fe7cf`.
+- Dev/demo runtime is deployed from `dev@02fe7cf` and runtime QA passed.
+- `dev -> main` remains unapproved until PM opens a separate release decision.
 ```
 
 ---
@@ -283,8 +299,8 @@ Integration hold:
 ## Next Recommended Session
 
 ```text
-Role: Integration Owner
-Task: Resolve V0.3 integration prerequisite before any V0.3 dev/main promotion.
+Role: PM
+Task: Decide the next project route after V0.3 completion.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
@@ -296,13 +312,21 @@ Read:
 - docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md
 - docs/plans/PROJECT_LADDER.md
 
-Acceptance criteria:
-- Confirm the accepted operating-model branch is integrated into `dev` before V0.3 integration.
-- Confirm V0.3 remains isolated from W3 sibling branches.
-- Do not merge this V0.3 branch into `dev` until the operating-model prerequisite is satisfied.
-- After prerequisite is satisfied, integrate accepted V0.3 into `dev` and run the RUX-06 release checklist on the integrated candidate.
+Completed:
+- Accepted operating-model branch is integrated into `dev`.
+- V0.3 remained isolated from W3 sibling branches.
+- Accepted V0.3 RUX is integrated into `dev@02fe7cf`.
+- RUX-06 checklist was run against the integrated candidate and dev/demo runtime.
+- Dev/demo runtime QA passed.
+
+Decision options:
+- Hold on dev and continue routine read-only monitoring.
+- Open a separate PM release decision for `dev -> main`.
+- Route V0.4 Live AI Operations or a focused post-V0.3 hardening item.
+
+Rules:
 - Do not merge `dev` to `main` without PM release decision.
-- Do not deploy production, expose secrets, or enable standing live Paperclip.
+- Do not deploy production, expose secrets, or enable additional live Paperclip behavior from this closeout.
 
 If held:
 - List exact integration blocker, branch contamination risk, conflict, missing operating-model acceptance evidence, or release checklist gap.
@@ -316,4 +340,5 @@ If held:
 |---|---|---|
 | 2026-05-14 | Routed `V0.3-RUX-06` after PM accepting `V0.3-RUX-05` at `0af9417` | Codex PM |
 | 2026-05-14 | Drafted release checklist artifact, runtime/Paperclip gates, rollback notes, and PM decision block for `V0.3-RUX-06` | Codex PM / QA / Integration / Runtime |
-| 2026-05-14 | PM accepted `V0.3-RUX-06` at `df29307` and routed next to Integration Owner for operating-model prerequisite handling | Codex PM |
+| 2026-05-14 | PM accepted `V0.3-RUX-06` at `df29307`, routed to Integration Owner, and later closed on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM |
+| 2026-05-14 | Integrated V0.3 through PR #18, deployed `dev@02fe7cf` to dev/demo, passed runtime QA, and closed V0.3 complete on dev/dev-demo | Codex PM / Runtime Owner / QA |
