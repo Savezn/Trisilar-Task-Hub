@@ -371,7 +371,7 @@ npm.cmd run verify:paperclip-mock
 | `V0.2-W3-03` | W3 sequence 3 | PM Accepted | Controlled live enablement policy, rollback procedure, owner permissions, monitoring/audit expectations, and additional source signature/replay hardening after merge/integration acceptance |
 | `V0.2-W3-04` | W3 sequence 4 | PM Accepted / merged to `dev@7ea4650` | Paperclip Review Queue cleanup for accumulated live/canary test sessions, with safe archive/reject workflow and no bypass of human approval gates |
 | `V0.2-W3-04a` | W3 sequence 4a | PM Accepted / merged to `dev@7ea4650` | Cleanup audit retention guard so cleaned Paperclip sessions cannot be dismissed/deleted while traceability is required |
-| `V0.2-W3-05` | W3 sequence 5 | Planned | Paperclip live operations hardening with read-only status, counts, audit categories, and stop-condition visibility |
+| `V0.2-W3-05` | W3 sequence 5 | QA Pass / PM Accepted | Paperclip live operations hardening with read-only status, counts, audit categories, and stop-condition visibility |
 
 Details:
 
@@ -382,7 +382,7 @@ Details:
 - `V0.2-W3-03` is a policy/runbook gate before permanent enablement. It must not add a new Paperclip network call or bypass Review Queue human approval.
 - `V0.2-W3-04` completed cleanup/hygiene for Paperclip-originated Review Queue test sessions after live interop, canary, and monitor runs. It rejected/archived test artifacts without approving tasks, without Trello/Calendar/Google side effects, and with audit traceability retained.
 - `V0.2-W3-04a` added the audit retention guard for cleaned Paperclip sessions. Cleaned Paperclip sessions cannot be dismissed/deleted through the cleanup path because retained request/session/task traceability is required.
-- `V0.2-W3-05` should harden live operations visibility. It should make the standing dev/demo Paperclip path easier to monitor without sending a new canary.
+- `V0.2-W3-05` hardens live operations visibility. It lets PM/QA/Runtime Owner inspect the standing dev/demo Paperclip path without sending a new canary.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
 ---
@@ -667,6 +667,8 @@ QA/PM acceptance:
 
 Goal: give PM, QA, and Runtime Owner a read-only operational view of the standing dev/demo Paperclip path without creating new canary tasks.
 
+Status: QA Pass / PM Accepted at `b0d70ff`. Dev Integration into `dev` is the next step.
+
 Scope:
 
 - Show Paperclip live flag policy/status, Settings connection state, `hasSecret` state without the secret value, allowed source id/environment, and webhook path.
@@ -700,6 +702,15 @@ Acceptance criteria:
 - PM/QA can inspect recent audit categories without exposing secrets or unbounded transcript text.
 - The feature does not create Review Queue sessions, send webhooks, or call Paperclip.
 - Review Queue approval remains human-gated.
+
+QA/PM acceptance:
+
+- `b0d70ff` added read-only `GET /api/integrations/paperclip/operations/status`.
+- Settings > Paperclip shows live flag status, connection state, source/environment, Review Queue counts, cleanup state, audit summary, and warnings.
+- Verification confirmed the operations endpoint does not mutate Review Queue data and does not create canaries.
+- Secret values are not returned; the UI/API only expose public connection state such as `hasSecret`.
+- No outbound Paperclip network call, auto-approval, Trello, Calendar, or Google Tasks side effect was added.
+- Regression verification passed for Paperclip operations, cleanup, webhook, connection, contract, mock, docs, frontend verify, and `check:all`.
 
 ---
 
@@ -758,3 +769,4 @@ Resolved runtime inputs:
 | 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup to safely handle accumulated live/canary test sessions without auto-approval or external side effects | Codex PM |
 | 2026-05-14 | Accepted `V0.2-W3-04` and `V0.2-W3-04a`; cleanup and audit retention guard merged to `dev@7ea4650`, deployed to runtime, and cleaned Paperclip test artifacts from 6 pending to 0 pending / 6 rejected / 0 Trello-linked | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Planned `V0.2-W3-05` Paperclip Live Operations Hardening as a read-only operations/status surface for standing dev/demo monitoring without canary creation or outbound Paperclip calls | Codex PM |
+| 2026-05-14 | Accepted `V0.2-W3-05` at `b0d70ff`; read-only operations status passed QA and is ready for Dev Integration into `dev` | Codex PM / QA |
