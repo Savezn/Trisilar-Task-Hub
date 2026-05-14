@@ -6671,6 +6671,12 @@ a { text-decoration: none; }
   color: var(--info);
 }
 
+.settings-status-chip.is-warning {
+  background: var(--warn-soft);
+  border-color: rgba(217,119,6,0.24);
+  color: var(--warn);
+}
+
 .ws-row,
 .vis-row {
   align-items: center;

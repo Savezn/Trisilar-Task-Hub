@@ -13,9 +13,9 @@ function showSettingsPage() {
 
     const calConnected = CAL.status?.connected;
     const config = S.config || {};
+    const trelloConnection = trelloConnectionSummary();
     const hiddenCount = (config.hiddenBoards || []).length;
     const workspaceCount = (config.allowedWorkspaceIds || []).length;
-    const boardCount = S.boards?.length || 0;
 
     const page = document.createElement("div");
     page.className = "settings-page";
@@ -27,9 +27,9 @@ function showSettingsPage() {
           <p class="settings-subtitle">Manage connected services, visible workspaces, board scope, monitor labels, and business-unit grouping.</p>
         </div>
         <div class="settings-command-stats" aria-label="Settings summary">
-          <div class="settings-stat-card is-ok">
+          <div class="settings-stat-card ${trelloConnection.statClass}">
             <span class="settings-stat-label">Trello</span>
-            <strong>${boardCount ? "Connected" : "Ready"}</strong>
+            <strong>${esc(trelloConnection.label)}</strong>
           </div>
           <div class="settings-stat-card ${calConnected ? "is-ok" : "is-muted"}">
             <span class="settings-stat-label">Calendar</span>
@@ -70,9 +70,9 @@ function showSettingsPage() {
                 <span class="settings-integration-icon">${icon("layout")}</span>
                 <div class="integration-info">
                   <div class="integration-name">Trello</div>
-                  <div class="integration-desc">Connected via configured API credentials.</div>
+                  <div class="integration-desc">${esc(trelloConnection.description)}</div>
                 </div>
-                <span class="settings-status-chip is-connected">Connected</span>
+                <span class="settings-status-chip ${trelloConnection.chipClass}">${esc(trelloConnection.label)}</span>
               </div>
               <div class="integration-row">
                 <span class="settings-integration-icon">${icon("calendar")}</span>
@@ -459,6 +459,11 @@ function renderSettingsGroups() {
 async function loadSettingsWorkspaces() {
   const container = $("settings-ws-body");
   if (!container) return;
+  if (!isTrelloVerified()) {
+    const trelloConnection = trelloConnectionSummary();
+    container.innerHTML = `<div class="settings-empty-inline">${esc(trelloConnection.description)}</div>`;
+    return;
+  }
   try {
     const workspaces = await api.get("/api/workspaces");
     if (!workspaces.length) {

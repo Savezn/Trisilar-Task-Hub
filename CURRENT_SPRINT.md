@@ -1,9 +1,9 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.3 Product Reliability + UX Stabilization
-**Status:** V0.3 RUX baseline triaged; `V0.3-RUX-02A` routed
+**Status:** `V0.3-RUX-02A` QA pass; ready for PM acceptance
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex Dev / UX / Runtime
 
 > Use this file to start each Dev / QA / PM session. Historical logs and full plans live in linked docs below.
 
@@ -27,7 +27,7 @@
 | Latest runtime fix | `e1b4801` | P9-6 Trello-backed preview regression |
 | Latest docs policy | Documentation/file consolidation QA Pass `af822c6`; file organization policy `ba7311b` added | Reviewed by Codex QA; Updated by Codex PM |
 | V0.3 operating model and agent structure | PM Accepted on branch `feature/project-operating-model-agent-structure` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
-| V0.3 Product Reliability + UX Stabilization plan | PM Accepted; `V0.3-RUX-01` active / baseline created | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` defines RUX phase ladder, parallel W3 boundary, UX intake, route review, Review Queue clarity, audit trace visibility, browser regression, and `dev -> main` release checklist. |
+| V0.3 Product Reliability + UX Stabilization plan | PM Accepted; `V0.3-RUX-02A` QA pass / PM acceptance pending | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` defines RUX phase ladder, parallel W3 boundary, UX intake, route review, Review Queue clarity, audit trace visibility, browser regression, and `dev -> main` release checklist. |
 
 ---
 
@@ -41,7 +41,7 @@
 | W3 | Paperclip Multi-Agent Integration | Mock path done `1d1f638` / QA Pass / PM Accepted / merged to `dev`; live connector code `c1e4df2` and live sender interop PM Accepted; runtime gate remains disabled by default | PM / Integration |
 | Integration | Accepted W2/W3 into `dev` | QA Pass / PM Accepted at `dde7ab0` | PM complete |
 | V0.3 Operating Model | Project operating model and long-term agent team structure | PM Accepted | PM complete |
-| V0.3 RUX | `V0.3-RUX-02A` Trello Connection State + Failure Copy | Routed | Dev / UX / Runtime |
+| V0.3 RUX | `V0.3-RUX-02A` Trello Connection State + Failure Copy | QA pass / PM acceptance pending | PM |
 
 ---
 
@@ -140,13 +140,13 @@ PM decisions:
 - W3 sibling branches must not merge into V0.3 branches, and V0.3 branches must not merge into W3 branches.
 
 ```text
-Role: Dev / UX / Runtime
-Task: Implement V0.3-RUX-02A Trello Connection State + Failure Copy.
+Role: PM
+Task: Review and accept V0.3-RUX-02A Trello Connection State + Failure Copy.
 
 Owned files:
 - docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md
-- docs/logs/V0_3_RUX_FINDINGS.md for status updates
-- focused code files only after Dev confirms exact scope
+- docs/logs/V0_3_RUX_FINDINGS.md
+- docs/logs/QA_LOG.md
 
 Acceptance criteria:
 - No visible app surface reports Trello as connected or ready after Trello API auth failure.
@@ -157,9 +157,9 @@ Acceptance criteria:
 - V0.3/W3 branch boundary remains intact.
 
 If held:
-- List exact implementation ambiguity, runtime dependency, or test-data blocker.
+- List exact route, copy, status-state, or acceptance-evidence blocker.
 ```
 
-**Current RUX artifacts:** `RUX-001` and `RUX-002` are grouped into `V0.3-RUX-02A`. `RUX-003` remains triaged for later `V0.3-RUX-03`.
+**Current RUX artifacts:** `RUX-001` and `RUX-002` are QA pass under `V0.3-RUX-02A` and ready for PM acceptance. `RUX-003` remains triaged for later `V0.3-RUX-03`.
 
-**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM. `V0.3-RUX-01` baseline created by Codex PM.
+**Attribution:** V0.3 operating model prepared by Codex PM / Documentation Architect and accepted by Codex PM. V0.3 RUX plan drafted and accepted by Codex PM. `V0.3-RUX-01` baseline created by Codex PM. `V0.3-RUX-02A` implemented and verified by Codex Dev / UX / Runtime.

@@ -1,10 +1,10 @@
 # V0.3-RUX-02A Trello Connection State + Failure Copy
 
 **Doc Role:** Scoped Dev / UX / Runtime handoff for first V0.3 RUX implementation task
-**Status:** Routed - ready for scoped implementation
+**Status:** Implemented - QA pass; ready for PM acceptance
 **Owner:** Runtime / UX / Frontend
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-14 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex Dev / UX / Runtime
 **Related Docs:** `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `VERSION_0_3_RUX_01_ISSUE_INTAKE_RELIABILITY_BASELINE.md`, `../../CURRENT_SPRINT.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../testing/TEST_STRATEGY.md`
 
 ---
@@ -53,7 +53,7 @@ These files are likely relevant based on repo search. Dev must verify before edi
 | Backend friendly Trello error | `src/utils/errors.js` | Current user-facing text includes API key / `.env` wording. |
 | Settings connection card | `public/js/pages/settings.js` | Current Settings card can show Trello `Connected` or `Ready` based on board count, not verified auth state. |
 | Initial app status | `public/app.js` | Initial status calls `/api/boards` and may hide failed Trello verification. |
-| Trello-dependent routes | `public/js/pages/today.js`, `public/js/pages/all-tasks.js`, `public/js/pages/boards.js`, `public/js/pages/okr.js`, `public/js/pages/weekly-focus.js` | Browser baseline showed route-level Trello failure states here. |
+| Trello-dependent routes | `public/js/pages/today.js`, `public/js/pages/all-tasks.js`, `public/js/pages/boards.js`, `public/js/pages/okr.js`, `public/app.js` | Browser baseline showed route-level Trello failure states here; Weekly Focus is implemented in `public/app.js`. |
 | Trello API route behavior | `src/routes/trello.routes.js`, `trello.js` | Runtime/API layer may need a status shape that distinguishes configured vs verified vs invalid. |
 
 ---
@@ -104,23 +104,42 @@ Record:
 
 ---
 
+## Implementation Result
+
+Completed on 2026-05-14:
+
+- Added `/api/trello/status` so the app can distinguish `verified`, `invalid`, `disconnected`, and unavailable/rate-limited states without inferring health from board count.
+- Updated Trello auth failure copy to avoid `.env` and API-key wording in user-facing UI.
+- Added frontend Trello connection helpers and route-level product copy for Today, Tasks, Boards, OKR, Weekly Focus, and Settings.
+- Updated sidebar and Settings Trello surfaces so disconnected or invalid Trello state is explicit and does not show false connected/ready copy.
+- Preserved W3/Paperclip boundaries and did not change runtime secrets.
+
+Verification passed:
+
+- `npm.cmd run verify:rux-trello`
+- `node scripts/verify-frontend.js`
+- `PORT=3094 npm.cmd run check:all`
+- Browser QA on `/today`, `/all`, `/boards`, `/okr`, `/focus`, and `/settings` across desktop/mobile: horizontal overflow `0`, console errors `0`, no `.env` or API-key UI wording, and no false Trello connected/ready state.
+- Regression browser QA on `/review`, `/calendar`, `/planner`, and `/docs` across desktop/mobile: rendered content present, horizontal overflow `0`, console errors `0`, and page errors `0`.
+
+---
+
 ## Next Recommended Session
 
 ```text
-Role: Dev / UX / Runtime
-Task: Implement V0.3-RUX-02A Trello Connection State + Failure Copy.
+Role: PM
+Task: Review and accept V0.3-RUX-02A Trello Connection State + Failure Copy.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_02A_TRELLO_CONNECTION_STATE_FAILURE_COPY.md
 - docs/logs/V0_3_RUX_FINDINGS.md
-- docs/testing/TEST_STRATEGY.md
+- docs/logs/QA_LOG.md
 
 Guardrails:
-- Keep changes scoped to Trello connection-state and failure-copy clarity.
-- Do not touch W3 Paperclip live enablement.
-- Do not change or expose secrets.
+- Accept or hold only `V0.3-RUX-02A`.
 - Do not merge W3/V0.3 branches.
-- Preserve Review Queue human gate behavior.
+- Leave `RUX-003` for later `V0.3-RUX-03`.
+- Confirm no secrets or private credential values were recorded.
 ```
 
 ---
@@ -130,3 +149,4 @@ Guardrails:
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-14 | Created PM triage handoff for grouped `RUX-001` and `RUX-002` implementation | Codex PM |
+| 2026-05-14 | Implemented and verified `V0.3-RUX-02A`; routed to PM acceptance | Codex Dev / UX / Runtime |

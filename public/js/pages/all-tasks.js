@@ -11,10 +11,14 @@ async function showAllTasks() {
   const content = $("board-content");
   content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading all tasks...</div>';
   try {
+    if (!isTrelloVerified()) {
+      content.innerHTML = trelloRouteUnavailableHtml("Tasks");
+      return;
+    }
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
     renderAllTasks(getAllowedCards());
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Error: ${esc(e.message)}</p></div>`;
+    content.innerHTML = trelloRouteUnavailableHtml("Tasks");
   }
 }
 

@@ -18,6 +18,10 @@ async function showTodayPage() {
   content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading tasks...</div>';
 
   try {
+    if (!isTrelloVerified()) {
+      content.innerHTML = trelloRouteUnavailableHtml("Today");
+      return;
+    }
     const todayStart    = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const tomorrowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
 
@@ -31,7 +35,7 @@ async function showTodayPage() {
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
     renderTodayPage(getAllowedCards(), dateStr, sessions, calEvents);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Error: ${esc(e.message)}</p></div>`;
+    content.innerHTML = trelloRouteUnavailableHtml("Today");
   }
 }
 

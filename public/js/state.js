@@ -2,6 +2,13 @@
 const S = {
   boards: [],
   config: { groups: [], hiddenBoards: [], allowedWorkspaceIds: [] },
+  trelloStatus: {
+    configured: false,
+    verified: false,
+    connected: false,
+    state: "unknown",
+    error: "Trello connection has not been verified yet.",
+  },
   draftConfig: null,
   currentBoardId: null,
   currentGroupId: null,
