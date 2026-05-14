@@ -59,6 +59,7 @@ function createSession(data) {
     tasks: [],
   };
   if ("requestId" in data) session.requestId = data.requestId;
+  if ("payloadHash" in data) session.payloadHash = data.payloadHash;
   if ("externalSource" in data) session.externalSource = data.externalSource;
   if ("agent" in data) session.agent = data.agent;
   if ("auditTrail" in data) session.auditTrail = Array.isArray(data.auditTrail) ? data.auditTrail : [];
@@ -86,6 +87,7 @@ function createSession(data) {
     ...("agentRationale" in t ? { agentRationale: t.agentRationale } : {}),
     ...("sourceEvidence" in t ? { sourceEvidence: t.sourceEvidence } : {}),
     ...("createdByAgent" in t ? { createdByAgent: t.createdByAgent } : {}),
+    ...("paperclipDocument" in t ? { paperclipDocument: t.paperclipDocument } : {}),
     ...("auditTrail" in t ? { auditTrail: Array.isArray(t.auditTrail) ? t.auditTrail : [] } : {}),
   }));
   sessions.push(session);

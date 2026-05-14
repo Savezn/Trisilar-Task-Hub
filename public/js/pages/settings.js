@@ -49,6 +49,7 @@ function showSettingsPage() {
       <div class="settings-layout">
         <aside class="settings-nav-panel" aria-label="Settings sections">
           <button type="button" class="settings-nav-button" data-target="settings-integrations">${icon("gitMerge")} Integrations</button>
+          <button type="button" class="settings-nav-button" data-target="settings-paperclip">${icon("sparkles")} Paperclip</button>
           <button type="button" class="settings-nav-button" data-target="settings-workspaces">${icon("layout")} Workspaces</button>
           <button type="button" class="settings-nav-button" data-target="settings-visibility">${icon("checkSquare")} Board Visibility</button>
           <button type="button" class="settings-nav-button" data-target="settings-teams">${icon("target")} Monitor Teams</button>
@@ -93,6 +94,19 @@ function showSettingsPage() {
                   ? '<span class="settings-status-chip is-shared">Shared OAuth</span>'
                   : '<button type="button" class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Calendar</button>'}
               </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="settings-paperclip">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-kicker">Agent connector</div>
+                <h3 class="settings-section-title">Paperclip Integration</h3>
+                <p class="settings-section-desc">Manage connection state and runtime secret rotation before live webhook work is enabled.</p>
+              </div>
+            </div>
+            <div class="settings-section-body" id="settings-paperclip-body">
+              <div class="loading-box"><span class="spinner"></span> Loading Paperclip connection...</div>
             </div>
           </section>
 
@@ -159,6 +173,7 @@ function showSettingsPage() {
     renderSettingsVisibility();
     renderSettingsTeams();
     renderSettingsGroups();
+    loadPaperclipConnection();
     loadSettingsWorkspaces();
 
     page.querySelectorAll(".settings-nav-button").forEach(btn => {
@@ -182,6 +197,113 @@ function showSettingsPage() {
   } catch (e) {
     console.error("[Settings Error]", e);
     $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Settings error</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+function paperclipStatusChip(status) {
+  if (status === "connected") return '<span class="chip chip-done">Connected</span>';
+  if (status === "disabled") return '<span class="chip chip-soon">Disabled</span>';
+  return '<span class="chip chip-soon">Not connected</span>';
+}
+
+async function loadPaperclipConnection() {
+  const container = $("settings-paperclip-body");
+  if (!container) return;
+  try {
+    const connection = await api.get("/api/integrations/paperclip/connection");
+    renderPaperclipConnection(connection);
+  } catch (e) {
+    container.innerHTML = `<p style="color:var(--danger)">Connection status failed: ${esc(e.message)}</p>`;
+  }
+}
+
+function renderPaperclipConnection(connection) {
+  const container = $("settings-paperclip-body");
+  if (!container) return;
+  const connected = connection.status === "connected";
+  const statusText = connected
+    ? "Ready for future live webhook validation. Shared secret is configured."
+    : connection.status === "disabled"
+      ? "Disconnected. Future live webhook requests must be rejected."
+      : "Paste a shared secret to enable future live webhook validation.";
+
+  container.innerHTML = `
+    <div class="integration-row" style="padding-top:0">
+      <span class="integration-icon">PC</span>
+      <div class="integration-info">
+        <div class="integration-name">Paperclip</div>
+        <div class="integration-desc">${esc(statusText)}</div>
+      </div>
+      <div class="integration-status-dot ${connected ? "dot-green" : "dot-gray"}"></div>
+      ${paperclipStatusChip(connection.status)}
+    </div>
+    <div class="form-row" style="margin-top:14px">
+      <div class="form-group">
+        <label for="paperclip-workspace-id">Workspace ID <span class="label-hint">optional</span></label>
+        <input id="paperclip-workspace-id" class="form-input" type="text" value="${esc(connection.workspaceId || "")}" placeholder="Paperclip workspace id">
+      </div>
+      <div class="form-group">
+        <label for="paperclip-label">Label <span class="label-hint">optional</span></label>
+        <input id="paperclip-label" class="form-input" type="text" value="${esc(connection.label || "")}" placeholder="Internal label">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="paperclip-shared-secret">Shared secret <span class="label-hint">write-only, not returned after save</span></label>
+      <input id="paperclip-shared-secret" class="form-input" type="password" placeholder="${connected ? "Enter a new secret to rotate" : "Enter shared secret from Paperclip"}" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label>Future webhook URL</label>
+      <input class="form-input" type="text" value="${esc(connection.webhookUrl || connection.webhookPath || "")}" readonly>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" id="paperclip-connect-btn">${connected ? "Update Connection" : "Connect Paperclip"}</button>
+      <button class="btn btn-sm" id="paperclip-rotate-btn" ${connected ? "" : "disabled"}>Rotate Secret</button>
+      <button class="btn btn-danger btn-sm" id="paperclip-disconnect-btn" ${connected ? "" : "disabled"}>Disconnect</button>
+    </div>
+  `;
+
+  $("paperclip-connect-btn").onclick = connectPaperclip;
+  $("paperclip-rotate-btn").onclick = rotatePaperclipSecret;
+  $("paperclip-disconnect-btn").onclick = disconnectPaperclip;
+}
+
+function paperclipConnectionPayload() {
+  return {
+    workspaceId: $("paperclip-workspace-id")?.value || "",
+    label: $("paperclip-label")?.value || "",
+    sharedSecret: $("paperclip-shared-secret")?.value || "",
+  };
+}
+
+async function connectPaperclip() {
+  try {
+    await api.post("/api/integrations/paperclip/connection/connect", paperclipConnectionPayload());
+    toast("Paperclip connected");
+    await loadPaperclipConnection();
+  } catch (e) {
+    toast("Paperclip connect failed: " + e.message, true);
+  }
+}
+
+async function rotatePaperclipSecret() {
+  try {
+    await api.post("/api/integrations/paperclip/connection/rotate-secret", {
+      sharedSecret: $("paperclip-shared-secret")?.value || "",
+    });
+    toast("Paperclip secret rotated");
+    await loadPaperclipConnection();
+  } catch (e) {
+    toast("Paperclip rotate failed: " + e.message, true);
+  }
+}
+
+async function disconnectPaperclip() {
+  try {
+    await api.post("/api/integrations/paperclip/connection/disconnect", {});
+    toast("Paperclip disconnected");
+    await loadPaperclipConnection();
+  } catch (e) {
+    toast("Paperclip disconnect failed: " + e.message, true);
   }
 }
 

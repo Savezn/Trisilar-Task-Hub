@@ -74,7 +74,8 @@ If the branch/folder does not match the prompt, stop before editing and move to 
 | E | `V0.2-W1-08` | `W1.7` | DigitalOcean hosted dev/demo runtime behind Cloudflare for Task Hub |
 | F | `V0.2-W1-07` | `W1.6` | Paperclip service-auth planning for hosted Paperclip -> hosted Task Hub |
 | G | `V0.2-W1-07` | `W1.6` | QA review for Paperclip service-auth planning |
-| H | `V0.2-W3-02` | W3 sequence 2 | Live Paperclip -> Task Hub webhook connector after runtime inputs confirmed |
+| H | `V0.2-W3-02` | W3 sequence 2 | Accepted live Paperclip -> Task Hub webhook connector after runtime inputs and live interop |
+| I | `V0.2-W3-03` | W3 sequence 3 | Controlled live enablement policy or W3 merge-to-dev decision after W3-02 acceptance |
 
 Use the canonical ID in the task title. Include the alias only for continuity.
 
@@ -395,6 +396,8 @@ Rules:
 
 ## Prompt H - V0.2-W3-02 Live Paperclip -> Task Hub Webhook Connector
 
+Status: Accepted. `c1e4df2` implemented the live webhook connector, local QA passed, live signed interop returned HTTP `201`, and runtime was returned to `PAPERCLIP_WEBHOOK_ENABLED=false`. Keep this prompt as historical implementation context; use Prompt I for the next W3 session.
+
 ```text
 Role: Dev
 Task: V0.2-W3-02 - Live Paperclip -> Task Hub Webhook Connector
@@ -443,6 +446,29 @@ Rules:
 
 ---
 
+## Prompt I - V0.2-W3-03 Controlled Live Enablement Or Merge Decision
+
+```text
+Role: PM / Integration
+Task: Decide W3 post-acceptance path after live webhook interop
+
+Context:
+`V0.2-W3-02` is PM accepted at `c1e4df2`. Local QA passed for the signed webhook, contract, mock route, connection settings, docs, frontend, and smoke. Live interop through Cloudflare Access service-token headers plus signed webhook headers returned HTTP `201` for request `pc_live_interop_20260514115714`, created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`, and kept the task pending/human-gated. Runtime was returned to `PAPERCLIP_WEBHOOK_ENABLED=false` after the test.
+
+Decision needed:
+1. Merge `feature/w3-paperclip-integration` into `dev` after final branch acceptance, or
+2. Plan controlled live enablement policy before permanent runtime enablement.
+
+Rules:
+- Do not deploy production.
+- Do not merge to main.
+- Do not expose Cloudflare service-token values or HMAC signing secret.
+- Do not leave `PAPERCLIP_WEBHOOK_ENABLED=true` without PM approval.
+- Preserve Review Queue human gate and existing mock/local Docs behavior.
+```
+
+---
+
 ## Change Attribution
 
 | Date | Change | Updated by |
@@ -461,3 +487,4 @@ Rules:
 | 2026-05-13 | Marked Prompt H as held until the Paperclip server is online; active non-blocked route remains `V0.2-W2-06` | Codex PM |
 | 2026-05-13 | Marked Prompt D as integrated and PM accepted on `origin/dev@523c948`; W2 full UI redesign is complete on the integrated `dev` line | Codex PM |
 | 2026-05-14 | Updated Prompt H after Paperclip runtime inputs and Task Hub service-token `/healthz` check were confirmed; routed `V0.2-W3-02` live webhook connector | Codex PM / Runtime |
+| 2026-05-14 | Marked Prompt H accepted after `c1e4df2` and live signed interop; added Prompt I for W3 merge or controlled live enablement decision | Codex PM |

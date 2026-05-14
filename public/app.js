@@ -1119,6 +1119,7 @@ async function refreshCurrentView() {
   else if (S.mode === "calendar") await renderCalendar();
   else if (S.mode === "today")    await showTodayPage();
   else if (S.mode === "review")   await showReviewPage();
+  else if (S.mode === "docs")     await showDocsPage();
   else if (S.mode === "planner")  await showPlannerPage();
   else if (S.mode === "okr")      await showOKRPage();
   else if (S.mode === "focus")    await showWeeklyFocusPage();
