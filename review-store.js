@@ -244,6 +244,8 @@ function dismissSession(id) {
   const sessions = read();
   const idx = sessions.findIndex(s => s.id === id);
   if (idx === -1) throw new Error("Session not found");
+  if (sessions[idx].paperclipCleanup?.status === "cleaned")
+    throw new Error("Cleaned Paperclip sessions cannot be dismissed because audit trace must be retained");
   if (sessions[idx].tasks.some(t => t.status === "pending"))
     throw new Error("Session has unprocessed tasks");
   sessions.splice(idx, 1);

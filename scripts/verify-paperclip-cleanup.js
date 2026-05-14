@@ -196,6 +196,13 @@ async function main() {
     assert(cleanup.json.tasks[0].auditTrail.some(event => event.type === "paperclip_test_task_cleanup_rejected"));
     pass("cleanup rejects pending Paperclip test tasks and preserves traceability");
 
+    const dismissCleaned = await requestJson(`${baseUrl}/api/reviews/${seeded.json.id}`, {
+      method: "DELETE",
+    });
+    assert.strictEqual(dismissCleaned.status, 409);
+    assert.match(dismissCleaned.json.error, /audit trace/i);
+    pass("cleaned Paperclip sessions cannot be dismissed because audit trace must be retained");
+
     const sessions = JSON.parse(fs.readFileSync(storeFile, "utf8"));
     const cleaned = sessions.find(session => session.id === seeded.json.id);
     assert(cleaned, "cleaned session was removed instead of retained");
@@ -215,6 +222,11 @@ async function main() {
     assert.strictEqual(counts.rejected, 1);
     assert.strictEqual(counts.trelloLinked, 0);
     pass("cleanup before/after counts avoid approval and external side effects");
+
+    const reviewJs = fs.readFileSync(path.join(__dirname, "..", "public", "js", "pages", "review.js"), "utf8");
+    assert(reviewJs.includes("isPaperclipCleanupLocked"));
+    assert(reviewJs.includes("allProcessed && !dismissLocked"));
+    pass("Review Queue UI hides dismiss affordance for cleaned Paperclip audit sessions");
 
     console.log("Paperclip cleanup verification passed.");
   } catch (error) {

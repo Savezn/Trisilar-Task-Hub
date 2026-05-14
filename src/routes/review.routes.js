@@ -7,7 +7,8 @@ module.exports = function reviewRoutes({ store, diff, trello, friendlyError, cac
   function notFound(e) {
     if (e.message.toLowerCase().includes("not found")) return 404;
     if (e.message.includes("already approved") || e.message.includes("already processed") ||
-        e.message.includes("Cannot edit")       || e.message.includes("unprocessed tasks")) return 409;
+        e.message.includes("Cannot edit")       || e.message.includes("unprocessed tasks") ||
+        e.message.includes("audit trace")) return 409;
     return 500;
   }
 

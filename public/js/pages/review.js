@@ -141,6 +141,7 @@ function buildSessionCard(session) {
   const cleanupBadge = session.paperclipCleanup?.status === "cleaned"
     ? `<span class="chip chip-cleanup">Cleanup archived</span>`
     : "";
+  const dismissLocked = isPaperclipCleanupLocked(session);
   const cleanupButton = paperclipMeta.isCleanupEligible && pendingTasks.length
     ? `<button class="btn btn-danger btn-sm" onclick="cleanupPaperclipTestSession('${session.id}')">${icon("x")} Cleanup test</button>`
     : "";
@@ -177,7 +178,7 @@ function buildSessionCard(session) {
         ${expanded ? "Collapse" : "Review"}
       </button>
       ${cleanupButton}
-      ${allProcessed
+      ${allProcessed && !dismissLocked
         ? `<button class="btn btn-ghost btn-sm" style="color:var(--text-muted)" onclick="dismissReviewSession('${session.id}')">${icon("x")} Dismiss</button>`
         : ""}
     </div>
@@ -331,6 +332,10 @@ function getPaperclipReviewMeta(session) {
     isCleanupEligible: isPaperclip && isTestOrCanary && session?.paperclipCleanup?.status !== "cleaned",
     label: isTestOrCanary ? "Paperclip test/canary" : "Paperclip live work",
   };
+}
+
+function isPaperclipCleanupLocked(session) {
+  return session?.paperclipCleanup?.status === "cleaned" && getPaperclipReviewMeta(session).isPaperclip;
 }
 
 function renderPaperclipReviewContext(session) {
