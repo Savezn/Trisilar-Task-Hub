@@ -1,7 +1,7 @@
 # V0.3 RUX Findings Log
 
 **Doc Role:** Active findings log for V0.3 Product Reliability + UX Stabilization
-**Status:** Complete - V0.3 RUX accepted, integrated, deployed to dev/demo, and runtime QA passed
+**Status:** Complete - V0.3 RUX accepted, integrated, deployed to dev/demo, runtime QA passed, and PM accepted for main promotion through PR #20
 **Owner:** PM / UX / QA
 **Created:** 2026-05-14
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
@@ -64,7 +64,7 @@
 | RUX-B10 | 2026-05-14 | PM acceptance of `V0.3-RUX-04` and routing for `V0.3-RUX-05` | Codex PM | PM Accepted / Routed | Accepted `RUX-004` at `d72f979`; confirmed Today/Tasks decision-flow cues, pending Review human gate, hidden-board filtering, browser evidence, no live Paperclip enablement, no W3 merge, no automatic side effects, and no secret exposure. Routed next to `docs/plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md`. |
 | RUX-B11 | 2026-05-14 | `V0.3-RUX-05` Browser Regression + Responsive QA Gate implementation and QA | Codex Dev / QA | QA pass | Added `verify:rux-browser-regression` with Playwright controlled fixtures, temporary local server, desktop/mobile viewports, core route matrix, console/page error capture, horizontal overflow checks, hidden-board fixture validation, disconnected Today copy assertion, Docs trace labels, and Today/Tasks decision-flow assertions. No production secrets, live Paperclip enablement, W3 merge, automatic side effects, or private credentialed URLs. |
 | RUX-B12 | 2026-05-14 | PM acceptance of `V0.3-RUX-05` and routing for `V0.3-RUX-06` | Codex PM | PM Accepted / Routed | Accepted `RUX-005` at `0af9417`; confirmed repeatable browser regression gate, controlled fixtures, route matrix, desktop/mobile coverage, console/page/overflow checks, no production secrets, no live Paperclip enablement, no W3 merge, and no automatic side effects. Routed next to `docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md`. |
-| RUX-B13 | 2026-05-14 | `V0.3-RUX-06` Release Checklist for `dev -> main` | Codex PM / QA / Integration / Runtime | Complete on dev/dev-demo | Drafted one release checklist artifact covering source branch, stacked operating-model dependency, accepted V0.3 evidence, integration order, verification commands, browser route matrix, Paperclip/Review Queue gate, runtime/access gate, rollback/hold plan, and PM decision format. PM accepted at `df29307` and routed at `5a90cc7`. The operating-model prerequisite merged into `dev@ed9fae0`; V0.3 integrated through PR #18 and deployed to dev/demo at `dev@02fe7cf`; runtime QA passed. No production deploy, `main` merge, runtime flag change, new live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge occurred. |
+| RUX-B13 | 2026-05-14 | `V0.3-RUX-06` Release Checklist for `dev -> main` | Codex PM / QA / Integration / Runtime | Main promotion accepted through PR #20 | Drafted one release checklist artifact covering source branch, stacked operating-model dependency, accepted V0.3 evidence, integration order, verification commands, browser route matrix, Paperclip/Review Queue gate, runtime/access gate, rollback/hold plan, and PM decision format. PM accepted at `df29307` and routed at `5a90cc7`. The operating-model prerequisite merged into `dev@ed9fae0`; V0.3 integrated through PR #18 and deployed to dev/demo at `dev@02fe7cf`; runtime QA passed; PR #20 release-candidate verification passed and PM accepted main promotion. No production deploy, runtime flag change, new live Paperclip enablement, secret exposure, or W3/V0.3 cross-merge occurred. |
 
 ---
 
@@ -87,3 +87,4 @@
 | 2026-05-14 | Drafted and docs-verified `V0.3-RUX-06`; marked `RUX-006` as QA pass before PM acceptance | Codex PM / QA / Integration / Runtime |
 | 2026-05-14 | Accepted `V0.3-RUX-06`; marked `RUX-006` as PM Accepted, routed to Integration Owner, and later closed on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM |
 | 2026-05-14 | Integrated V0.3 through PR #18, deployed `dev@02fe7cf` to dev/demo, passed runtime QA, and closed V0.3 complete on dev/dev-demo | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |

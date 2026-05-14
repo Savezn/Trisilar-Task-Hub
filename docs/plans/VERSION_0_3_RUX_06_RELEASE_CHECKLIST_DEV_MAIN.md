@@ -1,7 +1,7 @@
 # V0.3-RUX-06 Release Checklist for dev -> main
 
 **Doc Role:** Scoped PM handoff for the next V0.3 Product Reliability + UX Stabilization task
-**Status:** PM accepted - V0.3 complete on dev/dev-demo; dev -> main not yet approved
+**Status:** PM accepted - V0.3 main promotion accepted through PR #20; production deploy not performed
 **Owner:** PM / QA / Integration / Runtime
 **Created:** 2026-05-14
 **Last Updated:** 2026-05-14 - **Updated by:** Codex PM
@@ -270,7 +270,43 @@ origin/dev contains operating-model base 96826f7 after merge commit ed9fae0
 origin/dev contains accepted V0.3 RUX after merge commit 02fe7cf
 ```
 
-This means V0.3 is complete on `dev` and dev/demo. A `dev -> main` promotion still requires a separate PM release decision using this checklist.
+This means V0.3 is complete on `dev` and dev/demo. The separate `dev -> main` PM release decision was later accepted through PR #20.
+
+---
+
+## Main Promotion Decision
+
+```text
+Decision: Accept
+Date: 2026-05-14
+Candidate branch / commit: codex/v03-dev-to-main-release-candidate@5eb23ef
+Accepted source commits: origin/dev@e05eb66 over origin/main@88dfa09
+Integrated dev commit: e05eb66
+Verified by: Codex QA / Integration Owner
+Verification commands:
+- npm.cmd ci
+- git diff --check HEAD
+- rg conflict-marker check
+- npm.cmd run check:all with local server running
+- npm.cmd run verify:rux-trello
+- npm.cmd run verify:rux-ai-trace
+- npm.cmd run verify:rux-decision-flow
+- npm.cmd run verify:rux-browser-regression
+- npm.cmd run verify:paperclip-contract
+- npm.cmd run verify:paperclip-mock
+- npm.cmd run verify:paperclip-docs
+- npm.cmd run verify:paperclip-operations
+- npm.cmd run verify:paperclip-cleanup
+- npm.cmd run verify:paperclip-connection
+- npm.cmd run verify:paperclip-webhook
+Browser route matrix: /today, /review, /all, /boards, /calendar, /planner, /okr, /focus, /settings, /docs on desktop/mobile
+Paperclip / Review Queue gate: Passed under isolated local runtime; no live service credential or production canary used
+Runtime / access gate: Dev/demo was already verified at origin/dev@e05eb66; production deploy not performed
+Secret handling: Passed; no secrets, tokens, HMAC values, auth headers, or private credentialed URLs recorded
+Rollback readiness: Use PR #20 merge revert or scoped hotfix from main, then backport to dev
+Reason: All V0.3 acceptance, integration, browser, Paperclip, and release-candidate gates passed
+Next owner: PM for post-V0.3 roadmap routing; Runtime Owner only if a separate production deployment decision is opened
+```
 
 ---
 
@@ -291,7 +327,7 @@ Integration closeout:
 - origin/dev contains operating-model base 96826f7 after merge commit ed9fae0.
 - V0.3 RUX is integrated through PR #18 and merged at `origin/dev@02fe7cf`.
 - Dev/demo runtime is deployed from `dev@02fe7cf` and runtime QA passed.
-- `dev -> main` remains unapproved until PM opens a separate release decision.
+- `dev -> main` promotion was later accepted through PR #20 after release-candidate verification passed.
 ```
 
 ---
@@ -300,7 +336,7 @@ Integration closeout:
 
 ```text
 Role: PM
-Task: Decide the next project route after V0.3 completion.
+Task: Decide the next project route after V0.3 main release acceptance.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
@@ -318,14 +354,14 @@ Completed:
 - Accepted V0.3 RUX is integrated into `dev@02fe7cf`.
 - RUX-06 checklist was run against the integrated candidate and dev/demo runtime.
 - Dev/demo runtime QA passed.
+- PR #20 release candidate `5eb23ef` passed release QA and was PM accepted for main promotion.
 
 Decision options:
-- Hold on dev and continue routine read-only monitoring.
-- Open a separate PM release decision for `dev -> main`.
+- Hold after main promotion and continue routine read-only monitoring.
 - Route V0.4 Live AI Operations or a focused post-V0.3 hardening item.
+- Open a separate production runtime/deploy decision if production deployment becomes needed.
 
 Rules:
-- Do not merge `dev` to `main` without PM release decision.
 - Do not deploy production, expose secrets, or enable additional live Paperclip behavior from this closeout.
 
 If held:
@@ -342,3 +378,4 @@ If held:
 | 2026-05-14 | Drafted release checklist artifact, runtime/Paperclip gates, rollback notes, and PM decision block for `V0.3-RUX-06` | Codex PM / QA / Integration / Runtime |
 | 2026-05-14 | PM accepted `V0.3-RUX-06` at `df29307`, routed to Integration Owner, and later closed on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM |
 | 2026-05-14 | Integrated V0.3 through PR #18, deployed `dev@02fe7cf` to dev/demo, passed runtime QA, and closed V0.3 complete on dev/dev-demo | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |

@@ -56,7 +56,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L2 | V0.2 Full UI Redesign | Complete on `origin/dev@523c948` | Every production page aligns with `docs/design/ui-design-v1-0/` while preserving existing workflows | `V0.2-W2-01`-`V0.2-W2-06` QA/PM accepted and integrated; W2-06 Integration QA/PM accepted on `dev` |
 | L3 | V0.2 Paperclip Foundation | Complete for V0.2 / standing dev-demo monitor active | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, safe cleanup for accumulated test sessions, retained traceability, and read-only operations visibility | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3-03 standing dev/demo observation active; W3-04/W3-04a cleanup merged to `dev@7ea4650`; runtime cleanup completed with 0 pending / 6 rejected / 0 Trello-linked; W3-05 operations status and copy polish merged/deployed at `dev@2c302dc`; closeout status is on `origin/dev@ff20e48` |
 | L4 | V0.2 Integration Release | Planned | Accepted W1/W2/W3 work runs together on `dev` without regressions | Integration QA pass on `dev`; PM accepts release candidate |
-| L5 | V0.3 Product Reliability + UX Stabilization | Complete on `origin/dev@02fe7cf` and dev/demo runtime | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, and deployed to dev/demo; `dev -> main` remains a separate PM release decision |
+| L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, deployed to dev/demo, and release-candidate verified; production deploy remains a separate runtime decision |
 | L6 | V0.4 Live AI Operations | Planned | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Live connector QA with controlled production-like data |
 | L7 | V0.5 Team Operating System | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
 
@@ -236,10 +236,11 @@ Paperclip runtime inputs confirmed
 -> V0.3 Product Reliability + UX Stabilization accepted through V0.3-RUX-06
 -> V0.3 RUX integrated through PR #18 and merged to origin/dev@02fe7cf
 -> dev/demo runtime deployed from dev@02fe7cf and runtime QA passed
--> V0.3 complete on dev/dev-demo
+-> PR #19 closed V0.3 docs on origin/dev@e05eb66
+-> PR #20 release candidate verified and PM accepted for main promotion
 ```
 
-This is now a post-V0.3 PM decision route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not change the standing Paperclip dev/demo observation policy. Do not merge `dev -> main` without a separate PM release decision using the RUX-06 checklist.
+This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not change the standing Paperclip dev/demo observation policy. Production deployment remains a separate Runtime / PM decision.
 
 ---
 
@@ -280,3 +281,4 @@ This is now a post-V0.3 PM decision route. Do not reopen W1 Task Hub runtime wor
 | 2026-05-14 | Accepted the V0.3 operating model and routed next to V0.3 Product Reliability + UX Stabilization planning; deferred reusable Codex skill extraction | Codex PM |
 | 2026-05-14 | Recorded V0.3 RUX PM acceptance through RUX-06 and later closed it on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM / Integration Owner |
 | 2026-05-14 | Closed V0.3 RUX on `origin/dev@02fe7cf` and dev/demo runtime after runtime QA pass | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |

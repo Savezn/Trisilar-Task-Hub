@@ -1,7 +1,7 @@
 # Version 0.3 Product Reliability + UX Stabilization Plan
 
 **Doc Role:** Active V0.3 phase plan
-**Status:** Complete on `origin/dev@02fe7cf` and dev/demo runtime
+**Status:** Complete on dev/dev-demo; PM accepted for main promotion through PR #20
 **Version:** V0.3
 **Planning Stage:** Product Reliability + UX Stabilization scoped after V0.3 operating model acceptance
 **Owner:** PM
@@ -126,7 +126,7 @@ V0.3-RUX-06
 | `V0.3-RUX-03` | Review Queue + AI Trace Clarity | UX / Frontend / Core / QA | PM Accepted `b2425a4` | Make AI-originated work easier to evaluate through source, rationale, evidence, linked task/doc context, and audit trace |
 | `V0.3-RUX-04` | Today + Tasks Decision Flow | UX / Frontend / QA | PM Accepted `d72f979` | Improve daily decision flow, priority scanning, cross-board task confidence, and low-friction next actions |
 | `V0.3-RUX-05` | Browser Regression + Responsive QA Gate | QA / Frontend / Dev | PM Accepted `0af9417` | Add repeatable browser regression coverage and desktop/mobile evidence expectations for core routes |
-| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | PM Accepted `df29307`; routed at `5a90cc7`; completed on dev/dev-demo at `02fe7cf` | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
+| `V0.3-RUX-06` | Release Checklist for `dev -> main` | PM / QA / Integration / Runtime | PM Accepted `df29307`; routed at `5a90cc7`; completed on dev/dev-demo at `02fe7cf`; main promotion accepted via PR #20 | Define promotion checklist, rollback notes, runtime gate checks, and PM release decision format |
 
 ---
 
@@ -413,7 +413,7 @@ Acceptance confirmed:
 
 ```text
 Role: PM
-Task: Decide the next project route after V0.3 completion.
+Task: Decide the next project route after V0.3 main release acceptance.
 
 Read:
 - docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md
@@ -425,14 +425,14 @@ Completed baseline:
 - V0.3 RUX integrated through PR #18 and merged to `origin/dev@02fe7cf`.
 - Dev/demo runtime deployed from `dev@02fe7cf`.
 - Runtime QA passed health/config/reviews, Cloudflare Access anonymous block, and read-only Paperclip operations.
+- PR #20 release candidate `5eb23ef` merged `origin/dev@e05eb66` over `origin/main@88dfa09` and passed release QA.
 
 Decision options:
-- Hold on dev and continue routine read-only monitoring.
-- Open a separate PM release decision for `dev -> main` using the RUX-06 checklist.
+- Hold after main promotion and continue routine read-only monitoring.
 - Route the next roadmap item, likely V0.4 Live AI Operations or a focused post-V0.3 hardening item.
+- Open a separate production runtime/deploy decision if production deployment becomes needed.
 
 Rules:
-- Do not merge `dev` to `main` without a separate PM release decision.
 - Do not deploy production, expose secrets, change runtime flags, or enable additional live Paperclip behavior from this closeout.
 - Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
 
@@ -462,3 +462,4 @@ If held:
 | 2026-05-14 | Drafted and docs-verified `V0.3-RUX-06` Release Checklist for dev -> main; routed to PM review | Codex PM / QA / Integration / Runtime |
 | 2026-05-14 | Accepted `V0.3-RUX-06` at `df29307`; routed to Integration Owner and later closed on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM |
 | 2026-05-14 | Integrated V0.3 RUX through PR #18, deployed `dev@02fe7cf` to dev/demo, passed runtime QA, and closed V0.3 complete on dev/dev-demo | Codex PM / Runtime Owner / QA |
+| 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |
