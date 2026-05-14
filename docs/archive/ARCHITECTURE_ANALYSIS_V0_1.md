@@ -654,7 +654,7 @@ Keep migration simple:
 ### Prompt 1: Backend Route Split
 
 ```text
-Read ARCHITECTURE_ANALYSIS.md first.
+Read ARCHITECTURE_ANALYSIS_V0_1.md first.
 
 Task: Start Version 0.1 backend modularization.
 
@@ -672,7 +672,7 @@ After changes, run node server.js and verify GET /api/config returns the same sh
 ### Prompt 2: Frontend API Module Split
 
 ```text
-Read ARCHITECTURE_ANALYSIS.md first.
+Read ARCHITECTURE_ANALYSIS_V0_1.md first.
 
 Task: Extract the frontend API helper from public/app.js into public/js/api.js.
 
@@ -689,7 +689,7 @@ Verify these actions still work:
 ### Prompt 3: Smoke Test Setup
 
 ```text
-Read ARCHITECTURE_ANALYSIS.md first.
+Read ARCHITECTURE_ANALYSIS_V0_1.md first.
 
 Task: Add a simple smoke test for Trisilar Task Hub.
 
@@ -710,7 +710,7 @@ Keep dependencies minimal.
 ### Prompt 4: SQLite Migration Planning
 
 ```text
-Read ARCHITECTURE_ANALYSIS.md first.
+Read ARCHITECTURE_ANALYSIS_V0_1.md first.
 
 Task: Plan, but do not implement yet, a migration from local JSON files to SQLite.
 

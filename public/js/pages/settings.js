@@ -1,154 +1,203 @@
 // Implemented by: Codex Dev (2026-05-07)
+// V0.2-W2-06 Settings polish implemented by Codex Dev.
 
-// ── Settings Page ─────────────────────────────────────────────────────────────
+// Settings Page
 function showSettingsPage() {
   try {
     S.mode = "settings";
     S.currentBoardId = null;
     S.currentGroupId = null;
     $("board-title").textContent = "Settings";
-    $("board-subtitle").textContent = "";
+    $("board-subtitle").textContent = "Connections and workspace controls";
     $("add-list-btn").classList.add("hidden");
 
     const calConnected = CAL.status?.connected;
+    const config = S.config || {};
+    const hiddenCount = (config.hiddenBoards || []).length;
+    const workspaceCount = (config.allowedWorkspaceIds || []).length;
+    const boardCount = S.boards?.length || 0;
 
     const page = document.createElement("div");
     page.className = "settings-page";
-
-
-  // ── 1. Integrations ──
-  const intSection = document.createElement("div");
-  intSection.className = "settings-section";
-  intSection.innerHTML = `
-    <div class="settings-section-header">Integrations</div>
-    <div class="settings-section-body">
-      <div class="integration-row">
-        <span class="integration-icon">🔷</span>
-        <div class="integration-info">
-          <div class="integration-name">Trello</div>
-          <div class="integration-desc">Connected via API Key</div>
+    page.innerHTML = `
+      <section class="settings-command-panel" aria-labelledby="settings-title">
+        <div class="settings-command-copy">
+          <div class="settings-kicker">Workspace controls</div>
+          <h2 id="settings-title" class="settings-title">Settings</h2>
+          <p class="settings-subtitle">Manage connected services, visible workspaces, board scope, monitor labels, and business-unit grouping.</p>
         </div>
-        <div class="integration-status-dot dot-green"></div>
-        <span class="chip chip-done">Connected</span>
-      </div>
-      <div class="integration-row">
-        <span class="integration-icon">📅</span>
-        <div class="integration-info">
-          <div class="integration-name">Google Calendar</div>
-          <div class="integration-desc">${calConnected ? "OAuth connected" : "Not connected"}</div>
+        <div class="settings-command-stats" aria-label="Settings summary">
+          <div class="settings-stat-card is-ok">
+            <span class="settings-stat-label">Trello</span>
+            <strong>${boardCount ? "Connected" : "Ready"}</strong>
+          </div>
+          <div class="settings-stat-card ${calConnected ? "is-ok" : "is-muted"}">
+            <span class="settings-stat-label">Calendar</span>
+            <strong>${calConnected ? "Connected" : "Offline"}</strong>
+          </div>
+          <div class="settings-stat-card">
+            <span class="settings-stat-label">Workspaces</span>
+            <strong>${workspaceCount || "All"}</strong>
+          </div>
+          <div class="settings-stat-card ${hiddenCount ? "is-warning" : ""}">
+            <span class="settings-stat-label">Hidden boards</span>
+            <strong>${hiddenCount}</strong>
+          </div>
         </div>
-        <div class="integration-status-dot ${calConnected ? "dot-green" : "dot-gray"}"></div>
-        ${calConnected
-          ? '<span class="chip chip-done">Connected</span>'
-          : '<button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect</button>'
-        }
-      </div>
-      <div class="integration-row">
-        <span class="integration-icon">${calConnected ? "📋" : "📋"}</span>
-        <div class="integration-info">
-          <div class="integration-name">Google Tasks</div>
-          <div class="integration-desc">${calConnected
-            ? "Uses Google Calendar OAuth"
-            : "Requires Google Calendar connection"}</div>
+      </section>
+
+      <div class="settings-layout">
+        <aside class="settings-nav-panel" aria-label="Settings sections">
+          <button type="button" class="settings-nav-button" data-target="settings-integrations">${icon("gitMerge")} Integrations</button>
+          <button type="button" class="settings-nav-button" data-target="settings-paperclip">${icon("sparkles")} Paperclip</button>
+          <button type="button" class="settings-nav-button" data-target="settings-workspaces">${icon("layout")} Workspaces</button>
+          <button type="button" class="settings-nav-button" data-target="settings-visibility">${icon("checkSquare")} Board Visibility</button>
+          <button type="button" class="settings-nav-button" data-target="settings-teams">${icon("target")} Monitor Teams</button>
+          <button type="button" class="settings-nav-button" data-target="settings-groups">${icon("settings")} Business Units</button>
+        </aside>
+
+        <div class="settings-stack">
+          <section class="settings-section" id="settings-integrations">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-kicker">Connections</div>
+                <h3 class="settings-section-title">Integrations</h3>
+                <p class="settings-section-desc">Connection state only. Approval and sync behavior remains unchanged.</p>
+              </div>
+            </div>
+            <div class="settings-section-body">
+              <div class="integration-row">
+                <span class="settings-integration-icon">${icon("layout")}</span>
+                <div class="integration-info">
+                  <div class="integration-name">Trello</div>
+                  <div class="integration-desc">Connected via configured API credentials.</div>
+                </div>
+                <span class="settings-status-chip is-connected">Connected</span>
+              </div>
+              <div class="integration-row">
+                <span class="settings-integration-icon">${icon("calendar")}</span>
+                <div class="integration-info">
+                  <div class="integration-name">Google Calendar</div>
+                  <div class="integration-desc">${calConnected ? "OAuth connected." : "Connect OAuth before selecting calendar sync paths."}</div>
+                </div>
+                ${calConnected
+                  ? '<span class="settings-status-chip is-connected">Connected</span>'
+                  : '<button type="button" class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect</button>'}
+              </div>
+              <div class="integration-row">
+                <span class="settings-integration-icon">${icon("checkSquare")}</span>
+                <div class="integration-info">
+                  <div class="integration-name">Google Tasks</div>
+                  <div class="integration-desc">${calConnected ? "Uses the Google Calendar OAuth connection." : "Requires Google Calendar connection first."}</div>
+                </div>
+                ${calConnected
+                  ? '<span class="settings-status-chip is-shared">Shared OAuth</span>'
+                  : '<button type="button" class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Calendar</button>'}
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="settings-paperclip">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-kicker">Agent connector</div>
+                <h3 class="settings-section-title">Paperclip Integration</h3>
+                <p class="settings-section-desc">Manage connection state and runtime secret rotation before live webhook work is enabled.</p>
+              </div>
+            </div>
+            <div class="settings-section-body" id="settings-paperclip-body">
+              <div class="loading-box"><span class="spinner"></span> Loading Paperclip connection...</div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="settings-workspaces">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-kicker">Scope</div>
+                <h3 class="settings-section-title">Workspaces</h3>
+                <p class="settings-section-desc">Choose which Trello workspaces are included in the app shell.</p>
+              </div>
+            </div>
+            <div class="settings-section-body" id="settings-ws-body">
+              <div class="loading-box"><span class="spinner"></span> Loading workspaces...</div>
+            </div>
+          </section>
+
+          <section class="settings-section" id="settings-visibility">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-kicker">Boards</div>
+                <h3 class="settings-section-title">Board Visibility</h3>
+                <p class="settings-section-desc">Hide noisy boards without changing Trello data.</p>
+              </div>
+            </div>
+            <div class="settings-section-body" id="settings-vis-body"></div>
+          </section>
+
+          <section class="settings-section" id="settings-teams">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-kicker">Labels</div>
+                <h3 class="settings-section-title">Monitor Teams</h3>
+                <p class="settings-section-desc">Define labels that should be treated as team filters in Monitor.</p>
+              </div>
+            </div>
+            <div class="settings-section-body" id="settings-teams-body"></div>
+          </section>
+
+          <section class="settings-section" id="settings-groups">
+            <div class="settings-section-header">
+              <div>
+                <div class="settings-section-kicker">Navigation</div>
+                <h3 class="settings-section-title">Business Unit Groups</h3>
+                <p class="settings-section-desc">Group boards for the sidebar while preserving the underlying Trello board structure.</p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm settings-section-action" id="settings-add-group-btn">New Group</button>
+            </div>
+            <div class="settings-section-body" id="settings-groups-body"></div>
+          </section>
         </div>
-        <div class="integration-status-dot ${calConnected ? "dot-green" : "dot-gray"}"></div>
-        ${calConnected
-          ? '<span class="chip" style="background:#e0f2fe;color:#0369a1;border-color:#bae6fd">Shared with Calendar</span>'
-          : '<button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Calendar</button>'
-        }
       </div>
-    </div>
-  `;
-  page.appendChild(intSection);
+    `;
 
-  const paperclipSection = document.createElement("div");
-  paperclipSection.className = "settings-section";
-  paperclipSection.innerHTML = `
-    <div class="settings-section-header">Paperclip Integration</div>
-    <div class="settings-section-body" id="settings-paperclip-body">
-      <div class="loading-box" style="height:60px"><span class="spinner"></span> Loading...</div>
-    </div>
-  `;
-  page.appendChild(paperclipSection);
+    const content = $("board-content");
+    content.innerHTML = "";
+    content.appendChild(page);
 
-  // ── 2. Workspaces ──
-  const wsSection = document.createElement("div");
-  wsSection.className = "settings-section";
-  wsSection.innerHTML = `
-    <div class="settings-section-header">
-      <span>Workspaces</span>
-    </div>
-    <div class="settings-section-body" id="settings-ws-body">
-      <div class="loading-box" style="height:60px"><span class="spinner"></span> Loading...</div>
-    </div>
-  `;
-  page.appendChild(wsSection);
+    S.draftConfig = JSON.parse(JSON.stringify(S.config || {}));
+    if (!Array.isArray(S.draftConfig.groups)) S.draftConfig.groups = [];
+    if (!Array.isArray(S.draftConfig.hiddenBoards)) S.draftConfig.hiddenBoards = [];
+    if (!Array.isArray(S.draftConfig.allowedWorkspaceIds)) S.draftConfig.allowedWorkspaceIds = [];
+    if (!Array.isArray(S.draftConfig.monitorTeams)) S.draftConfig.monitorTeams = [];
 
-  // ── 3. Board Visibility ──
-  const visSection = document.createElement("div");
-  visSection.className = "settings-section";
-  visSection.innerHTML = `
-    <div class="settings-section-header">Board Visibility</div>
-    <div class="settings-section-body" id="settings-vis-body"></div>
-  `;
-  page.appendChild(visSection);
-
-  // ── 4. Monitor Teams ──
-  const teamSection = document.createElement("div");
-  teamSection.className = "settings-section";
-  teamSection.innerHTML = `
-    <div class="settings-section-header">Monitor Teams (Labels)</div>
-    <div class="settings-section-body" id="settings-teams-body"></div>
-  `;
-  page.appendChild(teamSection);
-
-  // ── 5. BU Groups ──
-  const groupSection = document.createElement("div");
-  groupSection.className = "settings-section";
-  groupSection.innerHTML = `
-    <div class="settings-section-header">
-      <span>Business Unit Groups</span>
-      <button class="btn btn-primary btn-sm" id="settings-add-group-btn">+ New Group</button>
-    </div>
-    <div class="settings-section-body" id="settings-groups-body"></div>
-  `;
-  page.appendChild(groupSection);
-
-  const content = $("board-content");
-  content.innerHTML = "";
-  content.appendChild(page);
-
-  // Initialize draft config for inline editing
-  S.draftConfig = JSON.parse(JSON.stringify(S.config));
-  if (!S.draftConfig.allowedWorkspaceIds) S.draftConfig.allowedWorkspaceIds = [];
-
-  // Render visibility editor inline
-  renderSettingsVisibility();
-  renderSettingsTeams();
-  renderSettingsGroups();
-  loadPaperclipConnection();
-  loadSettingsWorkspaces();
-
-  // Add group button
-  $("settings-add-group-btn").onclick = () => {
-    S.draftConfig.groups.push({
-      id: "g_" + Date.now(),
-      name: "New Group",
-      color: COLORS[S.draftConfig.groups.length % COLORS.length],
-      boardIds: [],
-    });
+    renderSettingsVisibility();
+    renderSettingsTeams();
     renderSettingsGroups();
-    setTimeout(() => {
-      const inputs = $("settings-groups-body").querySelectorAll(".group-edit-name");
-      inputs[inputs.length - 1]?.focus();
-      inputs[inputs.length - 1]?.select();
-    }, 50);
-  };
-  loadSettingsWorkspaces();
-} catch (e) {
-  console.error("[Settings Error]", e);
-  $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">⚠</div><h3>Settings error</h3><p>${esc(e.message)}</p></div>`;
-}
+    loadPaperclipConnection();
+    loadSettingsWorkspaces();
+
+    page.querySelectorAll(".settings-nav-button").forEach(btn => {
+      btn.onclick = () => $(btn.dataset.target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    $("settings-add-group-btn").onclick = () => {
+      S.draftConfig.groups.push({
+        id: "g_" + Date.now(),
+        name: "New Group",
+        color: COLORS[S.draftConfig.groups.length % COLORS.length],
+        boardIds: [],
+      });
+      renderSettingsGroups();
+      setTimeout(() => {
+        const inputs = $("settings-groups-body").querySelectorAll(".group-edit-name");
+        inputs[inputs.length - 1]?.focus();
+        inputs[inputs.length - 1]?.select();
+      }, 50);
+    };
+  } catch (e) {
+    console.error("[Settings Error]", e);
+    $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Settings error</h3><p>${esc(e.message)}</p></div>`;
+  }
 }
 
 function paperclipStatusChip(status) {
@@ -262,10 +311,10 @@ function renderSettingsVisibility() {
   const container = $("settings-vis-body");
   if (!container) return;
   container.innerHTML = "";
-  const hidden = new Set(S.draftConfig.hiddenBoards);
+  const hidden = new Set(S.draftConfig.hiddenBoards || []);
 
   if (!S.boards.length) {
-    container.innerHTML = '<p style="color:var(--text-muted);font-size:13px">No boards loaded</p>';
+    container.innerHTML = '<div class="settings-empty-inline">No boards loaded yet.</div>';
     return;
   }
 
@@ -276,8 +325,8 @@ function renderSettingsVisibility() {
     row.innerHTML = `
       <span class="vis-dot" style="background:${COLORS[i % COLORS.length]}"></span>
       <span class="vis-name" title="${esc(board.name)}">${esc(board.name)}</span>
-      <button class="vis-toggle${isHidden ? " hidden-toggle" : ""}" data-bid="${board.id}">
-        ${isHidden ? "🙈 Hidden" : "👁 Visible"}
+      <button type="button" class="vis-toggle${isHidden ? " hidden-toggle" : ""}" data-bid="${board.id}">
+        ${isHidden ? "Hidden" : "Visible"}
       </button>
     `;
     row.querySelector(".vis-toggle").onclick = async function() {
@@ -285,7 +334,7 @@ function renderSettingsVisibility() {
       const idx = S.draftConfig.hiddenBoards.indexOf(bid);
       if (idx === -1) {
         S.draftConfig.hiddenBoards.push(bid);
-        this.textContent = "🙈 Hidden";
+        this.textContent = "Hidden";
         this.classList.add("hidden-toggle");
         S.draftConfig.groups.forEach(g => {
           const bi = g.boardIds.indexOf(bid);
@@ -293,10 +342,11 @@ function renderSettingsVisibility() {
         });
       } else {
         S.draftConfig.hiddenBoards.splice(idx, 1);
-        this.textContent = "👁 Visible";
+        this.textContent = "Visible";
         this.classList.remove("hidden-toggle");
       }
       await saveSettingsConfig();
+      renderSettingsGroups();
     };
     container.appendChild(row);
   });
@@ -305,29 +355,29 @@ function renderSettingsVisibility() {
 function renderSettingsTeams() {
   const container = $("settings-teams-body");
   if (!container) return;
-  if (!S.draftConfig.monitorTeams) S.draftConfig.monitorTeams = [];
+  if (!Array.isArray(S.draftConfig.monitorTeams)) S.draftConfig.monitorTeams = [];
 
   container.innerHTML = `
-    <p style="color:var(--text-muted);font-size:12px;margin-bottom:12px">Define labels that represent teams for the Monitor view. You can add or remove them as needed.</p>
+    <p class="settings-section-note">Team labels are saved immediately and reused by the Monitor view.</p>
     <div class="teams-editor-wrap">
       <div class="teams-chips-list">
-        ${S.draftConfig.monitorTeams.map((team, idx) => `
+        ${S.draftConfig.monitorTeams.length ? S.draftConfig.monitorTeams.map((team, idx) => `
           <span class="team-manage-chip">
             ${esc(team)}
-            <button class="team-del-btn" data-idx="${idx}">×</button>
+            <button type="button" class="team-del-btn" data-idx="${idx}" aria-label="Remove ${esc(team)}">x</button>
           </span>
-        `).join("")}
+        `).join("") : '<div class="settings-empty-inline">No monitor team labels yet.</div>'}
       </div>
-      <div class="team-add-row" style="margin-top:12px;display:flex;gap:8px">
-        <input type="text" id="new-team-input" class="form-control" style="flex:1" placeholder="Add new team label (e.g. Design)...">
-        <button class="btn btn-primary btn-sm" id="add-team-btn">Add Team</button>
+      <div class="settings-inline-editor">
+        <input type="text" id="new-team-input" class="form-control" placeholder="Add team label, e.g. Design">
+        <button type="button" class="btn btn-primary btn-sm" id="add-team-btn">Add Team</button>
       </div>
     </div>
   `;
 
   container.querySelectorAll(".team-del-btn").forEach(btn => {
     btn.onclick = async () => {
-      const idx = parseInt(btn.dataset.idx);
+      const idx = parseInt(btn.dataset.idx, 10);
       S.draftConfig.monitorTeams.splice(idx, 1);
       renderSettingsTeams();
       await saveSettingsConfig();
@@ -356,24 +406,24 @@ function renderSettingsGroups() {
   container.innerHTML = "";
 
   if (!S.draftConfig.groups.length) {
-    container.innerHTML = '<p style="color:var(--text-muted);font-size:13px">No groups yet. Click "+ New Group" to create one.</p>';
+    container.innerHTML = '<div class="settings-empty-inline">No groups yet. Create a group to cluster boards in the sidebar.</div>';
     return;
   }
 
   S.draftConfig.groups.forEach((group, gi) => {
     const row = document.createElement("div");
     row.className = "group-edit-row";
-    const assignedBoards = new Set(group.boardIds);
+    const assignedBoards = new Set(group.boardIds || []);
     row.innerHTML = `
       <div class="group-edit-header">
-        <input type="color" class="group-color-picker" value="${group.color || "#6366f1"}" data-gi="${gi}">
-        <input type="text" class="group-edit-name" value="${esc(group.name)}" placeholder="Group name..." data-gi="${gi}">
-        <button class="group-del-btn" data-gi="${gi}" title="Delete group">🗑</button>
+        <input type="color" class="group-color-picker" value="${group.color || "#6366f1"}" data-gi="${gi}" aria-label="Group color">
+        <input type="text" class="group-edit-name" value="${esc(group.name)}" placeholder="Group name" data-gi="${gi}">
+        <button type="button" class="group-del-btn" data-gi="${gi}" title="Delete group">Delete</button>
       </div>
       <div class="group-boards-selector" data-gi="${gi}">
-        ${S.boards.filter(b => !S.config.hiddenBoards.includes(b.id)).map(b => `
-          <span class="board-chip${assignedBoards.has(b.id) ? " selected" : ""}" data-bid="${b.id}" data-gi="${gi}">${esc(b.name)}</span>
-        `).join("")}
+        ${S.boards.filter(b => !(S.draftConfig.hiddenBoards || []).includes(b.id)).map(b => `
+          <button type="button" class="board-chip${assignedBoards.has(b.id) ? " selected" : ""}" data-bid="${b.id}" data-gi="${gi}">${esc(b.name)}</button>
+        `).join("") || '<div class="settings-empty-inline">No visible boards available for this group.</div>'}
       </div>
     `;
 
@@ -393,6 +443,7 @@ function renderSettingsGroups() {
     row.querySelectorAll(".board-chip").forEach(chip => {
       chip.onclick = async () => {
         const bid = chip.dataset.bid;
+        if (!Array.isArray(S.draftConfig.groups[gi].boardIds)) S.draftConfig.groups[gi].boardIds = [];
         const idx = S.draftConfig.groups[gi].boardIds.indexOf(bid);
         if (idx === -1) S.draftConfig.groups[gi].boardIds.push(bid);
         else S.draftConfig.groups[gi].boardIds.splice(idx, 1);
@@ -411,13 +462,15 @@ async function loadSettingsWorkspaces() {
   try {
     const workspaces = await api.get("/api/workspaces");
     if (!workspaces.length) {
-      container.innerHTML = '<p style="color:var(--text-muted);font-size:13px">ไม่พบ Workspace ใน Trello account นี้</p>';
+      container.innerHTML = '<div class="settings-empty-inline">No Trello workspaces were returned for this account.</div>';
       return;
     }
     if (S.draftConfig.allowedWorkspaceIds.length === 0) {
       S.draftConfig.allowedWorkspaceIds = workspaces.map(ws => ws.id);
     }
-    container.innerHTML = "";
+    container.innerHTML = `
+      <p class="settings-section-note">${S.draftConfig.allowedWorkspaceIds.length === workspaces.length ? "All workspaces are visible." : `${S.draftConfig.allowedWorkspaceIds.length} of ${workspaces.length} workspaces visible.`}</p>
+    `;
     workspaces.forEach(ws => {
       const isChecked = S.draftConfig.allowedWorkspaceIds.includes(ws.id);
       const row = document.createElement("div");
@@ -425,15 +478,14 @@ async function loadSettingsWorkspaces() {
       row.innerHTML = `
         <label class="ws-label">
           <input type="checkbox" class="ws-check" data-wsid="${ws.id}" ${isChecked ? "checked" : ""}>
-          <span>🏢 ${esc(ws.displayName || ws.name)}</span>
+          <span>${esc(ws.displayName || ws.name)}</span>
         </label>
-        <span style="font-size:11px;color:var(--text-muted)">${esc(ws.name)}</span>
+        <span class="ws-slug">${esc(ws.name)}</span>
       `;
       row.querySelector(".ws-check").onchange = async function() {
         const wsId = this.dataset.wsid;
         if (this.checked) {
-          if (!S.draftConfig.allowedWorkspaceIds.includes(wsId))
-            S.draftConfig.allowedWorkspaceIds.push(wsId);
+          if (!S.draftConfig.allowedWorkspaceIds.includes(wsId)) S.draftConfig.allowedWorkspaceIds.push(wsId);
         } else {
           S.draftConfig.allowedWorkspaceIds = S.draftConfig.allowedWorkspaceIds.filter(id => id !== wsId);
         }
@@ -442,7 +494,7 @@ async function loadSettingsWorkspaces() {
       container.appendChild(row);
     });
   } catch (e) {
-    container.innerHTML = `<p style="color:var(--danger)">⚠ ${e.message}</p>`;
+    container.innerHTML = `<div class="settings-empty-inline is-error">${esc(e.message)}</div>`;
   }
 }
 
@@ -455,7 +507,7 @@ async function saveSettingsConfig() {
     S.boards = boards;
     S.allCardsCache = null;
     renderSidebar();
-    toast("Saved ✓");
+    toast("Saved");
   } catch (e) {
     toast("Save failed: " + e.message, true);
   }

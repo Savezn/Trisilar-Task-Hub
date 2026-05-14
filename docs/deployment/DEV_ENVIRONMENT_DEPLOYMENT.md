@@ -5,7 +5,7 @@
 **Owner Role:** Dev
 **Implemented by:** Codex Dev
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-13 - **Updated by:** Codex PM
+**Last Updated:** 2026-05-14 - **Updated by:** Codex PM / Runtime
 **Related Docs:** `DEPLOYMENT_SETUP.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../plans/VERSION_0_2_PLAN.md`, `../../README.md`
 
 ---
@@ -14,7 +14,7 @@
 
 This document records the `V0.2-W1-03` dev deployment config and the `V0.2-W1-05` no-cost preview runtime handoff. It documents env var names without secret values and keeps production untouched. Legacy label: W1c.
 
-Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo fallback only. Task Hub is now accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access at `https://taskhub.trisila.online`. Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner; W3 live connector work still needs Paperclip owner inputs.
+Current runtime decision: keep random ngrok URL + temporary Basic Auth as the accepted short manual teammate demo fallback only. Task Hub is now accepted as a DigitalOcean hosted dev/demo runtime behind Cloudflare Access at `https://taskhub.trisila.online`. Paperclip is hosted on DigitalOcean behind Cloudflare by the Paperclip owner, and runtime inputs are confirmed for W3 planning.
 
 ---
 
@@ -22,7 +22,7 @@ Current runtime decision: keep random ngrok URL + temporary Basic Auth as the ac
 
 Use random ngrok URL + temporary Basic Auth as the current W1 manual teammate demo path. The app runs on a local/dev machine, ngrok exposes it through a public demo URL, and the Basic Auth proxy gates access before sharing. This path is accepted for manual demo only, not permanent Paperclip automation or stable service integration.
 
-Use DigitalOcean + Cloudflare as the next stable dev/demo runtime. Cloudflare should own DNS/security/access, and the DigitalOcean runtime should run Task Hub from `dev` with persistent `APP_DATA_DIR`. Paperclip is already hosted by the Paperclip owner; record its hosted URL, health/readiness path, and service-auth requirements before W3 live work. Cloudflare Tunnel is preferred when possible; proxied DNS plus reverse proxy is acceptable if PM/DevOps choose it.
+Use DigitalOcean + Cloudflare as the next stable dev/demo runtime. Cloudflare should own DNS/security/access, and the DigitalOcean runtime should run Task Hub from `dev` with persistent `APP_DATA_DIR`. Paperclip is already hosted by the Paperclip owner; use the confirmed hosted URL, health path, and service-auth requirements for W3 live work. Cloudflare Tunnel is preferred when possible; proxied DNS plus reverse proxy is acceptable if PM/DevOps choose it.
 
 Keep Render as the previously approved managed hosted dev service because `V0.2-W1-02` approved Render as a long-running Node/Express host with persistent disk support. Render setup is deferred unless PM reselects it.
 
@@ -82,7 +82,7 @@ Run the app on the DigitalOcean runtime and expose it through Cloudflare:
 | Setting | Value |
 |---|---|
 | Task Hub local bind | `http://localhost:<taskhub-port>` |
-| Hosted Paperclip dependency | Confirm current Cloudflare URL and health/readiness path with Paperclip owner |
+| Hosted Paperclip dependency | `https://paperclip.trisila.online` with health path `/healthz` |
 | Connector | `cloudflared` Tunnel preferred; proxied DNS + reverse proxy acceptable |
 | Dev hostname | `taskhub.trisila.online` |
 | Access gate | Cloudflare Access email allowlist |
@@ -110,7 +110,7 @@ Use this path for `V0.2-W1-08`. PM decision is to host Task Hub on DigitalOcean 
 |---|---|
 | Runtime role | Dev/demo only |
 | Task Hub source branch | `dev` |
-| Paperclip source | Already hosted; confirm URL/health/auth with Paperclip owner |
+| Paperclip source | Already hosted; confirmed URL/health/auth inputs recorded for W3 planning |
 | Runtime | Node 20+ |
 | Process manager | `taskhub-dashboard.service` under systemd |
 | Task Hub bind target | `127.0.0.1:3000` |
@@ -127,7 +127,7 @@ Verification:
 
 - Cloudflare hostname/routing and Access policy are prepared before public teammate preview.
 - Task Hub `GET /healthz` returns `200` from the Cloudflare hostname.
-- Paperclip health/readiness or basic load path is verified or recorded from the Paperclip owner.
+- Paperclip health path is confirmed as `/healthz`.
 - Anonymous browser access is blocked by Cloudflare Access.
 - Approved teammate access passes Cloudflare Access and loads the app.
 - Runtime JSON files persist under `APP_DATA_DIR` after app restart.
@@ -140,7 +140,7 @@ Paperclip note:
 - Paperclip is already hosted on DigitalOcean behind Cloudflare by the Paperclip owner.
 - First live direction is Paperclip calls Task Hub by webhook.
 - Configure hosted Paperclip to call the stable Task Hub hostname with Cloudflare Access service-token headers plus signed webhook headers.
-- Do not mark W3 live integration ready until the Paperclip server is online and the Paperclip owner confirms remaining inputs.
+- Do not mark W3 live integration accepted until W3 implementation and QA verify signed webhook behavior.
 
 ---
 
@@ -157,8 +157,17 @@ This is the `V0.2-W1-07` topology for future W3 live connector work. It does not
 | Task Hub base URL | `https://taskhub.trisila.online` |
 | Paperclip base URL | `https://paperclip.trisila.online` |
 | Task Hub health | `/healthz` |
-| Paperclip health | Runtime verification held while server is offline; owner must confirm exact health/readiness path after it is online |
+| Paperclip health | `/healthz` |
 | Future W3 route | `POST /api/integrations/paperclip/webhook` |
+
+Confirmed non-secret runtime inputs:
+
+- `PAPERCLIP_ALLOWED_SOURCE_ID`: `paperclip-do-dev`
+- `PAPERCLIP_ALLOWED_ENVIRONMENT`: `dev`
+- Paperclip local runtime port: `3100`
+- Paperclip service: `paperclip.service`
+- Task Hub service-token `/healthz` check from the Paperclip server returned `200`
+- Cloudflare Client ID/Secret and HMAC signing secret remain excluded from docs/chat/git.
 
 Task Hub runtime env var names:
 
@@ -290,9 +299,11 @@ Accepted evidence:
 - Runtime JSON files persist under the configured `APP_DATA_DIR`.
 - No production deploy, main merge, W2 UI redesign, or W3 live Paperclip behavior was introduced.
 
-Still pending:
+W3 route after runtime confirmation:
 
-- Paperclip health/readiness path and owner support for service-token plus signed webhook calls must be confirmed before W3 live connector work.
+- `V0.2-W3-02` should implement the signed live Paperclip -> Task Hub webhook using the confirmed runtime inputs.
+- Keep live webhook disabled by default until QA/PM approval.
+- Verify the Paperclip webhook client can compute/send the agreed HMAC signature during W3.
 
 ---
 
@@ -374,9 +385,9 @@ Historical conclusion:
 
 ---
 
-## Current Runtime Blockers
+## Current Runtime Status
 
-The random ngrok demo path remains available only as a short-lived fallback. The stable Cloudflare/DigitalOcean path is now QA Pass / PM Accepted for dev/demo and still needs service-auth planning.
+The random ngrok demo path remains available only as a short-lived fallback. The stable Cloudflare/DigitalOcean path is QA Pass / PM Accepted for dev/demo. Service-auth topology is accepted, and Paperclip runtime inputs are confirmed for W3 planning.
 
 2026-05-13 PM runtime checkpoint:
 
@@ -391,10 +402,21 @@ The random ngrok demo path remains available only as a short-lived fallback. The
 - Google hosted callback is configured as `https://taskhub.trisila.online/auth/callback`.
 - Google Calendar/Tasks remain disconnected until server-side Google dev credentials are configured.
 
-Remaining blockers:
+2026-05-14 Paperclip runtime input checkpoint:
 
-- Record hosted Paperclip health/readiness evidence from the Paperclip owner.
-- Confirm Paperclip owner inputs before W3 live connector work.
+- Paperclip base URL: `https://paperclip.trisila.online`.
+- Paperclip health path: `/healthz`.
+- Allowed source id: `paperclip-do-dev`.
+- Allowed environment: `dev`.
+- Paperclip service: `paperclip.service`.
+- Paperclip local runtime port: `3100`.
+- Task Hub service-token `/healthz` check from the Paperclip server returned `200`.
+- Secret values remain excluded from docs/chat/git.
+
+Remaining W3 implementation checks:
+
+- Verify the live webhook client can send the required headers and compute the agreed HMAC signature.
+- Verify Task Hub idempotency and signed webhook behavior under `V0.2-W3-02`.
 
 ---
 
