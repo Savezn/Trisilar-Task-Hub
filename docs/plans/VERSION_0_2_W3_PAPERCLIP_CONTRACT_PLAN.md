@@ -369,6 +369,7 @@ npm.cmd run verify:paperclip-mock
 | `V0.2-W3-01` | W3 sequence 1 | Complete | Contract data definitions, mock adapter route, idempotency/audit persistence, and mock verification |
 | `V0.2-W3-02` | W3 sequence 2 | PM Accepted | Live webhook route, signed request validation, connection gate, idempotency, local QA, and live sender interop verified |
 | `V0.2-W3-03` | W3 sequence 3 | PM Accepted | Controlled live enablement policy, rollback procedure, owner permissions, monitoring/audit expectations, and additional source signature/replay hardening after merge/integration acceptance |
+| `V0.2-W3-04` | W3 sequence 4 | Planned | Paperclip Review Queue cleanup for accumulated live/canary test sessions, with safe archive/reject workflow and no bypass of human approval gates |
 
 Details:
 
@@ -377,6 +378,7 @@ Details:
 - `V0.2-W3-02` added authenticated `POST /api/integrations/paperclip/webhook`, reused the same normalizer and audit path, validated service-auth/source context plus signed webhook headers, and kept the route disabled by default after QA/PM approval.
 - Live interop evidence: HTTP `201` for request `pc_live_interop_20260514115714`; Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`; created task stayed `pending`; runtime returned to `PAPERCLIP_WEBHOOK_ENABLED=false`.
 - `V0.2-W3-03` is a policy/runbook gate before permanent enablement. It must not add a new Paperclip network call or bypass Review Queue human approval.
+- `V0.2-W3-04` is a cleanup/hygiene phase for Paperclip-originated Review Queue test sessions after live interop, canary, and monitor runs. It must not approve tasks automatically, must not create Trello/Calendar/Google side effects, and must preserve audit traceability.
 - Any older W3 sequence or W3-P label is an alias only; use canonical IDs first in new prompts, QA reports, PM updates, commit messages, and PR notes.
 
 ---
@@ -604,6 +606,47 @@ Post-observation PM decision:
 
 ---
 
+## V0.2-W3-04 Paperclip Review Queue Cleanup
+
+Goal: clean up Paperclip live interop, canary, and monitor test sessions that accumulated in Review Queue while preserving auditability and the human approval gate.
+
+Scope:
+
+- Identify Paperclip-originated review sessions created by W3 live interop, limited window, true external sender window, standing observation, and monitor canaries.
+- Add or use a safe workflow for marking Paperclip test sessions/tasks as test-cleanup handled without approving them into Trello, Calendar, or Google Tasks.
+- Preserve request id, agent run id, session id, task id, source environment, and audit trail.
+- Keep live Paperclip webhook runtime monitoring separate from cleanup.
+- Keep mock/docs routes unchanged unless a cleanup view needs read-only labeling.
+
+Guardrails:
+
+- Do not send new Paperclip webhooks.
+- Do not create new canary tasks.
+- Do not auto-approve Paperclip tasks.
+- Do not create Trello cards, Calendar events, or Google Tasks.
+- Do not change W1 deployment/access or W2 visual redesign scope.
+- Do not delete audit evidence needed to reconstruct live interop and monitor history.
+- Do not expose secret values in UI, API response, logs, docs, or chat.
+
+Expected Dev output:
+
+- A Review Queue cleanup path that lets a human safely reject/archive Paperclip test sessions or tasks.
+- Clear labels so reviewers can distinguish Paperclip live/canary/test sessions from real Paperclip work.
+- Verification proving cleanup does not bypass the Review Queue human gate and does not trigger Trello/Calendar/Google side effects.
+- QA prompt covering pending/approved/rejected/Trello-linked counts before and after cleanup.
+
+Acceptance criteria:
+
+- Paperclip test sessions can be cleaned up without approving them.
+- Review Queue human gate remains intact.
+- Audit trail records cleanup action and actor/system context.
+- Paperclip request/session/task trace remains discoverable after cleanup.
+- Existing live webhook, mock route, Docs page, and Settings behavior remain unchanged.
+- No outbound Paperclip network call is added.
+- No W1/W2 scope is changed.
+
+---
+
 ## Open Questions for PM / Paperclip Owner
 
 - Which stable Paperclip identifiers are available for workspace id, thread id, run id, agent id, and task id?
@@ -656,3 +699,4 @@ Resolved runtime inputs:
 | 2026-05-14 | Started standing dev/demo enablement policy planning with Monitor Owner, Rollback Owner, daily/weekly monitoring, stop conditions, rollback steps, and PM acceptance criteria; runtime remains `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex PM |
 | 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; runtime is `PAPERCLIP_WEBHOOK_ENABLED=true`; canary/replay/negative checks passed and created pending session `884fec91-26e9-40e9-91af-6a11f91f317f` | Codex Runtime Owner / QA / Paperclip Owner |
 | 2026-05-14 | PM continued standing dev/demo enablement but changed routine monitoring to read-only after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |
+| 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup to safely handle accumulated live/canary test sessions without auto-approval or external side effects | Codex PM |

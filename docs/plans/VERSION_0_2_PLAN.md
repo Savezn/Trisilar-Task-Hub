@@ -139,6 +139,7 @@ Use canonical IDs as the primary reference in new prompts, QA reports, PM update
 | `V0.2-W3-01` | W3 sequence 1 | Done `1d1f638` | Contract definitions, mock adapter route, idempotency/audit persistence, and mock verification |
 | `V0.2-W3-02` | W3 sequence 2 | PM Accepted | Live webhook route, signed request validation, connection gate, idempotency, local QA, and live sender interop verified |
 | `V0.2-W3-03` | W3 sequence 3 | PM Accepted | Controlled live enablement policy, rollback, owner permissions, monitoring/audit, and additional source signature/replay hardening after merge/integration acceptance |
+| `V0.2-W3-04` | W3 sequence 4 | Planned | Paperclip Review Queue cleanup for accumulated live/canary test sessions without auto-approval or external side effects |
 
 Do not use `W3-P0`, `W3-P1`, or similar active IDs. If an older agent used them in chat, normalize the next PM update to the canonical `V0.2-W3-XX` form.
 
@@ -259,7 +260,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 
 **Priority:** P1 after W0
 **Owner Role:** Integration Dev
-**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02` live connector code and live interop accepted at `c1e4df2` and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy PM Accepted; limited, true external, and standing observation canaries passed; standing dev/demo observation window active
+**Status:** `V0.2-W3-01` done `1d1f638` / QA Pass / PM Accepted / integrated on `dev` at `dde7ab0`; `V0.2-W3-02` live connector code and live interop accepted at `c1e4df2` and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy PM Accepted; standing dev/demo observation active with read-only monitor; `V0.2-W3-04` cleanup planned
 
 **Scope:**
 - Integration contract.
@@ -278,6 +279,7 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 - Standing dev/demo observation window started; request `pc_standing_observation_20260514092342` created pending session `884fec91-26e9-40e9-91af-6a11f91f317f`.
 - Runtime `PAPERCLIP_WEBHOOK_ENABLED=true` remains active for dev/demo observation and must be rolled back to `false` if stop conditions occur.
 - After two follow-up canaries passed and pending Paperclip tasks reached 6, routine monitoring is read-only unless PM/QA requests an active signed canary or runtime/config changes require one.
+- `V0.2-W3-04` is planned to clean accumulated Paperclip live/canary/test Review Queue sessions safely without approving them or creating Trello/Calendar/Google side effects.
 
 ---
 
@@ -314,50 +316,27 @@ Legacy W2 phase labels such as `W2a` and `W2b` are aliases only. Use canonical I
 Use `../../CURRENT_SPRINT.md` for the current active sprint prompt. `V0.2-W2-06` is integrated and PM accepted on `origin/dev@523c948`; the W2 workstream is complete on the integrated `dev` line. W1 dev/demo runtime and service-auth planning are accepted, and Paperclip runtime inputs are confirmed. `V0.2-W3-02` code and live interop are accepted and merged to `dev` at `a89c26a`; `V0.2-W3-03` controlled live enablement policy is PM accepted. A limited runtime-local signed canary, true external sender window, standing dev/demo observation start, and two follow-up canaries passed. Runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation, but routine monitoring is now read-only.
 
 ```text
-Role: Runtime Owner / QA / Paperclip Owner
-Task: Monitor V0.2-W3-03 Standing Dev/Demo Observation Window
+Role: Dev
+Task: V0.2-W3-04 Paperclip Review Queue Cleanup
 
-Required owners:
-1. PM Owner: Codex PM / project PM.
-2. Monitor Owner: QA Owner.
-3. Rollback Owner: Runtime Owner.
-4. Paperclip Owner: Paperclip runtime sender owner.
+Branch:
+feature/w3-paperclip-integration
 
-Accepted evidence:
-- Code: `c1e4df2 V0.2 W3: add live Paperclip webhook connector`.
-- Merge: `a89c26a Merge W3 Paperclip integration into dev`.
-- QA local verification passed for webhook, contract, mock route, connection settings, docs, frontend, and smoke.
-- Live interop returned HTTP `201` for request `pc_live_interop_20260514115714`.
-- Created Review Queue session `5c5ad00e-d7b8-4c34-91d2-b17a1ca1566a`.
-- Created task stayed `pending`; human approval gate remained intact.
-- Runtime gate was closed after test: `PAPERCLIP_WEBHOOK_ENABLED=false`.
-- Limited runtime-local canary returned HTTP `201` for request `pc_w3_03_window_20260514062346`.
-- Limited canary Review Queue session `7dd7d2a3-377c-4336-ba75-ba1c312635d2` stayed `pending`.
-- Replay and negative checks passed; runtime gate was closed again with disabled probe returning `403`.
-- True external sender window returned HTTP `201` for request `pc_true_external_20260514064709`.
-- True external sender Review Queue session `0e8f8b2e-d767-44ef-854c-538481c124c8` stayed `pending`.
-- True external sender replay/negative checks passed; runtime gate was closed again.
-- Standing observation request `pc_standing_observation_20260514092342` returned HTTP `201`.
-- Standing observation Review Queue session `884fec91-26e9-40e9-91af-6a11f91f317f` stayed `pending`.
-- Standing observation replay/negative checks passed; runtime is enabled for the named dev/demo observation window.
-- Two follow-up canaries passed; pending Paperclip tasks reached 6 and Trello-linked side-effect count stayed 0.
-- PM chose to keep standing dev/demo enablement active with read-only routine monitoring.
+Goal:
+Add a safe cleanup path for accumulated Paperclip live/canary/test Review Queue sessions while preserving audit traceability and the Review Queue human gate.
 
 Rules:
-- Do not deploy production.
-- Do not merge to main.
-- Do not commit or print secrets.
-- Keep standing live Paperclip traffic limited to PM-approved dev/demo observation.
-- Preserve Review Queue human gate and existing mock/local Docs behavior.
-- Keep `PAPERCLIP_WEBHOOK_ENABLED=true` for dev/demo observation; rollback to `false` immediately if any stop condition occurs.
-- Do not run routine active canaries because each successful canary adds a pending Review Queue task; use read-only monitoring unless PM/QA requests active probing.
+- Do not send new Paperclip webhooks.
+- Do not create canary tasks.
+- Do not auto-approve tasks.
+- Do not create Trello cards, Calendar events, or Google Tasks.
+- Do not change W1 deployment/access or W2 visual redesign.
+- Do not expose secrets.
 
 Expected output:
-- Daily read-only monitor report: health, Paperclip service, Settings connection state, Paperclip task counts, Trello-linked side-effect count, and abnormal webhook/audit patterns.
-- Active signed canary report only when explicitly requested or after runtime/config changes.
-- Immediate rollback report if any stop condition occurs.
-- PM decision after further observation: keep standing dev/demo enabled, narrow to named windows, or disable.
-- If held, list exact missing owner, monitoring, rollback, or stop-condition requirement.
+- Commit hash.
+- Verification evidence.
+- QA next-session prompt for V0.2-W3-04 cleanup.
 ```
 
 ---
@@ -400,3 +379,4 @@ Expected output:
 | 2026-05-14 | Started planning `V0.2-W3-03` standing dev/demo enablement policy with Monitor Owner, Rollback Owner, daily/weekly monitoring, stop conditions, rollback steps, and PM acceptance criteria; runtime remains `PAPERCLIP_WEBHOOK_ENABLED=false` | Codex PM |
 | 2026-05-14 | Started `V0.2-W3-03` standing dev/demo observation window; request `pc_standing_observation_20260514092342` created pending session `884fec91-26e9-40e9-91af-6a11f91f317f`, replay/negative checks passed, health stayed `200`, and runtime remains `PAPERCLIP_WEBHOOK_ENABLED=true` for the named dev/demo observation window | Codex PM / Runtime Owner / QA / Paperclip Owner |
 | 2026-05-14 | PM kept standing dev/demo enablement active but changed routine monitoring to read-only after two follow-up canaries passed and pending Paperclip tasks reached 6 with 0 Trello-linked side effects | Codex PM |
+| 2026-05-14 | Planned `V0.2-W3-04` Paperclip Review Queue Cleanup for accumulated live/canary test sessions without auto-approval or external side effects | Codex PM |
