@@ -27,7 +27,7 @@ Do not point two Codex projects at the same folder. Do not switch branches insid
 |---|---|---|---|---|
 | `TaskHub PM Roadmap` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-roadmap-rebaseline` | `codex/v05-roadmap-rebaseline` | PM / Integration docs | Closed through PR #28; do not continue here unless PM reopens roadmap docs |
 | `TaskHub V0.4 Runtime` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v04-paperclip-prod-integration` | `codex/v04-paperclip-prod-integration` | Runtime Owner / QA | Runtime/service-auth/canary/monitoring only |
-| `TaskHub V0.5 Foundation` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation` | `dev@e3380ac` / handoff branches | Runtime Owner / QA | Hosted dev/demo SQLite canary handoff after FND-02/03/04/05 merge |
+| `TaskHub V0.5 Foundation` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation` | Latest accepted `dev` with PR #30 foundation code | Runtime Owner / QA | Hosted dev/demo SQLite canary handoff after FND-02/03/04/05 merge |
 | `TaskHub UI V2 Design` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-uiv2-design-system` | `codex/uiv2-design-system` | UX Owner / Frontend design | Design-system work only until V0.6 implementation approval |
 | `TaskHub Team OS Pilot` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v07-team-os-pilot` | `codex/v07-team-os-pilot-docs` | PM / Operations | Docs-only pilot assumptions; no product features yet |
 
@@ -140,7 +140,7 @@ Expected output:
 
 ```text
 Role: Runtime Owner / QA
-Task: Execute hosted dev/demo SQLite canary from `dev@e3380ac`, or record the host-access blocker.
+Task: Execute hosted dev/demo SQLite canary from the latest accepted `dev` commit containing PR #30 foundation code, or record the host-access blocker.
 
 Workspace:
 C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation

@@ -1,7 +1,7 @@
 # Version 0.5 Foundation Hardening Plan
 
 **Doc Role:** Active V0.5 foundation plan for persistence, tests, and contracts before UI V2 / Team Operating System implementation
-**Status:** FND-05 integrated to `dev@e3380ac` / hosted dev-demo SQLite canary selected, blocked on host access
+**Status:** FND-05 integrated via PR #30 / hosted dev-demo SQLite canary selected, blocked on host access
 **Version:** V0.5
 **Owner:** PM / Architecture / Dev / QA
 **Created:** 2026-05-15
@@ -200,7 +200,7 @@ Stop and rollback if `/healthz`, `/api/config`, `/api/reviews`, or Paperclip ope
 
 ```text
 Role: Integration Owner / Runtime Owner
-Task: Execute hosted dev/demo SQLite canary from `dev@e3380ac` after Runtime Owner host access is available
+Task: Execute hosted dev/demo SQLite canary from the latest accepted `dev` commit containing PR #30 foundation code after Runtime Owner host access is available
 
 Read:
 - docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md
