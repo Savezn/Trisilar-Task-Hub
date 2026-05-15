@@ -28,6 +28,23 @@ Do not begin edits if the current folder or branch does not match the task.
 
 ---
 
+## Definition of Ready
+
+A task, cycle, workstream, or release is ready to start only when these inputs are clear:
+
+- Role: PM, Dev, QA, Runtime, Integration, Documentation, or another named owner.
+- Scope: goal, owned files/areas, non-goals, and stop conditions.
+- Branch/worktree: branch name, base branch, worktree folder, and target branch.
+- Acceptance criteria: expected behavior, docs output, or verification evidence.
+- Verification plan: commands/checks to run and when runtime checks may be skipped.
+- Dependencies: upstream branch, runtime flag, secret, service token, env var, or PM approval.
+- Dirty state: `git status --short --branch` has been checked; unrelated dirty files are preserved, ignored, backed up, or routed explicitly.
+- Secret/runtime boundary: required for deployment, auth, Paperclip, Cloudflare, env vars, or production work.
+
+If the Definition of Ready is incomplete, PM should route the work back to planning or clarification instead of starting implementation.
+
+---
+
 ## Branch Model
 
 ```text
@@ -129,6 +146,30 @@ git diff --check
 ```
 
 State the verification result in the final handoff.
+
+---
+
+## Definition of Done
+
+A task, cycle, workstream, or release is not complete until all applicable gates pass:
+
+- Accepted scope is complete with no unapproved scope creep.
+- Verification passes for the task type:
+  - docs-only: `git diff --check`
+  - code/config/route/integration: required npm/check/browser/runtime checks
+  - release/integration: integration QA plus PM acceptance
+- Docs/logs are updated by the correct role:
+  - `CURRENT_SPRINT.md` for PM or integration checkpoints
+  - `docs/logs/DECISION_LOG.md` for PM/process/release decisions
+  - `docs/logs/QA_LOG.md` for QA/completion evidence
+- PR/merge state is clear: merged into the correct target branch or explicitly held with owner/next action; no unresolved conflicts; local and remote target branch sync verified.
+- Cleanup gate passes: completed temporary worktrees are removed, merged local/remote topic branches are deleted unless PM keeps them, stale `.git/worktrees/*` metadata is pruned, stale physical folders are removed when not locked, and `git worktree list`, `git branch -vv`, and `git status --short --branch` are checked.
+
+Allowed exceptions:
+
+- Backup branches may remain as safety refs until PM approves deletion.
+- A Windows-locked folder may remain only if Git no longer registers it as a worktree and the blocker is recorded in the handoff.
+- Held or unfinished work must keep its branch/worktree with an explicit owner and next action.
 
 ---
 

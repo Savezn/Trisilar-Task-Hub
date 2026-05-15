@@ -148,6 +148,18 @@ Confirm:
 - dirty files are either yours or explicitly accepted by PM
 - base branch is `dev` unless PM assigned another base
 
+## Definition of Ready
+
+Parallel Codex/Claude work is ready only when:
+
+- role, branch, base, worktree, target branch, and ownership scope are named
+- goal, non-goals, acceptance criteria, verification commands, and stop conditions are clear
+- dependencies and runtime/secret boundaries are identified before implementation
+- `git status --short --branch` confirms the starting state
+- unrelated dirty files have an explicit preserve/ignore/backup/route decision
+
+PM should not start implementation if these inputs are missing.
+
 ---
 
 ## Branch Contamination Rule
@@ -205,12 +217,24 @@ topic branch
 
 Feature agents do not merge sibling branches into each other. Integration Owner may merge accepted branches into `dev` after PM/QA acceptance and must record the evidence.
 
-Completed branch/worktree cleanup:
+## Definition of Done
 
-- Remove completed temporary worktrees after the branch is merged or pushed and no longer needed.
-- Delete merged local topic branches unless PM asks to keep them.
-- Keep explicit backup branches until PM confirms they are safe to delete.
-- Run `git worktree list`, `git branch -vv`, and `git status --short --branch` before declaring cleanup complete.
+Parallel work is not complete until the accepted branch is integrated or explicitly held and the branch/worktree cleanup gate is resolved.
+
+Completion requires:
+
+- accepted scope complete with no unapproved scope creep
+- role verification, QA evidence, and PM acceptance when required
+- target branch merge or explicit hold state with owner and next action
+- no unresolved conflicts or sibling-branch contamination
+- completed temporary worktrees removed
+- merged local topic branches deleted unless PM keeps them
+- merged remote topic branches deleted unless PM keeps them
+- stale `.git/worktrees/*` metadata pruned
+- stale physical folders removed unless locked by Windows or another process
+- final checks from `git worktree list`, `git branch -vv`, and `git status --short --branch`
+
+Backup branches may remain as safety refs until PM approves deletion. Locked folders may remain only if Git no longer registers them as worktrees and the blocker is recorded in the handoff.
 
 ---
 

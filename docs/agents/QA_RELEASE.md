@@ -23,6 +23,7 @@ QA / Release Owner owns evidence, pass/fail reports, regression checks, branch a
 - regression check scope
 - release-readiness evidence
 - updates to `docs/logs/QA_LOG.md` when assigned
+- Definition of Done evidence review for integration/release QA
 
 ---
 
@@ -33,6 +34,7 @@ QA / Release Owner owns evidence, pass/fail reports, regression checks, branch a
 - use browser checks for UX/frontend behavior
 - report findings with file/line/command evidence
 - recommend PASS, FAIL, HOLD, or RECHECK
+- check whether DoD evidence is present for release/integration work
 
 ---
 
@@ -55,6 +57,7 @@ Findings:
 AC checklist:
 Evidence:
 Verification:
+DoD evidence:
 Verdict:
 Risk / test gaps:
 Next role:
@@ -72,4 +75,5 @@ Release readiness requires:
 - integration QA evidence
 - runtime/access evidence when runtime changes are included
 - no known critical regressions
+- Definition of Done evidence, including branch/worktree/folder cleanup or an explicit blocker
 - PM acceptance for `dev -> main`
