@@ -1,9 +1,9 @@
 # Version 0.4 Live AI Operations - Paperclip Production Permanent Integration Plan
 
 **Doc Role:** V0.4 plan and tracker for production Paperclip intake
-**Status:** Repo implementation QA passed locally; production deploy not performed
+**Status:** Repo readiness integrated to `dev@7e069b5`; production deploy not performed
 **Version:** V0.4
-**Planning Stage:** PM accepted route, Dev implementation branch active
+**Planning Stage:** Repo readiness integrated, Runtime Owner production setup pending
 **Owner:** PM / AI Integration Owner / Runtime Owner / QA Release Owner
 **Created:** 2026-05-15
 **Last Updated:** 2026-05-15
@@ -89,8 +89,8 @@ Owner lanes:
 
 | ID | Phase | Status | Next Role |
 |---|---|---|---|
-| V0.4-PROD-01 | Repo production readiness | Local QA pass on `codex/v04-paperclip-prod-integration`; pending integration | Integration Owner / PM |
-| V0.4-PROD-02 | Separate production runtime setup | Pending | Runtime Owner |
+| V0.4-PROD-01 | Repo production readiness | Integrated to `dev@7e069b5` | PM complete |
+| V0.4-PROD-02 | Separate production runtime setup | Pending Runtime Owner action | Runtime Owner |
 | V0.4-PROD-03 | Staged production canary window | Pending runtime | QA / Runtime / Paperclip Owner |
 | V0.4-PROD-04 | 24-hour read-only monitoring | Pending staged pass | QA / Runtime |
 | V0.4-PROD-05 | Permanent enablement acceptance | Pending monitoring pass | PM |
@@ -142,6 +142,29 @@ Verification:
 - npm.cmd run verify:paperclip-production-readiness
 - git diff --check
 - conflict-marker scan
+```
+
+Integration result:
+
+```text
+Status: Pass
+Date: 2026-05-15
+Integrated commit: dev@7e069b5
+Production deploy: Not performed
+Production live canary: Not sent
+Secret exposure: None recorded
+Verification:
+- npm.cmd ci
+- npm.cmd run check:all
+- npm.cmd run verify:paperclip-contract
+- npm.cmd run verify:paperclip-mock
+- npm.cmd run verify:paperclip-docs
+- npm.cmd run verify:paperclip-connection
+- npm.cmd run verify:paperclip-operations
+- npm.cmd run verify:paperclip-cleanup
+- npm.cmd run verify:paperclip-webhook
+- npm.cmd run verify:paperclip-production-readiness
+- git diff --check
 ```
 
 ### V0.4-PROD-02 - Separate Production Runtime Setup
@@ -258,14 +281,14 @@ Acceptance:
 ## Next Recommended Session
 
 ```text
-Role: Integration Owner
-Task: Review and integrate the V0.4 repo implementation branch after PM acceptance, then route production runtime setup
-Branch: codex/v04-paperclip-prod-integration
-Worktree: trisilar-task-hub-v04-paperclip-prod-integration
-Owned files: accepted V0.4 implementation/docs only
-Acceptance criteria: branch diff matches V0.4 scope; verification evidence remains green; no secrets; no contract regression
-Verification: npm.cmd ci; npm.cmd run check:all; all Paperclip verification scripts including verify:paperclip-production-readiness
-Stop conditions: danger warnings in production readiness status, failed replay/auth checks, secret exposure, or pre-approval external side effect
+Role: Runtime Owner
+Task: Provision the separate production Task Hub runtime, keep the webhook hard gate disabled, and hand off staged QA evidence
+Branch: dev@7e069b5
+Worktree: production runtime checkout
+Owned files: runtime configuration only; no git docs/code changes unless setup docs are inaccurate
+Acceptance criteria: production service is reachable behind Cloudflare Access, uses separate APP_DATA_DIR, keeps PAPERCLIP_WEBHOOK_ENABLED=false, and exposes non-secret health/status evidence
+Verification: health check; Cloudflare anonymous block; service-token reachability path; read-only operations status when available
+Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, anonymous production access, exposed signing material, or any need to enable the production webhook before QA approval
 ```
 
 ---
@@ -276,3 +299,4 @@ Stop conditions: danger warnings in production readiness status, failed replay/a
 |---|---|---|
 | 2026-05-15 | Created V0.4 Paperclip production permanent integration plan and repo readiness tracker | Codex PM / Dev |
 | 2026-05-15 | Added production runtime policy/status, production readiness verification, and local QA evidence; production deploy remains pending Runtime Owner | Codex Dev / QA |
+| 2026-05-15 | Integrated V0.4 repo readiness to `dev@7e069b5` and routed next process to separate production runtime setup | Codex Integration Owner |

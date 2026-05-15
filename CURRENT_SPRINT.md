@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.4 Live AI Operations / Paperclip Production Permanent Integration
-**Status:** V0.4 repo implementation QA passed locally; production deploy not performed
+**Status:** V0.4 repo readiness integrated to `dev@7e069b5`; production deploy not performed
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Dev
 
@@ -25,7 +25,7 @@
 | Latest W3 dev closeout | `origin/dev@ff20e48` | `V0.2-W3-05` operations status and settings copy polish merged/deployed at `dev@2c302dc`; W3 foundation closeout status is on latest `dev` |
 | V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
-| V0.4 Paperclip production readiness | Repo implementation QA pass on `codex/v04-paperclip-prod-integration`; production deploy pending | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; no production deploy, Cloudflare change, live canary, secret exposure, or external side effect performed |
+| V0.4 Paperclip production readiness | Integrated to `dev@7e069b5`; production deploy pending Runtime Owner | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; integration verification passed; no production deploy, Cloudflare change, live canary, secret exposure, or external side effect performed |
 
 ---
 
@@ -45,7 +45,7 @@ PM accepted the V0.3 `dev -> main` release candidate in PR #20 after merging `or
 
 On 2026-05-15, PM/Integration synced `origin/dev` and `origin/main` at `631d3b2`, confirmed V0.2 delivery/cleanup is complete, normalized Codex/Claude branch/worktree rules in project docs, and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. Verification passed `npm ci`, `git diff --check`, conflict-marker scan, `check:all` with isolated local server, all RUX checks, and Paperclip contract/mock/docs/operations/cleanup/connection/webhook checks. No production deploy, runtime flag change, live canary, secret exposure, or Trello/Calendar/Google Tasks side effect was performed.
 
-V0.4 Paperclip production readiness is now implemented in the repo on `codex/v04-paperclip-prod-integration`. The branch adds production-aware operations status for runtime profile, live mode, production hostname, production `APP_DATA_DIR` readiness, and production-specific warnings. Local verification passed `check:all`, all Paperclip verification scripts, and the new `verify:paperclip-production-readiness` script. This does not mean production is deployed yet; Runtime Owner still needs to provision the separate production service and run staged production QA.
+V0.4 Paperclip production readiness is now integrated to `dev@7e069b5`. The integrated work adds production-aware operations status for runtime profile, live mode, production hostname, production `APP_DATA_DIR` readiness, and production-specific warnings. Integration verification passed `npm ci`, `check:all`, all Paperclip verification scripts, and `verify:paperclip-production-readiness`. This does not mean production is deployed yet; Runtime Owner still needs to provision the separate production service and run staged production QA.
 
 ---
 
@@ -63,8 +63,8 @@ V0.4 Paperclip production readiness is now implemented in the repo on `codex/v04
 | V0.3 RUX Integration | Product Reliability + UX Stabilization accepted branch integration | Complete on `origin/dev@02fe7cf`; dev/demo runtime QA pass | PM complete |
 | V0.3 Main Release | Product Reliability + UX Stabilization `dev -> main` release candidate | PM accepted PR #20; dev/main synced at `631d3b2`; post-sync QA passed; production deploy not performed | PM complete / Runtime hold |
 | Branch Workflow Alignment | Codex/Claude branch/worktree naming and cleanup model | Docs updated on `codex/v03-branch-workflow-release-qa`; QA passed | PM complete / Integration ready |
-| V0.4-PROD-01 | Paperclip production repo readiness | Local QA pass on `codex/v04-paperclip-prod-integration`; production deploy not performed | Integration Owner / PM |
-| V0.4-PROD-02 | Separate production runtime setup | Pending accepted branch integration and runtime owner action | Runtime Owner |
+| V0.4-PROD-01 | Paperclip production repo readiness | Integrated to `dev@7e069b5`; production deploy not performed | PM complete |
+| V0.4-PROD-02 | Separate production runtime setup | Pending Runtime Owner action | Runtime Owner |
 
 ---
 
@@ -128,41 +128,35 @@ Parallel rule:
 
 ---
 
-## Next Action - V0.4 Paperclip Production Route
+## Next Action - V0.4 Separate Production Runtime Setup
 
 ```text
-Role: Integration Owner
-Task: Review and integrate V0.4 Paperclip production readiness branch, then route Runtime Owner for separate production deployment
+Role: Runtime Owner
+Task: Provision separate production Task Hub runtime for Paperclip intake at https://taskhub-prod.trisila.online
 
 Completed baseline:
-origin/dev@7fb82d5
+origin/dev@7e069b5
 origin/main@7fb82d5
-release candidate PR #20 at 5eb23ef
-dev/demo runtime deployed from dev@e05eb66
-
-V0.4 branch:
-codex/v04-paperclip-prod-integration
-worktree: trisilar-task-hub-v04-paperclip-prod-integration
+V0.4 topic branch: codex/v04-paperclip-prod-integration@7e069b5
+V0.4 repo readiness: integrated to dev
 
 V0.4 status:
-Repo implementation QA passed locally. Production runtime deploy, Cloudflare production route, service-token production validation, and live production canary were not performed.
+Repo readiness is integrated and verified. Production runtime deploy, Cloudflare production route, service-token production validation, and live production canary were not performed.
 
-Integration acceptance:
-- Branch diff matches V0.4 scope.
-- `verify:paperclip-production-readiness` remains green.
-- Existing Paperclip checks remain green.
-- No production secret, Cloudflare token, signing header, HMAC value, or private credentialed URL is committed.
-- Review Queue remains the human gate before external side effects.
+Runtime acceptance:
+- Separate production service runs the accepted `dev@7e069b5` code.
+- Production hostname is `https://taskhub-prod.trisila.online`.
+- Cloudflare Access blocks anonymous public access before production use.
+- Production `APP_DATA_DIR` is separate from dev/demo and persists after restart.
+- Runtime stores Paperclip signing material only in runtime data/secrets, never git/docs/chat.
+- `PAPERCLIP_WEBHOOK_ENABLED=false` remains the default until staged QA.
 
-After integration:
-- Runtime Owner provisions separate production service at `https://taskhub-prod.trisila.online`.
-- Runtime Owner keeps `PAPERCLIP_WEBHOOK_ENABLED=false` until staged production QA.
+After runtime setup:
 - QA / Runtime / Paperclip Owner run staged production canary and negative checks.
 - PM may accept `PAPERCLIP_LIVE_MODE=permanent` only after staged QA and read-only monitoring pass.
 
 Rules:
 - Do not commit secrets.
-- Do not deploy production from the integration branch before PM release acceptance.
 - Do not reuse dev/demo `APP_DATA_DIR` for production.
 - Do not set production `PAPERCLIP_WEBHOOK_ENABLED=true` outside an approved staged/permanent window.
 - Do not send production Paperclip webhooks until Runtime Owner and QA approve the staged window.
@@ -173,7 +167,7 @@ Rules:
 - Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
 
 Expected output:
-- Integrated branch or PM hold decision, followed by Runtime Owner production setup handoff.
+- Runtime setup evidence or blocker report, followed by QA staged production canary handoff.
 ```
 
-**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`; production deployment remains pending Runtime Owner.
+**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, then integrated by Codex Integration Owner to `dev@7e069b5`; production deployment remains pending Runtime Owner.
