@@ -1,26 +1,24 @@
-const fs = require("fs");
-const { getDataFilePath } = require("../../utils/runtime");
+const { readRuntimeState, writeRuntimeState } = require("../../persistence/runtime-state");
 
 const DOCS_WORKFLOW_FILE = "paperclip-docs-workflow.json";
 const MAX_DOC_EXCERPT_LENGTH = 1000;
 const ALLOWED_DOC_REVIEW_STATUSES = new Set(["new", "reviewed", "needs_follow_up", "archived"]);
 
-function getWorkflowFile() {
-  return getDataFilePath(DOCS_WORKFLOW_FILE);
-}
-
 function readWorkflowState() {
-  try {
-    return normalizeWorkflowState(JSON.parse(fs.readFileSync(getWorkflowFile(), "utf8")));
-  } catch (error) {
-    if (error.code === "ENOENT") return { documents: {} };
-    console.error("[paperclip-docs-workflow] corrupt data file:", error.message);
-    return { documents: {} };
-  }
+  return normalizeWorkflowState(readRuntimeState({
+    name: "paperclipDocsWorkflow",
+    filename: DOCS_WORKFLOW_FILE,
+    defaultValue: { documents: {} },
+    logLabel: "paperclip-docs-workflow",
+  }));
 }
 
 function writeWorkflowState(state) {
-  fs.writeFileSync(getWorkflowFile(), JSON.stringify(normalizeWorkflowState(state), null, 2));
+  writeRuntimeState({
+    name: "paperclipDocsWorkflow",
+    filename: DOCS_WORKFLOW_FILE,
+    value: normalizeWorkflowState(state),
+  });
 }
 
 function normalizeWorkflowState(state) {

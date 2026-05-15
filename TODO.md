@@ -79,7 +79,7 @@ V0.4 remains Runtime/QA owned. While V0.4 is waiting or in 24-hour read-only mon
 
 ### V0.5 - Foundation Hardening
 
-Status: FND-01 accepted via PR #28 / ready for FND-02 Dev+QA.
+Status: FND-02/03/04/05 local QA pass on `codex/v05-foundation-hardening`; hosted dev/demo SQLite canary selected and waiting for dev integration plus Runtime Owner host access.
 
 Goal: strengthen persistence, test gates, and app-owned data contracts before UI V2 implementation and Team Operating System product work.
 
@@ -114,7 +114,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L4 | V0.2 Integration Release | Complete |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared, staged canary pending service-auth and Settings connection |
-| L7 | V0.5 Foundation Hardening | FND-01 accepted / ready for FND-02 Dev+QA |
+| L7 | V0.5 Foundation Hardening | Local QA pass; hosted dev/demo SQLite canary selected, integration pending |
 | L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
@@ -144,8 +144,8 @@ These items are not blockers for the completed V0.2 or V0.3 release baselines. V
 
 | Area | Gap | Recommended path |
 |---|---|---|
-| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | FND-01 is accepted through PR #28 at `dev@aaf8f58`; next route is FND-02 in the dedicated foundation worktree: add meaningful `npm test`, then deterministic fixtures, app-owned data-shape validation, SQLite migration, and integration QA. |
-| Persistence | App-owned state is still file-backed JSON under `APP_DATA_DIR`, which is fragile for larger workflow expansion. | Migrate app-owned state to SQLite through V0.5 with JSON import/backups and rollback notes; preserve `APP_DATA_DIR` boundaries and existing API shapes. |
+| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | Local FND-02/03/04/05 QA passed on `codex/v05-foundation-hardening`; next route is integration to an accepted deployable `dev` commit, then hosted dev/demo SQLite canary. |
+| Persistence | App-owned state is still file-backed JSON under `APP_DATA_DIR`, which is fragile for larger workflow expansion. | SQLite import/export and rollback are implemented behind `TASKHUB_STATE_BACKEND=sqlite`; JSON remains default until hosted dev/demo canary and PM/Runtime acceptance. |
 | Automated test suite | Current coverage is mostly smoke and structural verification. Unit, integration, and browser regression tests are not yet systematic. | Expand from `docs/testing/TEST_STRATEGY.md`: route tests, Trello model tests, deterministic fixtures, browser navigation regression, and CI gates. |
 | Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |
 | Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only. Task Hub now has an accepted DigitalOcean + Cloudflare dev/demo runtime with private bind, server-only secrets, stable `APP_DATA_DIR`, and accepted Paperclip service-auth topology. Paperclip runtime inputs are confirmed without exposing secrets. | Keep `PAPERCLIP_WEBHOOK_ENABLED=false` until PM approves standing live enablement; keep production/release-grade promotion gated by integration QA and PM acceptance. |

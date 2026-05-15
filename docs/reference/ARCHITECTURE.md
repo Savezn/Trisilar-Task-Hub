@@ -32,12 +32,18 @@ The app is currently a Node/Express application serving static frontend files an
 | `server.js` | Express app, static serving, API mounting, frontend path fallback |
 | `trello.js` | Trello API client and board/card fetch helpers |
 | `src/routes/` | API route modules |
+| `src/contracts/` | App-owned contract validators for route/model response shapes |
+| `src/persistence/` | Staged persistence and migration helpers for app-owned runtime state |
 | `src/models/trello.model.js` | Trello card normalization and metadata mapping |
 | `review-store.js` | Review Queue persistence |
 | `task-diff.js` | Task diff/review support logic |
 | `scripts/` | Verification and smoke-test scripts |
 
 API routes should return normalized data to the frontend whenever possible. Raw external API shapes should be contained in client/model modules.
+
+Contract validators under `src/contracts/` are non-runtime guards for V0.5 tests and migration work. They lock app-owned shapes without changing public API responses unless an ADR explicitly approves a contract change.
+
+SQLite helpers under `src/persistence/` are staged V0.5 utilities. They import app-owned JSON files from `APP_DATA_DIR` into `taskhub-state.sqlite`, create side-by-side JSON backups and manifests, and can export SQLite state back to JSON for rollback. Runtime state still defaults to JSON files. Setting `TASKHUB_STATE_BACKEND=sqlite` opts the runtime into SQLite-backed reads/writes for app-owned state, with JSON fallback before the first SQLite write, so PM/Runtime can canary and roll back without changing public API response shapes.
 
 ---
 
@@ -92,7 +98,7 @@ Trello API
   -> page renderers
 ```
 
-Review and local state flows through route modules and file-backed helpers. Keep persistence behavior explicit when preparing deployment.
+Review and local state flows through route modules and runtime-state helpers. Keep persistence behavior explicit when preparing deployment, and treat `TASKHUB_STATE_BACKEND=sqlite` as an environment-scoped canary flag until PM/Runtime accepts a broader storage switch.
 
 ---
 

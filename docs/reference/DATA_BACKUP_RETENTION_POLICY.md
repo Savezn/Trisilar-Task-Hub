@@ -20,11 +20,11 @@ Task Hub uses runtime data files for Review Queue state, card events, and Paperc
 | Data | Examples | Handling |
 |---|---|---|
 | Public docs/config | tracked markdown, `.env.example`, non-secret hostnames | May be committed |
-| Runtime state | review sessions, card events, runtime JSON | Keep in `APP_DATA_DIR` or ignored local files |
-| Secret-bearing runtime state | `paperclip-connection.json`, production `APP_DATA_DIR` backups after Settings connection | Treat as secrets |
+| Runtime state | review sessions, card events, runtime JSON, SQLite state | Keep in `APP_DATA_DIR` or ignored local files |
+| Secret-bearing runtime state | `paperclip-connection.json`, `taskhub-state.sqlite` or migration backups after Paperclip Settings connection, production `APP_DATA_DIR` backups after Settings connection | Treat as secrets |
 | Secrets | API tokens, OAuth secrets, Cloudflare Access Client Secret, HMAC signing secret | Runtime/platform only; never git/docs/chat |
 
-Production backups that include `paperclip-connection.json` are secret-bearing because they contain webhook signing material or connection state.
+Backups or SQLite databases that include `paperclip-connection.json` are secret-bearing because they contain webhook signing material or connection state.
 
 ---
 
@@ -35,6 +35,7 @@ Production backups that include `paperclip-connection.json` are secret-bearing b
 - Label backups with environment, timestamp, and source commit when safe.
 - Store secret-bearing backups only in approved private storage.
 - Do not paste backup contents into docs, screenshots, issue comments, PRs, or chat.
+- Do not commit `taskhub-state.sqlite`, SQLite WAL/SHM files, migration manifests, or JSON `.bak-*` files unless PM explicitly approves a sanitized fixture.
 - Before relying on production intake, verify that the operator knows where backups are stored and how restore is performed.
 
 ---
@@ -50,6 +51,16 @@ Before restore:
 3. Stop live Paperclip intake by setting `PAPERCLIP_WEBHOOK_ENABLED=false` when Paperclip state may be affected.
 4. Preserve the current data directory as a rollback backup when possible.
 5. Record source commit and restore reason without exposing data values.
+
+For V0.5 staged SQLite rollback, use:
+
+```powershell
+npm.cmd run migrate:sqlite:export
+```
+
+This exports SQLite state back to the known JSON filenames in `APP_DATA_DIR` and keeps the SQLite database in place for audit/rollback until PM decides retention. The export command must fail non-zero when `taskhub-state.sqlite` is missing or when the SQLite `app_state` table has no rows.
+
+When `TASKHUB_STATE_BACKEND=sqlite` is enabled for a canary, remove that flag to return runtime reads/writes to JSON after exporting rollback JSON or after confirming the desired JSON files already exist.
 
 After restore:
 

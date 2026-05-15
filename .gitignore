@@ -8,7 +8,18 @@ node_modules/
 
 # Runtime data files (generated at startup)
 review-sessions.json
+bu-config.json
 card-events.json
+paperclip-connection.json
+paperclip-docs-workflow.json
+taskhub-state.sqlite
+taskhub-state.sqlite-*
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.bak-*
+sqlite-migration-manifest-*.json
+sqlite-export-manifest-*.json
 .data/
 
 # Claude Code session data
