@@ -222,18 +222,18 @@ Task: Prepare hosted dev/demo SQLite canary for V0.5 foundation hardening
 Completed baseline:
 - V0.5 roadmap/FND-01 is accepted through PR #28.
 - FND-02/03/04/05 are integrated through PR #30 at `dev@e3380ac`.
-- `npm test`, contract checks, SQLite migration/rollback tests, Paperclip safety checks, post-merge `check:all`, local SQLite canary rehearsal, and `verify:sqlite-canary` passed.
+- `npm test`, contract checks, SQLite migration/rollback tests, Paperclip safety checks, post-merge `check:all`, local SQLite canary rehearsal, `verify:sqlite-canary`, and `verify:json-rollback` passed.
 - PM selected hosted dev/demo SQLite canary, not production.
 
 Next V0.5 output:
 - Runtime Owner obtains/uses DigitalOcean host access; this workstation probe to `root@157.230.251.209` returned `Permission denied (publickey)`.
-- On hosted dev/demo only: run `npm.cmd run migrate:sqlite`, set `TASKHUB_STATE_BACKEND=sqlite`, restart/reload, run `npm.cmd run verify:sqlite-canary`, then run `npm.cmd run migrate:sqlite:export`.
+- On hosted dev/demo only: run `npm.cmd run migrate:sqlite`, set `TASKHUB_STATE_BACKEND=sqlite`, restart/reload, run `npm.cmd run verify:sqlite-canary`, run `npm.cmd run migrate:sqlite:export`, and if rolling back remove the flag/restart then run `npm.cmd run verify:json-rollback`.
 
 Rules:
 - Do not touch production.
 - Do not change Cloudflare policy, secrets, live Paperclip flags, or webhook auth.
 - Do not create Trello, Calendar, Google Tasks, or live Paperclip side effects.
-- If hosted canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, verify JSON-backed endpoints, and route QA/PM.
+- If hosted canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, run `npm.cmd run verify:json-rollback`, and route QA/PM.
 ```
 
 **Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, and prepared as a separate production private runtime by Codex Runtime Owner; staged canary remains pending production service-auth and Settings connection. V0.5 Foundation Hardening roadmap/FND-01 was routed by Codex PM, merged through PR #28 at `dev@aaf8f58`, implemented by Codex Dev / QA through PR #30 at `dev@e3380ac`, and post-merge verified locally with hosted canary blocked only by Runtime Owner host access; full rewrite work remains deferred.

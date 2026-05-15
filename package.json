@@ -17,6 +17,7 @@
     "verify:paperclip-operations": "node scripts/verify-paperclip-operations.js",
     "verify:paperclip-mock": "node scripts/verify-paperclip-mock.js",
     "verify:sqlite-canary": "node scripts/verify-sqlite-canary.js",
+    "verify:json-rollback": "node scripts/verify-json-rollback.js",
     "verify:contracts": "node --test tests/app-contracts.test.js",
     "migrate:sqlite": "node scripts/migrate-json-state-to-sqlite.js import",
     "migrate:sqlite:export": "node scripts/migrate-json-state-to-sqlite.js export",
