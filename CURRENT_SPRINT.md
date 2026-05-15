@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.4 Live AI Operations / Paperclip Production Permanent Integration
-**Status:** V0.4 staged production canary passed; runtime gate closed; read-only monitoring pending
+**Status:** V0.4 staged production canary passed; runtime gate closed; read-only monitoring active
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Dev
 
@@ -69,6 +69,7 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 | V0.4-PROD-01 | Paperclip production repo readiness | Integrated to `dev@7e069b5` | PM complete |
 | V0.4-PROD-02 | Separate production runtime setup | Pass for runtime setup: private runtime + Cloudflare Access route + production service token + Paperclip Settings connection prepared | Runtime complete |
 | V0.4-PROD-03 | Staged production canary window | Pass; runtime returned to disabled | QA / Runtime complete |
+| V0.4-PROD-04 | 24-hour read-only monitoring | Active; first checkpoint pass; automation `v0-4-paperclip-prod-read-only-monitor` runs every 6 hours | QA / Runtime monitor |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
 | UIV2-01 | Claude Design UI V2 research handoff | PM-routed docs-only sidecar experiment; guideline prepared for Claude Design review | PM / UX Owner / Claude Design |
@@ -188,6 +189,8 @@ Runtime follow-up:
 - Production operations status now reports `connection.status=connected`, `hasSecret=true`, `mode=read_only`, and `liveWebhook.enabled=false`.
 - Staged production canary created Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07` with task status `pending`; duplicate same-payload replay returned `200`; changed replay returned `409`; invalid signature returned `401`; invalid source returned `403`; invalid environment returned `400`; Review Queue external side effects stayed at `trelloLinked=0`.
 - Runtime rollback restored `PAPERCLIP_LIVE_MODE=disabled` and `PAPERCLIP_WEBHOOK_ENABLED=false`; disabled webhook probe returned `403`.
+- First read-only monitoring checkpoint passed at 2026-05-15T05:24:25Z: container up, `/healthz` `200`, `/api/config` `200`, `/api/reviews` `200`, disabled probe `403`, `PAPERCLIP_LIVE_MODE=disabled`, `liveWebhook.enabled=false`, `mode=read_only`, `connection.status=connected`, `hasSecret=true`, queue pending=1 / approved=0 / rejected=0 / Trello-linked=0, warnings=none, dangerWarnings=none.
+- Monitor automation `v0-4-paperclip-prod-read-only-monitor` is active every 6 hours during the 24-hour read-only observation window.
 
 After runtime setup:
 - QA / Runtime Owner monitor read-only operations status and the single pending canary Review Queue item.
