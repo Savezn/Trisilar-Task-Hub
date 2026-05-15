@@ -79,7 +79,7 @@ V0.4 remains Runtime/QA owned. While V0.4 is waiting or in 24-hour read-only mon
 
 ### V0.5 - Foundation Hardening
 
-Status: PM routed / ready for scoped Dev planning.
+Status: FND-01 accepted via PR #28 / ready for FND-02 Dev+QA.
 
 Goal: strengthen persistence, test gates, and app-owned data contracts before UI V2 implementation and Team Operating System product work.
 
@@ -114,7 +114,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L4 | V0.2 Integration Release | Complete |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared, staged canary pending service-auth and Settings connection |
-| L7 | V0.5 Foundation Hardening | PM routed / ready for scoped Dev planning |
+| L7 | V0.5 Foundation Hardening | FND-01 accepted / ready for FND-02 Dev+QA |
 | L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
@@ -144,7 +144,7 @@ These items are not blockers for the completed V0.2 or V0.3 release baselines. V
 
 | Area | Gap | Recommended path |
 |---|---|---|
-| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | Use `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md`; accept ADRs, add meaningful `npm test`, add deterministic fixtures, validate app-owned data shapes, migrate app-owned JSON state to SQLite, then run integration QA. |
+| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | FND-01 is accepted through PR #28 at `dev@aaf8f58`; next route is FND-02 in the dedicated foundation worktree: add meaningful `npm test`, then deterministic fixtures, app-owned data-shape validation, SQLite migration, and integration QA. |
 | Persistence | App-owned state is still file-backed JSON under `APP_DATA_DIR`, which is fragile for larger workflow expansion. | Migrate app-owned state to SQLite through V0.5 with JSON import/backups and rollback notes; preserve `APP_DATA_DIR` boundaries and existing API shapes. |
 | Automated test suite | Current coverage is mostly smoke and structural verification. Unit, integration, and browser regression tests are not yet systematic. | Expand from `docs/testing/TEST_STRATEGY.md`: route tests, Trello model tests, deterministic fixtures, browser navigation regression, and CI gates. |
 | Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |

@@ -2,9 +2,9 @@
 
 **Codex Project:** TaskHub PM Roadmap
 **Folder:** `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-roadmap-rebaseline`
-**Branch:** `codex/v05-roadmap-rebaseline`
+**Branch:** `codex/v05-roadmap-closeout`
 **Role:** PM / Integration docs
-**Status:** Roadmap rebaseline docs in progress
+**Status:** Roadmap rebaseline merged; closeout docs only
 
 ---
 
@@ -16,6 +16,8 @@
 - PM routing language that says which tracks may run in parallel and which phases are blocked.
 
 This worktree must not change production runtime, Cloudflare, secrets, live Paperclip flags, webhook auth behavior, or product code.
+
+This worktree must not implement V0.5-FND-02 or later foundation work. That work belongs in the dedicated V0.5 foundation worktree after syncing from `origin/dev`.
 
 ---
 
@@ -38,4 +40,15 @@ This worktree must not change production runtime, Cloudflare, secrets, live Pape
 
 ## Next Action
 
-Finish docs verification for this branch, then prepare commit/PR handoff. Do not mark V0.4 permanent accepted from this worktree unless Runtime/QA provides a completed 24-hour monitor pass and PM acceptance package.
+Roadmap closeout status:
+
+- PR #28 merged the V0.5 roadmap rebaseline to `dev@aaf8f58`.
+- Remote branch `codex/v05-roadmap-rebaseline` was deleted after merge.
+- This closeout branch records the final PM handoff only.
+
+Next action outside this worktree:
+
+- Sync the dedicated V0.5 foundation worktree from `origin/dev`.
+- Start `V0.5-FND-02` deterministic `npm test` baseline there.
+
+Do not mark V0.4 permanent accepted from this worktree unless Runtime/QA provides a completed 24-hour monitor pass and PM acceptance package.

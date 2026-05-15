@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.4 Live AI Operations / V0.5 Foundation Hardening Routing
-**Status:** V0.4 production private runtime + Cloudflare Access route prepared; V0.5 foundation hardening PM-routed for parallel non-runtime work
+**Phase:** V0.4 Live AI Operations / V0.5 Foundation Hardening
+**Status:** V0.4 production private runtime + Cloudflare Access route prepared; V0.5 roadmap/FND-01 accepted and ready to hand to foundation Dev/QA
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Dev
 
@@ -26,7 +26,7 @@
 | V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Repo-contained role skills are allowed under `docs/agent-skills/`; installed reusable Codex skill extraction remains deferred. |
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
 | V0.4 Paperclip production readiness | Repo readiness integrated to `dev@7e069b5`; production runtime prepared from `dev@e8a211b` | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; production private runtime, Cloudflare tunnel route, DNS, and Access app are prepared; no staged canary, Paperclip service-token validation, signing-secret connection, secret exposure, or external side effect performed |
-| V0.5 Foundation Hardening | PM-routed / ready for scoped Dev planning | Inserts persistence, meaningful `npm test`, app-owned contracts, and SQLite migration before UI V2 implementation and Team Operating System product work; may proceed in parallel with V0.4 waiting/monitoring if runtime/secrets/live flags are untouched |
+| V0.5 Foundation Hardening | Roadmap/FND-01 accepted via PR #28 / ready for FND-02 Dev+QA | Inserts persistence, meaningful `npm test`, app-owned contracts, and SQLite migration before UI V2 implementation and Team Operating System product work; may proceed in parallel with V0.4 waiting/monitoring if runtime/secrets/live flags are untouched |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
 | Operations/security docs baseline | Merged to `origin/dev@681be25` via PR #25 | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge; branch/worktree cleanup completed |
 | UI Web Design V2 Claude Design experiment | PM-routed sidecar docs-only experiment | Adds a research allocation plan and Claude-ready UI/UX guideline under `docs/design/ui-design-v2/`; no product code, runtime config, Cloudflare, Paperclip, or V0.4 branch changes |
@@ -51,7 +51,7 @@ On 2026-05-15, PM/Integration synced `origin/dev` and `origin/main` at `631d3b2`
 
 V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the private production runtime is prepared from `dev@e8a211b`. The production runtime runs as Docker container `taskhub-prod` on the DigitalOcean host, binds privately to `127.0.0.1:3301`, uses separate `APP_DATA_DIR=/home/trisilar/taskhub-prod-data`, and reports production profile / disabled live mode through read-only operations status. Cloudflare tunnel routing, DNS, and a production Access app are configured for `https://taskhub-prod.trisila.online`; anonymous access returns Cloudflare Access `302`. This does not mean staged Paperclip intake is approved yet; production service-token validation and Paperclip Settings signing-secret connection are still pending before any production canary.
 
-PM rebaselined the post-V0.4 roadmap so the team does not wait idle during V0.4 waiting/monitoring windows. V0.5 Foundation Hardening now comes before UI V2 production implementation and Team Operating System product work. V0.5 covers ADR-backed persistence, real `npm test`, app-owned data contracts, and SQLite migration; it must not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior.
+PM rebaselined the post-V0.4 roadmap so the team does not wait idle during V0.4 waiting/monitoring windows. V0.5 Foundation Hardening now comes before UI V2 production implementation and Team Operating System product work. V0.5 covers ADR-backed persistence, real `npm test`, app-owned data contracts, and SQLite migration; it must not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior. PR #28 merged the roadmap rebaseline to `dev@aaf8f58`; next work is FND-02 in the dedicated foundation worktree, not in the roadmap closeout branch.
 
 ---
 
@@ -71,8 +71,8 @@ PM rebaselined the post-V0.4 roadmap so the team does not wait idle during V0.4 
 | Branch Workflow Alignment | Codex/Claude branch/worktree naming and cleanup model | Docs updated on `codex/v03-branch-workflow-release-qa`; QA passed | PM complete / Integration ready |
 | V0.4-PROD-01 | Paperclip production repo readiness | Integrated to `dev@7e069b5` | PM complete |
 | V0.4-PROD-02 | Separate production runtime setup | Partial pass: private runtime + Cloudflare Access route prepared; production service-token and Paperclip Settings connection pending | Runtime Owner / Paperclip Owner |
-| V0.5-FND-01 | Foundation ADRs + planning acceptance | PM-routed; docs and ADRs prepared | PM / Architecture |
-| V0.5-FND-02 | Deterministic `npm test` baseline | Pending V0.5-FND-01 acceptance | Dev / QA |
+| V0.5-FND-01 | Foundation ADRs + planning acceptance | Accepted / merged to `dev@aaf8f58` via PR #28 | PM complete |
+| V0.5-FND-02 | Deterministic `npm test` baseline | Ready to route after foundation worktree syncs from `origin/dev` | Dev / QA |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
 | UIV2-01 | Claude Design UI V2 research handoff | PM-routed docs-only sidecar experiment; guideline prepared for Claude Design review | PM / UX Owner / Claude Design |
@@ -215,19 +215,20 @@ Expected output:
 
 ```text
 Parallel Role: PM / Architecture
-Task: Accept V0.5-FND-01 and route deterministic test baseline
+Task: Start V0.5-FND-02 deterministic test baseline in the dedicated foundation worktree
 
 Completed baseline:
 - V0.5 roadmap sequencing is documented in PROJECT_LADDER.md and TODO.md.
 - V0.5 plan exists at docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md.
 - ADR_0003 records foundation before UI V2 / Team OS.
 - ADR_0004 records SQLite, test, and app-owned contract direction.
+- PR #28 merged the V0.5 roadmap rebaseline to `dev@aaf8f58`.
 - V0.4 remains Runtime/QA-owned and must not be touched by V0.5 work.
 
 Next V0.5 output:
-- PM accepts or holds V0.5-FND-01.
-- If accepted, route V0.5-FND-02 to Dev / QA for real `npm test` baseline.
-- Assign a dedicated branch/worktree such as `codex/v05-test-contracts`.
+- Sync the dedicated foundation worktree from `origin/dev`.
+- Route V0.5-FND-02 to Dev / QA for a real deterministic `npm test` baseline.
+- Keep the work on `codex/v05-foundation-hardening` or another dedicated V0.5 foundation branch/worktree.
 
 Rules:
 - Do not modify production runtime, Cloudflare policy, secrets, live Paperclip flags, or webhook auth.
@@ -237,4 +238,4 @@ Rules:
 - Do not mix V0.5 work into the dirty UI V2 design artifact worktree.
 ```
 
-**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, and prepared as a separate production private runtime by Codex Runtime Owner; staged canary remains pending production service-auth and Settings connection. V0.5 Foundation Hardening was routed by Codex PM to use the V0.4 wait/monitor window without touching runtime/secrets/live flags, and full rewrite work remains deferred.
+**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, and prepared as a separate production private runtime by Codex Runtime Owner; staged canary remains pending production service-auth and Settings connection. V0.5 Foundation Hardening roadmap/FND-01 was routed by Codex PM, merged through PR #28 at `dev@aaf8f58`, and closed out from the roadmap worktree without touching runtime/secrets/live flags or the V0.5 foundation implementation worktree; full rewrite work remains deferred.
