@@ -1,9 +1,9 @@
 # Version 0.4 Live AI Operations - Paperclip Production Permanent Integration Plan
 
 **Doc Role:** V0.4 plan and tracker for production Paperclip intake
-**Status:** Production private runtime + Cloudflare Access route prepared; staged canary not approved
+**Status:** Production runtime setup and staged canary passed; runtime gate closed; read-only monitoring pending
 **Version:** V0.4
-**Planning Stage:** Runtime setup pass, staged canary pending approval
+**Planning Stage:** Staged canary pass; read-only monitoring pending
 **Owner:** PM / AI Integration Owner / Runtime Owner / QA Release Owner
 **Created:** 2026-05-15
 **Last Updated:** 2026-05-15
@@ -91,8 +91,8 @@ Owner lanes:
 |---|---|---|---|
 | V0.4-PROD-01 | Repo production readiness | Integrated to `dev@7e069b5` | PM complete |
 | V0.4-PROD-02 | Separate production runtime setup | Pass: private runtime + Cloudflare route + service token + Settings connection prepared | QA / Runtime / Paperclip Owner |
-| V0.4-PROD-03 | Staged production canary window | Pending runtime | QA / Runtime / Paperclip Owner |
-| V0.4-PROD-04 | 24-hour read-only monitoring | Pending staged pass | QA / Runtime |
+| V0.4-PROD-03 | Staged production canary window | Pass; runtime returned to disabled | QA / Runtime complete |
+| V0.4-PROD-04 | 24-hour read-only monitoring | Active after staged pass | QA / Runtime |
 | V0.4-PROD-05 | Permanent enablement acceptance | Pending monitoring pass | PM |
 
 ---
@@ -189,7 +189,7 @@ Verification:
 - npm.cmd run verify:paperclip-docs
 - npm.cmd run verify:paperclip-cleanup
 - git diff --check
-Result: Repo-side V0.4 Paperclip production intake baseline remains ready; staged canary remains blocked on production service-token validation.
+Result: Repo-side V0.4 Paperclip production intake baseline remained ready at this checkpoint; staged canary was still blocked then on production service-token validation.
 ```
 
 ### V0.4-PROD-02 - Separate Production Runtime Setup
@@ -260,16 +260,16 @@ Not performed:
 - production secret disclosure
 ```
 
-Remaining before staged canary:
+Completed before staged canary:
 
-- Create or assign a production Cloudflare Access service token for the Paperclip sender.
-- Configure Paperclip sender with the production service-token headers out of band.
-- Verify service-token reachability without printing token values.
+- Created and assigned a production Cloudflare Access service token for the Paperclip sender.
+- Configured the runtime-only production candidate Paperclip env with production service-token headers out of band.
+- Verified service-token reachability without printing token values.
 
 Runtime follow-up:
 
 ```text
-Status: Runtime setup pass; staged canary pending approval
+Status: Runtime setup pass; staged canary completed after approval
 Date: 2026-05-15
 Host: DigitalOcean Droplet
 Task Hub production container: taskhub-prod running
@@ -284,7 +284,7 @@ Operations status after Settings connection: mode=read_only; runtime.profile=pro
 Connection file: /home/trisilar/taskhub-prod-data/paperclip-connection.json present and treated as secret-bearing production data
 Production candidate Paperclip env: /home/trisilar/.paperclip/.env.taskhub-prod created with TASKHUB_BASE_URL=https://taskhub-prod.trisila.online and matching runtime signing secret
 Service-token validation: production Cloudflare Access service token returns 200 for https://taskhub-prod.trisila.online/healthz
-Decision: Do not restart Paperclip into the production candidate env, enable webhook, or run staged canary until the staged production canary window is approved.
+Decision after canary: keep production runtime disabled until read-only monitoring passes and PM accepts permanent enablement.
 Secret exposure: None recorded in tracker; secret values were not copied into docs.
 ```
 
@@ -316,6 +316,29 @@ Acceptance:
 - No auto-approval.
 - No Trello, Calendar, or Google Tasks side effect before human approval.
 - No danger warning in operations status.
+
+Staged production canary result:
+
+```text
+Status: Pass
+Date: 2026-05-15
+Runtime window: enabled temporarily; rolled back to disabled
+Preflight disabled probe: 403
+Staged mode: PAPERCLIP_LIVE_MODE=staged; PAPERCLIP_WEBHOOK_ENABLED=true
+Valid signed production payload: 201
+Review Queue session: 57fdc85e-fe1e-4711-9269-c26d5ead3b07
+Task status: pending
+Same-payload replay: 200
+Changed replay: 409
+Invalid signature: 401
+Invalid source: 403
+Invalid environment: 400
+Operations status: mode=read_only
+Review Queue counts after canary: pending=1; approved=0; rejected=0; trelloLinked=0
+Rollback: PAPERCLIP_LIVE_MODE=disabled; PAPERCLIP_WEBHOOK_ENABLED=false; disabled probe 403
+Secret exposure: None recorded
+External side effects: none
+```
 
 ### V0.4-PROD-04 - 24-Hour Read-Only Monitoring
 
@@ -389,4 +412,5 @@ Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, a
 | 2026-05-15 | Verified production runtime is still healthy with webhook disabled, but held staged canary because the available Paperclip sender env still targets dev/demo and production Settings connection is missing | Codex Runtime Owner |
 | 2026-05-15 | Merged latest `origin/dev@622c7dd` DoR/DoD governance baseline into the V0.4 branch; V0.4 production service-auth hold remains unchanged | Codex Runtime Owner / Integration |
 | 2026-05-15 | Connected production Paperclip Settings and prepared a runtime-only production Paperclip env candidate; staged canary remained blocked at that checkpoint because the copied Cloudflare Access token still returned 302 on the production hostname | Codex Runtime Owner |
-| 2026-05-15 | Created and assigned production Cloudflare Access service token for `taskhub-prod.trisila.online`; runtime-only candidate env now reaches production `/healthz` with `200`; staged canary remains pending approval | Codex Runtime Owner |
+| 2026-05-15 | Created and assigned production Cloudflare Access service token for `taskhub-prod.trisila.online`; runtime-only candidate env reached production `/healthz` with `200`; staged canary still awaited approval at that checkpoint | Codex Runtime Owner |
+| 2026-05-15 | Ran staged production canary against `taskhub-prod.trisila.online`; valid signed payload created pending Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07`, replay/negative checks passed, no external side effect occurred, and runtime rollback restored disabled mode | Codex Runtime Owner / QA |
