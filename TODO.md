@@ -79,7 +79,7 @@ V0.4 remains Runtime/QA owned. While V0.4 is waiting or in 24-hour read-only mon
 
 ### V0.5 - Foundation Hardening
 
-Status: FND-02/03/04/05 integrated to `dev@e3380ac` via PR #30; hosted dev/demo SQLite canary selected and waiting for Runtime Owner host access.
+Status: FND-02/03/04/05 integrated via PR #30; hosted dev/demo SQLite canary selected and waiting for Runtime Owner host access.
 
 Goal: strengthen persistence, test gates, and app-owned data contracts before UI V2 implementation and Team Operating System product work.
 
@@ -114,7 +114,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L4 | V0.2 Integration Release | Complete |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared, staged canary pending service-auth and Settings connection |
-| L7 | V0.5 Foundation Hardening | Integrated to `dev@e3380ac`; hosted dev/demo SQLite canary selected, blocked on Runtime Owner host access |
+| L7 | V0.5 Foundation Hardening | Integrated via PR #30; hosted dev/demo SQLite canary selected, blocked on Runtime Owner host access |
 | L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
