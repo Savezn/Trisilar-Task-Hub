@@ -13,6 +13,7 @@ This folder contains logs, plans, references, archives, and design artifacts. Th
 | Folder | Purpose |
 |---|---|
 | `agents/` | Durable role guides for PM, UX, Dev, QA, Runtime, Integration, AI Integration, and Documentation Workflow owners |
+| `agent-skills/` | Repo-contained role `SKILL.md` entrypoints for Codex, Claude, Gemini, and future agents |
 | `reference/` | Architecture analysis and durable technical references |
 | `adr/` | Architecture Decision Records and process decisions |
 | `archive/` | Historical plans retained for traceability |
@@ -30,6 +31,7 @@ This folder contains logs, plans, references, archives, and design artifacts. Th
 |---|---|---|
 | Reserved root docs | Keep established filename | `CURRENT_SPRINT.md` |
 | Agent rules | Keep established filename | `CODEX.md` |
+| Agent role skills | `docs/agent-skills/<role>/SKILL.md` | `docs/agent-skills/qa-release/SKILL.md` |
 | Universal AI rules | Keep established filename | `.ai-instructions.md` |
 | Roadmap index | Keep established filename | `TODO.md` |
 | ADRs | `ADR_0000_SHORT_TITLE.md` | `ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` |
@@ -88,6 +90,15 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `reference/FILE_ORGANIZATION.md` | File placement policy for future files |
 | `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
 | `reference/PROJECT_CONTEXT.md` | Stable product context and operating model |
+| `agent-skills/pm/SKILL.md` | Repo-contained PM role skill entrypoint |
+| `agent-skills/ux-owner/SKILL.md` | Repo-contained UX Owner role skill entrypoint |
+| `agent-skills/dev-frontend/SKILL.md` | Repo-contained Frontend Dev role skill entrypoint |
+| `agent-skills/dev-core/SKILL.md` | Repo-contained Core Dev role skill entrypoint |
+| `agent-skills/ai-integration/SKILL.md` | Repo-contained AI Integration role skill entrypoint |
+| `agent-skills/runtime-owner/SKILL.md` | Repo-contained Runtime Owner role skill entrypoint |
+| `agent-skills/qa-release/SKILL.md` | Repo-contained QA / Release Owner role skill entrypoint |
+| `agent-skills/integration-owner/SKILL.md` | Repo-contained Integration Owner role skill entrypoint |
+| `agent-skills/documentation-workflow-owner/SKILL.md` | Repo-contained Documentation / Agent Workflow role skill entrypoint |
 | `deployment/README.md` | Deployment docs index |
 | `deployment/DEPLOYMENT_SETUP.md` | V0.2-W1-02 deploy-readiness setup for company access, temporary ngrok demo, and stable Cloudflare Access gate; legacy label W1b |
 | `deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config, V0.2-W1-05 no-domain ngrok demo handoff, and V0.2-W1-06 Cloudflare Access blockers |

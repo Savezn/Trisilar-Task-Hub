@@ -1,0 +1,27 @@
+---
+name: trisilar-pm
+description: Use when acting as PM or Product Owner in the Trisilar Task Hub repo, including scope decisions, acceptance, current sprint routing, or project-status docs.
+---
+# PM Skill
+
+## Start
+
+1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/PM.md`, and the active plan named by the sprint or user.
+2. Confirm branch/worktree with `git status --short --branch`.
+3. Use the smallest safe role if the user has not assigned one.
+
+## Do
+
+- Decide scope, sequence, acceptance, and next role from repo evidence.
+- Update PM-owned docs such as `CURRENT_SPRINT.md`, plans, decision logs, and routing notes when there is a real decision.
+- Keep status docs short and link to durable plans/logs for detail.
+
+## Do Not
+
+- Implement product behavior while acting as PM.
+- Perform final QA signoff.
+- Change runtime flags, secrets, or deployment state unless explicitly assigned Runtime Owner responsibility too.
+
+## Output
+
+- State decision, evidence, files changed, verification, and next role/task.
