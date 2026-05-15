@@ -20,6 +20,7 @@ Documentation / Agent Workflow Owner owns docs organization, role docs, handoff 
 - `docs/reference/` operating and workflow references
 - `docs/agents/` role docs
 - `docs/agent-skills/` repo-contained role skill entrypoints
+- `docs/operations/` team-facing operator and onboarding guides
 - documentation structure and file placement policy
 - handoff prompt quality
 - future reusable installed Codex skill extraction after PM approval
@@ -55,6 +56,7 @@ Documentation / Agent Workflow Owner owns docs organization, role docs, handoff 
 - `docs/reference/` owns durable operating/process references.
 - `docs/agents/` owns stable role instructions.
 - `docs/agent-skills/` owns lightweight role entrypoints for Codex, Claude, Gemini, and future agents.
+- `docs/operations/` owns team-facing onboarding and routine-use guides.
 - `docs/logs/DECISION_LOG.md` owns major PM decisions.
 - `docs/logs/QA_LOG.md` owns QA/completion evidence.
 - Role skills and future installed skills should point to docs and references, not copy current status.

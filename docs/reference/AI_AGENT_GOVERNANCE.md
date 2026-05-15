@@ -5,7 +5,7 @@
 **Owner:** PM / Documentation Workflow Owner
 **Created:** 2026-05-14
 **Updated by:** Codex PM
-**Related Docs:** `ORGANIZATION_OPERATING_MODEL.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../agents/PM.md`, `../plans/PROJECT_LADDER.md`
+**Related Docs:** `ORGANIZATION_OPERATING_MODEL.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `SECURITY_ACCESS_POLICY.md`, `DATA_BACKUP_RETENTION_POLICY.md`, `../agents/PM.md`, `../plans/PROJECT_LADDER.md`
 
 ---
 
@@ -123,6 +123,8 @@ Allowed in docs:
 - command names and verification results with secrets redacted
 
 Runtime flags such as `PAPERCLIP_WEBHOOK_ENABLED` may only be changed by the Runtime Owner or by an explicitly assigned runtime task. `PAPERCLIP_WEBHOOK_ENABLED=false` remains the hard stop gate until PM accepts a controlled live enablement policy. Production Paperclip intake also requires `TASKHUB_RUNTIME_PROFILE=production`, an approved production hostname, `PAPERCLIP_LIVE_MODE=staged|permanent`, a separate production `APP_DATA_DIR`, and QA evidence that Review Queue remains the human gate before external side effects.
+
+For detailed access-control, service-token, and backup/retention rules, use `SECURITY_ACCESS_POLICY.md` and `DATA_BACKUP_RETENTION_POLICY.md`. Production `APP_DATA_DIR` backups are secret-bearing when they include connection state such as `paperclip-connection.json`.
 
 ---
 
