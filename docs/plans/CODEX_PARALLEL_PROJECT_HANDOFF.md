@@ -25,9 +25,9 @@ Do not point two Codex projects at the same folder. Do not switch branches insid
 
 | Codex Project Name | Folder To Link | Branch | Current Role | Status |
 |---|---|---|---|---|
-| `TaskHub PM Roadmap` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-roadmap-rebaseline` | `codex/v05-roadmap-rebaseline` | PM / Integration docs | Contains the V0.5 roadmap rebaseline docs; finish commit/PR from here |
+| `TaskHub PM Roadmap` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-roadmap-rebaseline` | `codex/v05-roadmap-rebaseline` | PM / Integration docs | Closed through PR #28; do not continue here unless PM reopens roadmap docs |
 | `TaskHub V0.4 Runtime` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v04-paperclip-prod-integration` | `codex/v04-paperclip-prod-integration` | Runtime Owner / QA | Runtime/service-auth/canary/monitoring only |
-| `TaskHub V0.5 Foundation` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation` | `codex/v05-foundation-hardening` | Dev / QA / Architecture | Tests, contracts, SQLite migration |
+| `TaskHub V0.5 Foundation` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation` | `dev@e3380ac` / handoff branches | Runtime Owner / QA | Hosted dev/demo SQLite canary handoff after FND-02/03/04/05 merge |
 | `TaskHub UI V2 Design` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-uiv2-design-system` | `codex/uiv2-design-system` | UX Owner / Frontend design | Design-system work only until V0.6 implementation approval |
 | `TaskHub Team OS Pilot` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v07-team-os-pilot` | `codex/v07-team-os-pilot-docs` | PM / Operations | Docs-only pilot assumptions; no product features yet |
 
@@ -44,10 +44,9 @@ flowchart TD
   C -- "Yes" --> D["Runtime/service-auth/canary/monitor only"]
   C -- "No" --> E{"Is V0.5 Foundation accepted?"}
   E -- "No" --> F["Run PM Roadmap or V0.5-FND-01 acceptance"]
-  E -- "Yes" --> G["Run V0.5-FND-02 tests, then contracts, then SQLite"]
-  G --> H{"V0.5 accepted?"}
-  H -- "No" --> G
-  H -- "Yes" --> I["Start V0.6 UI V2 production implementation"]
+  E -- "Yes" --> G{"Is hosted dev/demo SQLite canary done?"}
+  G -- "No" --> H["Runtime Owner runs hosted SQLite canary or records blocker"]
+  G -- "Yes" --> I["Start V0.6 UI V2 production implementation"]
   I --> J{"V0.6 shell/workflow stable?"}
   J -- "Yes" --> K["Start V0.7 Team OS product pilot"]
   K --> L["V0.8+ Full Rewrite decision memo only if still justified"]
@@ -61,7 +60,11 @@ flowchart TD
 
 ```text
 Role: PM / Integration Owner
-Task: Finish the V0.5 roadmap rebaseline branch for review.
+Task: No active task; roadmap rebaseline is closed unless PM explicitly reopens it.
+
+Status:
+- Closed through PR #28 at `dev@aaf8f58`.
+- Do not continue this branch unless PM explicitly reopens roadmap docs.
 
 Workspace:
 C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-roadmap-rebaseline
@@ -136,40 +139,47 @@ Expected output:
 ### `TaskHub V0.5 Foundation`
 
 ```text
-Role: Dev / QA / Architecture
-Task: Start V0.5-FND-02 deterministic npm test baseline after confirming V0.5-FND-01 acceptance.
+Role: Runtime Owner / QA
+Task: Execute hosted dev/demo SQLite canary from `dev@e3380ac`, or record the host-access blocker.
 
 Workspace:
 C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation
 
 Read first:
-- docs/plans/CODEX_WORKTREE_PLAN.md
 - CURRENT_SPRINT.md
+- docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md
+- docs/adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md
+- docs/adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md
 - docs/testing/TEST_STRATEGY.md
 - docs/reference/ARCHITECTURE.md
+- docs/reference/DATA_BACKUP_RETENTION_POLICY.md
+- docs/deployment/ENVIRONMENT_MATRIX.md
 
 Goal:
-Make npm test meaningful with deterministic tests that do not require live Trello, Google, Cloudflare, or Paperclip secrets.
+Run the SQLite backend only on hosted dev/demo, prove health and rollback, and keep production JSON default.
 
 Setup:
 - npm.cmd ci
+- npm test
 
 Rules:
 - Do not touch production runtime, Cloudflare policy, secrets, live Paperclip flags, or webhook auth behavior.
 - Do not implement UI V2 production code.
 - Do not implement Team OS product features.
-- Preserve existing API response shapes unless an ADR explicitly approves a contract change.
-- No real Trello, Calendar, Google Tasks, or live Paperclip side effects in tests.
+- Do not create Trello, Calendar, Google Tasks, or live Paperclip side effects.
+- If SSH or deploy access is missing, record a blocker instead of changing runtime state.
 
 Verification target:
-- npm test
-- npm.cmd run check:all if behavior files changed and local server setup is available
-- Relevant Paperclip verification scripts only if touched code affects Paperclip paths
+- Hosted dev/demo `npm.cmd run migrate:sqlite`
+- Hosted dev/demo `TASKHUB_STATE_BACKEND=sqlite`
+- `/healthz`, `/api/config`, `/api/reviews`
+- Paperclip operations status read-only and no secret exposure
+- `npm.cmd run migrate:sqlite:export` rollback proof
 
 Expected output:
-- Test plan implemented or blocker report.
-- Exact files changed.
-- Clear next V0.5 handoff: contracts or SQLite migration.
+- Hosted canary pass/fail evidence or host-access blocker report.
+- Whether dev/demo keeps SQLite enabled or rolls back to JSON.
+- Clear next V0.5 handoff: keep SQLite canary, rollback, or defer production decision.
 ```
 
 ### `TaskHub UI V2 Design`
@@ -249,9 +259,9 @@ Expected output:
 
 | Project | Can Start Now? | Needs Before Product Implementation |
 |---|---|---|
-| PM Roadmap | Yes | Docs verification and PR/merge |
+| PM Roadmap | No active task | Reopen only by PM request |
 | V0.4 Runtime | Yes | Runtime secrets/service-token handled out of band |
-| V0.5 Foundation | Yes | PM acceptance of V0.5-FND-01, then tests/contracts/SQLite sequence |
+| V0.5 Foundation | Yes for hosted canary handoff | Runtime Owner host access before changing hosted dev/demo |
 | UI V2 Design | Yes, design-only | V0.5 acceptance before production implementation |
 | Team OS Pilot | Yes, docs-only | V0.6 shell/workflow stability before product implementation |
 | Full Rewrite | No | V0.8+ decision memo after V0.5/V0.6 evidence |

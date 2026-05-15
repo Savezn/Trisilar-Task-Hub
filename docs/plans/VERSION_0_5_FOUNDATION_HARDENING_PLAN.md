@@ -1,7 +1,7 @@
 # Version 0.5 Foundation Hardening Plan
 
 **Doc Role:** Active V0.5 foundation plan for persistence, tests, and contracts before UI V2 / Team Operating System implementation
-**Status:** FND-05 local QA pass / hosted dev-demo SQLite canary selected, integration pending
+**Status:** FND-05 integrated to `dev@e3380ac` / hosted dev-demo SQLite canary selected, blocked on host access
 **Version:** V0.5
 **Owner:** PM / Architecture / Dev / QA
 **Created:** 2026-05-15
@@ -44,10 +44,10 @@ V0.4 production Paperclip work can continue as a Runtime/QA track. V0.5 may star
 | ID | Phase | Owner Role | Status | Outcome |
 |---|---|---|---|---|
 | `V0.5-FND-01` | Foundation ADRs + planning acceptance | PM / Architecture | Accepted via PR #28 at `dev@aaf8f58` | Confirm sequencing, persistence, test gates, and contract guardrails before implementation |
-| `V0.5-FND-02` | Deterministic test baseline | Dev / QA | Implemented locally | Replace placeholder `npm test` with meaningful route/model tests that do not require live secrets |
-| `V0.5-FND-03` | Data contract validation | Dev / QA | Implemented locally | Validate app-owned Review Queue, config, Paperclip public connection, and normalized Trello card shapes |
-| `V0.5-FND-04` | SQLite persistence migration | Dev / QA / Runtime | Implemented locally | Move app-owned JSON state to SQLite with JSON import/backups, rollback notes, and env-flagged runtime reader canary |
-| `V0.5-FND-05` | Foundation integration QA | QA / Integration / PM | Local QA pass / hosted dev-demo canary selected | Verify tests, migration, contracts, optional SQLite runtime backend, and existing Paperclip safety gates together before any production switch |
+| `V0.5-FND-02` | Deterministic test baseline | Dev / QA | Integrated via PR #30 at `dev@e3380ac` | Replace placeholder `npm test` with meaningful route/model tests that do not require live secrets |
+| `V0.5-FND-03` | Data contract validation | Dev / QA | Integrated via PR #30 at `dev@e3380ac` | Validate app-owned Review Queue, config, Paperclip public connection, and normalized Trello card shapes |
+| `V0.5-FND-04` | SQLite persistence migration | Dev / QA / Runtime | Integrated via PR #30 at `dev@e3380ac` | Move app-owned JSON state to SQLite with JSON import/backups, rollback notes, and env-flagged runtime reader canary |
+| `V0.5-FND-05` | Foundation integration QA | QA / Integration / PM | Post-merge QA pass / hosted dev-demo canary selected | Verify tests, migration, contracts, optional SQLite runtime backend, and existing Paperclip safety gates together before any production switch |
 
 ---
 
@@ -152,9 +152,15 @@ PM selected the hosted dev/demo SQLite canary path on 2026-05-15.
 
 Status: selected, not executed from this workstation.
 
-Current gates before execution:
+Completed before execution:
 
-- V0.5 code must be integrated to an accepted deployable `dev` commit.
+- V0.5 code is integrated through PR #30 at `dev@e3380ac`.
+- Post-merge local QA passed `npm test` 25/25.
+- Post-merge `check:all` passed with a controlled local server.
+- Local SQLite canary rehearsal passed on `e3380ac`: JSON import, SQLite runtime read, `/healthz`, `/api/config`, `/api/reviews`, and rollback export.
+
+Current gate before hosted execution:
+
 - Runtime Owner needs working DigitalOcean host access; the local SSH probe to `root@157.230.251.209` returned `Permission denied (publickey)`.
 - Runtime Owner must confirm dev/demo `APP_DATA_DIR`, current source commit, backup location, and expected Paperclip live flag before restart.
 - Production remains out of scope and must not receive `TASKHUB_STATE_BACKEND=sqlite` from this decision.
@@ -194,7 +200,7 @@ Stop and rollback if `/healthz`, `/api/config`, `/api/reviews`, or Paperclip ope
 
 ```text
 Role: Integration Owner / Runtime Owner
-Task: Prepare and execute hosted dev/demo SQLite canary after V0.5 code is integrated to an accepted dev commit
+Task: Execute hosted dev/demo SQLite canary from `dev@e3380ac` after Runtime Owner host access is available
 
 Read:
 - docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md
@@ -206,8 +212,7 @@ Read:
 - docs/deployment/ENVIRONMENT_MATRIX.md
 
 Expected output:
-- Integration Owner first creates an accepted deployable V0.5 dev commit from this foundation work.
-- Runtime Owner then runs `npm.cmd run migrate:sqlite`, starts dev/demo with `TASKHUB_STATE_BACKEND=sqlite`, verifies health/config/reviews/Paperclip read-only status, then proves rollback with `npm.cmd run migrate:sqlite:export`.
+- Runtime Owner runs `npm.cmd run migrate:sqlite`, starts dev/demo with `TASKHUB_STATE_BACKEND=sqlite`, verifies health/config/reviews/Paperclip read-only status, then proves rollback with `npm.cmd run migrate:sqlite:export`.
 - If host access or deploy readiness is missing, record a blocker instead of changing runtime state.
 - If canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, verify JSON-backed health/config/reviews, and route QA/PM.
 - Production SQLite switch remains out of scope until a separate PM/Runtime acceptance.
@@ -222,4 +227,5 @@ Expected output:
 | 2026-05-15 | Created V0.5 Foundation Hardening plan and inserted it before UI V2 / Team OS implementation | Codex PM |
 | 2026-05-15 | Accepted FND-01 roadmap/ADR plan via PR #28 and routed next to FND-02 deterministic test baseline in the foundation worktree | Codex PM / Integration Owner |
 | 2026-05-15 | Implemented deterministic `npm test`, app-owned contracts, SQLite migration/rollback, env-flagged SQLite runtime-state backend, and FND-05 local QA evidence | Codex Dev / QA |
-| 2026-05-15 | PM selected hosted dev/demo SQLite canary path; execution held until V0.5 is integrated to an accepted dev commit and Runtime Owner host access is available | Codex PM / Runtime Owner |
+| 2026-05-15 | PM selected hosted dev/demo SQLite canary path; initial execution was held until dev integration and Runtime Owner host access were available | Codex PM / Runtime Owner |
+| 2026-05-15 | Integrated FND-02/03/04/05 through PR #30 at `dev@e3380ac`; post-merge `npm test`, controlled `check:all`, and local SQLite canary rehearsal passed; hosted execution remains blocked by DigitalOcean SSH publickey access | Codex Integration Owner / QA |
