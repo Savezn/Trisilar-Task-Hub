@@ -8,6 +8,8 @@
 
 This document defines how agents verify changes today and how the automated test suite should grow.
 
+V0.5 Foundation Hardening turns the automated test-suite roadmap into active implementation work. `npm test` should become a meaningful deterministic gate before UI V2 production implementation or Team Operating System product work starts.
+
 ---
 
 ## Current Baseline
@@ -102,6 +104,8 @@ QA must not edit files.
 ---
 
 ## Automated Test Suite Roadmap
+
+V0.5 should implement this order as scoped Dev/QA tasks, starting with tests that do not require production secrets or live Trello/Google/Paperclip services.
 
 Priority order:
 

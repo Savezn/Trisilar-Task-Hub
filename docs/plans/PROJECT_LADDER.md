@@ -5,7 +5,7 @@
 **Owner:** PM
 **Created:** 2026-05-08
 **Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
-**Related Docs:** `../../TODO.md`, `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `../reference/PROJECT_CONTEXT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `../../TODO.md`, `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_5_FOUNDATION_HARDENING_PLAN.md`, `../adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md`, `../adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md`, `../reference/PROJECT_CONTEXT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`
 
 ---
 
@@ -29,7 +29,10 @@ Stable local command center
 -> full usable UI
 -> controlled AI handoff
 -> release-grade reliability
+-> hardened persistence, tests, and contracts
+-> UI V2 implementation
 -> broader team operations
+-> full rewrite decision only if still justified
 ```
 
 The product model now uses this long-term operating model:
@@ -58,7 +61,10 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L4 | V0.2 Integration Release | Complete | Accepted W1/W2/W3 work runs together on `dev` without regressions | Release/integration cleanup QA passed on clean `origin/dev@8027324`; workstream branch/worktree residue cleaned |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, deployed to dev/demo, and release-candidate verified; production deploy remains a separate runtime decision |
 | L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared; staged canary pending service-auth and Settings connection | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Production service-token path, Settings signing-secret connection, staged canary, then 24-hour read-only monitoring |
-| L7 | V0.5 Team Operating System | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
+| L7 | V0.5 Foundation Hardening | PM routed / ready for scoped Dev planning | Persistence, test gates, and app-owned contracts are strong enough for UI V2 and Team OS expansion | ADR acceptance, meaningful `npm test`, deterministic fixtures, contract validation, SQLite migration, and integration QA |
+| L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now | UI V2 tokens/component language are promoted route-by-route without uncontrolled rewrite | Browser regression passes across desktop/mobile core routes and Review Queue safety remains intact |
+| L9 | V0.7 Team Operating System Pilot | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
+| L10 | V0.8+ Full Rewrite Decision | Future decision memo only | Full rewrite is approved only if V0.5/V0.6 evidence proves incremental migration is insufficient | PM accepts a decision memo comparing current static JS, Vite, React, Next, and migration risks |
 
 ---
 
@@ -198,7 +204,41 @@ V0.4 repo readiness integrated to dev@7e069b5
 -> PM decides permanent enablement
 ```
 
-### L7 - V0.5 Team Operating System
+### L7 - V0.5 Foundation Hardening
+
+Focus:
+
+- ADR-backed sequencing, persistence, test-gate, and data-contract decisions.
+- Deterministic API route tests and Trello model unit tests.
+- Schema/contract validation for app-owned Review Queue, config, Paperclip, and normalized Trello card shapes.
+- SQLite migration for app-owned runtime state with JSON import/backups.
+- Preserve public API response shapes unless an ADR explicitly approves a contract change.
+
+V0.5 can start while V0.4 is waiting or monitoring, as long as V0.5 does not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior.
+
+Current V0.5 route:
+
+```text
+V0.5 PM roadmap rebaseline accepted
+-> V0.5-FND-01 ADRs and foundation plan accepted
+-> V0.5-FND-02 deterministic `npm test` baseline
+-> V0.5-FND-03 app-owned data contracts
+-> V0.5-FND-04 SQLite persistence migration
+-> V0.5-FND-05 foundation integration QA
+```
+
+### L8 - V0.6 UI V2 Design System Implementation
+
+Focus:
+
+- Promote UI V2 tokens and component language into production.
+- Implement route-by-route, not as a whole-app rewrite.
+- Start with shell/navigation and route states, then Today/Tasks, Review Queue/Docs, Settings/operations.
+- Keep the current static JS workflow unless V0.5 produces an accepted build-system ADR.
+
+UI V2 design-only work may continue before V0.6. Production implementation waits for V0.5 foundation acceptance.
+
+### L9 - V0.7 Team Operating System Pilot
 
 Focus:
 
@@ -206,6 +246,18 @@ Focus:
 - Management/portfolio reporting.
 - Team rhythm support for weekly planning and review.
 - Lower-friction operations without replacing Trello project boards.
+
+Team OS docs-only pilot preparation may continue before V0.7. Product implementation waits for UI shell/workflow stability.
+
+### L10 - V0.8+ Full Rewrite Decision
+
+Focus:
+
+- Write a decision memo only after V0.5/V0.6 evidence is available.
+- Compare current static JS, Vite, React, Next, and incremental migration options.
+- Define risks, migration criteria, rollback, and regression gates before any rewrite implementation.
+
+Do not execute a full rewrite while V0.4 canary/monitoring is active or before V0.5 foundation acceptance.
 
 ---
 
@@ -217,6 +269,10 @@ Focus:
 - Do not add broad platform features that make the tool heavier for a small team.
 - Do not use `main` as an integration branch.
 - Do not skip QA after behavior-changing Dev work.
+- Do not implement UI V2 production code before V0.5 foundation acceptance; design-only UI V2 work may continue.
+- Do not implement Team OS product features before UI shell/workflow stability.
+- Do not execute a full rewrite before an accepted V0.8+ decision memo.
+- Do not mix V0.5 foundation work into dirty UI V2 design artifact branches/worktrees.
 
 ---
 
@@ -249,6 +305,9 @@ Paperclip runtime inputs confirmed
 -> dev/demo runtime deployed from dev@02fe7cf and runtime QA passed
 -> PR #19 closed V0.3 docs on origin/dev@e05eb66
 -> PR #20 release candidate verified and PM accepted for main promotion
+-> V0.4 production private runtime prepared; staged canary waits on service-auth and Settings connection
+-> PM inserts V0.5 Foundation Hardening before UI V2 implementation and Team OS product work
+-> V0.5 can start in parallel with V0.4 waiting/monitoring if runtime/secrets/live flags are untouched
 ```
 
 This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not change the standing Paperclip dev/demo observation policy. Production deployment remains a separate Runtime / PM decision.
@@ -293,3 +352,4 @@ This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime wo
 | 2026-05-14 | Recorded V0.3 RUX PM acceptance through RUX-06 and later closed it on dev/dev-demo at `origin/dev@02fe7cf` | Codex PM / Integration Owner |
 | 2026-05-14 | Closed V0.3 RUX on `origin/dev@02fe7cf` and dev/demo runtime after runtime QA pass | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |
+| 2026-05-15 | Inserted V0.5 Foundation Hardening before UI V2 implementation and Team OS pilot; deferred full rewrite execution to V0.8+ decision memo | Codex PM |
