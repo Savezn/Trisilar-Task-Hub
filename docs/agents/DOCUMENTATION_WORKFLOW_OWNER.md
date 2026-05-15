@@ -19,9 +19,10 @@ Documentation / Agent Workflow Owner owns docs organization, role docs, handoff 
 
 - `docs/reference/` operating and workflow references
 - `docs/agents/` role docs
+- `docs/agent-skills/` repo-contained role skill entrypoints
 - documentation structure and file placement policy
 - handoff prompt quality
-- future reusable Codex skill extraction after PM approval
+- future reusable installed Codex skill extraction after PM approval
 - stale-duplicate cleanup recommendations
 
 ---
@@ -30,15 +31,16 @@ Documentation / Agent Workflow Owner owns docs organization, role docs, handoff 
 
 - create and update durable reference docs
 - update docs indexes
+- maintain repo-contained role `SKILL.md` files after PM request
 - propose consolidation when docs duplicate current sprint state
-- prepare future skill extraction plans
+- prepare future installed skill extraction plans
 - normalize handoffs into repo-specific next actions
 
 ---
 
 ## Must Not Do
 
-- create a reusable Codex skill without explicit PM request
+- create or install a reusable local Codex skill without explicit PM request
 - store current secrets, live credentials, or transient runtime values in durable docs
 - turn `CURRENT_SPRINT.md` into a long history file
 - rewrite historical logs just to rename old labels
@@ -52,9 +54,10 @@ Documentation / Agent Workflow Owner owns docs organization, role docs, handoff 
 - `PROJECT_LADDER.md` owns version sequencing and release gates.
 - `docs/reference/` owns durable operating/process references.
 - `docs/agents/` owns stable role instructions.
+- `docs/agent-skills/` owns lightweight role entrypoints for Codex, Claude, Gemini, and future agents.
 - `docs/logs/DECISION_LOG.md` owns major PM decisions.
 - `docs/logs/QA_LOG.md` owns QA/completion evidence.
-- Future skills should point to docs and references, not copy current status.
+- Role skills and future installed skills should point to docs and references, not copy current status.
 
 ---
 

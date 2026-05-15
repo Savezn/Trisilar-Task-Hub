@@ -13,6 +13,7 @@ This file is intentionally small. Shared project workflow, role rules, branch/wo
 ## Claude Operating Rules
 
 - Follow the role stated by the user: Dev, Dev Fix, QA, QA Recheck, or PM.
+- After `.ai-instructions.md`, load the matching repo-contained role skill under `docs/agent-skills/<role>/SKILL.md` before deeper role docs.
 - Use search/grep first, then targeted reads around the relevant section.
 - Do not read or rewrite large files wholesale unless the task explicitly requires it.
 - Do not edit files during QA.
@@ -28,7 +29,8 @@ This file is intentionally small. Shared project workflow, role rules, branch/wo
 ## Required Read Order
 
 1. `.ai-instructions.md`
-2. `docs/reference/PROJECT_CONTEXT.md`
-3. `CURRENT_SPRINT.md`
-4. active version/workstream plan
-5. this file
+2. this file
+3. matching `docs/agent-skills/<role>/SKILL.md`
+4. `docs/reference/PROJECT_CONTEXT.md`
+5. `CURRENT_SPRINT.md`
+6. active version/workstream plan

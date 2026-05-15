@@ -23,9 +23,10 @@
 | V0.2 W3 standing dev/demo observation | Active with read-only monitor automation | `PAPERCLIP_WEBHOOK_ENABLED=true` on dev/demo; active signed canary only on PM/QA request or after runtime/sender changes |
 | V0.2 branch/worktree residue | Cleaned after release/integration QA | Stale W1/W2/W3 worktrees, folders, local branches, and remote workstream branches removed after QA passed on `origin/dev@8027324` |
 | Latest W3 dev closeout | `origin/dev@ff20e48` | `V0.2-W3-05` operations status and settings copy polish merged/deployed at `dev@2c302dc`; W3 foundation closeout status is on latest `dev` |
-| V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Reusable Codex skill is deferred until the docs prove useful in real sessions. |
+| V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Repo-contained role skills are allowed under `docs/agent-skills/`; installed reusable Codex skill extraction remains deferred. |
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
 | V0.4 Paperclip production readiness | Integrated to `dev@7e069b5`; production deploy pending Runtime Owner | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; integration verification passed; no production deploy, Cloudflare change, live canary, secret exposure, or external side effect performed |
+| Agent role skill entrypoints | Docs complete on `codex/agent-role-skill-docs`; pending PM/Integration merge | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
 
 ---
 
@@ -63,6 +64,7 @@ V0.4 Paperclip production readiness is now integrated to `dev@7e069b5`. The inte
 | V0.3 RUX Integration | Product Reliability + UX Stabilization accepted branch integration | Complete on `origin/dev@02fe7cf`; dev/demo runtime QA pass | PM complete |
 | V0.3 Main Release | Product Reliability + UX Stabilization `dev -> main` release candidate | PM accepted PR #20; dev/main synced at `631d3b2`; post-sync QA passed; production deploy not performed | PM complete / Runtime hold |
 | Branch Workflow Alignment | Codex/Claude branch/worktree naming and cleanup model | Docs updated on `codex/v03-branch-workflow-release-qa`; QA passed | PM complete / Integration ready |
+| Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Docs complete on `codex/agent-role-skill-docs`; pending PM/Integration merge | PM / Integration Owner |
 | V0.4-PROD-01 | Paperclip production repo readiness | Integrated to `dev@7e069b5`; production deploy not performed | PM complete |
 | V0.4-PROD-02 | Separate production runtime setup | Pending Runtime Owner action | Runtime Owner |
 
@@ -84,6 +86,7 @@ V0.4 Paperclip production readiness is now integrated to `dev@7e069b5`. The inte
 | AI agent governance and role boundaries | `docs/reference/AI_AGENT_GOVERNANCE.md` |
 | Parallel Codex branch/worktree model | `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` |
 | Role-specific agent handoffs | `docs/agents/` |
+| Role-specific agent skill entrypoints | `docs/agent-skills/` |
 | V0.3 Product Reliability + UX Stabilization plan | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` |
 | V0.3 RUX findings and baseline | `docs/logs/V0_3_RUX_FINDINGS.md` |
 | V0.3 RUX release checklist | `docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md` |
@@ -164,7 +167,8 @@ Rules:
 - Do not expose secrets, Cloudflare tokens, signing headers, or raw auth values.
 - Do not auto-approve Review Queue tasks.
 - Do not create Trello cards, Calendar events, or Google Tasks.
-- Keep reusable `trisilar-task-hub-workflow` Codex skill deferred.
+- Use repo-contained role `SKILL.md` files under `docs/agent-skills/` when assigning Codex/Claude/Gemini roles.
+- Keep installed reusable `trisilar-task-hub-workflow` Codex skill deferred.
 
 Expected output:
 - Runtime setup evidence or blocker report, followed by QA staged production canary handoff.

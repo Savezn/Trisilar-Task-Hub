@@ -28,7 +28,8 @@ Accepted decisions:
 - Treat runtime governance as a named ownership lane.
 - Treat Codex agents as a development workforce that operates through scoped branches and worktrees.
 - Use the accepted V0.3 Product Reliability + UX Stabilization plan and route next to integrated candidate QA after `V0.3-RUX-06` acceptance.
-- Do not create the reusable `trisilar-task-hub-workflow` Codex skill yet; use these docs in real sessions first.
+- Use repo-contained role `SKILL.md` entrypoints under `docs/agent-skills/` for Codex, Claude, Gemini, and future agents.
+- Do not create or install the reusable `trisilar-task-hub-workflow` Codex skill yet; keep that local skill extraction deferred until PM explicitly asks.
 
 ---
 
