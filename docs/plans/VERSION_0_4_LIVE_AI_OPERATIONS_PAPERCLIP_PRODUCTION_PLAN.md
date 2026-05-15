@@ -1,13 +1,13 @@
 # Version 0.4 Live AI Operations - Paperclip Production Permanent Integration Plan
 
-**Doc Role:** V0.4 plan and tracker for production Paperclip intake  
-**Status:** Repo implementation QA passed locally; production deploy not performed  
-**Version:** V0.4  
-**Planning Stage:** PM accepted route, Dev implementation branch active  
-**Owner:** PM / AI Integration Owner / Runtime Owner / QA Release Owner  
-**Created:** 2026-05-15  
-**Last Updated:** 2026-05-15  
-**Updated by:** Codex PM / Dev  
+**Doc Role:** V0.4 plan and tracker for production Paperclip intake
+**Status:** Repo implementation QA passed locally; production deploy not performed
+**Version:** V0.4
+**Planning Stage:** PM accepted route, Dev implementation branch active
+**Owner:** PM / AI Integration Owner / Runtime Owner / QA Release Owner
+**Created:** 2026-05-15
+**Last Updated:** 2026-05-15
+**Updated by:** Codex PM / Dev
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../deployment/DEPLOYMENT_SETUP.md`, `../deployment/DIGITALOCEAN_DASHBOARD_HANDOVER.md`, `../adr/ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md`, `VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md`, `VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md`
 
 ---
