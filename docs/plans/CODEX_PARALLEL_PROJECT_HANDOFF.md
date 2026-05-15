@@ -170,6 +170,7 @@ Rules:
 - If SSH or deploy access is missing, record a blocker instead of changing runtime state.
 
 Verification target:
+- Optional temp-data preflight: `npm.cmd run verify:persistence-canary-cycle`
 - Hosted dev/demo `npm.cmd run migrate:sqlite`
 - Hosted dev/demo `TASKHUB_STATE_BACKEND=sqlite`
 - `npm.cmd run verify:sqlite-canary` from a shell with the same `APP_DATA_DIR`, `$env:TASKHUB_STATE_BACKEND = "sqlite"`, and `$env:SQLITE_CANARY_BASE_URL = "http://127.0.0.1:3000"`

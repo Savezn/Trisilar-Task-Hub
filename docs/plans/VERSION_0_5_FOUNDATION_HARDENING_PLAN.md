@@ -158,6 +158,7 @@ Completed before execution:
 - Post-merge local QA passed `npm test` 25/25.
 - Post-merge `check:all` passed with a controlled local server.
 - Local SQLite canary rehearsal passed on `e3380ac`: JSON import, SQLite runtime read, `/healthz`, `/api/config`, `/api/reviews`, Paperclip operations read-only status, `verify:sqlite-canary`, and rollback export.
+- Local persistence canary cycle passed: `npm.cmd run verify:persistence-canary-cycle` covers JSON import, SQLite runtime verification, rollback export, and JSON runtime verification in an isolated temp `APP_DATA_DIR`.
 
 Current gate before hosted execution:
 
@@ -171,16 +172,19 @@ Runtime Owner runbook once gates are clear:
 # On the hosted dev/demo runtime only, after V0.5 code is deployed from an accepted dev commit.
 # Do not run on production.
 
-# 1. Record current commit, service state, APP_DATA_DIR, and Paperclip flags without printing secrets.
-# 2. Preserve or snapshot the current dev/demo APP_DATA_DIR using the approved runtime backup path.
+# 1. Optional local preflight from the deployed code tree; uses temp data only.
+npm.cmd run verify:persistence-canary-cycle
+
+# 2. Record current commit, service state, APP_DATA_DIR, and Paperclip flags without printing secrets.
+# 3. Preserve or snapshot the current dev/demo APP_DATA_DIR using the approved runtime backup path.
 npm.cmd ci
 npm.cmd run migrate:sqlite
 
-# 3. Set the canary flag in the dev/demo runtime environment only.
+# 4. Set the canary flag in the dev/demo runtime environment only.
 $env:TASKHUB_STATE_BACKEND = "sqlite"
 
-# 4. Restart or reload taskhub-dashboard.service.
-# 5. Verify from the host against the local service URL, not through Cloudflare Access.
+# 5. Restart or reload taskhub-dashboard.service.
+# 6. Verify from the host against the local service URL, not through Cloudflare Access.
 #    - local /healthz returns 200
 #    - /api/config returns 200
 #    - /api/reviews returns 200
@@ -191,8 +195,8 @@ $env:SQLITE_CANARY_BASE_URL = "http://127.0.0.1:3000"
 npm.cmd run verify:sqlite-canary
 npm.cmd run migrate:sqlite:export
 
-# 6. Confirm rollback JSON files are present and usable.
-# 7. PM decides whether dev/demo keeps SQLite canary enabled or removes TASKHUB_STATE_BACKEND to return to JSON.
+# 7. Confirm rollback JSON files are present and usable.
+# 8. PM decides whether dev/demo keeps SQLite canary enabled or removes TASKHUB_STATE_BACKEND to return to JSON.
 #    If rolling back, remove TASKHUB_STATE_BACKEND, restart/reload, and verify the JSON-backed runtime.
 $env:TASKHUB_STATE_BACKEND = ""
 $env:JSON_ROLLBACK_BASE_URL = "http://127.0.0.1:3000"
@@ -219,7 +223,7 @@ Read:
 - docs/deployment/ENVIRONMENT_MATRIX.md
 
 Expected output:
-- Runtime Owner runs `npm.cmd run migrate:sqlite`, starts dev/demo with `TASKHUB_STATE_BACKEND=sqlite`, verifies health/config/reviews/Paperclip read-only status with `npm.cmd run verify:sqlite-canary`, then proves rollback with `npm.cmd run migrate:sqlite:export` and `npm.cmd run verify:json-rollback` if the canary is rolled back.
+- Runtime Owner optionally runs `npm.cmd run verify:persistence-canary-cycle` as a temp-data preflight, then runs `npm.cmd run migrate:sqlite`, starts dev/demo with `TASKHUB_STATE_BACKEND=sqlite`, verifies health/config/reviews/Paperclip read-only status with `npm.cmd run verify:sqlite-canary`, then proves rollback with `npm.cmd run migrate:sqlite:export` and `npm.cmd run verify:json-rollback` if the canary is rolled back.
 - If host access or deploy readiness is missing, record a blocker instead of changing runtime state.
 - If canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, verify JSON-backed health/config/reviews, and route QA/PM.
 - Production SQLite switch remains out of scope until a separate PM/Runtime acceptance.
@@ -238,3 +242,4 @@ Expected output:
 | 2026-05-15 | Integrated FND-02/03/04/05 through PR #30 at `dev@e3380ac`; post-merge `npm test`, controlled `check:all`, and local SQLite canary rehearsal passed; hosted execution remains blocked by DigitalOcean SSH publickey access | Codex Integration Owner / QA |
 | 2026-05-15 | Added `verify:sqlite-canary` for Runtime Owner read-only hosted canary verification of SQLite `app_state`, health/config/reviews, and Paperclip operations status before rollback export | Codex Dev / QA |
 | 2026-05-15 | Added `verify:json-rollback` for Runtime Owner read-only rollback verification after removing the SQLite backend flag and restarting JSON-backed dev/demo | Codex Dev / QA |
+| 2026-05-15 | Added `verify:persistence-canary-cycle` local preflight covering JSON import, SQLite runtime verification, rollback export, and JSON runtime verification using temp data only | Codex Dev / QA |
