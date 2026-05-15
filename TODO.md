@@ -75,7 +75,7 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 | L3 | V0.2 Paperclip Foundation | W3-02 live connector accepted / runtime gate disabled by default |
 | L4 | V0.2 Integration Release | Complete |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
-| L6 | V0.4 Live AI Operations | Active; repo readiness integrated to `dev@7e069b5`, production runtime pending |
+| L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared, staged canary pending service-auth and Settings connection |
 | L7 | V0.5 Team Operating System | Future |
 
 ---

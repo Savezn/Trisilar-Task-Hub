@@ -348,6 +348,35 @@ npm.cmd run verify:paperclip-production-readiness
 
 This check does not prove Cloudflare production deployment. It proves the app-level production profile, staged/permanent policy surface, HMAC/idempotency behavior, and no pre-approval Trello side effect using an isolated local runtime.
 
+Current V0.4 production runtime checkpoint:
+
+| Setting | Value |
+|---|---|
+| Runtime source | `dev@e8a211b` |
+| Runtime process | Docker container `taskhub-prod` |
+| Private bind | `127.0.0.1:3301` |
+| Public hostname | `https://taskhub-prod.trisila.online` |
+| Cloudflare route | Existing healthy tunnel routes hostname to `http://localhost:3301` |
+| Access gate | Production Cloudflare Access app with team-email allow policy |
+| `APP_DATA_DIR` | `/home/trisilar/taskhub-prod-data` |
+| Webhook hard gate | `PAPERCLIP_WEBHOOK_ENABLED=false` |
+| Live mode | `PAPERCLIP_LIVE_MODE=disabled` |
+
+Checkpoint evidence:
+
+- Local production `/healthz`, `/api/config`, `/api/reviews`, and operations status returned `200`.
+- Disabled webhook probe returned `403`.
+- Cloudflare authoritative DNS resolves `taskhub-prod.trisila.online`.
+- Anonymous public `/healthz` returns Cloudflare Access `302`.
+- Operations status reported production profile, connection not connected, 0 Paperclip Review Queue tasks, and 0 Trello-linked side effects.
+
+Still pending before staged canary:
+
+- Production Cloudflare Access service token for the Paperclip sender.
+- Paperclip sender runtime configuration with production service-token headers.
+- Production Paperclip Settings connection so Task Hub stores the runtime signing secret under production `APP_DATA_DIR`.
+- Service-token reachability verification without printing token values.
+
 ---
 
 ## Verification

@@ -1,9 +1,9 @@
 # Version 0.4 Live AI Operations - Paperclip Production Permanent Integration Plan
 
 **Doc Role:** V0.4 plan and tracker for production Paperclip intake
-**Status:** Repo readiness integrated to `dev@7e069b5`; production deploy not performed
+**Status:** Production private runtime + Cloudflare Access route prepared; staged canary not approved
 **Version:** V0.4
-**Planning Stage:** Repo readiness integrated, Runtime Owner production setup pending
+**Planning Stage:** Runtime setup partial pass, production service-auth / Settings connection pending
 **Owner:** PM / AI Integration Owner / Runtime Owner / QA Release Owner
 **Created:** 2026-05-15
 **Last Updated:** 2026-05-15
@@ -90,7 +90,7 @@ Owner lanes:
 | ID | Phase | Status | Next Role |
 |---|---|---|---|
 | V0.4-PROD-01 | Repo production readiness | Integrated to `dev@7e069b5` | PM complete |
-| V0.4-PROD-02 | Separate production runtime setup | Pending Runtime Owner action | Runtime Owner |
+| V0.4-PROD-02 | Separate production runtime setup | Partial pass: private runtime + Cloudflare route prepared; service-token and Settings connection pending | Runtime Owner / Paperclip Owner |
 | V0.4-PROD-03 | Staged production canary window | Pending runtime | QA / Runtime / Paperclip Owner |
 | V0.4-PROD-04 | 24-hour read-only monitoring | Pending staged pass | QA / Runtime |
 | V0.4-PROD-05 | Permanent enablement acceptance | Pending monitoring pass | PM |
@@ -204,6 +204,45 @@ Acceptance:
 - `APP_DATA_DIR` is separate from dev/demo and persists after restart.
 - `paperclip-connection.json` is treated as secret-bearing production data.
 
+Runtime checkpoint:
+
+```text
+Status: Partial pass
+Date: 2026-05-15
+Runtime host: DigitalOcean Droplet
+Runtime source: dev@e8a211b
+Runtime process: Docker container taskhub-prod
+Private bind: 127.0.0.1:3301
+Public hostname: https://taskhub-prod.trisila.online
+Cloudflare tunnel: existing healthy tunnel routes taskhub-prod.trisila.online to http://localhost:3301
+Cloudflare Access: production self-hosted app created; anonymous /healthz returns 302
+APP_DATA_DIR: /home/trisilar/taskhub-prod-data
+Live mode: PAPERCLIP_LIVE_MODE=disabled
+Webhook hard gate: PAPERCLIP_WEBHOOK_ENABLED=false
+Operations status: mode=read_only; runtime.profile=production; connection.status=not_connected; reviewQueue.trelloLinked=0
+Verification:
+- local production /healthz 200
+- local production /api/config 200
+- local production /api/reviews 200
+- local production /api/integrations/paperclip/operations/status 200
+- disabled webhook probe 403
+- Cloudflare authoritative DNS resolves taskhub-prod.trisila.online
+- anonymous public /healthz returns Cloudflare Access 302
+Not performed:
+- production service-token creation or validation
+- Paperclip Settings signing-secret connection
+- staged production canary
+- Trello, Calendar, or Google Tasks side effect
+- production secret disclosure
+```
+
+Remaining before staged canary:
+
+- Create or assign a production Cloudflare Access service token for the Paperclip sender.
+- Configure Paperclip sender with the production service-token headers out of band.
+- Connect production Paperclip Settings so Task Hub stores the signing secret in production `APP_DATA_DIR`.
+- Verify service-token reachability without printing token values.
+
 ### V0.4-PROD-03 - Staged Production Canary Window
 
 Runtime Owner changes:
@@ -282,12 +321,12 @@ Acceptance:
 
 ```text
 Role: Runtime Owner
-Task: Provision the separate production Task Hub runtime, keep the webhook hard gate disabled, and hand off staged QA evidence
-Branch: dev@7e069b5
+Task: Complete production service-auth and Paperclip Settings connection, keep the webhook hard gate disabled, and hand off staged QA evidence
+Branch: dev@e8a211b
 Worktree: production runtime checkout
 Owned files: runtime configuration only; no git docs/code changes unless setup docs are inaccurate
-Acceptance criteria: production service is reachable behind Cloudflare Access, uses separate APP_DATA_DIR, keeps PAPERCLIP_WEBHOOK_ENABLED=false, and exposes non-secret health/status evidence
-Verification: health check; Cloudflare anonymous block; service-token reachability path; read-only operations status when available
+Acceptance criteria: production service-token path reaches Task Hub, Paperclip Settings connection stores the runtime signing secret under production APP_DATA_DIR, PAPERCLIP_WEBHOOK_ENABLED remains false, and no secret values are printed
+Verification: Cloudflare Access service-token reachability path; read-only operations status shows production profile; disabled webhook probe returns 403
 Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, anonymous production access, exposed signing material, or any need to enable the production webhook before QA approval
 ```
 
@@ -300,3 +339,4 @@ Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, a
 | 2026-05-15 | Created V0.4 Paperclip production permanent integration plan and repo readiness tracker | Codex PM / Dev |
 | 2026-05-15 | Added production runtime policy/status, production readiness verification, and local QA evidence; production deploy remains pending Runtime Owner | Codex Dev / QA |
 | 2026-05-15 | Integrated V0.4 repo readiness to `dev@7e069b5` and routed next process to separate production runtime setup | Codex Integration Owner |
+| 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection | Codex Runtime Owner |
