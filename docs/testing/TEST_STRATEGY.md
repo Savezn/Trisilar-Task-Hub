@@ -51,6 +51,7 @@ npm run smoke
 | `scripts/verify-paperclip-production-readiness.js` | Paperclip production profile, staged live mode, HMAC/idempotency, and Review Queue-only intake verification |
 | `scripts/verify-sqlite-canary.js` | Read-only hosted dev/demo SQLite canary verification for SQLite `app_state`, health/config/reviews, and Paperclip operations status |
 | `scripts/verify-json-rollback.js` | Read-only hosted dev/demo rollback verification for JSON files, health/config/reviews, and Paperclip operations status after removing the SQLite flag |
+| `scripts/verify-persistence-canary-cycle.js` | Local temp-data preflight for the full JSON -> SQLite canary -> JSON rollback cycle |
 | `scripts/verify-rux-trello-connection-ux.js` | V0.3 RUX Trello connection-state and failure-copy verification |
 | `scripts/verify-rux-ai-trace-clarity.js` | V0.3 RUX Docs/Paperclip trace readability and Review Queue linked-doc clarity verification |
 | `scripts/verify-rux-today-tasks-decision-flow.js` | V0.3 RUX Today and Tasks source/context/next-action verification |
