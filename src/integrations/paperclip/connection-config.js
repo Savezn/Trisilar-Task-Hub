@@ -1,7 +1,6 @@
-const fs = require("fs");
-const { getAppBaseUrl, getDataFilePath } = require("../../utils/runtime");
+const { getAppBaseUrl } = require("../../utils/runtime");
+const { readRuntimeState, writeRuntimeState } = require("../../persistence/runtime-state");
 
-const CONNECTION_FILE = getDataFilePath("paperclip-connection.json");
 const WEBHOOK_PATH = "/api/integrations/paperclip/webhook";
 const VALID_STATUSES = new Set(["not_connected", "connected", "disabled"]);
 
@@ -49,16 +48,21 @@ function normalizeConnection(value) {
 }
 
 function readPaperclipConnectionRaw() {
-  try {
-    return normalizeConnection(JSON.parse(fs.readFileSync(CONNECTION_FILE, "utf8")));
-  } catch (error) {
-    if (error.code === "ENOENT") return defaultConnection();
-    throw error;
-  }
+  return normalizeConnection(readRuntimeState({
+    name: "paperclipConnection",
+    filename: "paperclip-connection.json",
+    defaultValue: defaultConnection(),
+    throwOnCorrupt: true,
+  }));
 }
 
 function writePaperclipConnectionRaw(connection) {
-  fs.writeFileSync(CONNECTION_FILE, JSON.stringify(normalizeConnection(connection), null, 2));
+  writeRuntimeState({
+    name: "paperclipConnection",
+    filename: "paperclip-connection.json",
+    value: normalizeConnection(connection),
+    secretBearing: true,
+  });
 }
 
 function secretPreview(secret) {

@@ -68,5 +68,5 @@ Use uppercase snake case after the numeric prefix.
 |---|---|---|
 | `ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` | Accepted | Establish universal AI/project conventions, worktree rules, docs split, and ADR usage |
 | `ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md` | Accepted | Use Paperclip-to-Task-Hub webhook with Cloudflare Access service token plus signed webhook headers before W3 live connector implementation |
-| `ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md` | Accepted | Insert V0.5 Foundation Hardening before UI V2 implementation and Team OS product work |
-| `ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md` | Accepted | Use V0.5 for SQLite persistence, meaningful `npm test`, and app-owned data contracts before larger expansion |
+| `ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md` | Accepted | Insert V0.5 Foundation Hardening before UI V2 product implementation, Team OS product work, and any full rewrite decision |
+| `ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md` | Accepted | Make deterministic tests, app-owned contracts, and SQLite persistence migration the V0.5 foundation direction |

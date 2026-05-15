@@ -41,6 +41,7 @@ If this matrix conflicts with live runtime evidence, verify live state and updat
 | Paperclip environment | mock/dev as assigned | `dev` | `production` |
 | Default webhook gate | disabled unless task says otherwise | standing dev/demo policy may be enabled | disabled before staged/permanent approval |
 | Live mode | not production | dev/demo observation | `disabled`, `staged`, or `permanent` |
+| Runtime state backend | JSON by default; `TASKHUB_STATE_BACKEND=sqlite` only for local canary | JSON unless Runtime Owner explicitly assigns SQLite canary | JSON unless PM/Runtime accepts a production SQLite switch |
 
 ---
 
@@ -77,6 +78,7 @@ These names may appear in docs without values:
 - `APP_BASE_URL`
 - `APP_DATA_DIR`
 - `TASKHUB_RUNTIME_PROFILE`
+- `TASKHUB_STATE_BACKEND`
 - `PAPERCLIP_ALLOWED_SOURCE_ID`
 - `PAPERCLIP_ALLOWED_ENVIRONMENT`
 - `PAPERCLIP_WEBHOOK_ENABLED`
