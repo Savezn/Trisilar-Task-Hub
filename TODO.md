@@ -29,6 +29,7 @@ This file tracks the broad roadmap. It does not replace `CURRENT_SPRINT.md`, ver
 | Runtime operations | `docs/deployment/RUNTIME_OPERATIONS_RUNBOOK.md`, `docs/deployment/TROUBLESHOOTING.md`, and `docs/deployment/ENVIRONMENT_MATRIX.md` |
 | Security and backup policy | `docs/reference/SECURITY_ACCESS_POLICY.md` and `docs/reference/DATA_BACKUP_RETENTION_POLICY.md` |
 | Team onboarding | `docs/operations/TEAM_ONBOARDING_GUIDE.md` |
+| UI V2 design experiment | `docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md` and `docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md` |
 
 ---
 
@@ -94,6 +95,7 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 - UX issue intake and route-by-route usability review.
 - Agent role docs and future Codex skill extraction after PM approval.
 - Team onboarding docs exist; next step is team pilot feedback and routine-use SOP refinement.
+- UI Web Design V2 Claude Design experiment for a future design concept; docs-only sidecar while V0.4 runtime work continues.
 
 ---
 
@@ -109,6 +111,7 @@ These items are not blockers for the completed V0.2 or V0.3 release baselines. T
 | V0.3 operating model | Long-term role ownership moves beyond W1/W2/W3 labels. | PM accepted `docs/reference/ORGANIZATION_OPERATING_MODEL.md`, `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and `docs/agents/`; reusable Codex workflow skill is deferred until the docs prove useful in real sessions. |
 | V0.3 Product Reliability + UX Stabilization | Human workflow reliability and UX clarity stabilized before larger AI automation. | `RUX-001` and `RUX-002` are PM Accepted under `V0.3-RUX-02A` at `516b33e`; `RUX-003` is PM Accepted under `V0.3-RUX-03` at `b2425a4`; `RUX-004` is PM Accepted under `V0.3-RUX-04` at `d72f979`; `RUX-005` is PM Accepted under `V0.3-RUX-05` at `0af9417`; `V0.3-RUX-06` is PM Accepted at `df29307`; operating-model prerequisite merged at `dev@ed9fae0`; V0.3 integrated through PR #18 and merged/deployed at `dev@02fe7cf`; runtime QA passed; PR #20 release candidate verified and PM accepted for main promotion. Production deploy remains a separate runtime decision. |
 | Operations docs baseline | Runtime operators and teammates need durable long-term runbooks before production/permanent Paperclip use. | Baseline docs cover runtime operations, troubleshooting, environment matrix, security/access policy, backup/retention policy, and team onboarding. Next hardening step is live pilot feedback and runtime evidence updates after production staged QA. |
+| UI V2 design experiment | PM wants a Claude Design-ready UI/UX guideline before asking Claude to create a web design version 2. | Keep this as a design-only research handoff under `docs/design/ui-design-v2/`; do not treat it as product implementation, runtime work, or a V0.4 blocker. |
 | Historical document encoding | Some archive/log files still contain mojibake from earlier encoding corruption. | Run a separate UTF-8 repair task on archive/log docs only; use targeted edits and preserve historical meaning. |
 
 ---
