@@ -195,6 +195,7 @@ Runtime follow-up:
 After runtime setup:
 - QA / Runtime Owner monitor read-only operations status and the single pending canary Review Queue item.
 - PM may accept `PAPERCLIP_LIVE_MODE=permanent` only after staged QA and read-only monitoring pass.
+- V0.4 plan now includes the PM acceptance package, permanent enablement runbook, rollback runbook, and draft PR routing rules so the final decision can be made without inventing process after the 24-hour window.
 
 Rules:
 - Do not commit secrets.

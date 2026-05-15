@@ -386,12 +386,52 @@ PAPERCLIP_LIVE_MODE=permanent
 PAPERCLIP_WEBHOOK_ENABLED=true
 ```
 
-Acceptance:
+PM acceptance package:
 
-- PM records the permanent decision in `docs/logs/DECISION_LOG.md`.
-- QA records evidence in `docs/logs/QA_LOG.md`.
-- `CURRENT_SPRINT.md` moves V0.4 from active rollout to runtime monitoring.
-- Rollback remains a one-step hard gate: set `PAPERCLIP_WEBHOOK_ENABLED=false`.
+- Monitoring evidence covers at least 24 hours from `2026-05-15T05:24:25Z`.
+- Every checkpoint reports production runtime health `200` for `/healthz`, and no sustained API health failure.
+- Disabled webhook probe returns `403` until PM explicitly accepts permanent enablement.
+- Operations status remains `mode=read_only` during monitoring.
+- `PAPERCLIP_LIVE_MODE=disabled` and `liveWebhook.enabled=false` remain true during monitoring.
+- Paperclip Settings remains connected with `hasSecret=true`; no secret value is printed, copied into docs, committed, or returned to browser UI.
+- Canary Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07` remains pending until a human explicitly approves or rejects it.
+- Review Queue counts show no auto-approval and `trelloLinked=0`.
+- Warnings contain no `danger` level entries.
+- Audit categories preserve accepted/replay/rejected traceability for the staged canary.
+- No Trello card, Google Calendar event, or Google Task is created from Paperclip before human approval.
+- Runtime Owner confirms rollback path still works before permanent enablement.
+
+Permanent enablement runbook:
+
+1. Confirm the PM acceptance package above is complete and recorded in `docs/logs/QA_LOG.md`.
+2. Record the permanent enablement decision in `docs/logs/DECISION_LOG.md` before changing production runtime flags.
+3. Back up the current production runtime env file without printing secret values.
+4. Set only these production runtime policy values:
+   - `PAPERCLIP_LIVE_MODE=permanent`
+   - `PAPERCLIP_WEBHOOK_ENABLED=true`
+5. Restart or recreate only the production Task Hub runtime needed to load those flags.
+6. Verify `/healthz`, `/api/config`, `/api/reviews`, and `/api/integrations/paperclip/operations/status`.
+7. Confirm operations status shows production profile, permanent live mode, connected Paperclip Settings, no danger warnings, and `trelloLinked=0`.
+8. Do not send a new Paperclip canary unless PM/QA explicitly requests it after permanent enablement.
+9. Keep Review Queue as the mandatory human gate for external writes.
+
+Rollback runbook:
+
+1. Set `PAPERCLIP_WEBHOOK_ENABLED=false`.
+2. Set `PAPERCLIP_LIVE_MODE=disabled`.
+3. Restart or recreate only the production Task Hub runtime needed to load those flags.
+4. Verify `/healthz` returns `200`.
+5. Verify disabled webhook probe returns `403`.
+6. Verify operations status shows `mode=read_only`, `liveWebhook.enabled=false`, `runtime.liveMode=disabled`, and no danger warnings caused by external side effects.
+7. Record the rollback evidence in `docs/logs/QA_LOG.md` without secret values.
+
+Draft PR routing:
+
+- Target branch: `dev`.
+- Draft status: keep draft while V0.4-PROD-04 is active.
+- Ready-for-review condition: 24-hour read-only monitoring passes and PM routes permanent enablement or accepts a pre-permanent merge.
+- PR body must state that the production webhook remains disabled and permanent enablement is not yet accepted.
+- Merge hold: do not merge only on repo readiness if monitoring finds any stop condition.
 
 ---
 
