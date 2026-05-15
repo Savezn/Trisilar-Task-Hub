@@ -70,6 +70,7 @@ Rules:
 | `docs/deployment/` | Deployment and hosted environment setup docs |
 | `docs/design/` | Design prototypes, screenshots, visual handoff assets |
 | `docs/logs/` | QA logs, decision logs, completed-work history |
+| `docs/operations/` | Team-facing operator, onboarding, and routine-use guides |
 | `docs/plans/` | Active version/workstream plans and durable prompts |
 | `docs/reference/` | Durable product, architecture, workflow, and file maps |
 | `docs/testing/` | Test strategy and verification policy |
@@ -85,6 +86,7 @@ Rules:
 - New design artifacts must live under `docs/design/<artifact-name>/`.
 - New durable role guides must live under `docs/agents/`.
 - New repo-contained role skills must live under `docs/agent-skills/<role>/SKILL.md`.
+- New team-facing onboarding or routine-use guides must live under `docs/operations/`.
 - New operating or workflow references must live under `docs/reference/`.
 
 ---
@@ -113,6 +115,7 @@ Do not commit `.env`, API tokens, OAuth secrets, or production data exports.
 | Agent role skill folders | `lower-kebab-case/SKILL.md` | `qa-release/SKILL.md` |
 | ADRs | `ADR_0001_SHORT_TITLE.md` | `ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` |
 | Logs | `UPPER_SNAKE_CASE.md` | `QA_LOG.md` |
+| Team/operator guides | `UPPER_SNAKE_CASE.md` | `TEAM_ONBOARDING_GUIDE.md` |
 | Design artifact folders | `lower-kebab-case` | `ui-design-v1-0/` |
 | Legacy utilities | `lower-kebab-case` | `trello-gemini-cli/` |
 | Active V0.2 task IDs | `V0.2-W<workstream>-<NN>` | `V0.2-W2-02` |
@@ -151,4 +154,5 @@ Before adding a file:
 6. If it is a design artifact, keep it under `docs/design/`.
 7. If it is a durable role guide, place it in `docs/agents/` and link it from `docs/README.md`.
 8. If it is a repo-contained role skill, place it under `docs/agent-skills/<role>/SKILL.md`, link it from `docs/README.md`, and update `.ai-instructions.md` or agent rules when the load order changes.
-9. If no existing category fits, ask PM before creating a new top-level folder.
+9. If it is a team-facing onboarding or routine-use guide, place it under `docs/operations/` and link it from `docs/README.md`.
+10. If no existing category fits, ask PM before creating a new top-level folder.

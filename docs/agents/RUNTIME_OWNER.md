@@ -5,7 +5,7 @@
 **Owner:** Runtime / Access Owner
 **Created:** 2026-05-14
 **Updated by:** Codex PM
-**Related Docs:** `../deployment/README.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../plans/PROJECT_LADDER.md`
+**Related Docs:** `../deployment/README.md`, `../deployment/RUNTIME_OPERATIONS_RUNBOOK.md`, `../deployment/ENVIRONMENT_MATRIX.md`, `../deployment/TROUBLESHOOTING.md`, `../reference/SECURITY_ACCESS_POLICY.md`, `../reference/DATA_BACKUP_RETENTION_POLICY.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../plans/PROJECT_LADDER.md`
 
 ---
 
@@ -24,6 +24,8 @@ The Runtime / Access Owner owns hosted dev/demo runtime, Cloudflare Access, envi
 - runtime feature flags such as `PAPERCLIP_WEBHOOK_ENABLED`
 - deploy/restart/rollback notes
 - runtime access evidence
+- runtime operations runbook and environment matrix updates
+- backup/retention and secret-bearing backup evidence
 
 ---
 
@@ -59,6 +61,7 @@ Runtime handoffs should include:
 - feature flag state after the test
 - rollback path
 - secret handling statement
+- backup/restore impact when runtime data is changed
 
 ---
 

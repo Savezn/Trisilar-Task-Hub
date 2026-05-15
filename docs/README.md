@@ -20,6 +20,7 @@ This folder contains logs, plans, references, archives, and design artifacts. Th
 | `deployment/` | Deployment and hosted environment setup docs |
 | `design/` | UI redesign prototypes, static HTML, and design handoff files |
 | `logs/` | QA logs, completed work archive, bug fixes, and PM decisions |
+| `operations/` | Team-facing operator and onboarding guides for routine Task Hub use |
 | `plans/` | Active and future multi-session planning documents |
 | `testing/` | Test strategy, verification policy, and automated test-suite roadmap |
 
@@ -90,6 +91,8 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `reference/FILE_ORGANIZATION.md` | File placement policy for future files |
 | `reference/KEY_FILE_MAP.md` | Common grep/read targets for agents |
 | `reference/PROJECT_CONTEXT.md` | Stable product context and operating model |
+| `reference/DATA_BACKUP_RETENTION_POLICY.md` | Runtime data backup, restore, retention, and secret-bearing backup policy |
+| `reference/SECURITY_ACCESS_POLICY.md` | Security, access, service-token, and secret-handling policy |
 | `agent-skills/pm/SKILL.md` | Repo-contained PM role skill entrypoint |
 | `agent-skills/ux-owner/SKILL.md` | Repo-contained UX Owner role skill entrypoint |
 | `agent-skills/dev-frontend/SKILL.md` | Repo-contained Frontend Dev role skill entrypoint |
@@ -102,7 +105,11 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `deployment/README.md` | Deployment docs index |
 | `deployment/DEPLOYMENT_SETUP.md` | V0.2-W1-02 deploy-readiness setup for company access, temporary ngrok demo, and stable Cloudflare Access gate; legacy label W1b |
 | `deployment/DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config, V0.2-W1-05 no-domain ngrok demo handoff, and V0.2-W1-06 Cloudflare Access blockers |
+| `deployment/RUNTIME_OPERATIONS_RUNBOOK.md` | Runtime incident, restart, rollback, and production Paperclip operations runbook |
+| `deployment/TROUBLESHOOTING.md` | Operator and QA troubleshooting guide |
+| `deployment/ENVIRONMENT_MATRIX.md` | Canonical non-secret environment inventory |
 | `testing/TEST_STRATEGY.md` | Verification policy and automated test-suite roadmap |
+| `operations/TEAM_ONBOARDING_GUIDE.md` | Non-developer onboarding guide for routine Task Hub use |
 | `adr/README.md` | ADR index and process |
 | `adr/ADR_0001_PROJECT_CONVENTIONS_AND_AI_WORKFLOW.md` | Project conventions and AI workflow decision |
 | `adr/ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md` | Paperclip-to-Task-Hub service-auth topology decision |
