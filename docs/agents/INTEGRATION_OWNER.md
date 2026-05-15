@@ -23,6 +23,7 @@ The Integration Owner owns merging accepted feature branches into `dev`, resolvi
 - integration QA routing
 - integration commit/PR notes
 - final dirty-file review before handoff
+- Definition of Done cleanup verification after accepted work is merged or held
 
 ---
 
@@ -32,6 +33,7 @@ The Integration Owner owns merging accepted feature branches into `dev`, resolvi
 - resolve conflicts within accepted scope
 - run integration verification
 - update integration status docs when acting with PM approval
+- remove completed worktrees/branches and prune stale metadata when the integrated cycle is complete
 
 ---
 
@@ -42,6 +44,7 @@ The Integration Owner owns merging accepted feature branches into `dev`, resolvi
 - hide conflict resolution changes inside unrelated edits
 - perform final QA signoff without evidence
 - deploy production or merge to `main` without PM release approval
+- declare integration complete before branch/worktree/folder cleanup is verified or a blocker is recorded
 
 ---
 
@@ -54,7 +57,8 @@ The Integration Owner owns merging accepted feature branches into `dev`, resolvi
 5. Check known sibling contamination risks when applicable.
 6. Merge and resolve conflicts only inside accepted scope.
 7. Run required integration verification.
-8. Record next QA/PM handoff.
+8. Verify DoD cleanup state with `git worktree list`, `git branch -vv`, and `git status --short --branch`.
+9. Record next QA/PM handoff, including any cleanup blocker.
 
 ---
 
@@ -68,3 +72,15 @@ git merge-base --is-ancestor <sibling-head> <current-branch>
 ```
 
 Do not use this as a broad substitute for clear branch ownership.
+
+---
+
+## Cleanup Gate
+
+Integration Owner owns cleanup verification for completed cycles:
+
+- remove completed temporary worktrees
+- delete merged local/remote topic branches unless PM keeps them
+- prune stale `.git/worktrees/*` metadata
+- remove stale physical folders when not locked
+- record Windows-locked folder blockers only after Git no longer registers the folder as a worktree

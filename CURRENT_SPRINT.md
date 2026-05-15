@@ -94,6 +94,12 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 
 ---
 
+## Project Completion Gate
+
+Completion requires accepted work, verification, role-owned docs/logs, clear PR/merge state, and branch/worktree/folder cleanup or an explicit blocker. Use Definition of Ready before starting work and Definition of Done before marking any task, cycle, workstream, or version complete.
+
+---
+
 ## Parallel Workstream Write Ownership
 
 | File / Area | Write Owner | Rule |
