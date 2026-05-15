@@ -112,6 +112,7 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `plans/VERSION_0_3_RUX_04_TODAY_TASKS_DECISION_FLOW.md` | V0.3-RUX-04 scoped handoff for Today and Tasks decision-flow clarity |
 | `plans/VERSION_0_3_RUX_05_BROWSER_REGRESSION_RESPONSIVE_QA_GATE.md` | V0.3-RUX-05 scoped handoff for browser regression and responsive QA gate |
 | `plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md` | V0.3-RUX-06 release checklist artifact for future dev -> main PM decision |
+| `plans/VERSION_0_4_LIVE_AI_OPERATIONS_PAPERCLIP_PRODUCTION_PLAN.md` | V0.4 Paperclip production permanent integration plan and runtime readiness tracker |
 | `agents/PM.md` | PM / Product Owner role guide |
 | `agents/UX_OWNER.md` | UX / Product Experience Owner role guide |
 | `agents/DEV_FRONTEND.md` | Frontend Product Dev role guide |

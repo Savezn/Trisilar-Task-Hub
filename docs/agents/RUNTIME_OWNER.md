@@ -65,3 +65,12 @@ Runtime handoffs should include:
 ## Paperclip Standing Rule
 
 Permanent live Paperclip traffic is not accepted until PM approves a controlled live enablement policy. After live interop tests, Runtime Owner must confirm the gate is closed if the accepted state is disabled.
+
+For V0.4 production Paperclip intake, Runtime Owner must use a separate production runtime and must not reuse dev/demo `APP_DATA_DIR`, secrets, or process state. Production enablement requires:
+
+- `TASKHUB_RUNTIME_PROFILE=production`
+- approved production `APP_BASE_URL`
+- `PAPERCLIP_LIVE_MODE=staged` before canary, then `permanent` only after PM acceptance
+- `PAPERCLIP_WEBHOOK_ENABLED=true` only during approved staged/permanent windows
+- rollback by setting `PAPERCLIP_WEBHOOK_ENABLED=false` and confirming disabled webhook probes return `403`
+- production backups treated as secret-bearing when they include `paperclip-connection.json`

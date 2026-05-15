@@ -55,7 +55,6 @@ The route remains W3-owned and must not be implemented in W1. W1 only records th
 Task Hub runtime names:
 
 - `PAPERCLIP_WEBHOOK_ENABLED`
-- `PAPERCLIP_WEBHOOK_SIGNING_SECRET`
 - `PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS`
 - `PAPERCLIP_ALLOWED_SOURCE_ID`
 - `PAPERCLIP_ALLOWED_ENVIRONMENT`
@@ -73,6 +72,8 @@ Paperclip runtime names:
 - `TASKHUB_CF_ACCESS_CLIENT_SECRET`
 
 Do not commit values for any of these names. Store values only in platform dashboards or server-only environment files.
+
+Task Hub stores the active webhook signing secret through the Paperclip Settings connection state under `APP_DATA_DIR`, not in browser code or committed env files. Treat `paperclip-connection.json` and production `APP_DATA_DIR` backups as secret-bearing runtime data.
 
 ---
 

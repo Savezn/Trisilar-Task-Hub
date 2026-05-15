@@ -40,6 +40,7 @@ npm run smoke
 | `scripts/verify-paperclip-contract.js` | Paperclip contract verification when relevant |
 | `scripts/verify-paperclip-mock.js` | Paperclip mock verification when relevant |
 | `scripts/verify-paperclip-docs.js` | Paperclip Docs and Docs-to-Review workflow verification when relevant |
+| `scripts/verify-paperclip-production-readiness.js` | Paperclip production profile, staged live mode, HMAC/idempotency, and Review Queue-only intake verification |
 | `scripts/verify-rux-trello-connection-ux.js` | V0.3 RUX Trello connection-state and failure-copy verification |
 | `scripts/verify-rux-ai-trace-clarity.js` | V0.3 RUX Docs/Paperclip trace readability and Review Queue linked-doc clarity verification |
 | `scripts/verify-rux-today-tasks-decision-flow.js` | V0.3 RUX Today and Tasks source/context/next-action verification |
@@ -111,7 +112,8 @@ Priority order:
 | 3 | Frontend module checks | Verify page modules expose expected entry points and safe dependencies |
 | 4 | Browser navigation regression | Verify URL path sync, back/forward, and key page render states |
 | 5 | Paperclip contract tests | Verify agent payloads, attribution, review queue handoff, and failure modes |
-| 6 | Deployment smoke tests | Verify hosted dev/prod endpoints and access-gate behavior |
+| 6 | Paperclip production readiness tests | Verify production runtime profile, staged/permanent policy status, replay/auth failures, and no pre-approval side effects |
+| 7 | Deployment smoke tests | Verify hosted dev/prod endpoints and access-gate behavior |
 
 Add tests close to the behavior they protect. Avoid large snapshot tests unless they catch a real regression cheaply.
 

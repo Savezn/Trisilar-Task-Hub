@@ -259,12 +259,15 @@ Confirmed non-secret runtime inputs:
 Task Hub env var names:
 
 - `PAPERCLIP_WEBHOOK_ENABLED`
-- `PAPERCLIP_WEBHOOK_SIGNING_SECRET`
+- `PAPERCLIP_LIVE_MODE`
 - `PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS`
 - `PAPERCLIP_ALLOWED_SOURCE_ID`
+- `PAPERCLIP_PRODUCTION_SOURCE_ID`
 - `PAPERCLIP_ALLOWED_ENVIRONMENT`
 - `PAPERCLIP_BASE_URL`
 - `PAPERCLIP_HEALTH_PATH`
+- `TASKHUB_RUNTIME_PROFILE`
+- `TASKHUB_PRODUCTION_HOSTNAME`
 - `CLOUDFLARE_ACCESS_AUD`
 - `CLOUDFLARE_ACCESS_TEAM_DOMAIN`
 
@@ -285,9 +288,65 @@ POST /api/integrations/paperclip/webhook
 Rules:
 
 - Configure Cloudflare Access service token values in the Paperclip runtime only.
-- Configure webhook signing secret in both runtime dashboards/server env only.
+- Configure the Task Hub webhook signing secret through Paperclip Settings connection state under `APP_DATA_DIR`; configure the matching Paperclip sender secret in the Paperclip runtime only.
 - Do not expose service-token headers or signing secrets to browser JavaScript.
 - Do not enable the live W3 webhook until W3 implementation and QA verify signed webhook behavior.
+
+---
+
+## Production Paperclip Permanent Integration
+
+Use this only after PM accepts a production runtime decision. The accepted V0.4 target is a separate production Task Hub runtime at `https://taskhub-prod.trisila.online`, not the current dev/demo service.
+
+Production rules:
+
+- Deploy an accepted `main` release commit to the production service.
+- Keep production runtime, process manager, env vars, secrets, and `APP_DATA_DIR` separate from dev/demo.
+- Keep human access behind Cloudflare Access email login.
+- Keep Paperclip machine access on Cloudflare Access service-token headers plus Task Hub HMAC validation.
+- Keep Review Queue as the human approval gate before Trello, Calendar, or Google Tasks side effects.
+- Treat production `APP_DATA_DIR` backups as secret-bearing because `paperclip-connection.json` contains the runtime Paperclip signing secret after Settings connection.
+
+Production Task Hub env:
+
+```text
+APP_BASE_URL=https://taskhub-prod.trisila.online
+APP_DATA_DIR=/home/trisilar/taskhub-prod-data
+TASKHUB_RUNTIME_PROFILE=production
+TASKHUB_PRODUCTION_HOSTNAME=https://taskhub-prod.trisila.online
+PAPERCLIP_ALLOWED_SOURCE_ID=paperclip-do-prod
+PAPERCLIP_PRODUCTION_SOURCE_ID=paperclip-do-prod
+PAPERCLIP_ALLOWED_ENVIRONMENT=production
+PAPERCLIP_WEBHOOK_ENABLED=false
+PAPERCLIP_LIVE_MODE=disabled
+PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS=300
+```
+
+Go-live sequence:
+
+1. Start production with `PAPERCLIP_WEBHOOK_ENABLED=false` and `PAPERCLIP_LIVE_MODE=disabled`.
+2. Confirm production health, Cloudflare Access anonymous block, service-token reachability, separate `APP_DATA_DIR`, and rollback command.
+3. Connect Paperclip Settings on production so the runtime signing secret is stored server-side only.
+4. Switch to staged intake with `PAPERCLIP_LIVE_MODE=staged` and `PAPERCLIP_WEBHOOK_ENABLED=true`.
+5. Run one signed production canary and the negative replay/auth checks.
+6. Monitor read-only for 24 hours.
+7. If no stop condition appears, PM may accept `PAPERCLIP_LIVE_MODE=permanent`.
+
+Production rollback:
+
+```text
+PAPERCLIP_WEBHOOK_ENABLED=false
+```
+
+This hard gate must stop new live Paperclip intake immediately. Runtime Owner should then reload/restart the service and confirm the disabled probe returns `403`.
+
+Local repo readiness check:
+
+```powershell
+npm.cmd run verify:paperclip-production-readiness
+```
+
+This check does not prove Cloudflare production deployment. It proves the app-level production profile, staged/permanent policy surface, HMAC/idempotency behavior, and no pre-approval Trello side effect using an isolated local runtime.
 
 ---
 

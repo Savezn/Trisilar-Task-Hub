@@ -177,12 +177,13 @@ Confirmed non-secret runtime inputs:
 Task Hub runtime env var names:
 
 - `PAPERCLIP_WEBHOOK_ENABLED`
-- `PAPERCLIP_WEBHOOK_SIGNING_SECRET`
 - `PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS`
 - `PAPERCLIP_ALLOWED_SOURCE_ID`
 - `PAPERCLIP_ALLOWED_ENVIRONMENT`
 - `PAPERCLIP_BASE_URL`
 - `PAPERCLIP_HEALTH_PATH`
+
+Task Hub stores the active webhook signing secret through Paperclip Settings connection state under `APP_DATA_DIR`. Do not expose this runtime file or copy the signing secret into docs, chat, browser code, or committed env files.
 - `CLOUDFLARE_ACCESS_AUD`
 - `CLOUDFLARE_ACCESS_TEAM_DOMAIN`
 

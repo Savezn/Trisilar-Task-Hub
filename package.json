@@ -12,6 +12,7 @@
     "verify:paperclip-connection": "node scripts/verify-paperclip-connection.js",
     "verify:paperclip-docs": "node scripts/verify-paperclip-docs.js",
     "verify:paperclip-webhook": "node scripts/verify-paperclip-webhook.js",
+    "verify:paperclip-production-readiness": "node scripts/verify-paperclip-production-readiness.js",
     "verify:paperclip-cleanup": "node scripts/verify-paperclip-cleanup.js",
     "verify:paperclip-operations": "node scripts/verify-paperclip-operations.js",
     "verify:paperclip-mock": "node scripts/verify-paperclip-mock.js",

@@ -162,7 +162,6 @@ Recommended signed headers:
 Recommended Task Hub env var names:
 
 - `PAPERCLIP_WEBHOOK_ENABLED`
-- `PAPERCLIP_WEBHOOK_SIGNING_SECRET`
 - `PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS`
 - `PAPERCLIP_ALLOWED_SOURCE_ID`
 - `PAPERCLIP_ALLOWED_ENVIRONMENT`
@@ -170,6 +169,8 @@ Recommended Task Hub env var names:
 - `PAPERCLIP_HEALTH_PATH`
 - `CLOUDFLARE_ACCESS_AUD`
 - `CLOUDFLARE_ACCESS_TEAM_DOMAIN`
+
+Current implementation note: Task Hub stores the active webhook signing secret through Paperclip Settings connection state under `APP_DATA_DIR`; `paperclip-connection.json` is secret-bearing runtime data and must not be committed or pasted into handoffs.
 
 Recommended Paperclip env var names:
 

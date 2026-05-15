@@ -121,7 +121,7 @@ Allowed in docs:
 - non-secret source/environment identifiers
 - command names and verification results with secrets redacted
 
-Runtime flags such as `PAPERCLIP_WEBHOOK_ENABLED` may only be changed by the Runtime Owner or by an explicitly assigned runtime task. `PAPERCLIP_WEBHOOK_ENABLED=false` remains the default until PM accepts a controlled live enablement policy.
+Runtime flags such as `PAPERCLIP_WEBHOOK_ENABLED` may only be changed by the Runtime Owner or by an explicitly assigned runtime task. `PAPERCLIP_WEBHOOK_ENABLED=false` remains the hard stop gate until PM accepts a controlled live enablement policy. Production Paperclip intake also requires `TASKHUB_RUNTIME_PROFILE=production`, an approved production hostname, `PAPERCLIP_LIVE_MODE=staged|permanent`, a separate production `APP_DATA_DIR`, and QA evidence that Review Queue remains the human gate before external side effects.
 
 ---
 
@@ -161,8 +161,8 @@ external side effect result
 | Docs-only | `git diff --check`; PM review |
 | Frontend UX change | Desktop/mobile route review, console/page error check, relevant script checks |
 | Backend workflow change | Route/model verification, smoke/check script, persistence review |
-| Paperclip/AI integration | Contract, HMAC/idempotency, mock/live boundary, no pre-approval side effects |
-| Runtime/access change | Health, access block/allow evidence, secret placement, rollback plan |
+| Paperclip/AI integration | Contract, HMAC/idempotency, mock/live/production boundary, no pre-approval side effects |
+| Runtime/access change | Health, access block/allow evidence, secret placement, runtime profile, live mode, rollback plan |
 | `dev -> main` release | Integration QA, release checklist, PM acceptance |
 
 ---

@@ -1,7 +1,14 @@
 const WEBHOOK_PATH = "/api/integrations/paperclip/webhook";
+const DEFAULT_PRODUCTION_HOSTNAME = "https://taskhub-prod.trisila.online";
+const DEFAULT_PRODUCTION_SOURCE_ID = "paperclip-do-prod";
+const VALID_LIVE_MODES = new Set(["disabled", "staged", "permanent"]);
 
 function asText(value) {
   return typeof value === "string" ? value : "";
+}
+
+function trimTrailingSlash(value) {
+  return asText(value).trim().replace(/\/+$/, "");
 }
 
 function countType(bucket, type) {
@@ -78,14 +85,101 @@ function categorizeAuditEvent(type) {
   return "other";
 }
 
-function buildWarnings({ liveWebhook, connection, reviewQueue }) {
+function buildRuntimePolicy(env) {
+  const rawProfile = asText(env.TASKHUB_RUNTIME_PROFILE).trim().toLowerCase();
+  const profile = rawProfile || "dev-demo";
+  const rawLiveMode = asText(env.PAPERCLIP_LIVE_MODE).trim().toLowerCase();
+  const liveMode = VALID_LIVE_MODES.has(rawLiveMode) ? rawLiveMode : "disabled";
+  const productionHostname = trimTrailingSlash(env.TASKHUB_PRODUCTION_HOSTNAME)
+    || DEFAULT_PRODUCTION_HOSTNAME;
+  const expectedProductionSourceId = asText(env.PAPERCLIP_PRODUCTION_SOURCE_ID).trim()
+    || DEFAULT_PRODUCTION_SOURCE_ID;
+  return {
+    profile,
+    isProduction: profile === "production",
+    liveMode,
+    liveModeConfigured: Boolean(rawLiveMode),
+    liveModeValid: !rawLiveMode || VALID_LIVE_MODES.has(rawLiveMode),
+    appBaseUrl: trimTrailingSlash(env.APP_BASE_URL),
+    productionHostname,
+    expectedProductionSourceId,
+    dataDirConfigured: Boolean(asText(env.APP_DATA_DIR).trim()),
+  };
+}
+
+function buildWarnings({ runtime, liveWebhook, connection, reviewQueue }) {
   const warnings = [];
-  if (liveWebhook.enabled) {
+  if (liveWebhook.enabled && !runtime.isProduction) {
     warnings.push({
       code: "standing_dev_demo_enabled",
       level: "warning",
       message: "Paperclip live webhook is enabled for dev/demo observation.",
     });
+  }
+  if (runtime.isProduction) {
+    if (!runtime.liveModeValid) {
+      warnings.push({
+        code: "paperclip_live_mode_invalid",
+        level: "danger",
+        message: "PAPERCLIP_LIVE_MODE must be disabled, staged, or permanent.",
+      });
+    }
+    if (!runtime.dataDirConfigured) {
+      warnings.push({
+        code: "production_data_dir_not_configured",
+        level: "danger",
+        message: "Production runtime must use a separate APP_DATA_DIR.",
+      });
+    }
+    if (runtime.appBaseUrl !== runtime.productionHostname) {
+      warnings.push({
+        code: "production_base_url_mismatch",
+        level: "danger",
+        message: "APP_BASE_URL must match the approved production hostname.",
+      });
+    }
+    if (liveWebhook.allowedEnvironment !== "production") {
+      warnings.push({
+        code: "production_environment_not_allowed",
+        level: "danger",
+        message: "PAPERCLIP_ALLOWED_ENVIRONMENT must be production for production intake.",
+      });
+    }
+    if (liveWebhook.allowedSourceId !== runtime.expectedProductionSourceId) {
+      warnings.push({
+        code: "production_source_not_allowed",
+        level: "danger",
+        message: "PAPERCLIP_ALLOWED_SOURCE_ID must match the approved production Paperclip source.",
+      });
+    }
+    if (liveWebhook.enabled && runtime.liveMode === "disabled") {
+      warnings.push({
+        code: "production_webhook_enabled_while_live_mode_disabled",
+        level: "danger",
+        message: "Production webhook cannot stay enabled while PAPERCLIP_LIVE_MODE is disabled.",
+      });
+    }
+    if (!liveWebhook.enabled && runtime.liveMode !== "disabled") {
+      warnings.push({
+        code: "production_live_mode_without_webhook",
+        level: "warning",
+        message: "Production live mode is staged or permanent but the hard webhook gate is disabled.",
+      });
+    }
+    if (liveWebhook.enabled && runtime.liveMode === "staged") {
+      warnings.push({
+        code: "production_staged_live_enabled",
+        level: "warning",
+        message: "Paperclip live webhook is enabled for staged production intake.",
+      });
+    }
+    if (liveWebhook.enabled && runtime.liveMode === "permanent") {
+      warnings.push({
+        code: "production_permanent_live_enabled",
+        level: "warning",
+        message: "Paperclip live webhook is enabled for permanent production intake.",
+      });
+    }
   }
   if (!connection.connected || !connection.hasSecret) {
     warnings.push({
@@ -173,6 +267,7 @@ function buildPaperclipOperationsStatus({ sessions = [], connection = {}, env = 
     allowedEnvironment: asText(env.PAPERCLIP_ALLOWED_ENVIRONMENT),
     webhookPath: connection.webhookPath || WEBHOOK_PATH,
   };
+  const runtime = buildRuntimePolicy(env);
 
   const publicConnection = {
     status: connection.status || "not_connected",
@@ -192,15 +287,17 @@ function buildPaperclipOperationsStatus({ sessions = [], connection = {}, env = 
   return {
     generatedAt: new Date().toISOString(),
     mode: "read_only",
+    runtime,
     liveWebhook,
     connection: publicConnection,
     reviewQueue,
     audit,
-    warnings: buildWarnings({ liveWebhook, connection: publicConnection, reviewQueue }),
+    warnings: buildWarnings({ runtime, liveWebhook, connection: publicConnection, reviewQueue }),
   };
 }
 
 module.exports = {
+  buildRuntimePolicy,
   buildPaperclipOperationsStatus,
   isPaperclipSession,
 };
