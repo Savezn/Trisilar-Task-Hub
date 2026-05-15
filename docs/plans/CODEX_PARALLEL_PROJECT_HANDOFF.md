@@ -174,10 +174,11 @@ Verification target:
 - Hosted dev/demo `TASKHUB_STATE_BACKEND=sqlite`
 - `npm.cmd run verify:sqlite-canary` from a shell with the same `APP_DATA_DIR`, `$env:TASKHUB_STATE_BACKEND = "sqlite"`, and `$env:SQLITE_CANARY_BASE_URL = "http://127.0.0.1:3000"`
 - `npm.cmd run migrate:sqlite:export` rollback proof
+- `npm.cmd run verify:json-rollback` after removing `TASKHUB_STATE_BACKEND`, restarting dev/demo, and setting `$env:JSON_ROLLBACK_BASE_URL = "http://127.0.0.1:3000"`
 
 Expected output:
 - Hosted canary pass/fail evidence or host-access blocker report.
-- Whether dev/demo keeps SQLite enabled or rolls back to JSON.
+- Whether dev/demo keeps SQLite enabled or rolls back to JSON, with `verify:json-rollback` evidence when rollback is chosen.
 - Clear next V0.5 handoff: keep SQLite canary, rollback, or defer production decision.
 ```
 
