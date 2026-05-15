@@ -3,7 +3,7 @@
 **Doc Role:** V0.4 plan and tracker for production Paperclip intake
 **Status:** Production private runtime + Cloudflare Access route prepared; staged canary not approved
 **Version:** V0.4
-**Planning Stage:** Runtime setup partial pass, production service-auth / Settings connection pending
+**Planning Stage:** Runtime setup partial pass, production Settings connected, production service-auth pending
 **Owner:** PM / AI Integration Owner / Runtime Owner / QA Release Owner
 **Created:** 2026-05-15
 **Last Updated:** 2026-05-15
@@ -90,7 +90,7 @@ Owner lanes:
 | ID | Phase | Status | Next Role |
 |---|---|---|---|
 | V0.4-PROD-01 | Repo production readiness | Integrated to `dev@7e069b5` | PM complete |
-| V0.4-PROD-02 | Separate production runtime setup | Partial pass: private runtime + Cloudflare route prepared; service-token and Settings connection pending | Runtime Owner / Paperclip Owner |
+| V0.4-PROD-02 | Separate production runtime setup | Partial pass: private runtime + Cloudflare route + Settings connection prepared; service-token still returns `302` | Runtime Owner / Paperclip Owner |
 | V0.4-PROD-03 | Staged production canary window | Pending runtime | QA / Runtime / Paperclip Owner |
 | V0.4-PROD-04 | 24-hour read-only monitoring | Pending staged pass | QA / Runtime |
 | V0.4-PROD-05 | Permanent enablement acceptance | Pending monitoring pass | PM |
@@ -189,7 +189,7 @@ Verification:
 - npm.cmd run verify:paperclip-docs
 - npm.cmd run verify:paperclip-cleanup
 - git diff --check
-Result: Repo-side V0.4 Paperclip production intake baseline remains ready; staged canary remains blocked on production service-token validation and Paperclip Settings signing-secret connection.
+Result: Repo-side V0.4 Paperclip production intake baseline remains ready; staged canary remains blocked on production service-token validation.
 ```
 
 ### V0.4-PROD-02 - Separate Production Runtime Setup
@@ -255,7 +255,6 @@ Verification:
 - anonymous public /healthz returns Cloudflare Access 302
 Not performed:
 - production service-token creation or validation
-- Paperclip Settings signing-secret connection
 - staged production canary
 - Trello, Calendar, or Google Tasks side effect
 - production secret disclosure
@@ -265,13 +264,12 @@ Remaining before staged canary:
 
 - Create or assign a production Cloudflare Access service token for the Paperclip sender.
 - Configure Paperclip sender with the production service-token headers out of band.
-- Connect production Paperclip Settings so Task Hub stores the signing secret in production `APP_DATA_DIR`.
 - Verify service-token reachability without printing token values.
 
 Runtime follow-up:
 
 ```text
-Status: Blocked before staged canary
+Status: Settings connected; blocked on production service-token before staged canary
 Date: 2026-05-15
 Host: DigitalOcean Droplet
 Task Hub production container: taskhub-prod running
@@ -282,10 +280,11 @@ Production local checks:
 - /api/integrations/paperclip/operations/status 200
 - disabled webhook probe 403
 Production env: APP_BASE_URL=https://taskhub-prod.trisila.online; APP_DATA_DIR=/home/trisilar/taskhub-prod-data; TASKHUB_RUNTIME_PROFILE=production; PAPERCLIP_WEBHOOK_ENABLED=false; PAPERCLIP_LIVE_MODE=disabled
-Operations status: mode=read_only; runtime.profile=production; connection.status=not_connected; connection.hasSecret=false; reviewQueue.trelloLinked=0; warning=paperclip_connection_not_ready
-Connection file: /home/trisilar/taskhub-prod-data/paperclip-connection.json missing
-Paperclip sender config found: /home/trisilar/.paperclip/.env contains Task Hub service-auth and signing-secret keys, but TASKHUB_BASE_URL points to https://taskhub.trisila.online, not the production hostname.
-Decision: Do not connect production Settings from the dev/demo Paperclip env. Production service-token validation, production sender config, and production signing-secret connection remain pending.
+Operations status after Settings connection: mode=read_only; runtime.profile=production; connection.status=connected; connection.hasSecret=true; connection.secretPreview=configured; liveWebhook.enabled=false; reviewQueue.trelloLinked=0
+Connection file: /home/trisilar/taskhub-prod-data/paperclip-connection.json present and treated as secret-bearing production data
+Production candidate Paperclip env: /home/trisilar/.paperclip/.env.taskhub-prod created with TASKHUB_BASE_URL=https://taskhub-prod.trisila.online and matching runtime signing secret
+Service-token validation: copied Cloudflare Access token in the production candidate env still returns 302 for https://taskhub-prod.trisila.online/healthz
+Decision: Do not restart Paperclip into the production candidate env, enable webhook, or run staged canary until the production Cloudflare Access service token returns 200.
 Secret exposure: None recorded in tracker; secret values were not copied into docs.
 ```
 
@@ -385,7 +384,8 @@ Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, a
 | 2026-05-15 | Created V0.4 Paperclip production permanent integration plan and repo readiness tracker | Codex PM / Dev |
 | 2026-05-15 | Added production runtime policy/status, production readiness verification, and local QA evidence; production deploy remains pending Runtime Owner | Codex Dev / QA |
 | 2026-05-15 | Integrated V0.4 repo readiness to `dev@7e069b5` and routed next process to separate production runtime setup | Codex Integration Owner |
-| 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection | Codex Runtime Owner |
-| 2026-05-15 | Refreshed V0.4 worktree from `origin/dev@eef107b` after main/dev update and reran Paperclip production/intake verifiers; runtime service-token and Settings connection remain pending | Codex Runtime Owner / QA |
+| 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection at that checkpoint | Codex Runtime Owner |
+| 2026-05-15 | Refreshed V0.4 worktree from `origin/dev@eef107b` after main/dev update and reran Paperclip production/intake verifiers; runtime service-token and Settings connection remained pending at that checkpoint | Codex Runtime Owner / QA |
 | 2026-05-15 | Verified production runtime is still healthy with webhook disabled, but held staged canary because the available Paperclip sender env still targets dev/demo and production Settings connection is missing | Codex Runtime Owner |
 | 2026-05-15 | Merged latest `origin/dev@622c7dd` DoR/DoD governance baseline into the V0.4 branch; V0.4 production service-auth hold remains unchanged | Codex Runtime Owner / Integration |
+| 2026-05-15 | Connected production Paperclip Settings and prepared a runtime-only production Paperclip env candidate; staged canary remains blocked because the copied Cloudflare Access token still returns 302 on the production hostname | Codex Runtime Owner |
