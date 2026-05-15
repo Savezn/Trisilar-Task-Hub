@@ -191,6 +191,7 @@ Runtime follow-up:
 - Runtime rollback restored `PAPERCLIP_LIVE_MODE=disabled` and `PAPERCLIP_WEBHOOK_ENABLED=false`; disabled webhook probe returned `403`.
 - First read-only monitoring checkpoint passed at 2026-05-15T05:24:25Z: container up, `/healthz` `200`, `/api/config` `200`, `/api/reviews` `200`, disabled probe `403`, `PAPERCLIP_LIVE_MODE=disabled`, `liveWebhook.enabled=false`, `mode=read_only`, `connection.status=connected`, `hasSecret=true`, queue pending=1 / approved=0 / rejected=0 / Trello-linked=0, warnings=none, dangerWarnings=none.
 - Monitor automation `v0-4-paperclip-prod-read-only-monitor` is active every 6 hours during the 24-hour read-only observation window.
+- Draft PR #27 is open to `dev` as a hold-state PR while V0.4-PROD-04 monitoring remains active; do not mark ready or merge until the monitoring gate passes or PM explicitly accepts a pre-permanent merge.
 
 After runtime setup:
 - QA / Runtime Owner monitor read-only operations status and the single pending canary Review Queue item.

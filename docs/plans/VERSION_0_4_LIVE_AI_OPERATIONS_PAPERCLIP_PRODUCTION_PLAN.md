@@ -428,6 +428,7 @@ Rollback runbook:
 Draft PR routing:
 
 - Target branch: `dev`.
+- Draft PR: #27 (`codex/v04-paperclip-prod-integration` -> `dev`).
 - Draft status: keep draft while V0.4-PROD-04 is active.
 - Ready-for-review condition: 24-hour read-only monitoring passes and PM routes permanent enablement or accepts a pre-permanent merge.
 - PR body must state that the production webhook remains disabled and permanent enablement is not yet accepted.
@@ -476,3 +477,4 @@ Stop conditions: health failure, enabled webhook outside PM-approved permanent w
 | 2026-05-15 | Created and assigned production Cloudflare Access service token for `taskhub-prod.trisila.online`; runtime-only candidate env reached production `/healthz` with `200`; staged canary still awaited approval at that checkpoint | Codex Runtime Owner |
 | 2026-05-15 | Ran staged production canary against `taskhub-prod.trisila.online`; valid signed payload created pending Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07`, replay/negative checks passed, no external side effect occurred, and runtime rollback restored disabled mode | Codex Runtime Owner / QA |
 | 2026-05-15 | Started V0.4 24-hour read-only monitoring; first checkpoint passed with production gate disabled, no warnings, no danger warnings, and no external side effects; automation `v0-4-paperclip-prod-read-only-monitor` runs every 6 hours | Codex QA / Runtime Owner |
+| 2026-05-15 | Opened draft PR #27 to `dev` as a hold-state integration PR while 24-hour monitoring remains active; permanent enablement is not accepted yet | Codex Integration Owner |
