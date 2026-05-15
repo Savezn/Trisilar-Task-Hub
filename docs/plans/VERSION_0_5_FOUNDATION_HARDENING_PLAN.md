@@ -1,7 +1,7 @@
 # Version 0.5 Foundation Hardening Plan
 
 **Doc Role:** Active V0.5 foundation plan for persistence, tests, and contracts before UI V2 / Team Operating System implementation
-**Status:** PM routed / ready for scoped Dev planning
+**Status:** FND-01 accepted / ready for FND-02 scoped Dev+QA
 **Version:** V0.5
 **Owner:** PM / Architecture / Dev / QA
 **Created:** 2026-05-15
@@ -43,8 +43,8 @@ V0.4 production Paperclip work can continue as a Runtime/QA track. V0.5 may star
 
 | ID | Phase | Owner Role | Status | Outcome |
 |---|---|---|---|---|
-| `V0.5-FND-01` | Foundation ADRs + planning acceptance | PM / Architecture | Routed | Confirm sequencing, persistence, test gates, and contract guardrails before implementation |
-| `V0.5-FND-02` | Deterministic test baseline | Dev / QA | Pending | Replace placeholder `npm test` with meaningful route/model tests that do not require live secrets |
+| `V0.5-FND-01` | Foundation ADRs + planning acceptance | PM / Architecture | Accepted via PR #28 at `dev@aaf8f58` | Confirm sequencing, persistence, test gates, and contract guardrails before implementation |
+| `V0.5-FND-02` | Deterministic test baseline | Dev / QA | Ready to route | Replace placeholder `npm test` with meaningful route/model tests that do not require live secrets |
 | `V0.5-FND-03` | Data contract validation | Dev / QA | Pending | Validate app-owned Review Queue, config, Paperclip public connection, and normalized Trello card shapes |
 | `V0.5-FND-04` | SQLite persistence migration | Dev / QA / Runtime | Pending | Move app-owned JSON state to SQLite with JSON import/backups and rollback notes |
 | `V0.5-FND-05` | Foundation integration QA | QA / Integration / PM | Pending | Verify tests, migration, contracts, and existing Paperclip safety gates together on `dev` |
@@ -112,20 +112,25 @@ Do not run in parallel:
 ## Next Recommended Session
 
 ```text
-Role: PM / Architecture
-Task: Accept V0.5-FND-01 and route deterministic test baseline
+Role: Dev / QA / Architecture
+Task: Start V0.5-FND-02 deterministic npm test baseline
 
 Read:
+- CURRENT_SPRINT.md
 - docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md
 - docs/adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md
 - docs/adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md
 - docs/testing/TEST_STRATEGY.md
 - docs/reference/ARCHITECTURE.md
 
+Setup:
+- Use the dedicated V0.5 foundation worktree.
+- Sync from `origin/dev@aaf8f58` or later.
+
 Expected output:
-- PM acceptance or hold for V0.5-FND-01.
-- Exact Dev handoff for V0.5-FND-02 `npm test` baseline.
-- Branch/worktree assignment that avoids current UI V2 design artifacts.
+- Deterministic `npm test` baseline implemented or blocker report.
+- Exact files changed.
+- Verification evidence and next handoff to contracts.
 ```
 
 ---
@@ -135,3 +140,4 @@ Expected output:
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-15 | Created V0.5 Foundation Hardening plan and inserted it before UI V2 / Team OS implementation | Codex PM |
+| 2026-05-15 | Accepted FND-01 roadmap/ADR plan via PR #28 and routed next to FND-02 deterministic test baseline in the foundation worktree | Codex PM / Integration Owner |

@@ -61,7 +61,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L4 | V0.2 Integration Release | Complete | Accepted W1/W2/W3 work runs together on `dev` without regressions | Release/integration cleanup QA passed on clean `origin/dev@8027324`; workstream branch/worktree residue cleaned |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, deployed to dev/demo, and release-candidate verified; production deploy remains a separate runtime decision |
 | L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared; staged canary pending service-auth and Settings connection | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Production service-token path, Settings signing-secret connection, staged canary, then 24-hour read-only monitoring |
-| L7 | V0.5 Foundation Hardening | PM routed / ready for scoped Dev planning | Persistence, test gates, and app-owned contracts are strong enough for UI V2 and Team OS expansion | ADR acceptance, meaningful `npm test`, deterministic fixtures, contract validation, SQLite migration, and integration QA |
+| L7 | V0.5 Foundation Hardening | FND-01 accepted / ready for FND-02 Dev+QA | Persistence, test gates, and app-owned contracts are strong enough for UI V2 and Team OS expansion | Meaningful `npm test`, deterministic fixtures, contract validation, SQLite migration, and integration QA |
 | L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now | UI V2 tokens/component language are promoted route-by-route without uncontrolled rewrite | Browser regression passes across desktop/mobile core routes and Review Queue safety remains intact |
 | L9 | V0.7 Team Operating System Pilot | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only | Full rewrite is approved only if V0.5/V0.6 evidence proves incremental migration is insufficient | PM accepts a decision memo comparing current static JS, Vite, React, Next, and migration risks |
@@ -216,6 +216,8 @@ Focus:
 
 V0.5 can start while V0.4 is waiting or monitoring, as long as V0.5 does not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior.
 
+`V0.5-FND-01` is accepted through PR #28 at `dev@aaf8f58`. The next implementation handoff is `V0.5-FND-02` in the dedicated foundation worktree.
+
 Current V0.5 route:
 
 ```text
@@ -353,3 +355,4 @@ This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime wo
 | 2026-05-14 | Closed V0.3 RUX on `origin/dev@02fe7cf` and dev/demo runtime after runtime QA pass | Codex PM / Runtime Owner / QA |
 | 2026-05-14 | Accepted PR #20 V0.3 `dev -> main` release candidate after release QA pass | Codex PM / QA / Integration Owner |
 | 2026-05-15 | Inserted V0.5 Foundation Hardening before UI V2 implementation and Team OS pilot; deferred full rewrite execution to V0.8+ decision memo | Codex PM |
+| 2026-05-15 | Accepted V0.5-FND-01 through PR #28 and routed next to FND-02 deterministic test baseline in the foundation worktree | Codex PM / Integration Owner |
