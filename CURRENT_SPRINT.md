@@ -164,6 +164,12 @@ Pending before staged canary:
 - Connect production Paperclip Settings so Task Hub stores the runtime signing secret under production `APP_DATA_DIR`.
 - Verify service-token reachability to Task Hub without printing token values.
 
+Runtime follow-up:
+- Production Task Hub remains healthy on `taskhub-prod`, with local `/healthz`, `/api/config`, `/api/reviews`, and operations status returning `200`.
+- Production webhook hard gate remains disabled and disabled webhook probe returns `403`.
+- Production operations status still reports `connection.status=not_connected`, `hasSecret=false`, and `paperclip_connection_not_ready`.
+- Do not proceed to staged canary from the available Paperclip env because it still targets `https://taskhub.trisila.online` rather than `https://taskhub-prod.trisila.online`.
+
 After runtime setup:
 - QA / Runtime / Paperclip Owner run staged production canary and negative checks.
 - PM may accept `PAPERCLIP_LIVE_MODE=permanent` only after staged QA and read-only monitoring pass.

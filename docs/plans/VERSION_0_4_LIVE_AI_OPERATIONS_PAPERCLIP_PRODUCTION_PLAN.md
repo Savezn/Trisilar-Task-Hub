@@ -268,6 +268,27 @@ Remaining before staged canary:
 - Connect production Paperclip Settings so Task Hub stores the signing secret in production `APP_DATA_DIR`.
 - Verify service-token reachability without printing token values.
 
+Runtime follow-up:
+
+```text
+Status: Blocked before staged canary
+Date: 2026-05-15
+Host: DigitalOcean Droplet
+Task Hub production container: taskhub-prod running
+Production local checks:
+- /healthz 200
+- /api/config 200
+- /api/reviews 200
+- /api/integrations/paperclip/operations/status 200
+- disabled webhook probe 403
+Production env: APP_BASE_URL=https://taskhub-prod.trisila.online; APP_DATA_DIR=/home/trisilar/taskhub-prod-data; TASKHUB_RUNTIME_PROFILE=production; PAPERCLIP_WEBHOOK_ENABLED=false; PAPERCLIP_LIVE_MODE=disabled
+Operations status: mode=read_only; runtime.profile=production; connection.status=not_connected; connection.hasSecret=false; reviewQueue.trelloLinked=0; warning=paperclip_connection_not_ready
+Connection file: /home/trisilar/taskhub-prod-data/paperclip-connection.json missing
+Paperclip sender config found: /home/trisilar/.paperclip/.env contains Task Hub service-auth and signing-secret keys, but TASKHUB_BASE_URL points to https://taskhub.trisila.online, not the production hostname.
+Decision: Do not connect production Settings from the dev/demo Paperclip env. Production service-token validation, production sender config, and production signing-secret connection remain pending.
+Secret exposure: None recorded in tracker; secret values were not copied into docs.
+```
+
 ### V0.4-PROD-03 - Staged Production Canary Window
 
 Runtime Owner changes:
@@ -366,3 +387,4 @@ Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, a
 | 2026-05-15 | Integrated V0.4 repo readiness to `dev@7e069b5` and routed next process to separate production runtime setup | Codex Integration Owner |
 | 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection | Codex Runtime Owner |
 | 2026-05-15 | Refreshed V0.4 worktree from `origin/dev@eef107b` after main/dev update and reran Paperclip production/intake verifiers; runtime service-token and Settings connection remain pending | Codex Runtime Owner / QA |
+| 2026-05-15 | Verified production runtime is still healthy with webhook disabled, but held staged canary because the available Paperclip sender env still targets dev/demo and production Settings connection is missing | Codex Runtime Owner |
