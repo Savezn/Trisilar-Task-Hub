@@ -167,6 +167,31 @@ Verification:
 - git diff --check
 ```
 
+Post-main/dev refresh verification:
+
+```text
+Status: Pass
+Date: 2026-05-15
+Worktree: trisilar-task-hub-v04-paperclip-prod-integration
+Branch: codex/v04-paperclip-prod-integration@eef107b
+Base: origin/dev@eef107b
+Production deploy: Not performed
+Production live canary: Not sent
+Secret exposure: None recorded
+Verification:
+- npm.cmd ci
+- npm.cmd run verify:paperclip-production-readiness
+- npm.cmd run verify:paperclip-webhook
+- npm.cmd run verify:paperclip-operations
+- npm.cmd run verify:paperclip-connection
+- npm.cmd run verify:paperclip-contract
+- npm.cmd run verify:paperclip-mock
+- npm.cmd run verify:paperclip-docs
+- npm.cmd run verify:paperclip-cleanup
+- git diff --check
+Result: Repo-side V0.4 Paperclip production intake baseline remains ready; staged canary remains blocked on production service-token validation and Paperclip Settings signing-secret connection.
+```
+
 ### V0.4-PROD-02 - Separate Production Runtime Setup
 
 Runtime Owner configures a separate production service. Do not reuse dev/demo process, data directory, or secrets.
@@ -340,3 +365,4 @@ Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, a
 | 2026-05-15 | Added production runtime policy/status, production readiness verification, and local QA evidence; production deploy remains pending Runtime Owner | Codex Dev / QA |
 | 2026-05-15 | Integrated V0.4 repo readiness to `dev@7e069b5` and routed next process to separate production runtime setup | Codex Integration Owner |
 | 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection | Codex Runtime Owner |
+| 2026-05-15 | Refreshed V0.4 worktree from `origin/dev@eef107b` after main/dev update and reran Paperclip production/intake verifiers; runtime service-token and Settings connection remain pending | Codex Runtime Owner / QA |
