@@ -25,7 +25,7 @@
 | Latest W3 dev closeout | `origin/dev@ff20e48` | `V0.2-W3-05` operations status and settings copy polish merged/deployed at `dev@2c302dc`; W3 foundation closeout status is on latest `dev` |
 | V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Repo-contained role skills are allowed under `docs/agent-skills/`; installed reusable Codex skill extraction remains deferred. |
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
-| V0.4 Paperclip production readiness | Repo readiness integrated to `dev@7e069b5`; production runtime prepared from `dev@e8a211b` | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; production private runtime, Cloudflare tunnel route, DNS, Access app, and production Paperclip Settings connection are prepared; no staged canary, Paperclip production service-token pass, secret exposure, or external side effect performed |
+| V0.4 Paperclip production readiness | Repo readiness integrated to `dev@7e069b5`; production runtime prepared from `dev@e8a211b` | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; production private runtime, Cloudflare tunnel route, DNS, Access app, production service token, and production Paperclip Settings connection are prepared; no staged canary, secret exposure, or external side effect performed |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
 | Operations/security docs baseline | In progress on `codex/ops-docs-governance` | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge |
 
@@ -66,7 +66,7 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 | V0.3 Main Release | Product Reliability + UX Stabilization `dev -> main` release candidate | PM accepted PR #20; dev/main synced at `631d3b2`; post-sync QA passed; production deploy not performed | PM complete / Runtime hold |
 | Branch Workflow Alignment | Codex/Claude branch/worktree naming and cleanup model | Docs updated on `codex/v03-branch-workflow-release-qa`; QA passed | PM complete / Integration ready |
 | V0.4-PROD-01 | Paperclip production repo readiness | Integrated to `dev@7e069b5` | PM complete |
-| V0.4-PROD-02 | Separate production runtime setup | Partial pass: private runtime + Cloudflare Access route + Paperclip Settings connection prepared; production service-token still returns `302` | Runtime Owner / Paperclip Owner |
+| V0.4-PROD-02 | Separate production runtime setup | Pass for runtime setup: private runtime + Cloudflare Access route + production service token + Paperclip Settings connection prepared; staged canary pending approval | QA / Runtime / Paperclip Owner |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Drafted on `codex/ops-docs-governance`; pending docs QA and PR review | Documentation Workflow Owner / PM |
 
@@ -161,7 +161,7 @@ Production runtime: Docker container taskhub-prod on DigitalOcean, private bind 
 Production hostname: https://taskhub-prod.trisila.online behind Cloudflare Access
 
 V0.4 status:
-Repo readiness is integrated and verified. The V0.4 worktree was refreshed from `origin/dev@eef107b`, Paperclip repo-side verifiers passed again, and the branch was then merged with `origin/dev@622c7dd` after the DoR/DoD governance update. Production private runtime, Cloudflare tunnel route, DNS, and Access app are prepared. Production Paperclip Settings signing-secret connection is now configured under production `APP_DATA_DIR`; production service-token validation and live production canary are still not complete.
+Repo readiness is integrated and verified. The V0.4 worktree was refreshed from `origin/dev@eef107b`, Paperclip repo-side verifiers passed again, and the branch was then merged with `origin/dev@622c7dd` after the DoR/DoD governance update. Production private runtime, Cloudflare tunnel route, DNS, Access app, production service token, and production Paperclip Settings signing-secret connection are prepared. Live production canary is still not complete.
 
 Completed runtime evidence:
 - Separate production service runs the accepted `dev@e8a211b` code.
@@ -172,16 +172,16 @@ Completed runtime evidence:
 - Local production `/healthz`, `/api/config`, `/api/reviews`, and operations status return `200`.
 - Disabled webhook probe returns `403`.
 
-Pending before staged canary:
-- Create or assign production Cloudflare Access service token for Paperclip sender.
-- Configure Paperclip sender runtime with production service-token headers out of band.
-- Verify service-token reachability to Task Hub without printing token values.
+Completed before staged canary:
+- Created and assigned production Cloudflare Access service token for Paperclip sender.
+- Configured runtime-only production candidate env at `/home/trisilar/.paperclip/.env.taskhub-prod`.
+- Verified production service-token reachability to `https://taskhub-prod.trisila.online/healthz` returned `200` without printing token values.
 
 Runtime follow-up:
 - Production Task Hub remains healthy on `taskhub-prod`, with local `/healthz`, `/api/config`, `/api/reviews`, and operations status returning `200`.
 - Production webhook hard gate remains disabled and disabled webhook probe returns `403`.
 - Production operations status now reports `connection.status=connected`, `hasSecret=true`, `mode=read_only`, and `liveWebhook.enabled=false`.
-- A runtime-only production candidate env exists at `/home/trisilar/.paperclip/.env.taskhub-prod`, but its copied Cloudflare Access token still returns `302` against `https://taskhub-prod.trisila.online/healthz`; do not restart Paperclip into this config or proceed to staged canary until the production Access token returns `200`.
+- A runtime-only production candidate env exists at `/home/trisilar/.paperclip/.env.taskhub-prod`; do not restart Paperclip into this config or enable production webhook until the staged canary window is approved.
 
 After runtime setup:
 - QA / Runtime / Paperclip Owner run staged production canary and negative checks.
@@ -203,4 +203,4 @@ Expected output:
 - Production service-auth + Settings connection evidence or blocker report, followed by QA staged production canary handoff.
 ```
 
-**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, prepared as a separate production private runtime by Codex Runtime Owner, and connected to production Paperclip Settings with a runtime-only signing secret; staged canary remains pending production service-auth pass.
+**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, prepared as a separate production private runtime by Codex Runtime Owner, connected to production Paperclip Settings with a runtime-only signing secret, and assigned a production Cloudflare Access service token; staged canary remains pending approval.
