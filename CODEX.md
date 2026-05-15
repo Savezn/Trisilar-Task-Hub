@@ -23,7 +23,9 @@ This file intentionally avoids duplicating the shared project workflow. Shared r
 - Do not revert unrelated user/agent changes.
 - For docs-only changes, run `git diff --check` and state that runtime checks were skipped.
 - For code/config/route/integration changes, run `node server.js` in one terminal and `npm.cmd run check:all` in another.
-- For V0.3 role/parallel work, use `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and the relevant file under `docs/agents/`.
+- After `.ai-instructions.md`, load the matching repo-contained role skill under `docs/agent-skills/<role>/SKILL.md` before deeper role docs.
+- Repo-contained role skills complement Codex platform skills. Use relevant Codex/system skills when available, but do not skip this repo's role `SKILL.md`.
+- For role/parallel work, use `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and the relevant file under `docs/agents/`.
 
 ---
 
@@ -52,6 +54,7 @@ Every final handoff for repository work should include:
 - `docs/reference/ORGANIZATION_OPERATING_MODEL.md`
 - `docs/reference/AI_AGENT_GOVERNANCE.md`
 - `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`
+- `docs/agent-skills/`
 - `docs/reference/ARCHITECTURE.md`
 - `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md`
 - `docs/reference/FILE_ORGANIZATION.md`

@@ -26,7 +26,8 @@ Accepted decisions:
 - Runtime flags and secrets remain owned by Runtime / Access Owner.
 - QA remains read-only while acting as QA.
 - Integration Owner owns accepted-branch merges into `dev`.
-- The reusable `trisilar-task-hub-workflow` Codex skill is deferred until these docs prove useful in real PM/Dev/QA/Runtime sessions.
+- Lightweight repo-contained role `SKILL.md` entrypoints under `docs/agent-skills/` are approved for Codex, Claude, Gemini, and future agents.
+- The reusable installed `trisilar-task-hub-workflow` Codex skill remains deferred until PM explicitly asks for local skill extraction.
 
 ---
 
@@ -86,7 +87,7 @@ Long-term work is split into role lanes. Each session should act as one role.
 | Integration Owner | Accepted-branch merges into `dev`, conflict resolution, integration QA routing |
 | Documentation / Agent Workflow Owner | Durable docs, handoff quality, future skill extraction |
 
-Role docs live in `docs/agents/`.
+Role docs live in `docs/agents/`. Repo-contained role skill entrypoints live in `docs/agent-skills/` and should be loaded before the deeper role guide.
 
 ---
 
@@ -167,17 +168,19 @@ external side effect result
 
 ---
 
-## Future Skill Extraction
+## Role Skills And Future Skill Extraction
 
-Do not create a reusable Codex skill from these docs until PM explicitly asks. PM decision on 2026-05-14: defer the skill and use these docs in real sessions first.
+Repo-contained role skills under `docs/agent-skills/` are approved as basic role entrypoints for Codex, Claude, Gemini, and future agents. They should point agents toward the right role guide, branch/worktree checks, boundaries, and output format.
+
+Do not create or install a reusable local Codex skill from these docs until PM explicitly asks. PM decision on 2026-05-14: defer the installed `trisilar-task-hub-workflow` skill and use the repo docs in real sessions first.
 
 Recommended sequence:
 
 1. Stabilize the operating model docs.
-2. Use role docs in real PM/Dev/QA/Runtime sessions.
-3. Extract one concise `trisilar-task-hub-workflow` skill only after the docs prove useful.
+2. Use repo-contained role skills and role docs in real PM/Dev/QA/Runtime sessions.
+3. Extract one concise installed `trisilar-task-hub-workflow` Codex skill only after PM explicitly requests it.
 
-The future skill should teach agents how to work in this repo. It should not contain current commit hashes, live runtime values, status snapshots, or secrets.
+Repo-contained and future installed skills should teach agents how to work in this repo. They should not contain current commit hashes, live runtime values, status snapshots, or secrets.
 
 ---
 
@@ -187,3 +190,4 @@ The future skill should teach agents how to work in this repo. It should not con
 |---|---|---|
 | 2026-05-14 | Created AI agent governance draft for V0.3 PM review | Codex PM / Documentation Architect |
 | 2026-05-14 | PM accepted AI agent governance and deferred reusable skill extraction | Codex PM |
+| 2026-05-15 | Added approved repo-contained role skill entrypoints while keeping installed Codex skill extraction deferred | Codex PM / Documentation Workflow Owner |
