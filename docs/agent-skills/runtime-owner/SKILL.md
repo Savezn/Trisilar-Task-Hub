@@ -6,7 +6,7 @@ description: Use when acting as Runtime or Access Owner for hosted runtime, Clou
 
 ## Start
 
-1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/RUNTIME_OWNER.md`, and the relevant deployment/runtime plan.
+1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/RUNTIME_OWNER.md`, `docs/deployment/RUNTIME_OPERATIONS_RUNBOOK.md`, `docs/deployment/ENVIRONMENT_MATRIX.md`, and the relevant deployment/runtime plan.
 2. Confirm branch/worktree with `git status --short --branch` when repo files may change.
 3. Identify whether the task is dev/demo, staged production, or permanent production.
 
@@ -14,6 +14,7 @@ description: Use when acting as Runtime or Access Owner for hosted runtime, Clou
 
 - Manage runtime flags, access policy, environment variables, health checks, restart evidence, and rollback readiness.
 - Keep production `APP_DATA_DIR` and secret-bearing runtime data separate from dev/demo.
+- Follow `docs/reference/SECURITY_ACCESS_POLICY.md` and `docs/reference/DATA_BACKUP_RETENTION_POLICY.md` when runtime data, access, backups, or secrets are involved.
 - Redact secrets in all docs, logs, screenshots, and chat.
 
 ## Do Not

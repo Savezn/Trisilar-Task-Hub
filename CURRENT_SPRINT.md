@@ -27,6 +27,7 @@
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
 | V0.4 Paperclip production readiness | Repo readiness integrated to `dev@7e069b5`; production runtime prepared from `dev@e8a211b` | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; production private runtime, Cloudflare tunnel route, DNS, Access app, and production Paperclip Settings connection are prepared; no staged canary, Paperclip production service-token pass, secret exposure, or external side effect performed |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
+| Operations/security docs baseline | In progress on `codex/ops-docs-governance` | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge |
 
 ---
 
@@ -67,6 +68,7 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 | V0.4-PROD-01 | Paperclip production repo readiness | Integrated to `dev@7e069b5` | PM complete |
 | V0.4-PROD-02 | Separate production runtime setup | Partial pass: private runtime + Cloudflare Access route + Paperclip Settings connection prepared; production service-token still returns `302` | Runtime Owner / Paperclip Owner |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
+| Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Drafted on `codex/ops-docs-governance`; pending docs QA and PR review | Documentation Workflow Owner / PM |
 
 ---
 
@@ -91,6 +93,12 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 | V0.3 RUX findings and baseline | `docs/logs/V0_3_RUX_FINDINGS.md` |
 | V0.3 RUX release checklist | `docs/plans/VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md` |
 | V0.4 Paperclip production plan | `docs/plans/VERSION_0_4_LIVE_AI_OPERATIONS_PAPERCLIP_PRODUCTION_PLAN.md` |
+| Runtime operations runbook | `docs/deployment/RUNTIME_OPERATIONS_RUNBOOK.md` |
+| Environment matrix | `docs/deployment/ENVIRONMENT_MATRIX.md` |
+| Troubleshooting guide | `docs/deployment/TROUBLESHOOTING.md` |
+| Security/access policy | `docs/reference/SECURITY_ACCESS_POLICY.md` |
+| Data backup/retention policy | `docs/reference/DATA_BACKUP_RETENTION_POLICY.md` |
+| Team onboarding guide | `docs/operations/TEAM_ONBOARDING_GUIDE.md` |
 
 ---
 

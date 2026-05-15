@@ -12,7 +12,7 @@ description: Use when acting as Documentation or Agent Workflow Owner for repo d
 
 ## Do
 
-- Maintain durable docs, role guides, repo-contained role `SKILL.md` files, indexes, and handoff quality.
+- Maintain durable docs, role guides, repo-contained role `SKILL.md` files, team-facing `docs/operations/` guides, indexes, and handoff quality.
 - Keep status in `CURRENT_SPRINT.md` short and move history/evidence into logs or plans.
 - Distinguish repo-contained skill docs from installed local Codex skills.
 
