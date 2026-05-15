@@ -157,6 +157,8 @@ external side effect result
 
 ## Acceptance Gates
 
+All repo work must pass Definition of Ready before it starts and Definition of Done before it is marked complete. DoR/DoD gates live in `../../CONTRIBUTING.md`, `BRANCH_ENVIRONMENT_WORKFLOW.md`, and `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`.
+
 | Work type | Gate |
 |---|---|
 | Docs-only | `git diff --check`; PM review |
@@ -165,6 +167,8 @@ external side effect result
 | Paperclip/AI integration | Contract, HMAC/idempotency, mock/live/production boundary, no pre-approval side effects |
 | Runtime/access change | Health, access block/allow evidence, secret placement, runtime profile, live mode, rollback plan |
 | `dev -> main` release | Integration QA, release checklist, PM acceptance |
+
+Completion also requires clear PR/merge state, role-owned docs/logs, and branch/worktree/folder cleanup or an explicit blocker. Backup branches may remain as safety refs; locked folders may remain only when Git no longer registers them as worktrees and the handoff records the blocker.
 
 ---
 

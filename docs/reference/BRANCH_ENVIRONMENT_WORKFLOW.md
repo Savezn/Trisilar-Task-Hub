@@ -91,6 +91,17 @@ git status --short --branch
 
 Confirm the folder and branch match the assigned workstream. If they do not match, stop and switch to the correct worktree folder before editing.
 
+Definition of Ready:
+
+- role, branch, base, target branch, and worktree are named
+- scope, owned files, non-goals, acceptance criteria, and stop conditions are clear
+- verification commands and runtime-check skip rules are clear
+- dependencies such as upstream branches, env vars, runtime flags, secrets, service tokens, or PM approval are identified
+- dirty state is checked with `git status --short --branch` and unrelated changes have an explicit preserve/ignore/backup/route decision
+- secret/runtime boundaries are named before deployment, auth, Paperclip, Cloudflare, env var, or production work starts
+
+If these inputs are missing, route back to PM planning instead of starting implementation.
+
 Flow:
 
 ```text
@@ -190,6 +201,27 @@ npm.cmd run check:all
 ```
 
 Run `node server.js` in a separate terminal first because `check:all` includes smoke checks against local HTTP endpoints. Run the gate before PR/merge when code, config, route, integration, or behavior files change. Documentation-only changes can skip runtime checks if no behavior/config files changed, but the owner must state that explicitly.
+
+---
+
+## Definition of Done
+
+Work is not complete until implementation, verification, documentation, merge state, and cleanup are all resolved.
+
+Completion requires:
+
+- accepted scope complete with no unapproved scope creep
+- required verification passed for docs, code/config/route/integration, or release work
+- role-owned docs/logs updated when there is PM, QA, integration, or process evidence
+- PR/merge state clear, with no unresolved conflicts and local/remote target branch sync verified
+- completed temporary worktrees removed
+- merged local topic branches deleted unless PM keeps them
+- merged remote topic branches deleted unless PM keeps them
+- stale `.git/worktrees/*` metadata pruned
+- stale physical folders removed unless locked by Windows or another process
+- final evidence from `git worktree list`, `git branch -vv`, and `git status --short --branch`
+
+Backup branches may remain as safety refs until PM approves deletion. Locked folders may remain only when Git no longer registers them as worktrees and the blocker is recorded in the handoff. Held work must keep a named branch/worktree, owner, and next action.
 
 ---
 

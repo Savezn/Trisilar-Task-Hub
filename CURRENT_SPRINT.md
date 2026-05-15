@@ -94,6 +94,12 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 
 ---
 
+## Project Completion Gate
+
+Completion requires accepted work, verification, role-owned docs/logs, clear PR/merge state, and branch/worktree/folder cleanup or an explicit blocker. Use Definition of Ready before starting work and Definition of Done before marking any task, cycle, workstream, or version complete.
+
+---
+
 ## Parallel Workstream Write Ownership
 
 | File / Area | Write Owner | Rule |
@@ -141,13 +147,13 @@ Completed baseline:
 origin/dev@e8a211b
 origin/main@7fb82d5
 V0.4 topic branch: codex/v04-paperclip-prod-integration@7e069b5
-Post-main/dev validation worktree: codex/v04-paperclip-prod-integration@eef107b
+Post-main/dev validation worktree: codex/v04-paperclip-prod-integration includes origin/dev@622c7dd; V0.4 evidence commits fc5ed50 and 87bbe97
 V0.4 repo readiness: integrated to dev
 Production runtime: Docker container taskhub-prod on DigitalOcean, private bind 127.0.0.1:3301
 Production hostname: https://taskhub-prod.trisila.online behind Cloudflare Access
 
 V0.4 status:
-Repo readiness is integrated and verified. The V0.4 worktree was refreshed from `origin/dev@eef107b` after main/dev updates and Paperclip repo-side verifiers passed again. Production private runtime, Cloudflare tunnel route, DNS, and Access app are prepared. Production service-token validation, Paperclip Settings signing-secret connection, and live production canary were not performed.
+Repo readiness is integrated and verified. The V0.4 worktree was refreshed from `origin/dev@eef107b`, Paperclip repo-side verifiers passed again, and the branch was then merged with `origin/dev@622c7dd` after the DoR/DoD governance update. Production private runtime, Cloudflare tunnel route, DNS, and Access app are prepared. Production service-token validation, Paperclip Settings signing-secret connection, and live production canary were not performed.
 
 Completed runtime evidence:
 - Separate production service runs the accepted `dev@e8a211b` code.

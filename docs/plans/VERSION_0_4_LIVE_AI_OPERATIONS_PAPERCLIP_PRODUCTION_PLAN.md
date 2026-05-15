@@ -388,3 +388,4 @@ Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, a
 | 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection | Codex Runtime Owner |
 | 2026-05-15 | Refreshed V0.4 worktree from `origin/dev@eef107b` after main/dev update and reran Paperclip production/intake verifiers; runtime service-token and Settings connection remain pending | Codex Runtime Owner / QA |
 | 2026-05-15 | Verified production runtime is still healthy with webhook disabled, but held staged canary because the available Paperclip sender env still targets dev/demo and production Settings connection is missing | Codex Runtime Owner |
+| 2026-05-15 | Merged latest `origin/dev@622c7dd` DoR/DoD governance baseline into the V0.4 branch; V0.4 production service-auth hold remains unchanged | Codex Runtime Owner / Integration |
