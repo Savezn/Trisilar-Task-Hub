@@ -16,6 +16,8 @@
 
 Use this document as the active V0.4 handoff for making Paperclip production intake permanent. It separates repo readiness, production runtime setup, staged production QA, permanent acceptance, and rollback.
 
+V0.4 waiting or 24-hour monitoring windows do not block isolated non-runtime work. V0.5 Foundation Hardening and UI V2 design-only work may continue in separate branches/worktrees as long as they do not change production runtime, Cloudflare policy, secrets, live Paperclip flags, or webhook auth behavior.
+
 Do not paste secrets into this document. Record only non-secret hostnames, source/environment identifiers, command names, and redacted verification outcomes.
 
 ---
@@ -279,6 +281,7 @@ Monitoring rules:
 - Use read-only operations status by default.
 - Do not send routine canaries after staged pass unless PM/QA requests, runtime changes, Paperclip sender changes, or read-only evidence suggests regression.
 - Monitor Review Queue counts, audit categories, danger warnings, and unexpected side effects.
+- Keep parallel V0.5/UI V2 design work isolated from runtime/secrets/live flag work.
 
 Stop conditions:
 

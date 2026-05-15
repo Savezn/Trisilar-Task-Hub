@@ -18,6 +18,8 @@ This file tracks the broad roadmap. It does not replace `CURRENT_SPRINT.md`, ver
 | Project-wide ladder and release gates | `docs/plans/PROJECT_LADDER.md` |
 | Version scope and workstreams | `docs/plans/VERSION_0_2_PLAN.md` |
 | V0.3 Product Reliability + UX Stabilization | `docs/plans/VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md` |
+| V0.4 Paperclip production integration | `docs/plans/VERSION_0_4_LIVE_AI_OPERATIONS_PAPERCLIP_PRODUCTION_PLAN.md` |
+| V0.5 Foundation Hardening | `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md` |
 | Long-term operating model | `docs/reference/ORGANIZATION_OPERATING_MODEL.md` |
 | AI agent governance and role boundaries | `docs/reference/AI_AGENT_GOVERNANCE.md` and `docs/agents/` |
 | Parallel Codex development | `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` |
@@ -69,6 +71,38 @@ Workstreams:
 
 Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 
+### V0.4 - Live AI Operations / Paperclip Production
+
+Status: Active runtime track. Repo readiness is integrated, and the private production runtime plus Cloudflare Access route are prepared. Staged production canary is still pending production service-token validation and Paperclip Settings signing-secret connection.
+
+V0.4 remains Runtime/QA owned. While V0.4 is waiting or in 24-hour read-only monitoring, isolated V0.5 foundation work and UI V2 design-only work may continue in separate branches/worktrees.
+
+### V0.5 - Foundation Hardening
+
+Status: PM routed / ready for scoped Dev planning.
+
+Goal: strengthen persistence, test gates, and app-owned data contracts before UI V2 implementation and Team Operating System product work.
+
+Use `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md` and ADRs `ADR_0003` / `ADR_0004`.
+
+### V0.6 - UI V2 Design System Implementation
+
+Status: Future implementation. UI V2 design-only work may continue now.
+
+Goal: promote UI V2 tokens and component language into production route-by-route after V0.5 acceptance, without forcing an uncontrolled frontend rewrite.
+
+### V0.7 - Team Operating System Pilot
+
+Status: Future product track. Docs-only pilot assumptions may be prepared in parallel.
+
+Goal: make Task Hub usable as a routine company operating layer for onboarding, weekly rhythm, management/portfolio reporting, and non-developer workflows.
+
+### V0.8+ - Full Rewrite Decision
+
+Status: Future decision memo only.
+
+Goal: decide whether a full rewrite is still justified after V0.5 foundation hardening and V0.6 UI implementation evidence. Do not execute a full rewrite before this decision.
+
 ### Project Ladder Summary
 
 | Level | Track | Status |
@@ -80,7 +114,10 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 | L4 | V0.2 Integration Release | Complete |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared, staged canary pending service-auth and Settings connection |
-| L7 | V0.5 Team Operating System | Future |
+| L7 | V0.5 Foundation Hardening | PM routed / ready for scoped Dev planning |
+| L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now |
+| L9 | V0.7 Team Operating System Pilot | Future |
+| L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
 
 ---
 
@@ -91,27 +128,33 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 - UI system and responsive redesign.
 - Paperclip contract, attribution, review queue, and audit trail.
 - Automated browser regression coverage.
+- V0.5 persistence, test gates, and app-owned data contracts.
 - Trello/Paperclip mock data for deterministic tests.
 - UX issue intake and route-by-route usability review.
 - Agent role docs and future Codex skill extraction after PM approval.
 - Team onboarding docs exist; next step is team pilot feedback and routine-use SOP refinement.
-- UI Web Design V2 Claude Design experiment for a future design concept; docs-only sidecar while V0.4 runtime work continues.
+- UI Web Design V2 Claude Design experiment for a future design concept; docs-only sidecar while V0.4 runtime work and V0.5 foundation work continue.
+- Full Rewrite decision memo after V0.5/V0.6 evidence; no full rewrite implementation yet.
 
 ---
 
 ## Enterprise-Grade Hardening Backlog
 
-These items are not blockers for the completed V0.2 or V0.3 release baselines. They are candidates for V0.4+ hardening after V0.2 access/redesign/Paperclip work and V0.3 reliability/UX stabilization.
+These items are not blockers for the completed V0.2 or V0.3 release baselines. V0.5 turns the persistence, test, and contract items into the next foundation hardening track before UI V2 implementation or Team OS product work.
 
 | Area | Gap | Recommended path |
 |---|---|---|
+| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | Use `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md`; accept ADRs, add meaningful `npm test`, add deterministic fixtures, validate app-owned data shapes, migrate app-owned JSON state to SQLite, then run integration QA. |
+| Persistence | App-owned state is still file-backed JSON under `APP_DATA_DIR`, which is fragile for larger workflow expansion. | Migrate app-owned state to SQLite through V0.5 with JSON import/backups and rollback notes; preserve `APP_DATA_DIR` boundaries and existing API shapes. |
 | Automated test suite | Current coverage is mostly smoke and structural verification. Unit, integration, and browser regression tests are not yet systematic. | Expand from `docs/testing/TEST_STRATEGY.md`: route tests, Trello model tests, deterministic fixtures, browser navigation regression, and CI gates. |
 | Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |
 | Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only. Task Hub now has an accepted DigitalOcean + Cloudflare dev/demo runtime with private bind, server-only secrets, stable `APP_DATA_DIR`, and accepted Paperclip service-auth topology. Paperclip runtime inputs are confirmed without exposing secrets. | Keep `PAPERCLIP_WEBHOOK_ENABLED=false` until PM approves standing live enablement; keep production/release-grade promotion gated by integration QA and PM acceptance. |
 | V0.3 operating model | Long-term role ownership moves beyond W1/W2/W3 labels. | PM accepted `docs/reference/ORGANIZATION_OPERATING_MODEL.md`, `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and `docs/agents/`; reusable Codex workflow skill is deferred until the docs prove useful in real sessions. |
 | V0.3 Product Reliability + UX Stabilization | Human workflow reliability and UX clarity stabilized before larger AI automation. | `RUX-001` and `RUX-002` are PM Accepted under `V0.3-RUX-02A` at `516b33e`; `RUX-003` is PM Accepted under `V0.3-RUX-03` at `b2425a4`; `RUX-004` is PM Accepted under `V0.3-RUX-04` at `d72f979`; `RUX-005` is PM Accepted under `V0.3-RUX-05` at `0af9417`; `V0.3-RUX-06` is PM Accepted at `df29307`; operating-model prerequisite merged at `dev@ed9fae0`; V0.3 integrated through PR #18 and merged/deployed at `dev@02fe7cf`; runtime QA passed; PR #20 release candidate verified and PM accepted for main promotion. Production deploy remains a separate runtime decision. |
 | Operations docs baseline | Runtime operators and teammates need durable long-term runbooks before production/permanent Paperclip use. | Baseline docs cover runtime operations, troubleshooting, environment matrix, security/access policy, backup/retention policy, and team onboarding. Next hardening step is live pilot feedback and runtime evidence updates after production staged QA. |
-| UI V2 design experiment | PM wants a Claude Design-ready UI/UX guideline before asking Claude to create a web design version 2. | Keep this as a design-only research handoff under `docs/design/ui-design-v2/`; do not treat it as product implementation, runtime work, or a V0.4 blocker. |
+| UI V2 design experiment | PM wants a Claude Design-ready UI/UX guideline before asking Claude to create a web design version 2. | Keep this as a design-only research handoff under `docs/design/ui-design-v2/`; do not treat it as product implementation, runtime work, or a V0.4/V0.5 blocker. Production implementation moves to V0.6 after V0.5 acceptance. |
+| Team Operating System | Team OS is still needed, but product implementation depends on trustworthy persistence, contracts, tests, and UI shell stability. | Keep docs-only pilot assumptions allowed in parallel; route product implementation to V0.7 after V0.6 shell/workflow stability. |
+| Full Rewrite | A full rewrite could solve some frontend/platform issues but would combine persistence, UI, and operating-model risk too early. | Keep Full Rewrite as V0.8+ decision memo only until V0.5/V0.6 evidence shows incremental migration is insufficient. |
 | Historical document encoding | Some archive/log files still contain mojibake from earlier encoding corruption. | Run a separate UTF-8 repair task on archive/log docs only; use targeted edits and preserve historical meaning. |
 
 ---
