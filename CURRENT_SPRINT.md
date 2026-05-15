@@ -27,7 +27,8 @@
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
 | V0.4 Paperclip production readiness | Repo readiness integrated to `dev@7e069b5`; production runtime prepared from `dev@e8a211b` | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; production private runtime, Cloudflare tunnel route, DNS, and Access app are prepared; no staged canary, Paperclip service-token validation, signing-secret connection, secret exposure, or external side effect performed |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
-| Operations/security docs baseline | In progress on `codex/ops-docs-governance` | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge |
+| Operations/security docs baseline | Merged to `origin/dev@681be25` via PR #25 | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge; branch/worktree cleanup completed |
+| UI Web Design V2 Claude Design experiment | PM-routed sidecar docs-only experiment | Adds a research allocation plan and Claude-ready UI/UX guideline under `docs/design/ui-design-v2/`; no product code, runtime config, Cloudflare, Paperclip, or V0.4 branch changes |
 
 ---
 
@@ -68,7 +69,8 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 | V0.4-PROD-01 | Paperclip production repo readiness | Integrated to `dev@7e069b5` | PM complete |
 | V0.4-PROD-02 | Separate production runtime setup | Partial pass: private runtime + Cloudflare Access route prepared; production service-token and Paperclip Settings connection pending | Runtime Owner / Paperclip Owner |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
-| Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Drafted on `codex/ops-docs-governance`; pending docs QA and PR review | Documentation Workflow Owner / PM |
+| Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
+| UIV2-01 | Claude Design UI V2 research handoff | PM-routed docs-only sidecar experiment; guideline prepared for Claude Design review | PM / UX Owner / Claude Design |
 
 ---
 
@@ -99,6 +101,8 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 | Security/access policy | `docs/reference/SECURITY_ACCESS_POLICY.md` |
 | Data backup/retention policy | `docs/reference/DATA_BACKUP_RETENTION_POLICY.md` |
 | Team onboarding guide | `docs/operations/TEAM_ONBOARDING_GUIDE.md` |
+| UI V2 Claude Design handoff plan | `docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md` |
+| UI V2 Claude Design guideline | `docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md` |
 
 ---
 
