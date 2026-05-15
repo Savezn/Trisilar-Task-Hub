@@ -172,8 +172,7 @@ Rules:
 Verification target:
 - Hosted dev/demo `npm.cmd run migrate:sqlite`
 - Hosted dev/demo `TASKHUB_STATE_BACKEND=sqlite`
-- `/healthz`, `/api/config`, `/api/reviews`
-- Paperclip operations status read-only and no secret exposure
+- `npm.cmd run verify:sqlite-canary` from a shell with the same `APP_DATA_DIR`, `$env:TASKHUB_STATE_BACKEND = "sqlite"`, and `$env:SQLITE_CANARY_BASE_URL = "http://127.0.0.1:3000"`
 - `npm.cmd run migrate:sqlite:export` rollback proof
 
 Expected output:

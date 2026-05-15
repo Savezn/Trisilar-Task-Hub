@@ -222,12 +222,12 @@ Task: Prepare hosted dev/demo SQLite canary for V0.5 foundation hardening
 Completed baseline:
 - V0.5 roadmap/FND-01 is accepted through PR #28.
 - FND-02/03/04/05 are integrated through PR #30 at `dev@e3380ac`.
-- `npm test`, contract checks, SQLite migration/rollback tests, Paperclip safety checks, post-merge `check:all`, and local SQLite canary rehearsal passed.
+- `npm test`, contract checks, SQLite migration/rollback tests, Paperclip safety checks, post-merge `check:all`, local SQLite canary rehearsal, and `verify:sqlite-canary` passed.
 - PM selected hosted dev/demo SQLite canary, not production.
 
 Next V0.5 output:
 - Runtime Owner obtains/uses DigitalOcean host access; this workstation probe to `root@157.230.251.209` returned `Permission denied (publickey)`.
-- On hosted dev/demo only: run `npm.cmd run migrate:sqlite`, set `TASKHUB_STATE_BACKEND=sqlite`, restart/reload, verify health/config/reviews/Paperclip operations read-only, then run `npm.cmd run migrate:sqlite:export`.
+- On hosted dev/demo only: run `npm.cmd run migrate:sqlite`, set `TASKHUB_STATE_BACKEND=sqlite`, restart/reload, run `npm.cmd run verify:sqlite-canary`, then run `npm.cmd run migrate:sqlite:export`.
 
 Rules:
 - Do not touch production.
