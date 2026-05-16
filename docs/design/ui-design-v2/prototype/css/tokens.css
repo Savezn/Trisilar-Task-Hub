@@ -1,0 +1,138 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Trisilar Task Hub — UI Design V2 · Design Tokens
+   Direction: calmer, sharper, more durable. Operational, not decorative.
+   ──────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Surfaces (cool neutral, paper-white canvas) ───────────────────── */
+  --bg:           #f6f7f9;   /* application canvas                   */
+  --surface:      #ffffff;   /* primary panels, drawers              */
+  --surface-2:    #fbfcfd;   /* table head, inset panels             */
+  --surface-3:    #eef0f4;   /* hover fill, tag chips                */
+  --surface-sunk: #e9ecf1;   /* deep inset, code, telemetry strip    */
+  --hover:        #f1f3f7;
+  --selected:     #e6ecf8;
+
+  /* ── Ink (neutral cool, single ramp) ───────────────────────────────── */
+  --ink:          #0b0d12;
+  --ink-2:        #2b2f38;
+  --ink-3:        #555b67;
+  --ink-4:        #8a909c;
+  --ink-5:        #b8bdc8;
+  --ink-6:        #d6dae2;
+
+  /* ── Lines (functional, never decorative) ──────────────────────────── */
+  --line:         #e2e5eb;
+  --line-2:       #ecedf1;
+  --line-strong:  #cfd3db;
+  --line-dotted:  #c6cad3;
+
+  /* ── Brand: cobalt (action / route / focus) ────────────────────────── */
+  --brand:        #1e58e6;
+  --brand-2:      #3b6df7;
+  --brand-soft:   #e6edfd;
+  --brand-mid:    #b8c8f7;
+  --brand-ink:    #0a3290;
+  --brand-tint:   #f3f6fe;
+
+  /* ── AI / agent surface (always distinct from brand) ───────────────── */
+  --ai:           #7c3aed;
+  --ai-2:         #9061f5;
+  --ai-soft:      #f3eefe;
+  --ai-mid:       #d6c5fb;
+  --ai-ink:       #4c1d95;
+  --ai-tint:      #faf7fe;
+
+  /* ── Semantic status ───────────────────────────────────────────────── */
+  --over:         #c8312b;   /* overdue                              */
+  --over-soft:    #fdecec;
+  --over-mid:     #f4b2af;
+  --over-ink:     #771511;
+
+  --warn:         #b86a05;   /* due today / needs attention          */
+  --warn-soft:    #fdf3e2;
+  --warn-mid:     #f0caa1;
+  --warn-ink:     #6d3a00;
+
+  --ok:           #137e52;   /* connected / approved                 */
+  --ok-soft:      #e6f4ec;
+  --ok-mid:       #a7d6b7;
+  --ok-ink:       #074025;
+
+  --info:         #0a6fb3;   /* info / scheduled                     */
+  --info-soft:    #e3f0fa;
+  --info-mid:     #9fc8e5;
+  --info-ink:     #073f66;
+
+  --neutral-chip-bg: #eef0f4;
+  --neutral-chip-ink: #3b414e;
+
+  /* ── Geometry ──────────────────────────────────────────────────────── */
+  --r-xs: 3px;
+  --r-sm: 4px;
+  --r:    6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-pill: 999px;
+
+  /* ── Spacing scale (4pt) ───────────────────────────────────────────── */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+  --s-9: 56px;
+
+  /* ── Type (Onest = sharper neutral grotesk; JetBrains Mono = telemetry) ─ */
+  --font-sans: "Onest", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --t-display:  600 28px/1.15 var(--font-sans);
+  --t-h1:       600 22px/1.2  var(--font-sans);
+  --t-h2:       600 17px/1.25 var(--font-sans);
+  --t-h3:       600 14px/1.3  var(--font-sans);
+  --t-body:     400 13px/1.5  var(--font-sans);
+  --t-meta:     500 12px/1.4  var(--font-sans);
+  --t-eyebrow:  600 11px/1.3  var(--font-sans);
+  --t-mono:     500 12px/1.4  var(--font-mono);
+  --t-mono-sm:  500 11px/1.3  var(--font-mono);
+
+  /* ── Elevation (restrained, single-direction) ──────────────────────── */
+  --sh-xs: 0 1px 0 rgba(15, 17, 24, 0.04);
+  --sh-sm: 0 1px 2px rgba(15, 17, 24, 0.06), 0 1px 1px rgba(15, 17, 24, 0.04);
+  --sh:    0 2px 8px rgba(15, 17, 24, 0.07), 0 1px 2px rgba(15, 17, 24, 0.04);
+  --sh-md: 0 8px 24px rgba(15, 17, 24, 0.10), 0 2px 6px rgba(15, 17, 24, 0.05);
+  --sh-lg: 0 20px 40px rgba(15, 17, 24, 0.16);
+
+  /* ── App shell layout ──────────────────────────────────────────────── */
+  --side-w: 220px;
+  --topbar-h: 48px;
+  --status-strip-h: 24px;
+
+  /* ── Focus ring ────────────────────────────────────────────────────── */
+  --focus-ring: 0 0 0 2px var(--surface), 0 0 0 4px var(--brand);
+}
+
+/* ── Reset & base ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font: var(--t-body);
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+input, textarea, select { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--brand-mid); color: var(--brand-ink); }
+
+/* Mono utility for any system-emitted text (ids, env, run-ids) */
+.mono   { font-family: var(--font-mono); font-feature-settings: "tnum", "zero"; }
+.tnum   { font-variant-numeric: tabular-nums; }
+.eyebrow { font: var(--t-eyebrow); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
