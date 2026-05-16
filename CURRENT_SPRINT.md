@@ -75,7 +75,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.4-PROD-02 | Separate production runtime setup | Pass for runtime setup: private runtime + Cloudflare Access route + production service token + Paperclip Settings connection prepared | Runtime complete |
 | V0.4-PROD-03 | Staged production canary window | Pass; runtime returned to disabled | QA / Runtime complete |
 | V0.4-PROD-04 | 24-hour read-only monitoring | Pass; final checkpoint 2026-05-16T08:03:14Z confirmed disabled/read_only, no danger warnings, and no external side effects | PM / Integration closeout |
-| V0.4-PROD-05 | Permanent enablement acceptance | Ready for PM runtime decision; production webhook remains disabled until explicit permanent-enable runtime change | PM / Runtime Owner |
+| V0.4-PROD-05 | Permanent enablement acceptance | Hold / optional separate PM runtime decision; production webhook remains disabled until explicit permanent-enable runtime change | PM / Runtime Owner |
 | V0.5-FND-01 | Foundation ADRs + planning acceptance | Accepted / merged to `dev@aaf8f58` via PR #28 | PM complete |
 | V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, and local integration QA | Integrated via PR #30; hosted dev/demo SQLite canary selected but blocked on Runtime Owner host access | Runtime Owner |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
@@ -167,88 +167,48 @@ Parallel rule:
 
 ---
 
-## Next Actions - V0.4 Runtime + V0.5 Foundation
+## Next Actions - V0.5 Foundation Handoff
 
 ```text
-Role: QA Release Owner / Runtime Owner
-Task: Monitor read-only production operations after staged canary and keep production webhook disabled unless PM accepts permanent enablement
+Role: Runtime Owner / QA
+Task: Run the hosted dev/demo SQLite canary for V0.5 foundation hardening.
 
-Completed baseline:
-origin/dev@e8a211b
-origin/main@7fb82d5
-V0.4 topic branch: codex/v04-paperclip-prod-integration@7e069b5
-Post-main/dev validation worktree: codex/v04-paperclip-prod-integration includes origin/dev@622c7dd; V0.4 evidence commits fc5ed50 and 87bbe97
-V0.4 repo readiness: integrated to dev
-Production runtime: Docker container taskhub-prod on DigitalOcean, private bind 127.0.0.1:3301
-Production hostname: https://taskhub-prod.trisila.online behind Cloudflare Access
+Current release state:
+- V0.4 production Paperclip intake is no longer blocking follow-on work.
+- V0.4-PROD-04 passed the 24-hour read-only monitoring gate at 2026-05-16T08:03:14Z.
+- PR #27 merged V0.4 closeout to dev at c866a7d.
+- Production Paperclip webhook remains disabled; permanent enablement is a separate PM / Runtime Owner runtime switch, not a prerequisite for V0.5 hosted dev/demo canary work.
 
-V0.4 status:
-Repo readiness is integrated and verified. The V0.4 worktree was refreshed from `origin/dev@eef107b`, Paperclip repo-side verifiers passed again, and the branch was then merged with latest `origin/dev`. Production private runtime, Cloudflare tunnel route, DNS, Access app, production service token, and production Paperclip Settings signing-secret connection are prepared. Staged production canary passed and runtime was returned to disabled mode.
-
-Completed runtime evidence:
-- Separate production service runs the accepted `dev@e8a211b` code.
-- Production hostname is `https://taskhub-prod.trisila.online`.
-- Cloudflare Access blocks anonymous public access with `302`.
-- Production `APP_DATA_DIR` is separate from dev/demo.
-- `PAPERCLIP_WEBHOOK_ENABLED=false` and `PAPERCLIP_LIVE_MODE=disabled`.
-- Local production `/healthz`, `/api/config`, `/api/reviews`, and operations status return `200`.
-- Disabled webhook probe returns `403`.
-
-Completed before staged canary:
-- Created and assigned production Cloudflare Access service token for Paperclip sender.
-- Configured runtime-only production candidate env at `/home/trisilar/.paperclip/.env.taskhub-prod`.
-- Verified production service-token reachability to `https://taskhub-prod.trisila.online/healthz` returned `200` without printing token values.
-
-Runtime follow-up:
-- Production Task Hub remains healthy on `taskhub-prod`, with local `/healthz`, `/api/config`, `/api/reviews`, and operations status returning `200`.
-- Production webhook hard gate remains disabled and disabled webhook probe returns `403`.
-- Production operations status now reports `connection.status=connected`, `hasSecret=true`, `mode=read_only`, and `liveWebhook.enabled=false`.
-- Staged production canary created Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07` with task status `pending`; duplicate same-payload replay returned `200`; changed replay returned `409`; invalid signature returned `401`; invalid source returned `403`; invalid environment returned `400`; Review Queue external side effects stayed at `trelloLinked=0`.
-- Runtime rollback restored `PAPERCLIP_LIVE_MODE=disabled` and `PAPERCLIP_WEBHOOK_ENABLED=false`; disabled webhook probe returned `403`.
-- First read-only monitoring checkpoint passed at 2026-05-15T05:24:25Z: container up, `/healthz` `200`, `/api/config` `200`, `/api/reviews` `200`, disabled probe `403`, `PAPERCLIP_LIVE_MODE=disabled`, `liveWebhook.enabled=false`, `mode=read_only`, `connection.status=connected`, `hasSecret=true`, queue pending=1 / approved=0 / rejected=0 / Trello-linked=0, warnings=none, dangerWarnings=none.
-- 24-hour final monitoring checkpoint passed at 2026-05-16T08:03:14Z: container up 27 hours, `/healthz` `200`, `/api/config` `200`, `/api/reviews` `200`, disabled probe `403`, `PAPERCLIP_LIVE_MODE=disabled`, `liveWebhook.enabled=false`, `mode=read_only`, `connection.status=connected`, `hasSecret=true`, queue pending=1 / approved=0 / rejected=0 / Trello-linked=0, warnings=none, dangerWarnings=none.
-- Draft PR #27 is ready for V0.4 monitoring closeout after conflict resolution; production webhook remains disabled until PM / Runtime Owner chooses permanent enablement.
-
-After runtime setup:
-- V0.4-PROD-04 monitoring is passed; QA / Runtime Owner no longer needs to keep the 24-hour observation window open.
-- PM may accept `PAPERCLIP_LIVE_MODE=permanent` as a separate runtime decision; keep production disabled until that runtime change is deliberately executed.
-- V0.4 plan now includes the PM acceptance package, permanent enablement runbook, rollback runbook, and draft PR routing rules so the final decision can be made without inventing process after the 24-hour window.
-
-Rules:
-- Do not commit secrets.
-- Do not reuse dev/demo `APP_DATA_DIR` for production.
-- Do not set production `PAPERCLIP_WEBHOOK_ENABLED=true` outside an approved staged/permanent window.
-- Do not send production Paperclip webhooks until Runtime Owner and QA approve the staged window.
-- Do not add outbound Paperclip network calls.
-- Do not expose secrets, Cloudflare tokens, signing headers, or raw auth values.
-- Do not auto-approve Review Queue tasks.
-- Do not create Trello cards, Calendar events, or Google Tasks.
-- Use repo-contained role `SKILL.md` files under `docs/agent-skills/` when assigning Codex/Claude/Gemini roles.
-- Keep installed reusable `trisilar-task-hub-workflow` Codex skill deferred.
-
-Expected output:
-- Merge-ready V0.4 PR state, PM permanent-enable or hold decision, and V0.5 hosted dev/demo SQLite canary handoff that does not touch production runtime.
-```
-
-```text
-Parallel Role: Integration Owner / Runtime Owner
-Task: Prepare hosted dev/demo SQLite canary for V0.5 foundation hardening
-
-Completed baseline:
+V0.5 baseline:
 - V0.5 roadmap/FND-01 is accepted through PR #28.
-- FND-02/03/04/05 are integrated through PR #30 at `dev@e3380ac`.
-- `npm test`, contract checks, SQLite migration/rollback tests, Paperclip safety checks, post-merge `check:all`, local SQLite canary rehearsal, `verify:sqlite-canary`, `verify:json-rollback`, and `verify:persistence-canary-cycle` passed.
-- PM selected hosted dev/demo SQLite canary, not production.
+- FND-02/03/04/05 are integrated through PR #30 at dev@e3380ac.
+- V0.5 SQLite canary runtime checklist is integrated through PR #36 at dev@c866a7d.
+- npm test, contract checks, SQLite migration/rollback tests, Paperclip safety checks, post-merge check:all, local SQLite canary rehearsal, verify:sqlite-canary, verify:json-rollback, and verify:persistence-canary-cycle passed in prior V0.5 QA.
 
 Next V0.5 output:
-- Runtime Owner obtains/uses DigitalOcean host access; this workstation probe to `root@157.230.251.209` returned `Permission denied (publickey)`.
-- On hosted dev/demo only: follow `docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`, optionally run `npm.cmd run verify:persistence-canary-cycle` as temp-data preflight, then run `npm.cmd run migrate:sqlite`, set `TASKHUB_STATE_BACKEND=sqlite`, restart/reload, run `npm.cmd run verify:sqlite-canary`, run `npm.cmd run migrate:sqlite:export`, and if rolling back remove the flag/restart then run `npm.cmd run verify:json-rollback`.
+- Sync the dedicated V0.5 foundation worktree from origin/dev.
+- On hosted dev/demo only, follow docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md.
+- Optionally run npm.cmd run verify:persistence-canary-cycle as temp-data preflight.
+- Run npm.cmd run migrate:sqlite, set TASKHUB_STATE_BACKEND=sqlite, restart/reload hosted dev/demo, run npm.cmd run verify:sqlite-canary, run npm.cmd run migrate:sqlite:export, and if rolling back remove the flag/restart then run npm.cmd run verify:json-rollback.
 
 Rules:
-- Do not touch production.
-- Do not change Cloudflare policy, secrets, live Paperclip flags, or webhook auth.
+- Do not touch production for V0.5 hosted dev/demo SQLite canary.
+- Do not change Cloudflare policy, secrets, production Paperclip live flags, or webhook auth.
 - Do not create Trello, Calendar, Google Tasks, or live Paperclip side effects.
-- If hosted canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, run `npm.cmd run verify:json-rollback`, and route QA/PM.
+- If hosted canary fails, remove TASKHUB_STATE_BACKEND, restart dev/demo, run npm.cmd run verify:json-rollback, and route QA/PM.
+```
+
+## V0.4 Runtime Hold
+
+```text
+Role: PM / Runtime Owner
+Task: Decide later whether to execute permanent production Paperclip enablement.
+
+Current state:
+- Production Task Hub remains on the separate taskhub-prod runtime at https://taskhub-prod.trisila.online.
+- PAPERCLIP_WEBHOOK_ENABLED=false and PAPERCLIP_LIVE_MODE=disabled remain the expected state.
+- Permanent enablement uses the V0.4 runbook and must record a new PM decision plus rollback evidence.
+- Do not treat V0.5, UI V2, or Team OS work as approval to flip production Paperclip permanent mode.
 ```
 
 **Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, prepared as a separate production private runtime by Codex Runtime Owner, connected to production Paperclip Settings with a runtime-only signing secret, assigned a production Cloudflare Access service token, passed staged production canary, and passed 24-hour read-only monitoring with production disabled and no side effects. V0.5 Foundation Hardening roadmap/FND-01 was routed by Codex PM, merged through PR #28 at `dev@aaf8f58`, implemented by Codex Dev / QA through PR #30 at `dev@e3380ac`, and post-merge verified locally with hosted canary blocked only by Runtime Owner host access; full rewrite work remains deferred.

@@ -26,8 +26,8 @@ Do not point two Codex projects at the same folder. Do not switch branches insid
 | Codex Project Name | Folder To Link | Branch | Current Role | Status |
 |---|---|---|---|---|
 | `TaskHub PM Roadmap` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-roadmap-rebaseline` | `codex/v05-roadmap-rebaseline` | PM / Integration docs | Closed through PR #28; do not continue here unless PM reopens roadmap docs |
-| `TaskHub V0.4 Runtime` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v04-paperclip-prod-integration` | `codex/v04-paperclip-prod-integration` | Runtime Owner / QA | Runtime/service-auth/canary/monitoring only |
-| `TaskHub V0.5 Foundation` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation` | Latest accepted `dev` with PR #30 foundation code | Runtime Owner / QA | Hosted dev/demo SQLite canary handoff after FND-02/03/04/05 merge |
+| `TaskHub V0.4 Runtime` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v04-paperclip-prod-integration` | Merged via PR #27 | Runtime Owner / QA | Closed for monitoring; production permanent enablement is optional separate runtime decision |
+| `TaskHub V0.5 Foundation` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation` | Sync from latest `origin/dev` with PR #30 and PR #36 | Runtime Owner / QA | Next active runtime task: hosted dev/demo SQLite canary |
 | `TaskHub UI V2 Design` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-uiv2-design-system` | `codex/uiv2-design-system` | UX Owner / Frontend design | Design-system work only until V0.6 implementation approval |
 | `TaskHub Team OS Pilot` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v07-team-os-pilot` | `codex/v07-team-os-pilot-docs` | PM / Operations | Docs-only pilot assumptions; no product features yet |
 
@@ -40,13 +40,11 @@ Do not use `trisilar-task-hub-v05-ui-v2-full-rewrite` as the active UI project u
 ```mermaid
 flowchart TD
   A["Start a Codex session"] --> B["Read CURRENT_SPRINT.md"]
-  B --> C{"Is this V0.4 Runtime?"}
-  C -- "Yes" --> D["Runtime/service-auth/canary/monitor only"]
-  C -- "No" --> E{"Is V0.5 Foundation accepted?"}
-  E -- "No" --> F["Run PM Roadmap or V0.5-FND-01 acceptance"]
-  E -- "Yes" --> G{"Is hosted dev/demo SQLite canary done?"}
-  G -- "No" --> H["Runtime Owner runs hosted SQLite canary or records blocker"]
-  G -- "Yes" --> I["Start V0.6 UI V2 production implementation"]
+  B --> C{"Is this V0.4 permanent enablement?"}
+  C -- "Yes" --> D["Open separate PM/Runtime decision; production stays disabled until accepted"]
+  C -- "No" --> E{"Is V0.5 hosted dev/demo SQLite canary done?"}
+  E -- "No" --> G["Runtime Owner runs hosted SQLite canary or records blocker"]
+  E -- "Yes" --> I["Start V0.6 UI V2 production implementation"]
   I --> J{"V0.6 shell/workflow stable?"}
   J -- "Yes" --> K["Start V0.7 Team OS product pilot"]
   K --> L["V0.8+ Full Rewrite decision memo only if still justified"]
@@ -103,7 +101,7 @@ Expected output:
 
 ```text
 Role: Runtime Owner / QA / Paperclip Owner
-Task: Continue V0.4 production service-auth and Settings connection gate.
+Task: No active monitoring task. V0.4 production monitoring passed and PR #27 merged.
 
 Workspace:
 C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v04-paperclip-prod-integration
@@ -117,30 +115,30 @@ Read first:
 - docs/reference/SECURITY_ACCESS_POLICY.md
 
 Goal:
-Complete or report the production service-token path and production Paperclip Settings signing-secret connection before staged canary.
+Only reopen this lane if PM explicitly chooses the separate V0.4-PROD-05 permanent-enable runtime switch.
 
 Rules:
 - Do not print, commit, or document secret values.
 - Do not reuse dev/demo APP_DATA_DIR or secrets.
-- Do not set production PAPERCLIP_WEBHOOK_ENABLED=true until Runtime Owner + QA approve the staged window.
+- Do not set production PAPERCLIP_WEBHOOK_ENABLED=true unless PM records a new permanent-enable runtime decision.
 - Do not create Trello cards, Calendar events, or Google Tasks.
 - Do not change non-runtime roadmap or UI docs from this project.
 
 Verification:
 - Confirm branch/folder with git status --short --branch.
 - Use read-only checks first.
-- If staged canary is approved, run the V0.4 canary/negative checks from the plan and record evidence without secret values.
+- If permanent enablement is approved later, follow the V0.4 runbook and record rollback evidence without secret values.
 
 Expected output:
-- Service-auth + Settings connection evidence or blocker report.
-- QA staged canary handoff if runtime setup is complete.
+- PM permanent-enable or hold decision.
+- Runtime evidence and rollback proof if flags change.
 ```
 
 ### `TaskHub V0.5 Foundation`
 
 ```text
 Role: Runtime Owner / QA
-Task: Execute hosted dev/demo SQLite canary from the latest accepted `dev` commit containing PR #30 foundation code, or record the host-access blocker.
+Task: Execute hosted dev/demo SQLite canary from the latest accepted `dev` commit containing PR #30 foundation code and PR #36 runtime checklist, or record the host-access blocker.
 
 Workspace:
 C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation
@@ -154,6 +152,7 @@ Read first:
 - docs/reference/ARCHITECTURE.md
 - docs/reference/DATA_BACKUP_RETENTION_POLICY.md
 - docs/deployment/ENVIRONMENT_MATRIX.md
+- docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md
 
 Goal:
 Run the SQLite backend only on hosted dev/demo, prove health and rollback, and keep production JSON default.

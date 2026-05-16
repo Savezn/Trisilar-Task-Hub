@@ -73,13 +73,13 @@ Use `docs/plans/VERSION_0_2_PLAN.md` for detail.
 
 ### V0.4 - Live AI Operations / Paperclip Production
 
-Status: Active runtime track. Repo readiness is integrated, and the private production runtime plus Cloudflare Access route are prepared. Staged production canary is still pending production service-token validation and Paperclip Settings signing-secret connection.
+Status: Monitoring closed. Repo readiness, separate production runtime setup, staged production canary, rollback, and 24-hour read-only monitoring passed. Production webhook remains disabled until PM / Runtime Owner deliberately executes the separate permanent-enable runtime switch.
 
-V0.4 remains Runtime/QA owned. While V0.4 is waiting or in 24-hour read-only monitoring, isolated V0.5 foundation work and UI V2 design-only work may continue in separate branches/worktrees.
+V0.4 remains Runtime/QA owned only for the optional permanent-enable decision. It is not blocking V0.5 hosted dev/demo SQLite canary work.
 
 ### V0.5 - Foundation Hardening
 
-Status: FND-02/03/04/05 integrated via PR #30; hosted dev/demo SQLite canary selected and waiting for Runtime Owner host access.
+Status: FND-02/03/04/05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev/demo SQLite canary selected and waiting for Runtime Owner host access.
 
 Goal: strengthen persistence, test gates, and app-owned data contracts before UI V2 implementation and Team Operating System product work.
 
@@ -113,8 +113,8 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L3 | V0.2 Paperclip Foundation | W3-02 live connector accepted / runtime gate disabled by default |
 | L4 | V0.2 Integration Release | Complete |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
-| L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared, staged canary pending service-auth and Settings connection |
-| L7 | V0.5 Foundation Hardening | Integrated via PR #30; hosted dev/demo SQLite canary selected, blocked on Runtime Owner host access |
+| L6 | V0.4 Live AI Operations | Monitoring closed; production permanent enablement is optional separate runtime decision |
+| L7 | V0.5 Foundation Hardening | Integrated via PR #30 with runtime checklist via PR #36; hosted dev/demo SQLite canary selected, blocked on Runtime Owner host access |
 | L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
@@ -133,7 +133,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 - UX issue intake and route-by-route usability review.
 - Agent role docs and future Codex skill extraction after PM approval.
 - Team onboarding docs exist; next step is team pilot feedback and routine-use SOP refinement.
-- UI Web Design V2 Claude Design experiment for a future design concept; docs-only sidecar while V0.4 runtime work and V0.5 foundation work continue.
+- UI Web Design V2 Claude Design experiment for a future design concept; docs-only sidecar while V0.5 foundation work continues.
 - Full Rewrite decision memo after V0.5/V0.6 evidence; no full rewrite implementation yet.
 
 ---
@@ -144,14 +144,14 @@ These items are not blockers for the completed V0.2 or V0.3 release baselines. V
 
 | Area | Gap | Recommended path |
 |---|---|---|
-| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | FND-02/03/04/05 integrated through PR #30 at `dev@e3380ac`; next route is hosted dev/demo SQLite canary once Runtime Owner host access is available. |
+| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | FND-02/03/04/05 integrated through PR #30 at `dev@e3380ac`; runtime checklist integrated via PR #36; next route is hosted dev/demo SQLite canary once Runtime Owner host access is available. |
 | Persistence | App-owned state is still file-backed JSON under `APP_DATA_DIR`, which is fragile for larger workflow expansion. | SQLite import/export and rollback are implemented behind `TASKHUB_STATE_BACKEND=sqlite`; JSON remains default until hosted dev/demo canary and PM/Runtime acceptance. |
 | Automated test suite | Current coverage is mostly smoke and structural verification. Unit, integration, and browser regression tests are not yet systematic. | Expand from `docs/testing/TEST_STRATEGY.md`: route tests, Trello model tests, deterministic fixtures, browser navigation regression, and CI gates. |
 | Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |
 | Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only. Task Hub now has an accepted DigitalOcean + Cloudflare dev/demo runtime with private bind, server-only secrets, stable `APP_DATA_DIR`, and accepted Paperclip service-auth topology. Paperclip runtime inputs are confirmed without exposing secrets. | Keep `PAPERCLIP_WEBHOOK_ENABLED=false` until PM approves standing live enablement; keep production/release-grade promotion gated by integration QA and PM acceptance. |
 | V0.3 operating model | Long-term role ownership moves beyond W1/W2/W3 labels. | PM accepted `docs/reference/ORGANIZATION_OPERATING_MODEL.md`, `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and `docs/agents/`; reusable Codex workflow skill is deferred until the docs prove useful in real sessions. |
 | V0.3 Product Reliability + UX Stabilization | Human workflow reliability and UX clarity stabilized before larger AI automation. | `RUX-001` and `RUX-002` are PM Accepted under `V0.3-RUX-02A` at `516b33e`; `RUX-003` is PM Accepted under `V0.3-RUX-03` at `b2425a4`; `RUX-004` is PM Accepted under `V0.3-RUX-04` at `d72f979`; `RUX-005` is PM Accepted under `V0.3-RUX-05` at `0af9417`; `V0.3-RUX-06` is PM Accepted at `df29307`; operating-model prerequisite merged at `dev@ed9fae0`; V0.3 integrated through PR #18 and merged/deployed at `dev@02fe7cf`; runtime QA passed; PR #20 release candidate verified and PM accepted for main promotion. Production deploy remains a separate runtime decision. |
-| Operations docs baseline | Runtime operators and teammates need durable long-term runbooks before production/permanent Paperclip use. | Baseline docs cover runtime operations, troubleshooting, environment matrix, security/access policy, backup/retention policy, and team onboarding. Next hardening step is live pilot feedback and runtime evidence updates after production staged QA. |
+| Operations docs baseline | Runtime operators and teammates need durable long-term runbooks before production/permanent Paperclip use. | Baseline docs cover runtime operations, troubleshooting, environment matrix, security/access policy, backup/retention policy, and team onboarding. Next hardening step is live pilot feedback and runtime evidence updates after V0.5 hosted dev/demo canary or a separate production permanent-enable decision. |
 | UI V2 design experiment | PM wants a Claude Design-ready UI/UX guideline before asking Claude to create a web design version 2. | Keep this as a design-only research handoff under `docs/design/ui-design-v2/`; do not treat it as product implementation, runtime work, or a V0.4/V0.5 blocker. Production implementation moves to V0.6 after V0.5 acceptance. |
 | Team Operating System | Team OS is still needed, but product implementation depends on trustworthy persistence, contracts, tests, and UI shell stability. | Keep docs-only pilot assumptions allowed in parallel; route product implementation to V0.7 after V0.6 shell/workflow stability. |
 | Full Rewrite | A full rewrite could solve some frontend/platform issues but would combine persistence, UI, and operating-model risk too early. | Keep Full Rewrite as V0.8+ decision memo only until V0.5/V0.6 evidence shows incremental migration is insufficient. |
