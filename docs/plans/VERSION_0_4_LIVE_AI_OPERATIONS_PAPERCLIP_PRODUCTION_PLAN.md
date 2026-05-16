@@ -1,13 +1,13 @@
 # Version 0.4 Live AI Operations - Paperclip Production Permanent Integration Plan
 
 **Doc Role:** V0.4 plan and tracker for production Paperclip intake
-**Status:** Production runtime setup and staged canary passed; runtime gate closed; read-only monitoring active
+**Status:** Production runtime setup, staged canary, and 24-hour read-only monitoring passed; production webhook remains disabled pending separate permanent-enable runtime decision
 **Version:** V0.4
-**Planning Stage:** Read-only monitoring active after staged canary pass
+**Planning Stage:** Monitoring pass; PR closeout / permanent-enable runtime decision ready
 **Owner:** PM / AI Integration Owner / Runtime Owner / QA Release Owner
 **Created:** 2026-05-15
-**Last Updated:** 2026-05-15
-**Updated by:** Codex PM / Dev
+**Last Updated:** 2026-05-16
+**Updated by:** Codex PM / Dev / QA
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../deployment/DEPLOYMENT_SETUP.md`, `../deployment/DIGITALOCEAN_DASHBOARD_HANDOVER.md`, `../adr/ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md`, `VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md`, `VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md`
 
 ---
@@ -15,6 +15,8 @@
 ## How to Use This Document
 
 Use this document as the active V0.4 handoff for making Paperclip production intake permanent. It separates repo readiness, production runtime setup, staged production QA, permanent acceptance, and rollback.
+
+V0.4 waiting or 24-hour monitoring windows do not block isolated non-runtime work. V0.5 Foundation Hardening and UI V2 design-only work may continue in separate branches/worktrees as long as they do not change production runtime, Cloudflare policy, secrets, live Paperclip flags, or webhook auth behavior.
 
 Do not paste secrets into this document. Record only non-secret hostnames, source/environment identifiers, command names, and redacted verification outcomes.
 
@@ -92,8 +94,8 @@ Owner lanes:
 | V0.4-PROD-01 | Repo production readiness | Integrated to `dev@7e069b5` | PM complete |
 | V0.4-PROD-02 | Separate production runtime setup | Pass: private runtime + Cloudflare route + service token + Settings connection prepared | QA / Runtime / Paperclip Owner |
 | V0.4-PROD-03 | Staged production canary window | Pass; runtime returned to disabled | QA / Runtime complete |
-| V0.4-PROD-04 | 24-hour read-only monitoring | Active; first checkpoint pass; automation active | QA / Runtime |
-| V0.4-PROD-05 | Permanent enablement acceptance | Pending monitoring pass | PM |
+| V0.4-PROD-04 | 24-hour read-only monitoring | Pass; final checkpoint 2026-05-16T08:03:14Z | PM / Integration closeout |
+| V0.4-PROD-05 | Permanent enablement acceptance | Ready for separate PM / Runtime decision; production remains disabled meanwhile | PM / Runtime |
 
 ---
 
@@ -347,6 +349,7 @@ Monitoring rules:
 - Use read-only operations status by default.
 - Do not send routine canaries after staged pass unless PM/QA requests, runtime changes, Paperclip sender changes, or read-only evidence suggests regression.
 - Monitor Review Queue counts, audit categories, danger warnings, and unexpected side effects.
+- Keep parallel V0.5/UI V2 design work isolated from runtime/secrets/live flag work.
 
 Stop conditions:
 
@@ -363,6 +366,27 @@ Status: Pass
 Date: 2026-05-15T05:24:25Z
 Automation: v0-4-paperclip-prod-read-only-monitor active every 6 hours
 Container: taskhub-prod up
+Health: /healthz 200; /api/config 200; /api/reviews 200
+Webhook gate: disabled probe 403
+Runtime: PAPERCLIP_LIVE_MODE=disabled; liveWebhook.enabled=false
+Operations: mode=read_only; connection.status=connected; connection.hasSecret=true
+Review Queue: pending=1; approved=0; rejected=0; trelloLinked=0; paperclipSessions=1; paperclipTasks=1
+Canary session: 57fdc85e-fe1e-4711-9269-c26d5ead3b07 remains pending
+Warnings: none
+Danger warnings: none
+Audit accepted: paperclip_payload_received=1; review_session_created=1; task_diff_resolved=1
+Audit replay: paperclip_duplicate_payload_ignored=1
+Audit rejected: paperclip_duplicate_payload_rejected=1
+External side effects: none
+```
+
+Monitoring final checkpoint:
+
+```text
+Status: Pass
+Date: 2026-05-16T08:03:14Z
+Elapsed time: more than 24 hours since 2026-05-15T05:24:25Z
+Container: taskhub-prod up 27 hours
 Health: /healthz 200; /api/config 200; /api/reviews 200
 Webhook gate: disabled probe 403
 Runtime: PAPERCLIP_LIVE_MODE=disabled; liveWebhook.enabled=false
@@ -429,10 +453,10 @@ Draft PR routing:
 
 - Target branch: `dev`.
 - Draft PR: #27 (`codex/v04-paperclip-prod-integration` -> `dev`).
-- Draft status: keep draft while V0.4-PROD-04 is active.
-- Ready-for-review condition: 24-hour read-only monitoring passes and PM routes permanent enablement or accepts a pre-permanent merge.
+- Draft status: ready to move out of draft after conflict resolution and verification.
+- Ready-for-review condition: met for pre-permanent merge because 24-hour read-only monitoring passed with no stop condition.
 - PR body must state that the production webhook remains disabled and permanent enablement is not yet accepted.
-- Merge hold: do not merge only on repo readiness if monitoring finds any stop condition.
+- Merge hold: release only if conflict resolution preserves V0.5 `dev` work and V0.4 production remains disabled.
 
 ---
 
@@ -450,14 +474,14 @@ Draft PR routing:
 ## Next Recommended Session
 
 ```text
-Role: QA Release Owner / Runtime Owner
-Task: Continue the 24-hour read-only production monitoring window and keep the production webhook hard gate disabled until PM accepts permanent enablement
+Role: Integration Owner / PM / Runtime Owner
+Task: Close V0.4 PR #27 into dev after verification, then decide whether to execute the separate permanent-enable runtime switch
 Branch: codex/v04-paperclip-prod-integration
 Worktree: trisilar-task-hub-v04-paperclip-prod-integration
-Owned files: V0.4 tracker docs and runtime evidence only; no product code changes unless monitoring exposes a defect
-Acceptance criteria: production runtime remains healthy, operations status remains read_only, PAPERCLIP_LIVE_MODE remains disabled, liveWebhook.enabled remains false, Paperclip Settings stays connected with hasSecret true without exposing secret values, canary Review Queue item remains pending, trelloLinked stays 0, warnings contain no danger entries, and no external side effect appears
-Verification: read-only operations status, disabled webhook probe 403, canary session check, queue counts, warning/danger-warning review, and automation evidence from v0-4-paperclip-prod-read-only-monitor
-Stop conditions: health failure, enabled webhook outside PM-approved permanent window, danger warning, auto-approval, Trello/Calendar/Google side effect before human approval, secret exposure, or inability to restore disabled mode
+Owned files: V0.4 tracker docs, PR closeout docs, and runtime evidence only unless PM chooses permanent enablement
+Acceptance criteria: PR #27 preserves latest dev/V0.5 work, V0.4 monitoring pass is recorded, production runtime remains disabled/read_only, and permanent enablement is either deliberately executed with rollback evidence or explicitly held as a runtime decision
+Verification: conflict-marker scan, git diff --check, targeted V0.4 status search, PR #27 mergeability, and production disabled/read_only runtime check
+Stop conditions: merge conflict that would drop V0.5 work, enabled webhook outside PM-approved permanent window, danger warning, auto-approval, Trello/Calendar/Google side effect before human approval, secret exposure, or inability to restore disabled mode
 ```
 
 ---
@@ -478,3 +502,4 @@ Stop conditions: health failure, enabled webhook outside PM-approved permanent w
 | 2026-05-15 | Ran staged production canary against `taskhub-prod.trisila.online`; valid signed payload created pending Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07`, replay/negative checks passed, no external side effect occurred, and runtime rollback restored disabled mode | Codex Runtime Owner / QA |
 | 2026-05-15 | Started V0.4 24-hour read-only monitoring; first checkpoint passed with production gate disabled, no warnings, no danger warnings, and no external side effects; automation `v0-4-paperclip-prod-read-only-monitor` runs every 6 hours | Codex QA / Runtime Owner |
 | 2026-05-15 | Opened draft PR #27 to `dev` as a hold-state integration PR while 24-hour monitoring remains active; permanent enablement is not accepted yet | Codex Integration Owner |
+| 2026-05-16 | Completed V0.4 24-hour read-only monitoring with final production checkpoint pass; production webhook remains disabled while PR #27 is prepared for closeout and permanent enablement remains a separate runtime decision | Codex QA / PM / Runtime Owner |

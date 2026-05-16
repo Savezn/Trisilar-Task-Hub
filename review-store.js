@@ -1,5 +1,6 @@
-const fs   = require("fs");
 const { randomUUID } = require("crypto");
+const { readRuntimeState, writeRuntimeState, sqliteEnabled } = require("./src/persistence/runtime-state");
+const fs = require("fs");
 const { getDataFilePath } = require("./src/utils/runtime");
 
 function getStoreFile() {
@@ -10,6 +11,14 @@ function getStoreFile() {
 // guarantees read-modify-write cycles are never interleaved. No external lock needed.
 
 function read() {
+  if (sqliteEnabled() && !process.env.REVIEW_STORE_FILE) {
+    return readRuntimeState({
+      name: "reviewSessions",
+      filename: "review-sessions.json",
+      defaultValue: [],
+      logLabel: "review-store",
+    });
+  }
   try { return JSON.parse(fs.readFileSync(getStoreFile(), "utf8")); }
   catch (e) {
     if (e.code === "ENOENT") return [];
@@ -19,6 +28,14 @@ function read() {
 }
 
 function write(sessions) {
+  if (sqliteEnabled() && !process.env.REVIEW_STORE_FILE) {
+    writeRuntimeState({
+      name: "reviewSessions",
+      filename: "review-sessions.json",
+      value: sessions,
+    });
+    return;
+  }
   fs.writeFileSync(getStoreFile(), JSON.stringify(sessions, null, 2));
 }
 

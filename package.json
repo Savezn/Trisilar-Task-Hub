@@ -16,12 +16,18 @@
     "verify:paperclip-cleanup": "node scripts/verify-paperclip-cleanup.js",
     "verify:paperclip-operations": "node scripts/verify-paperclip-operations.js",
     "verify:paperclip-mock": "node scripts/verify-paperclip-mock.js",
+    "verify:sqlite-canary": "node scripts/verify-sqlite-canary.js",
+    "verify:json-rollback": "node scripts/verify-json-rollback.js",
+    "verify:persistence-canary-cycle": "node scripts/verify-persistence-canary-cycle.js",
+    "verify:contracts": "node --test tests/app-contracts.test.js",
+    "migrate:sqlite": "node scripts/migrate-json-state-to-sqlite.js import",
+    "migrate:sqlite:export": "node scripts/migrate-json-state-to-sqlite.js export",
     "verify:rux-trello": "node scripts/verify-rux-trello-connection-ux.js",
     "verify:rux-ai-trace": "node scripts/verify-rux-ai-trace-clarity.js",
     "verify:rux-decision-flow": "node scripts/verify-rux-today-tasks-decision-flow.js",
     "verify:rux-browser-regression": "node scripts/verify-rux-browser-regression.js",
     "check:all": "node scripts/verify-frontend.js && npm run smoke",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test tests/*.test.js"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +36,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.91.1",
     "@google/generative-ai": "^0.24.1",
+    "better-sqlite3": "^12.10.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "googleapis": "^171.4.0",

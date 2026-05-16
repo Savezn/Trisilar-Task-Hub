@@ -13,7 +13,7 @@
 
 This plan creates a design-only research packet for a Claude Design experiment: UI Web Design Version 2 for Trisilar Task Hub.
 
-The experiment runs alongside V0.4 Paperclip production work but does not change product code, runtime config, Cloudflare, Paperclip, or production behavior.
+The experiment runs alongside V0.4 Paperclip production work and V0.5 Foundation Hardening but does not change product code, runtime config, Cloudflare, Paperclip, or production behavior. Production UI V2 implementation is V0.6 work after V0.5 foundation acceptance.
 
 ---
 

@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { google } = require("googleapis");
 const { getAppBaseUrl, getDataFilePath, getGoogleRedirectUri } = require("./runtime");
+const { readRuntimeState, writeRuntimeState, sqliteEnabled } = require("../persistence/runtime-state");
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const CARD_EVENTS_FILE = getDataFilePath("card-events.json");
@@ -12,6 +13,13 @@ const CARD_EVENTS_FILE = getDataFilePath("card-events.json");
  * Read card-events mapping from file
  */
 function readCardEvents() {
+  if (sqliteEnabled()) {
+    return readRuntimeState({
+      name: "cardEvents",
+      filename: "card-events.json",
+      defaultValue: {},
+    });
+  }
   try { return JSON.parse(fs.readFileSync(CARD_EVENTS_FILE, "utf8")); }
   catch { return {}; }
 }
@@ -20,6 +28,14 @@ function readCardEvents() {
  * Write card-events mapping to file
  */
 function writeCardEvents(data) {
+  if (sqliteEnabled()) {
+    writeRuntimeState({
+      name: "cardEvents",
+      filename: "card-events.json",
+      value: data,
+    });
+    return;
+  }
   fs.writeFileSync(CARD_EVENTS_FILE, JSON.stringify(data, null, 2));
 }
 

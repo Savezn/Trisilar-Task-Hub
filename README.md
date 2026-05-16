@@ -41,6 +41,8 @@ Open the app at `http://localhost:3000`.
 | `GEMINI.md` | Gemini-specific project workflow rules |
 | `docs/README.md` | Reference, archive, and design artifact index |
 | `docs/plans/VERSION_0_2_PLAN.md` | Main V0.2 branch/workstream plan |
+| `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md` | V0.5 persistence, tests, contracts, and SQLite foundation plan |
+| `docs/plans/CODEX_PARALLEL_PROJECT_HANDOFF.md` | Codex Desktop project-to-worktree mapping and starting prompts |
 | `docs/reference/PROJECT_CONTEXT.md` | Stable product and operating context |
 | `docs/reference/ARCHITECTURE.md` | Current technical architecture reference |
 | `docs/reference/FILE_ORGANIZATION.md` | File placement rules for future files |
