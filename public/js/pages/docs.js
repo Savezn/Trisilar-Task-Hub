@@ -8,7 +8,7 @@ async function showDocsPage() {
   S.currentBoardId = null;
   S.currentGroupId = null;
   $("board-title").textContent = "Docs";
-  $("board-subtitle").textContent = "Paperclip mock artifacts";
+  $("board-subtitle").textContent = "AI trace and evidence";
   $("add-list-btn").classList.add("hidden");
 
   const content = $("board-content");
@@ -23,7 +23,12 @@ async function showDocsPage() {
     S.docsReviewSessions = Array.isArray(reviewSessions) ? reviewSessions : [];
     renderDocsPage(payload, S.docsReviewSessions);
   } catch (e) {
-    content.innerHTML = `<div class="empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Failed to load Docs</h3><p>${esc(e.message)}</p></div>`;
+    content.innerHTML = `
+      <div class="empty-state docs-trace-unavailable">
+        <div class="empty-icon">${icon("alert")}</div>
+        <h3>Docs trace is unavailable</h3>
+        <p>Task Hub could not load the local Docs / AI Trace surface. Check the Paperclip docs connector or try again; no external action ran.</p>
+      </div>`;
   }
 }
 
@@ -34,6 +39,7 @@ function renderDocsPage(payload, reviewSessions = []) {
   const visibleDocuments = applyDocsFiltersAndSort(documents, filters);
   const selected = selectDocsArtifact(visibleDocuments, documents);
   const content = $("board-content");
+  const summary = buildDocsTraceSummary(documents, reviewSessions);
 
   const page = document.createElement("div");
   page.className = "docs-page";
@@ -42,7 +48,7 @@ function renderDocsPage(payload, reviewSessions = []) {
       <div>
         <div class="docs-kicker">${icon("layout")} Paperclip docs</div>
         <h1 class="docs-title">Agent Documents</h1>
-        <p class="docs-subtitle">Local mock artifacts normalized through the Paperclip docs contract. Live Paperclip remains blocked.</p>
+        <p class="docs-subtitle">AI and Paperclip evidence normalized through the Docs trace contract. Review Queue remains the human gate before external writes.</p>
       </div>
       <div class="docs-source-card">
         <span>Mode</span>
@@ -50,6 +56,7 @@ function renderDocsPage(payload, reviewSessions = []) {
         <small>${esc(payload.source?.workspaceId || "local fixture")}</small>
       </div>
     </section>
+    ${renderDocsTraceSummary(summary)}
     <section class="docs-toolbar" aria-label="Docs controls">
       <label class="docs-search">
         ${icon("search")}
@@ -89,13 +96,13 @@ function renderDocsPage(payload, reviewSessions = []) {
 
   const list = $("docs-list");
   if (!documents.length) {
-    list.innerHTML = '<div class="docs-empty">No mock document artifacts available.</div>';
-    $("docs-viewer").innerHTML = '<div class="docs-empty">Select a document to preview it.</div>';
+    list.innerHTML = '<div class="docs-empty">No agent documents yet.</div>';
+    $("docs-viewer").innerHTML = '<div class="docs-empty">AI/Paperclip evidence and linked Review Queue trace will appear here after document artifacts are available.</div>';
     return;
   }
   if (!visibleDocuments.length) {
     list.innerHTML = '<div class="docs-empty">No documents match the current filters.</div>';
-    $("docs-viewer").innerHTML = '<div class="docs-empty">Adjust search or filters to preview a document.</div>';
+    $("docs-viewer").innerHTML = '<div class="docs-empty">Clear search or filters to restore the trace list.</div>';
     return;
   }
 
@@ -118,6 +125,43 @@ function renderDocsPage(payload, reviewSessions = []) {
   });
 
   renderDocsViewer(selected, payload.source, reviewSessions);
+}
+
+function buildDocsTraceSummary(documents = [], reviewSessions = []) {
+  const related = documents.flatMap(doc => buildDocsRelatedTaskStatus(doc, reviewSessions));
+  return {
+    total: documents.length,
+    linked: related.filter(task => task.found).length,
+    missing: related.filter(task => !task.found).length,
+    evidence: documents.reduce((sum, doc) => sum + (doc.sourceEvidence || []).length, 0),
+  };
+}
+
+function renderDocsTraceSummary(summary) {
+  return `
+    <section class="docs-trace-summary" aria-label="Docs trace summary">
+      <div class="docs-trace-summary-card">
+        <span>Documents</span>
+        <strong>${summary.total}</strong>
+        <small>trace list</small>
+      </div>
+      <div class="docs-trace-summary-card ${summary.linked ? "is-linked" : ""}">
+        <span>Linked reviews</span>
+        <strong>${summary.linked}</strong>
+        <small>local tasks found</small>
+      </div>
+      <div class="docs-trace-summary-card ${summary.missing ? "is-missing" : ""}">
+        <span>Missing links</span>
+        <strong>${summary.missing}</strong>
+        <small>needs human context</small>
+      </div>
+      <div class="docs-trace-summary-card">
+        <span>Evidence</span>
+        <strong>${summary.evidence}</strong>
+        <small>source records</small>
+      </div>
+    </section>
+  `;
 }
 
 function normalizeDocsFilters(filters = {}) {
@@ -344,7 +388,7 @@ function renderDocsRelatedTaskStatus(relatedStatuses) {
           <span class="chip ${docsTaskStatusClass(task.status)}">${esc(docsReviewStatusLabel(task.status))}</span>
           <small>${esc(task.owner || "Unassigned")}</small>
           <small>${task.deadline ? esc(formatThaiDateTime(task.deadline)) : "No due date"}</small>
-          ${task.found ? "" : '<small class="docs-related-missing-note">Mock link is preserved; create or attach a local Review Queue task to resolve it.</small>'}
+          ${task.found ? "" : '<small class="docs-related-missing-note">The document keeps this trace link, but this local Task Hub store cannot find the Review Queue task. Attach or create a local review task to resolve it.</small>'}
         </div>
       `).join("")}
     </div>

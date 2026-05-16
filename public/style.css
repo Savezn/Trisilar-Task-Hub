@@ -8225,6 +8225,7 @@ a { text-decoration: none; }
   align-items: center;
   background: var(--card-bg);
   border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
   border-radius: var(--radius);
   display: flex;
   gap: 16px;
@@ -8232,6 +8233,64 @@ a { text-decoration: none; }
   padding: 18px 20px;
   box-shadow: var(--shadow-sm);
 }
+
+.docs-trace-summary {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.docs-trace-summary-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 14px;
+}
+
+.docs-trace-summary-card span {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.docs-trace-summary-card strong {
+  color: var(--text);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.docs-trace-summary-card small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.docs-trace-summary-card.is-linked {
+  border-color: #bbf7d0;
+}
+
+.docs-trace-summary-card.is-linked strong {
+  color: #047857;
+}
+
+.docs-trace-summary-card.is-missing {
+  border-color: #fed7aa;
+}
+
+.docs-trace-summary-card.is-missing strong {
+  color: #9a3412;
+}
+
+.docs-trace-unavailable {
+  border: 1px solid #fed7aa;
+  background: #fff7ed;
+}
+
 .docs-kicker {
   align-items: center;
   color: var(--text-muted);
@@ -8544,7 +8603,8 @@ a { text-decoration: none; }
   padding: 10px 12px;
 }
 .docs-related-status-missing {
-  border-color: #cbd5e1;
+  background: #fff7ed;
+  border-color: #fed7aa;
 }
 .docs-related-status-row strong {
   color: var(--text);
@@ -8558,6 +8618,8 @@ a { text-decoration: none; }
   min-width: 0;
 }
 .docs-related-missing-note {
+  color: #9a3412;
+  font-weight: 700;
   grid-column: 1 / -1;
 }
 .docs-linked-tasks {
@@ -8827,6 +8889,7 @@ a { text-decoration: none; }
   }
   .docs-source-card { flex: 0 0 auto; width: 100%; }
   .docs-toolbar { grid-template-columns: 1fr 1fr; }
+  .docs-trace-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .docs-search,
   .docs-result-count { grid-column: 1 / -1; }
   .docs-result-count { text-align: left; }
@@ -8843,4 +8906,5 @@ a { text-decoration: none; }
   .docs-attribution { grid-template-columns: 1fr; }
   .docs-toolbar,
   .docs-metadata-panel { grid-template-columns: 1fr; }
+  .docs-trace-summary { grid-template-columns: 1fr; }
 }
