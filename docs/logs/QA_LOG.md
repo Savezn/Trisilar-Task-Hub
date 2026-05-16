@@ -30,6 +30,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | Operations/Security Docs Baseline | Docs QA pass / PR pending | `codex/ops-docs-governance` |
 | UI Web Design V2 Claude Design Handoff | Docs QA pass / design handoff ready | `codex/ui-v2-design-guidelines` |
 | V0.5-FND-02/03/04/05 - Foundation tests, contracts, SQLite migration, local integration QA, hosted dev-demo SQLite canary, and short monitor | Runtime QA Pass / PM Accepted | `taskhub-dashboard.service` |
+| V0.6-S2 - All Tasks Inbox | QA pass / PM merge review next | `codex/v06-s2-all-tasks-inbox` |
 | V0.4/V0.5 Post-Monitoring Handoff Docs | Docs QA pass / PR pending | `codex/v04-final-handoff-docs` |
 | B10 — Tasks label group scroll | ✅ QA Pass | `ac48125` |
 | B11 — Pending Review badge ซ้ำ | ✅ QA Pass | `8c73b7d` |
