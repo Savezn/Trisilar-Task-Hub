@@ -19,6 +19,7 @@
     "verify:sqlite-canary": "node scripts/verify-sqlite-canary.js",
     "verify:json-rollback": "node scripts/verify-json-rollback.js",
     "verify:persistence-canary-cycle": "node scripts/verify-persistence-canary-cycle.js",
+    "verify:prod-trello-runtime": "node scripts/verify-prod-trello-runtime.js",
     "verify:contracts": "node --test tests/app-contracts.test.js",
     "migrate:sqlite": "node scripts/migrate-json-state-to-sqlite.js import",
     "migrate:sqlite:export": "node scripts/migrate-json-state-to-sqlite.js export",
