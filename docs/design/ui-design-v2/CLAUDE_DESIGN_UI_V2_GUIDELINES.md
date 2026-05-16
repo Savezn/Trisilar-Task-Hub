@@ -1,11 +1,11 @@
 # Claude Design UI V2 Guidelines - Trisilar Task Hub
 
 **Doc Role:** Prompt-ready UI/UX guideline for Claude Design
-**Status:** Ready for design experiment
+**Status:** Superseded as active prompt; retained as design guardrail because Claude output has been received
 **Owner:** PM / UX Owner
 **Created:** 2026-05-15
-**Updated by:** Codex PM
-**Related Docs:** `README.md`, `../../plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md`, `../ui-design-v1-0/README.md`, `../../reference/ORGANIZATION_OPERATING_MODEL.md`, `../../logs/V0_3_RUX_FINDINGS.md`
+**Updated by:** Codex UX Owner / Frontend Design
+**Related Docs:** `README.md`, `UI_V2_CLAUDE_OUTPUT_REVIEW.md`, `UI_V2_DESIGN_SYSTEM_HANDOFF.md`, `UI_V2_ROUTE_SCREEN_SPECS.md`, `CLAUDE_DESIGN_UI_V2_PROMPT_PACKET.md`, `../../plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md`, `../ui-design-v1-0/README.md`, `../../reference/ORGANIZATION_OPERATING_MODEL.md`, `../../logs/V0_3_RUX_FINDINGS.md`
 
 ---
 
@@ -14,6 +14,8 @@
 Design UI Web Design Version 2 for Trisilar Task Hub.
 
 This is an internal operations command center, not a marketing website. Build the actual application experience as the first screen. Do not create a landing page, hero section, sales page, or decorative product site.
+
+Claude Design output has already been received and imported under `prototype/`. Use `UI_V2_CLAUDE_OUTPUT_REVIEW.md` as the current review summary, `UI_V2_DESIGN_SYSTEM_HANDOFF.md` as the design-system handoff, and `UI_V2_ROUTE_SCREEN_SPECS.md` to check each route/state. `CLAUDE_DESIGN_UI_V2_PROMPT_PACKET.md` is retained as historical/reference prompt material only. These artifacts are still design-only and do not authorize production code changes.
 
 ---
 

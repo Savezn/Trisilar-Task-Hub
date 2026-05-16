@@ -5,7 +5,7 @@
 **Owner:** PM / UX Owner
 **Created:** 2026-05-15
 **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../design/ui-design-v2/README.md`, `../design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md`, `../design/ui-design-v1-0/README.md`, `VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`, `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../design/ui-design-v2/README.md`, `../design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md`, `../design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`, `../design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`, `VERSION_0_6_UI_V2_PLANNING_SCOPE.md`, `../design/ui-design-v1-0/README.md`, `VERSION_0_2_W2_UI_REDESIGN_DISCOVERY_PLAN.md`, `VERSION_0_3_PRODUCT_RELIABILITY_UX_STABILIZATION_PLAN.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`
 
 ---
 
@@ -13,7 +13,7 @@
 
 This plan creates a design-only research packet for a Claude Design experiment: UI Web Design Version 2 for Trisilar Task Hub.
 
-The experiment produced the UI V2 design handoff. V0.5 Foundation Hardening is now accepted, so production UI V2 implementation may start as V0.6 work. V0.6 still must not change runtime config, Cloudflare, Paperclip, production behavior, secrets, webhook auth, or Team OS product scope.
+The experiment produced the UI V2 design handoff, imported prototype, PM closeout packet, and planning artifacts. V0.5 Foundation Hardening is now accepted, so production UI V2 implementation may start as V0.6 work. V0.6 still must not change runtime config, Cloudflare, Paperclip, production behavior, secrets, webhook auth, or Team OS product scope.
 
 ---
 
@@ -87,6 +87,11 @@ These references are guardrails, not a requirement to copy a design system.
 | Deliverable | Path | Owner |
 |---|---|---|
 | Claude Design guideline | `docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md` | PM / UX Owner |
+| Imported design prototype | `docs/design/ui-design-v2/prototype/` | UX Owner / Frontend Design |
+| Claude output review | `docs/design/ui-design-v2/UI_V2_CLAUDE_OUTPUT_REVIEW.md` | UX Owner / Frontend Design |
+| V0.6 UI V2 planning artifacts | `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md` | PM / UX Owner |
+| UI V2 PM closeout / handoff | `docs/design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md` | PM / UX Owner |
+| V0.6 UI V2 planning scope | `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` | PM / UX Owner |
 | Design artifact index | `docs/design/ui-design-v2/README.md` | Documentation Workflow Owner |
 | PM allocation plan | `docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md` | PM |
 | Routing/index updates | `CURRENT_SPRINT.md`, `TODO.md`, `docs/README.md` | PM / Documentation Workflow Owner |
@@ -127,10 +132,11 @@ Runtime checks are intentionally skipped because this is documentation and desig
 
 ```text
 Role: Frontend Dev / UX Owner / QA / PM
-Task: Start V0.6 UI V2 implementation planning from docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md.
+Task: Start V0.6 UI V2 implementation planning from the accepted UI V2 handoff packet under docs/design/ui-design-v2/.
 
 Rules:
 - Implement route-by-route; do not start a full rewrite.
+- Use UI_V2_PM_CLOSEOUT_HANDOFF.md for accepted paths/evidence and UI_V2_V0_6_PLANNING_ARTIFACTS.md for route slice map, token migration, component sequence, responsive QA, and Review Queue safety.
 - Preserve Trello as execution surface and Task Hub as command/review layer.
 - Preserve Review Queue as the human approval gate.
 - Cover desktop and mobile.

@@ -29,7 +29,7 @@
 | V0.5 Foundation Hardening | PM Accepted after hosted dev/demo SQLite canary and short monitor passed on `taskhub-dashboard.service` | Deterministic `npm test`, app-owned contracts, SQLite migration/import/export, fail-loud rollback export, env-flagged SQLite runtime reader, Paperclip safety checks, post-merge QA, hosted canary verification, rollback proof, and two short monitor checkpoints passed without production/runtime side effects |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
 | Operations/security docs baseline | Merged to `origin/dev@681be25` via PR #25 | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge; branch/worktree cleanup completed |
-| UI Web Design V2 handoff | Design handoff ready; V0.6 implementation route opened | Research allocation plan and Claude-ready UI/UX guideline are under `docs/design/ui-design-v2/`; V0.6 implementation must stay route-by-route with no runtime config, Cloudflare, Paperclip, production, Team OS, or full rewrite scope |
+| UI Web Design V2 handoff | Design handoff and planning artifacts ready; V0.6 implementation route opened | Prototype, output review, planning artifacts, closeout packet, and Claude-ready UI/UX guideline are under `docs/design/ui-design-v2/`; V0.6 implementation must stay route-by-route with no runtime config, Cloudflare, Paperclip, production, Team OS, or full rewrite scope |
 
 ---
 
@@ -80,7 +80,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, local integration QA, hosted dev/demo SQLite canary, and short monitor | PM Accepted; dev/demo remains `TASKHUB_STATE_BACKEND=sqlite` as a dev/demo canary, production unchanged | PM complete / V0.6 route ready |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
-| UIV2-01 | Claude Design UI V2 research handoff | Design handoff ready; V0.6 implementation route opened on accepted V0.5 foundation | PM / UX Owner / Frontend Dev / QA |
+| UIV2-01 | UI V2 design-system handoff and V0.6 route | Design handoff, prototype, PM closeout, and planning artifacts ready; V0.6 implementation route opened on accepted V0.5 foundation | PM / UX Owner / Frontend Dev / QA |
 
 ---
 
@@ -117,6 +117,9 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | Team onboarding guide | `docs/operations/TEAM_ONBOARDING_GUIDE.md` |
 | UI V2 Claude Design handoff plan | `docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md` |
 | UI V2 Claude Design guideline | `docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md` |
+| UI V2 PM closeout / handoff | `docs/design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md` |
+| UI V2 V0.6 planning artifacts | `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md` |
+| V0.6 UI V2 planning scope | `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` |
 
 ---
 
@@ -183,6 +186,9 @@ Current release state:
 V0.6 baseline:
 - Start from `docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md`.
 - Start from `docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md`.
+- Use `docs/design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md` for PM/UX closeout, accepted paths, evidence, and hold boundaries that were satisfied by V0.5 acceptance.
+- Use `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md` for route slice map, token migration map, component build sequence, responsive QA matrix, and Review Queue safety spec.
+- Use `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` for the original planning gate and implementation-ready conditions.
 - Use a dedicated V0.6 branch/worktree from latest `origin/dev`.
 - Implement route-by-route, starting with shell/navigation and route states before deeper route rewrites.
 - Preserve Review Queue behavior and all public API/data contracts guarded by V0.5.
