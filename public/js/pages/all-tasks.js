@@ -106,6 +106,7 @@ function renderAllTasks(cards) {
     return `
       <span class="task-source-pill">${taskSourceLabel(card)}</span>
       <span class="task-context-label">${esc(taskDecisionContext(card))}</span>
+      <span class="task-owner-context">Owner: ${esc(ownerText(card) || "Unassigned")}</span>
       <span class="task-next-action">${esc(taskNextActionLabel(card))}</span>
     `;
   }
@@ -292,6 +293,7 @@ function renderAllTasks(cards) {
           <div class="tasks-empty-icon">${icon(search || labelFilter || ownerFilter || filter !== "all" ? "search" : "checkSquare")}</div>
           <h3>${allCards.length ? "No tasks match this view" : "No tasks found"}</h3>
           <p>${allCards.length ? "Adjust search, filters, labels, owners, or grouping to widen the inbox." : "Connected boards did not return any visible tasks."}</p>
+          ${allCards.length ? '<button class="btn btn-primary btn-sm" type="button" data-action="clear-filters">Clear filters</button>' : ""}
         </div>`;
     }
     return groupRows(rows).map(group => `
@@ -380,6 +382,9 @@ function renderAllTasks(cards) {
     const filtered = getFiltered();
     const rows = getSorted(filtered);
     const boardsCount = new Set(allCards.map(card => card.boardId || card.boardName).filter(Boolean)).size;
+    const hiddenBoardCount = (S.config.hiddenBoards || []).length;
+    const unassignedCount = allCards.filter(card => !(card.members || []).length).length;
+    const activeFilterCount = [filter !== "all", search.trim(), labelFilter, ownerFilter].filter(Boolean).length;
     window._filteredCards = rows;
 
     const labelChipHtml = allLabels.map(label =>
@@ -400,6 +405,29 @@ function renderAllTasks(cards) {
           <button class="btn btn-ghost btn-sm at-export-btn" id="at-export-btn" title="Export filtered tasks as CSV">${icon("upload")} Export CSV</button>
         </div>
 
+        <div class="tasks-scan-strip" aria-label="Task inbox summary">
+          <div class="tasks-scan-cell is-visible">
+            <span>Visible</span>
+            <strong>${rows.length}</strong>
+            <em>${allCards.length} total</em>
+          </div>
+          <div class="tasks-scan-cell is-urgent">
+            <span>Overdue</span>
+            <strong>${c.overdue}</strong>
+            <em>needs triage</em>
+          </div>
+          <div class="tasks-scan-cell">
+            <span>Due today</span>
+            <strong>${c.today}</strong>
+            <em>daily focus</em>
+          </div>
+          <div class="tasks-scan-cell ${unassignedCount ? "is-warning" : ""}">
+            <span>Unassigned</span>
+            <strong>${unassignedCount}</strong>
+            <em>owner clarity</em>
+          </div>
+        </div>
+
         <div class="tasks-toolbar">
           <label class="tasks-search" for="tasks-search-input">
             ${icon("search")}
@@ -418,6 +446,7 @@ function renderAllTasks(cards) {
         </div>
 
         <div class="tasks-meta-toolbar">
+          <span class="tasks-saved-view">Saved view: Current filters${activeFilterCount ? ` (${activeFilterCount} active)` : ""}</span>
           ${labelChipHtml ? `<span class="at-chip-label">Label</span><div class="tasks-chip-scroll">${labelChipHtml}</div>` : ""}
           ${ownerChipHtml ? `<span class="at-chip-label">Owner</span><div class="tasks-chip-scroll">${ownerChipHtml}</div>` : ""}
           <label class="tasks-group-select">
@@ -433,6 +462,8 @@ function renderAllTasks(cards) {
             </select>
           </label>
         </div>
+
+        ${hiddenBoardCount ? `<div class="tasks-hidden-notice">${icon("alert")} ${hiddenBoardCount} hidden board${hiddenBoardCount === 1 ? "" : "s"} excluded from this inbox. Manage visibility in Settings.</div>` : ""}
 
         <div class="task-table tasks-inbox-table">
           <div class="task-table-head">
@@ -485,6 +516,14 @@ function renderAllTasks(cards) {
     if (exportBtn) exportBtn.onclick = exportTasksCSV;
 
     const taskRows = content.querySelector("#task-rows");
+    content.querySelector("[data-action='clear-filters']")?.addEventListener("click", () => {
+      filter = "all";
+      search = "";
+      labelFilter = "";
+      ownerFilter = "";
+      render();
+    });
+
     taskRows?.addEventListener("click", e => {
       const row = e.target.closest(".task-row");
       if (!row) return;

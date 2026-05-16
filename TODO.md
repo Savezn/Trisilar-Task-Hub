@@ -87,7 +87,7 @@ Use `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md` and ADRs `ADR_0003` / 
 
 ### V0.6 - UI V2 Design System Implementation
 
-Status: Active implementation route. V0.6-S0 is merged; V0.6-S1 Today command center has QA pass evidence on `codex/v06-s1-today-command-center`; PM merge review is next.
+Status: Active implementation route. V0.6-S0 and V0.6-S1 are merged; V0.6-S2 All Tasks inbox has QA pass evidence on `codex/v06-s2-all-tasks-inbox`; PM merge review is next.
 
 Goal: promote UI V2 tokens and component language into production route-by-route on top of the accepted V0.5 foundation, without forcing an uncontrolled frontend rewrite.
 
@@ -115,7 +115,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Complete; production permanent enablement active with Review Queue gate |
 | L7 | V0.5 Foundation Hardening | Complete / PM Accepted after hosted dev/demo SQLite canary, rollback proof, and short monitor passed |
-| L8 | V0.6 UI V2 Design System Implementation | S1 Today QA pass / PM merge review |
+| L8 | V0.6 UI V2 Design System Implementation | S2 All Tasks QA pass / PM merge review |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
 
