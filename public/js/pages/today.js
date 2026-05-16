@@ -25,15 +25,22 @@ async function showTodayPage() {
     const todayStart    = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
     const tomorrowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toISOString();
 
-    const [sessions, calEvents] = await Promise.all([
+    const [sessions, calEvents, googleTasksStatus, paperclipOps] = await Promise.all([
       api.get("/api/reviews").catch(() => []),
       CAL.status?.connected
         ? api.get(`/api/calendar/events?start=${encodeURIComponent(todayStart)}&end=${encodeURIComponent(tomorrowStart)}`).catch(() => [])
         : Promise.resolve(null),
+      api.get("/api/google-tasks/status").catch(() => null),
+      api.get("/api/integrations/paperclip/operations/status").catch(() => null),
     ]);
 
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
-    renderTodayPage(getAllowedCards(), dateStr, sessions, calEvents);
+    renderTodayPage(getAllowedCards(), dateStr, sessions, calEvents, {
+      trello: trelloConnectionSummary(),
+      calendar: CAL.status,
+      googleTasks: googleTasksStatus,
+      paperclip: paperclipOps,
+    });
   } catch (e) {
     content.innerHTML = trelloRouteUnavailableHtml("Today");
   }
@@ -67,15 +74,22 @@ function todayNextActionLabel(card, state) {
   return card.dueComplete ? "Next action: reopen if needed" : "Next action: open task";
 }
 
+function todayOwnerLabel(card) {
+  const members = Array.isArray(card.members) ? card.members : [];
+  const names = members.map(m => m.fullName || m.username || m.name).filter(Boolean);
+  return names.length ? names.slice(0, 2).join(", ") + (names.length > 2 ? ` +${names.length - 2}` : "") : "Unassigned";
+}
+
 function buildTodayDecisionCue(card, state) {
   return `
     <span class="today-decision-chip">Source: Trello</span>
     <span class="today-decision-chip">Context: ${esc(todayContextLabel(card))}</span>
+    <span class="today-decision-chip">Owner: ${esc(todayOwnerLabel(card))}</span>
     <span class="today-decision-chip today-next-action">${esc(todayNextActionLabel(card, state))}</span>
   `;
 }
 
-function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
+function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null, integrations = {}) {
   const content = $("board-content");
   const now = new Date();
   const todayStr = now.toDateString();
@@ -129,6 +143,8 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
     </div>
   `;
 
+  page.appendChild(buildTodayPriorityLane({ hero, overdue, dueToday, pendingTasks, activeReviewSessions, sessions }));
+
   const statsRow = document.createElement("div");
   statsRow.className = "today-stats-row";
   statsRow.innerHTML = `
@@ -155,27 +171,7 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
   `;
   page.appendChild(statsRow);
 
-  if (hero) {
-    const isHeroOverdue = overdue.some(c => c.id === hero.id);
-    const heroState = isHeroOverdue ? "overdue" : dueToday.some(c => c.id === hero.id) ? "today" : "upcoming";
-    const focus = document.createElement("div");
-    focus.className = "today-focus-card";
-    focus.innerHTML = `
-      <div class="today-focus-eyebrow">${typeof icon === "function" ? icon(isHeroOverdue ? "alert" : "target") : ""}Start here - ${isHeroOverdue ? "Most overdue" : "Next up"} - Source: Trello</div>
-      <div class="today-focus-time">${esc(relativeDue(hero.due))}</div>
-      <div class="today-focus-title">${esc(hero.name)}</div>
-      <div class="today-focus-meta">
-        <span>Context: ${esc(todayContextLabel(hero))}</span>
-        <span>${esc(todayNextActionLabel(hero, heroState))}</span>
-        ${hero.dueComplete ? "<span>Done</span>" : ""}
-      </div>
-      <div class="today-focus-actions">
-        <button class="btn btn-primary btn-sm" type="button" data-today-card-open="${esc(hero.id)}">Open task</button>
-        <button class="btn btn-ghost btn-sm" type="button" data-today-card-done="${esc(hero.id)}">${typeof icon === "function" ? icon("check") : ""}Mark done</button>
-      </div>
-    `;
-    page.appendChild(focus);
-  }
+  page.appendChild(buildTodayIntegrationStrip(integrations, pendingCount));
 
   const grid = document.createElement("div");
   grid.className = "today-grid";
@@ -236,22 +232,6 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
   }
   left.appendChild(upcomingSec);
 
-  if (pendingCount) {
-    const firstSession = (sessions || []).find(s => (s.tasks || []).some(t => t.status === "pending"));
-    const reviewCard = document.createElement("div");
-    reviewCard.className = "today-review-card";
-    reviewCard.innerHTML = `
-      <div class="today-focus-eyebrow" style="color:var(--purple)">${typeof icon === "function" ? icon("sparkles") : ""}Needs human approval - ${pendingCount} pending task${pendingCount === 1 ? "" : "s"}</div>
-      <div class="today-review-card-title">${esc(firstSession?.title || "Meeting tasks waiting for review")}</div>
-      <div class="today-review-note">Review before execution. Pending items are not active Trello work until approved.</div>
-      <div class="today-review-card-meta">
-        <span>${activeReviewSessions} active session${activeReviewSessions === 1 ? "" : "s"}</span>
-        <button class="btn btn-primary btn-sm" type="button" data-today-action="review">Review</button>
-      </div>
-    `;
-    right.appendChild(reviewCard);
-  }
-
   right.appendChild(buildQuickAddWidget());
   right.appendChild(buildCalendarWidget(calEvents));
 
@@ -262,6 +242,116 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null) {
   content.innerHTML = "";
   content.appendChild(page);
   wireTodayActions(page, cards);
+}
+
+function buildTodayPriorityLane({ hero, overdue, dueToday, pendingTasks, activeReviewSessions, sessions }) {
+  const lane = document.createElement("div");
+  lane.className = "today-priority-lane";
+
+  const focusCard = document.createElement("div");
+  focusCard.className = "today-priority-card";
+  if (hero) {
+    const isHeroOverdue = overdue.some(c => c.id === hero.id);
+    const heroState = isHeroOverdue ? "overdue" : dueToday.some(c => c.id === hero.id) ? "today" : "upcoming";
+    focusCard.innerHTML = `
+      <div class="today-priority-eyebrow">${typeof icon === "function" ? icon(isHeroOverdue ? "alert" : "target") : ""}Top priority - ${isHeroOverdue ? "Most overdue" : "Next up"}</div>
+      <div class="today-priority-time">${esc(relativeDue(hero.due))}</div>
+      <div class="today-priority-title">${esc(hero.name)}</div>
+      <div class="today-priority-meta">
+        <span>Source: Trello</span>
+        <span>Owner: ${esc(todayOwnerLabel(hero))}</span>
+        <span>Context: ${esc(todayContextLabel(hero))}</span>
+        <span>${esc(todayNextActionLabel(hero, heroState))}</span>
+      </div>
+      <div class="today-priority-actions">
+        <button class="btn btn-primary btn-sm" type="button" data-today-card-open="${esc(hero.id)}">Open task</button>
+        <button class="btn btn-ghost btn-sm" type="button" data-today-card-done="${esc(hero.id)}">${typeof icon === "function" ? icon("check") : ""}Mark done</button>
+      </div>
+    `;
+  } else {
+    focusCard.classList.add("is-empty");
+    focusCard.innerHTML = `
+      <div class="today-priority-eyebrow">${typeof icon === "function" ? icon("check") : ""}No priority due work</div>
+      <div class="today-priority-title">Today is clear from Trello due work.</div>
+      <div class="today-priority-meta"><span>Check Review Queue or use Quick add if new work came in.</span></div>
+    `;
+  }
+  lane.appendChild(focusCard);
+
+  const pendingCount = pendingTasks.length;
+  const firstSession = (sessions || []).find(s => (s.tasks || []).some(t => t.status === "pending"));
+  const firstTask = pendingTasks[0];
+  const reviewCard = document.createElement("button");
+  reviewCard.type = "button";
+  reviewCard.className = `today-review-pressure${pendingCount ? "" : " is-clear"}`;
+  reviewCard.dataset.todayAction = "review";
+  reviewCard.innerHTML = `
+    <div class="today-review-pressure-head">
+      <span>${typeof icon === "function" ? icon("sparkles") : ""}Review Queue pressure</span>
+      <strong>${pendingCount}</strong>
+    </div>
+    <div class="today-review-pressure-kicker">Needs human approval</div>
+    <div class="today-review-pressure-title">${esc(firstTask?.title || firstSession?.title || "No pending review work")}</div>
+    <div class="today-review-pressure-copy">
+      ${pendingCount
+        ? `${activeReviewSessions} active session${activeReviewSessions === 1 ? "" : "s"}. Pending items are not active Trello work until approved.`
+        : "Human gate is clear. Paperclip/AI work still requires review before external side effects."}
+    </div>
+    <div class="today-review-pressure-link">Open Review Queue</div>
+  `;
+  lane.appendChild(reviewCard);
+
+  return lane;
+}
+
+function buildTodayIntegrationStrip(integrations = {}, pendingCount = 0) {
+  const strip = document.createElement("div");
+  strip.className = "today-integration-strip";
+
+  const calendarConnected = Boolean(integrations.calendar?.connected);
+  const googleTasksConnected = Boolean(integrations.googleTasks?.connected);
+  const googleTasksConfigured = Boolean(integrations.googleTasks?.configured);
+  const paperclipConnection = integrations.paperclip?.connection || {};
+  const paperclipConnected = Boolean(paperclipConnection.connected || paperclipConnection.status === "connected");
+
+  const items = [
+    {
+      label: "Trello",
+      state: integrations.trello?.label || "Verified",
+      tone: "ok",
+      detail: "Execution source",
+    },
+    {
+      label: "Calendar",
+      state: calendarConnected ? "Connected" : "Off",
+      tone: calendarConnected ? "ok" : "muted",
+      detail: "Schedule context",
+    },
+    {
+      label: "Google Tasks",
+      state: googleTasksConnected ? "Connected" : googleTasksConfigured ? "Needs reconnect" : "Not configured",
+      tone: googleTasksConnected ? "ok" : googleTasksConfigured ? "warn" : "muted",
+      detail: "Planner source",
+    },
+    {
+      label: "Paperclip",
+      state: paperclipConnected ? "Connected" : pendingCount ? "Review pending" : "No live status",
+      tone: paperclipConnected || pendingCount ? "ai" : "muted",
+      detail: "Controlled intake",
+    },
+  ];
+
+  strip.innerHTML = items.map(item => `
+    <div class="today-integration-item is-${item.tone}">
+      <span class="today-integration-dot"></span>
+      <span class="today-integration-copy">
+        <strong>${esc(item.label)}</strong>
+        <span>${esc(item.state)} - ${esc(item.detail)}</span>
+      </span>
+    </div>
+  `).join("");
+
+  return strip;
 }
 
 function buildQuickAddWidget() {
