@@ -80,7 +80,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, local integration QA, hosted dev/demo SQLite canary, and short monitor | PM Accepted; dev/demo remains `TASKHUB_STATE_BACKEND=sqlite` as a dev/demo canary, production unchanged | PM complete / V0.6 route ready |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
-| UIV2-01 | UI V2 design-system handoff and V0.6 S0 route | S0 implementation QA pass on `codex/v06-s0-ui-foundation`: shell/navigation/token/state foundation only, with screenshot evidence and no forbidden runtime/security/source files touched | PM review / merge |
+| UIV2-01 | UI V2 route-by-route implementation | S0 merged; S1 Today command center QA pass on `codex/v06-s1-today-command-center` with priority lane, Review pressure, integration strip, owner/source/next-action cues, and screenshot evidence | PM review / merge |
 
 ---
 
@@ -176,7 +176,7 @@ Parallel rule:
 
 ```text
 Role: Frontend Dev / UX Owner / QA / PM
-Task: Execute V0.6-S0 UI V2 shell/navigation/token/state foundation from the scoped first-slice plan, without a full rewrite.
+Task: Continue V0.6 route-by-route UI V2 implementation after S0, without a full rewrite.
 
 Current release state:
 - V0.4 production Paperclip intake is no longer blocking follow-on work.
@@ -193,14 +193,14 @@ V0.6 baseline:
 - Use `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` for the original planning gate and implementation-ready conditions.
 - Use `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` for first-slice write ownership, route order, regression targets, and rollback boundary.
 - Use dedicated branch/worktree `codex/v06-s0-ui-foundation` / `trisilar-task-hub-v06-s0-ui-foundation` from latest `origin/dev`.
-- Implement S0 only first: shell/navigation, token layer, and route states before deeper route rewrites.
+- S0 is merged. Continue route-by-route with S1 Today, then S2 All Tasks, then S3 Review Queue.
 - Preserve Review Queue behavior and all public API/data contracts guarded by V0.5.
 - Keep the current static app workflow unless a new ADR explicitly approves a build-system change.
 
-Expected V0.6-S0 output:
-- S0 implementation summary with changed files and route/component coverage.
+- Expected current slice output:
+- Slice implementation summary with changed files and route/component coverage.
 - Browser regression evidence on desktop/mobile.
-- Screenshot evidence for Today and Review Queue on desktop/mobile.
+- Screenshot evidence for affected route desktop/mobile.
 - Confirmation that runtime, Cloudflare, secrets, live Paperclip flags, webhook auth, external integrations, Team OS, and Full Rewrite scope were not touched.
 
 Rules:
