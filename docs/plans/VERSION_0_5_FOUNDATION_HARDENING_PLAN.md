@@ -6,7 +6,7 @@
 **Owner:** PM / Architecture / Dev / QA
 **Created:** 2026-05-15
 **Updated by:** Codex PM
-**Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../testing/TEST_STRATEGY.md`, `../reference/ARCHITECTURE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md`, `../adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md`
+**Related Docs:** `../../CURRENT_SPRINT.md`, `../../TODO.md`, `PROJECT_LADDER.md`, `../testing/TEST_STRATEGY.md`, `../reference/ARCHITECTURE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md`, `../adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md`, `../deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`
 
 ---
 
@@ -168,6 +168,8 @@ Current gate before hosted execution:
 
 Runtime Owner runbook once gates are clear:
 
+Detailed checklist: `../deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`
+
 ```powershell
 # On the hosted dev/demo runtime only, after V0.5 code is deployed from an accepted dev commit.
 # Do not run on production.
@@ -221,9 +223,10 @@ Read:
 - docs/reference/ARCHITECTURE.md
 - docs/reference/DATA_BACKUP_RETENTION_POLICY.md
 - docs/deployment/ENVIRONMENT_MATRIX.md
+- docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md
 
 Expected output:
-- Runtime Owner optionally runs `npm.cmd run verify:persistence-canary-cycle` as a temp-data preflight, then runs `npm.cmd run migrate:sqlite`, starts dev/demo with `TASKHUB_STATE_BACKEND=sqlite`, verifies health/config/reviews/Paperclip read-only status with `npm.cmd run verify:sqlite-canary`, then proves rollback with `npm.cmd run migrate:sqlite:export` and `npm.cmd run verify:json-rollback` if the canary is rolled back.
+- Runtime Owner uses `docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`, optionally runs `npm.cmd run verify:persistence-canary-cycle` as a temp-data preflight, then runs `npm.cmd run migrate:sqlite`, starts dev/demo with `TASKHUB_STATE_BACKEND=sqlite`, verifies health/config/reviews/Paperclip read-only status with `npm.cmd run verify:sqlite-canary`, then proves rollback with `npm.cmd run migrate:sqlite:export` and `npm.cmd run verify:json-rollback` if the canary is rolled back.
 - If host access or deploy readiness is missing, record a blocker instead of changing runtime state.
 - If canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, verify JSON-backed health/config/reviews, and route QA/PM.
 - Production SQLite switch remains out of scope until a separate PM/Runtime acceptance.
@@ -243,3 +246,4 @@ Expected output:
 | 2026-05-15 | Added `verify:sqlite-canary` for Runtime Owner read-only hosted canary verification of SQLite `app_state`, health/config/reviews, and Paperclip operations status before rollback export | Codex Dev / QA |
 | 2026-05-15 | Added `verify:json-rollback` for Runtime Owner read-only rollback verification after removing the SQLite backend flag and restarting JSON-backed dev/demo | Codex Dev / QA |
 | 2026-05-15 | Added `verify:persistence-canary-cycle` local preflight covering JSON import, SQLite runtime verification, rollback export, and JSON runtime verification using temp data only | Codex Dev / QA |
+| 2026-05-16 | Added dedicated Runtime Owner SQLite canary checklist with preflight, backup, stop conditions, rollback proof, and evidence template | Codex Dev / QA |

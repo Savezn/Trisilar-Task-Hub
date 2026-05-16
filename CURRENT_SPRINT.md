@@ -105,6 +105,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.5 Foundation Hardening plan | `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md` |
 | Foundation-before-UI/Team OS ADR | `docs/adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md` |
 | V0.5 persistence/tests/contracts ADR | `docs/adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md` |
+| V0.5 SQLite canary Runtime Owner checklist | `docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md` |
 | Runtime operations runbook | `docs/deployment/RUNTIME_OPERATIONS_RUNBOOK.md` |
 | Environment matrix | `docs/deployment/ENVIRONMENT_MATRIX.md` |
 | Troubleshooting guide | `docs/deployment/TROUBLESHOOTING.md` |
@@ -227,7 +228,7 @@ Completed baseline:
 
 Next V0.5 output:
 - Runtime Owner obtains/uses DigitalOcean host access; this workstation probe to `root@157.230.251.209` returned `Permission denied (publickey)`.
-- On hosted dev/demo only: optionally run `npm.cmd run verify:persistence-canary-cycle` as temp-data preflight, then run `npm.cmd run migrate:sqlite`, set `TASKHUB_STATE_BACKEND=sqlite`, restart/reload, run `npm.cmd run verify:sqlite-canary`, run `npm.cmd run migrate:sqlite:export`, and if rolling back remove the flag/restart then run `npm.cmd run verify:json-rollback`.
+- On hosted dev/demo only: follow `docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`, optionally run `npm.cmd run verify:persistence-canary-cycle` as temp-data preflight, then run `npm.cmd run migrate:sqlite`, set `TASKHUB_STATE_BACKEND=sqlite`, restart/reload, run `npm.cmd run verify:sqlite-canary`, run `npm.cmd run migrate:sqlite:export`, and if rolling back remove the flag/restart then run `npm.cmd run verify:json-rollback`.
 
 Rules:
 - Do not touch production.
