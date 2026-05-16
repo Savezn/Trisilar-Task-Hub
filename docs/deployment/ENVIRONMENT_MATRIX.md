@@ -39,8 +39,8 @@ If this matrix conflicts with live runtime evidence, verify live state and updat
 | Data directory | local fallback or local `APP_DATA_DIR` | dev/demo `APP_DATA_DIR` | `/home/trisilar/taskhub-prod-data` per current V0.4 plan |
 | Paperclip source id | mock/dev as assigned | `paperclip-do-dev` | `paperclip-do-prod` |
 | Paperclip environment | mock/dev as assigned | `dev` | `production` |
-| Default webhook gate | disabled unless task says otherwise | standing dev/demo policy may be enabled | disabled before staged/permanent approval |
-| Live mode | not production | dev/demo observation | `disabled`, `staged`, or `permanent` |
+| Default webhook gate | disabled unless task says otherwise | standing dev/demo policy may be enabled | enabled after V0.4-PROD-05 acceptance |
+| Live mode | not production | dev/demo observation | `permanent` after V0.4-PROD-05 acceptance |
 | Runtime state backend | JSON by default; `TASKHUB_STATE_BACKEND=sqlite` only for local canary | JSON unless Runtime Owner explicitly assigns SQLite canary | JSON unless PM/Runtime accepts a production SQLite switch |
 
 ---
@@ -57,7 +57,7 @@ As of the current V0.4 plan:
 - staged production canary is not approved yet
 - no production Trello, Calendar, or Google Tasks write is required for acceptance
 
-Do not claim permanent production integration until staged QA, read-only monitoring, and PM acceptance are recorded.
+Permanent production Paperclip integration is accepted after staged QA, read-only monitoring, PM acceptance, rollback proof, and production permanent-mode verification are recorded.
 
 ---
 

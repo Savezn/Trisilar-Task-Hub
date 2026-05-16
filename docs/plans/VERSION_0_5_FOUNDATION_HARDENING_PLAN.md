@@ -14,7 +14,7 @@
 
 V0.5 makes the codebase safe enough for larger UI V2 and Team Operating System expansion.
 
-V0.4 production Paperclip setup, staged canary, and 24-hour read-only monitoring have passed. V0.5 hosted dev/demo canary work may proceed from `origin/dev` as long as it does not touch production runtime, secrets, Cloudflare policy, Paperclip live flags, or webhook auth behavior. Production permanent Paperclip enablement remains a separate PM / Runtime Owner runtime decision.
+V0.4 production Paperclip setup, staged canary, 24-hour read-only monitoring, rollback proof, and permanent enablement have passed. V0.5 hosted dev/demo canary work may proceed from `origin/dev` as long as it does not touch production runtime, secrets, Cloudflare policy, Paperclip live flags, or webhook auth behavior.
 
 ---
 
@@ -75,7 +75,7 @@ codex/v05-sqlite-persistence
 
 Can proceed in parallel:
 
-- Optional V0.4 permanent-enable runtime decision, only if PM explicitly opens it.
+- V0.4 routine production monitoring or rollback exercise, only if PM explicitly opens it.
 - UI V2 design-only screens, tokens, component inventory, and implementation handoff notes.
 - Team OS docs-only pilot outline and onboarding assumptions.
 - V0.5 test/contracts planning and non-runtime implementation.
