@@ -1,7 +1,7 @@
 # V0.5 SQLite Canary Runtime Checklist
 
 **Doc Role:** Runtime Owner checklist for the hosted dev/demo SQLite canary and JSON rollback proof
-**Status:** Active handoff / blocked until Runtime Owner host access is available
+**Status:** Hosted dev/demo canary passed / SQLite enabled for observation
 **Owner:** Runtime Owner / Integration Owner / QA
 **Created:** 2026-05-16
 **Updated by:** Codex Dev / QA
@@ -34,8 +34,8 @@ Status on 2026-05-16:
 - Repo-side V0.5 test, contract, migration, SQLite canary, and rollback guards are implemented.
 - Local temp-data preflight exists as `npm.cmd run verify:persistence-canary-cycle`.
 - Latest local preflight from `origin/dev@3159a21` passed `npm.cmd ci`, `npm test` 25/25, and `npm.cmd run verify:persistence-canary-cycle`.
-- Hosted dev/demo execution is blocked from this workstation because SSH to the DigitalOcean host still returns `Permission denied (publickey)`.
-- Runtime Owner must provide or use host access before any hosted dev/demo runtime state changes.
+- Hosted dev/demo execution passed from `trisilar@157.230.251.209` after using the Task Hub SSH key.
+- Dev/demo service `taskhub-dashboard.service` runs with `TASKHUB_STATE_BACKEND=sqlite` for observation.
 
 ---
 

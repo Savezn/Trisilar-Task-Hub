@@ -1,7 +1,7 @@
 # Version 0.5 Foundation Hardening Plan
 
 **Doc Role:** Active V0.5 foundation plan for persistence, tests, and contracts before UI V2 / Team Operating System implementation
-**Status:** FND-05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev-demo SQLite canary selected, local preflight passed on `dev@3159a21`, blocked on host access
+**Status:** FND-05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev-demo SQLite canary passed and remains enabled for observation
 **Version:** V0.5
 **Owner:** PM / Architecture / Dev / QA
 **Created:** 2026-05-15
@@ -163,10 +163,11 @@ Completed before execution:
 
 Current gate before hosted execution:
 
-- Runtime Owner needs working DigitalOcean host access; the local SSH probe to `root@157.230.251.209` returned `Permission denied (publickey)`.
-- Runtime Owner must confirm dev/demo `APP_DATA_DIR`, current source commit, backup location, and expected Paperclip live flag before restart.
+- Correct hosted access is `trisilar@157.230.251.209` with the Task Hub SSH key; `root@157.230.251.209` is not the accepted operator path.
+- Runtime Owner confirmed dev/demo `APP_DATA_DIR`, current source commit, backup location, and expected Paperclip live flag before restart.
 - Production remains out of scope and must not receive `TASKHUB_STATE_BACKEND=sqlite` from this decision.
-- Latest repo-side preflight on 2026-05-16 synced the dedicated V0.5 worktree to `origin/dev@3159a21`; `npm.cmd ci`, `npm test` 25/25, and `npm.cmd run verify:persistence-canary-cycle` passed. The hosted canary was not run because SSH still returned `Permission denied (publickey)`.
+- Hosted canary passed on 2026-05-16 from `/home/trisilar/dashboard/app` at `dev@4ddca3c`: `npm ci`, `npm test` 25/25, `verify:persistence-canary-cycle`, `migrate:sqlite`, service restart with `TASKHUB_STATE_BACKEND=sqlite`, `verify:sqlite-canary`, `migrate:sqlite:export`, and temporary JSON rollback verification passed.
+- Dev/demo remains SQLite-enabled for observation.
 
 Runtime Owner runbook once gates are clear:
 
@@ -214,8 +215,8 @@ Stop and rollback if `verify:sqlite-canary`, `/healthz`, `/api/config`, `/api/re
 ## Next Recommended Session
 
 ```text
-Role: Integration Owner / Runtime Owner
-Task: Execute hosted dev/demo SQLite canary from the latest accepted `dev` commit containing PR #30 foundation code and PR #36 runtime checklist after Runtime Owner host access is available
+Role: Runtime Owner / QA / PM
+Task: Monitor hosted dev/demo SQLite canary and decide V0.5 foundation acceptance
 
 Read:
 - docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md
@@ -228,9 +229,9 @@ Read:
 - docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md
 
 Expected output:
-- Runtime Owner uses `docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`, optionally runs `npm.cmd run verify:persistence-canary-cycle` as a temp-data preflight, then runs `npm.cmd run migrate:sqlite`, starts dev/demo with `TASKHUB_STATE_BACKEND=sqlite`, verifies health/config/reviews/Paperclip read-only status with `npm.cmd run verify:sqlite-canary`, then proves rollback with `npm.cmd run migrate:sqlite:export` and `npm.cmd run verify:json-rollback` if the canary is rolled back.
-- If host access or deploy readiness is missing, record a blocker instead of changing runtime state.
-- If canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, verify JSON-backed health/config/reviews, and route QA/PM.
+- Runtime Owner / QA monitor `taskhub-dashboard.service` with `TASKHUB_STATE_BACKEND=sqlite`, confirm health/config/reviews/Paperclip operations stay healthy and read-only, and record whether the canary remains clean.
+- If PM accepts the observation, route V0.5 foundation acceptance and V0.6 UI V2 implementation readiness.
+- If PM chooses rollback or the canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, verify JSON-backed health/config/reviews with `npm.cmd run verify:json-rollback`, and route QA/PM.
 - Production SQLite switch remains out of scope until a separate PM/Runtime acceptance.
 ```
 
@@ -250,3 +251,4 @@ Expected output:
 | 2026-05-15 | Added `verify:persistence-canary-cycle` local preflight covering JSON import, SQLite runtime verification, rollback export, and JSON runtime verification using temp data only | Codex Dev / QA |
 | 2026-05-16 | Added dedicated Runtime Owner SQLite canary checklist with preflight, backup, stop conditions, rollback proof, and evidence template | Codex Dev / QA |
 | 2026-05-16 | Re-ran V0.5 local preflight on `origin/dev@3159a21`; hosted dev/demo execution remains blocked by DigitalOcean SSH publickey access | Codex Dev / QA |
+| 2026-05-16 | Executed hosted dev/demo SQLite canary on `taskhub-dashboard.service`; SQLite verification and rollback proof passed, and dev/demo remains SQLite-enabled for observation | Codex Runtime Owner / QA |

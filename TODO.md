@@ -79,7 +79,7 @@ Production Paperclip intake is live at `https://taskhub-prod.trisila.online` beh
 
 ### V0.5 - Foundation Hardening
 
-Status: FND-02/03/04/05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev/demo SQLite canary selected and waiting for Runtime Owner host access.
+Status: FND-02/03/04/05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev/demo SQLite canary passed and remains enabled for observation.
 
 Goal: strengthen persistence, test gates, and app-owned data contracts before UI V2 implementation and Team Operating System product work.
 
@@ -114,7 +114,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L4 | V0.2 Integration Release | Complete |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Complete; production permanent enablement active with Review Queue gate |
-| L7 | V0.5 Foundation Hardening | Integrated via PR #30 with runtime checklist via PR #36; hosted dev/demo SQLite canary selected, blocked on Runtime Owner host access |
+| L7 | V0.5 Foundation Hardening | Integrated via PR #30 with runtime checklist via PR #36; hosted dev/demo SQLite canary passed, observation active |
 | L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
@@ -144,8 +144,8 @@ These items are not blockers for the completed V0.2 or V0.3 release baselines. V
 
 | Area | Gap | Recommended path |
 |---|---|---|
-| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | FND-02/03/04/05 integrated through PR #30 at `dev@e3380ac`; runtime checklist integrated via PR #36; next route is hosted dev/demo SQLite canary once Runtime Owner host access is available. |
-| Persistence | App-owned state is still file-backed JSON under `APP_DATA_DIR`, which is fragile for larger workflow expansion. | SQLite import/export and rollback are implemented behind `TASKHUB_STATE_BACKEND=sqlite`; JSON remains default until hosted dev/demo canary and PM/Runtime acceptance. |
+| V0.5 Foundation Hardening | UI V2 and Team OS expansion need stronger persistence, tests, and app-owned contracts first. | FND-02/03/04/05 integrated through PR #30 at `dev@e3380ac`; runtime checklist integrated via PR #36; hosted dev/demo SQLite canary passed and is in observation. |
+| Persistence | App-owned state is still file-backed JSON under `APP_DATA_DIR`, which is fragile for larger workflow expansion. | SQLite import/export and rollback are implemented behind `TASKHUB_STATE_BACKEND=sqlite`; hosted dev/demo currently runs SQLite canary with rollback proof. Production storage remains a separate future decision. |
 | Automated test suite | Current coverage is mostly smoke and structural verification. Unit, integration, and browser regression tests are not yet systematic. | Expand from `docs/testing/TEST_STRATEGY.md`: route tests, Trello model tests, deterministic fixtures, browser navigation regression, and CI gates. |
 | Backend module structure | Root modules such as `trello.js`, `review-store.js`, and `task-diff.js` remain legacy-compatible. | Move into `src/` through scoped Dev tasks with QA and ADR coverage; do not move opportunistically during unrelated work. |
 | Deployment/runtime setup | Dev/prod deployment docs exist. W1 random ngrok + temporary Basic Auth is accepted for manual teammate demo only. Task Hub now has an accepted DigitalOcean + Cloudflare dev/demo runtime and a production Paperclip runtime with private bind, server-only secrets, stable `APP_DATA_DIR`, and accepted Paperclip service-auth topology. Paperclip runtime inputs are confirmed without exposing secrets. | V0.4 production Paperclip permanent enablement is complete; future runtime changes still require PM/Runtime acceptance and rollback evidence. |
