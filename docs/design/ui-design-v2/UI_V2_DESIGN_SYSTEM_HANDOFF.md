@@ -270,15 +270,15 @@ Future implementation must preserve:
 
 ## V0.6 Gaps After V0.5 Acceptance
 
-These are not blockers for this design handoff. They are implementation gaps for the future V0.6 route after V0.5 is accepted or PM explicitly reorders the roadmap.
+These are not blockers for this design handoff. They are implementation gaps for V0.6 route slices after the S0 shell/navigation/token/state foundation is accepted.
 
 | Gap | Why it matters | V0.6 owner |
 |---|---|---|
-| Route slice map is drafted for planning, not implementation | Future implementation still needs PM to open V0.6 and Frontend Dev to map current module ownership | PM / UX Owner |
-| V0.5 gate is confirmed but not accepted | `PROJECT_LADDER.md` L7 keeps V0.5 as Future with team pilot feedback and operational adoption as the release gate | PM |
-| Token migration map is drafted for planning, not production CSS | Prototype tokens are accepted directionally, but Frontend Dev still needs production stylesheet ownership after V0.6 opens | UX Owner / Frontend Dev |
-| Component build sequence is drafted for planning | Prototype inventory is complete enough for planning, but PM must approve a future implementation branch/scope first | PM / UX Owner |
-| Current production CSS/component ownership is not mapped here | Implementation must inspect existing `src/` and `public/` only after V0.6 is opened | Frontend Dev |
+| Route slice map is accepted for V0.6 planning | First implementation must follow S0 before route-specific slices | PM / UX Owner |
+| V0.5 gate is accepted | `PROJECT_LADDER.md` L7 records V0.5 complete / PM accepted after hosted dev/demo SQLite canary, rollback proof, and short monitor | PM |
+| Token migration map is accepted for scoped production CSS work | Prototype tokens are accepted directionally; Frontend Dev should start with S0 stylesheet ownership only | UX Owner / Frontend Dev |
+| Component build sequence is accepted for route-by-route implementation | Prototype inventory is complete enough for planning; S0 starts with shell/navigation/token/state foundation | PM / UX Owner |
+| Current production CSS/component ownership is mapped in the S0 plan | Implementation should use `../../plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` for first-slice file ownership | Frontend Dev |
 | Browser visual regression for UI V2 does not exist yet | V0.6 needs checks beyond current RUX route assertions | QA / Frontend Dev |
 | Mobile navigation needs final route-priority decision | Design proposes bottom nav plus menu, but PM must approve route priority | PM / UX Owner |
 

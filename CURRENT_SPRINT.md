@@ -29,7 +29,7 @@
 | V0.5 Foundation Hardening | PM Accepted after hosted dev/demo SQLite canary and short monitor passed on `taskhub-dashboard.service` | Deterministic `npm test`, app-owned contracts, SQLite migration/import/export, fail-loud rollback export, env-flagged SQLite runtime reader, Paperclip safety checks, post-merge QA, hosted canary verification, rollback proof, and two short monitor checkpoints passed without production/runtime side effects |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
 | Operations/security docs baseline | Merged to `origin/dev@681be25` via PR #25 | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge; branch/worktree cleanup completed |
-| UI Web Design V2 handoff | Design handoff and planning artifacts ready; V0.6 implementation route opened | Prototype, output review, planning artifacts, closeout packet, and Claude-ready UI/UX guideline are under `docs/design/ui-design-v2/`; V0.6 implementation must stay route-by-route with no runtime config, Cloudflare, Paperclip, production, Team OS, or full rewrite scope |
+| UI Web Design V2 handoff | Design handoff accepted; V0.6 S0 first-slice plan accepted | Prototype, output review, planning artifacts, closeout packet, Claude-ready UI/UX guideline, and first-slice implementation plan are recorded under `docs/design/ui-design-v2/` and `docs/plans/`; V0.6 implementation must stay route-by-route with no runtime config, Cloudflare, Paperclip, production, Team OS, or full rewrite scope |
 
 ---
 
@@ -80,7 +80,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, local integration QA, hosted dev/demo SQLite canary, and short monitor | PM Accepted; dev/demo remains `TASKHUB_STATE_BACKEND=sqlite` as a dev/demo canary, production unchanged | PM complete / V0.6 route ready |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
-| UIV2-01 | UI V2 design-system handoff and V0.6 route | Design handoff, prototype, PM closeout, and planning artifacts ready; V0.6 implementation route opened on accepted V0.5 foundation | PM / UX Owner / Frontend Dev / QA |
+| UIV2-01 | UI V2 design-system handoff and V0.6 S0 route | First-slice implementation plan accepted for shell/navigation/token/state foundation on `codex/v06-ui-v2-implementation`; next Dev work is S0 only inside the accepted boundary | Frontend Dev / UX Owner / QA |
 
 ---
 
@@ -120,6 +120,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | UI V2 PM closeout / handoff | `docs/design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md` |
 | UI V2 V0.6 planning artifacts | `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md` |
 | V0.6 UI V2 planning scope | `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` |
+| V0.6 UI V2 first-slice implementation plan | `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` |
 
 ---
 
@@ -140,7 +141,8 @@ Completion requires accepted work, verification, role-owned docs/logs, clear PR/
 | W3 plan/files | W3 Dev / QA | Keep W3 updates inside W3-owned docs/branches until PM checkpoint. |
 | V0.4 runtime/production files | Runtime Owner / Paperclip Owner / QA | Do not mix with V0.5 code/docs work; no secret values or live flag changes from non-runtime branches. |
 | V0.5 foundation plan/ADR/test-contract work | PM / Architecture / Dev / QA | Use dedicated V0.5 branches/worktrees from `dev`; do not touch production runtime or dirty UI V2 artifacts. |
-| UI V2 design artifacts | UX Owner / Claude Design | Design-only until V0.6; do not treat as product implementation or V0.5 blocker. |
+| UI V2 design artifacts | UX Owner / Claude Design | Accepted as V0.6 baseline; preserve as design source, not product runtime code. |
+| V0.6 UI V2 S0 implementation | Frontend Dev / UX Owner / QA | Use `codex/v06-ui-v2-implementation` and `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`; S0 only until QA/PM acceptance. |
 | Team OS pilot docs | PM / Operations | Docs-only assumptions may proceed; product implementation waits for V0.6 shell/workflow stability. |
 
 Completed V0.3 integration branch/worktree:
@@ -174,7 +176,7 @@ Parallel rule:
 
 ```text
 Role: Frontend Dev / UX Owner / QA / PM
-Task: Start V0.6 UI V2 implementation planning from the accepted UI V2 design handoff, route-by-route, without a full rewrite.
+Task: Execute V0.6-S0 UI V2 shell/navigation/token/state foundation from the scoped first-slice plan, without a full rewrite.
 
 Current release state:
 - V0.4 production Paperclip intake is no longer blocking follow-on work.
@@ -189,14 +191,17 @@ V0.6 baseline:
 - Use `docs/design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md` for PM/UX closeout, accepted paths, evidence, and hold boundaries that were satisfied by V0.5 acceptance.
 - Use `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md` for route slice map, token migration map, component build sequence, responsive QA matrix, and Review Queue safety spec.
 - Use `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` for the original planning gate and implementation-ready conditions.
-- Use a dedicated V0.6 branch/worktree from latest `origin/dev`.
-- Implement route-by-route, starting with shell/navigation and route states before deeper route rewrites.
+- Use `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` for first-slice write ownership, route order, regression targets, and rollback boundary.
+- Use dedicated branch/worktree `codex/v06-ui-v2-implementation` / `trisilar-task-hub-v06-ui-v2` from latest `origin/dev`.
+- Implement S0 only first: shell/navigation, token layer, and route states before deeper route rewrites.
 - Preserve Review Queue behavior and all public API/data contracts guarded by V0.5.
 - Keep the current static app workflow unless a new ADR explicitly approves a build-system change.
 
-Expected V0.6 first output:
-- A scoped V0.6 implementation plan with write ownership, route order, regression targets, and rollback boundary.
-- First implementation slice should include browser regression evidence on desktop/mobile and should not modify runtime, Cloudflare, secrets, live Paperclip flags, webhook auth, or external integrations.
+Expected V0.6-S0 output:
+- S0 implementation summary with changed files and route/component coverage.
+- Browser regression evidence on desktop/mobile.
+- Screenshot evidence for Today and Review Queue on desktop/mobile.
+- Confirmation that runtime, Cloudflare, secrets, live Paperclip flags, webhook auth, external integrations, Team OS, and Full Rewrite scope were not touched.
 
 Rules:
 - Do not touch production runtime for V0.6 UI work.

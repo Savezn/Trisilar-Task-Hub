@@ -1,6 +1,6 @@
 # UI V2 V0.6 Planning Artifacts - Trisilar Task Hub
 
-**Doc Role:** PM/UX planning artifact packet for future V0.6 UI V2 implementation
+**Doc Role:** PM/UX planning artifact packet for V0.6 UI V2 implementation
 **Status:** PM/UX accepted for planning; V0.6 implementation route opened after V0.5 acceptance
 **Owner:** PM / UX Owner
 **Created:** 2026-05-15
@@ -11,13 +11,14 @@
 
 ## Decision Boundary
 
-These artifacts translate the accepted UI V2 prototype into planning material for a future V0.6 implementation. They do not approve implementation.
+These artifacts translate the accepted UI V2 prototype into planning material for V0.6 implementation. The scoped first slice is now tracked in `../../plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`.
 
 Current PM/UX decision:
 
 - UI V2 prototype is accepted as the design-system baseline.
-- V0.6 planning is open as docs-only work.
+- V0.6 planning is accepted as the implementation baseline.
 - V0.6 implementation planning is open after V0.5 acceptance on current `origin/dev`.
+- V0.6 first implementation branch/worktree is `codex/v06-ui-v2-implementation` / `trisilar-task-hub-v06-ui-v2`.
 - No production code, runtime, Cloudflare, secrets, Paperclip live behavior, or Full Rewrite work is in scope.
 
 Preserved operating model:
@@ -35,11 +36,11 @@ Paperclip / AI = controlled intake sources
 
 | Artifact | Status | Use |
 |---|---|---|
-| Route slice map | Ready for PM review | Defines future incremental UI V2 implementation sequence without opening Dev |
-| Token migration map | Ready for PM review | Converts prototype tokens into future production token intent |
-| Component build sequence | Ready for PM review | Groups reusable components by dependency and route impact |
-| Responsive QA matrix | Ready for PM review | Defines future browser/visual evidence expectations |
-| Review Queue safety spec | Ready for PM review | Locks the human-gate rules that future UI V2 must preserve |
+| Route slice map | Accepted | Defines incremental UI V2 implementation sequence |
+| Token migration map | Accepted | Converts prototype tokens into production token intent |
+| Component build sequence | Accepted | Groups reusable components by dependency and route impact |
+| Responsive QA matrix | Accepted | Defines browser/visual evidence expectations |
+| Review Queue safety spec | Accepted | Locks the human-gate rules that UI V2 must preserve |
 
 ---
 
@@ -47,7 +48,7 @@ Paperclip / AI = controlled intake sources
 
 Decision: **Accept V0.6 UI V2 planning artifacts as the implementation-planning baseline.**
 
-This acceptance means the planning packet is complete enough to preserve as the future V0.6 UI V2 baseline. It does not open implementation.
+This acceptance means the planning packet is complete enough to preserve as the V0.6 UI V2 baseline. Implementation is opened only through scoped slices, starting with S0.
 
 | Review item | Decision | Notes |
 |---|---|---|
@@ -62,19 +63,19 @@ This acceptance means the planning packet is complete enough to preserve as the 
 PM/UX conclusion:
 
 - Keep this artifact as the V0.6 planning baseline.
-- Do not create a V0.6 Dev branch yet.
-- Do not map current production `public/` / `src/` module ownership yet.
-- Revisit after V0.5 team pilot feedback / operational adoption gate, or if PM explicitly reorders the roadmap.
+- Use the named V0.6 branch/worktree for implementation: `codex/v06-ui-v2-implementation` / `trisilar-task-hub-v06-ui-v2`.
+- Use `../../plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` before code work.
+- Keep first implementation scope to S0 until UX/QA evidence is reviewed.
 
 ---
 
 ## 1. Route Slice Map
 
-The future V0.6 route order should reduce risk by separating shared shell work, safety-critical review work, daily work, and secondary planning routes. This is an implementation sequence proposal only; Dev must not start until PM opens V0.6.
+The V0.6 route order should reduce risk by separating shared shell work, safety-critical review work, daily work, and secondary planning routes. Dev must work slice-by-slice and start with the scoped S0 plan.
 
 | Slice | Route / surface | Prototype source | Primary value | Dependencies | Future acceptance evidence |
 |---|---|---|---|---|---|
-| S0 | App shell, route bar, status strip, shared drawer frame | Foundations, component inventory, implementation handoff | Establish the UI V2 frame without changing product behavior | PM opens V0.6; target branch named | Desktop/laptop/mobile shell screenshots; no route regression |
+| S0 | App shell, route bar, status strip, shared drawer frame | Foundations, component inventory, implementation handoff | Establish the UI V2 frame without changing product behavior | V0.5 accepted; target branch named; S0 plan accepted | Desktop/laptop/mobile shell screenshots; no route regression |
 | S1 | Today | `d-today`, `m-today` | Daily command center with top priority, Review Queue pressure, integration confidence | S0 tokens/shell, task row primitives | Top work identifiable, Review Queue pressure first-viewport, no disconnected-state confusion |
 | S2 | All Tasks | `d-tasks`, `m-tasks` | Dense task inbox preserving source, owner, due, board/list, status, next action | S0, task row, filter bar, drawer | Desktop table and mobile rows preserve decision cues without overflow |
 | S3 | Review Queue | `d-review`, `m-review` | Human approval desk for AI/Paperclip proposals | S0, trace chips, side-effect notice, drawer/confirmation | Approve/reject/hold/edit visible; side effects disclosed before approval |
@@ -86,7 +87,7 @@ The future V0.6 route order should reduce risk by separating shared shell work, 
 | S9 | OKR / Portfolio | `d-okr` | Objective progress, KR links, status/risk confidence | S0, stat strip, progress surfaces | KR links and stale status are legible |
 | S10 | Weekly Focus | `d-focus` | Current-week priority lanes and Review Queue handoff | S0, lane, task row, filter controls | Overloaded owner and blocked-item signals are clear without becoming resource planning |
 
-PM/UX recommended grouping for a future V0.6 plan:
+PM/UX recommended grouping for the V0.6 implementation plan:
 
 | Future V0.6 milestone | Includes | Reason |
 |---|---|---|
@@ -100,7 +101,7 @@ PM/UX recommended grouping for a future V0.6 plan:
 
 ## 2. Token Migration Map
 
-Use the prototype token names as the planning baseline. Future Dev should map these into production CSS only after V0.6 opens.
+Use the prototype token names as the planning baseline. Dev should map these into production CSS only inside scoped V0.6 slices.
 
 | Token family | Prototype tokens | Future production intent | Rule |
 |---|---|---|---|
@@ -184,7 +185,7 @@ Route-specific checks:
 | OKR / Portfolio | KR links, status confidence, and stale-status warnings stay legible |
 | Weekly Focus | Owner/source filters and Review Queue handoff markers remain readable |
 
-Minimum future V0.6 QA evidence:
+Minimum V0.6 QA evidence:
 
 - Existing controlled browser regression still passes.
 - New UI V2 screenshot pack covers desktop and mobile for S0 through the current route slice.
@@ -272,9 +273,10 @@ Future V0.6 UI must hold if any of these appear:
 
 Recommendation: **Use this packet to prepare the first scoped V0.6 implementation slice.**
 
-The design artifacts are sufficient for PM/UX baseline and V0.6 implementation planning. Before code work starts, V0.6 still needs:
+The design artifacts are sufficient for PM/UX baseline and V0.6 implementation planning. Before S0 code work starts, V0.6 uses:
 
 - a dedicated V0.6 branch/worktree from latest `origin/dev`
+- `../../plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`
 - route order and first slice scope
 - file/write ownership for touched production UI files
 - regression targets and screenshot evidence expectations
@@ -285,13 +287,13 @@ Next PM/UX action:
 
 ```text
 Role: PM / UX Owner
-Task: Prepare the first scoped V0.6 implementation plan from UI_V2_V0_6_PLANNING_ARTIFACTS.md.
+Task: Review and execute the first scoped V0.6-S0 implementation plan.
 
 Decision options:
-- Approve first-slice V0.6 implementation plan.
-- Iterate route order / token mapping / QA matrix before code.
+- Execute S0 shell/navigation/token/state foundation.
+- Iterate S0 plan before code if UX/QA finds an ownership or rollback gap.
 - Hold V0.6 if the first slice crosses runtime, production, Team OS, or Full Rewrite boundaries.
 
 Recommended decision:
-- Start with a route-by-route first-slice plan for shell/navigation and route states.
+- Start with S0 only: shell/navigation, token layer, and route states.
 ```

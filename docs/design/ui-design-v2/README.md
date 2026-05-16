@@ -14,12 +14,13 @@ Use the artifacts in this order:
 3. `UI_V2_CLAUDE_OUTPUT_REVIEW.md` for coverage, token direction, gaps, and next action.
 4. `UI_V2_V0_6_PLANNING_ARTIFACTS.md` for the route slice map, token migration map, component build sequence, responsive QA matrix, and Review Queue safety spec.
 5. `../../plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` for the PM/UX planning scope and V0.5 acceptance context.
-6. `UI_V2_DESIGN_SYSTEM_HANDOFF.md` for route concepts, tokens, component inventory, responsive notes, and future implementation handoff.
-7. `UI_V2_ROUTE_SCREEN_SPECS.md` for route-by-route screen/state coverage.
-8. `CLAUDE_DESIGN_UI_V2_GUIDELINES.md` for the product and UX guardrails.
-9. `CLAUDE_DESIGN_UI_V2_PROMPT_PACKET.md` as historical/reference prompt material only; the Claude output has already been received.
+6. `../../plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` for the V0.6-S0 shell/navigation/token/state implementation boundary.
+7. `UI_V2_DESIGN_SYSTEM_HANDOFF.md` for route concepts, tokens, component inventory, responsive notes, and future implementation handoff.
+8. `UI_V2_ROUTE_SCREEN_SPECS.md` for route-by-route screen/state coverage.
+9. `CLAUDE_DESIGN_UI_V2_GUIDELINES.md` for the product and UX guardrails.
+10. `CLAUDE_DESIGN_UI_V2_PROMPT_PACKET.md` as historical/reference prompt material only; the Claude output has already been received.
 
-These files are not production code and do not change the accepted V0.2 UI implementation, V0.4 Paperclip production runtime work, or the accepted V0.5 foundation. V0.6 implementation planning may proceed route-by-route from this packet after V0.5 acceptance, but runtime, production, Cloudflare, Paperclip live behavior, Team OS product scope, and Full Rewrite remain out of scope.
+These files are not production code and do not change the accepted V0.2 UI implementation, V0.4 Paperclip production runtime work, or the accepted V0.5 foundation. V0.6 implementation may proceed route-by-route from this packet through the S0 plan, but runtime, production, Cloudflare, Paperclip live behavior, Team OS product scope, and Full Rewrite remain out of scope.
 
 Related docs:
 
@@ -28,6 +29,7 @@ Related docs:
 - `prototype/Trisilar Task Hub UI V2.html`
 - `UI_V2_V0_6_PLANNING_ARTIFACTS.md`
 - `../../plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md`
+- `../../plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`
 - `CLAUDE_DESIGN_UI_V2_PROMPT_PACKET.md`
 - `UI_V2_ROUTE_SCREEN_SPECS.md`
 - `UI_V2_DESIGN_SYSTEM_HANDOFF.md`

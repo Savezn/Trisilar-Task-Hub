@@ -243,7 +243,7 @@ Focus:
 - Start with shell/navigation and route states, then Today/Tasks, Review Queue/Docs, Settings/operations.
 - Keep the current static JS workflow unless V0.5 produces an accepted build-system ADR.
 
-UI V2 design handoff is ready for V0.6. Production implementation may proceed route-by-route now that V0.5 foundation is accepted, while preserving V0.5 contracts and Review Queue safety.
+UI V2 design handoff is ready for V0.6. Production implementation may proceed route-by-route now that V0.5 foundation is accepted, while preserving V0.5 contracts and Review Queue safety. The first slice is S0 shell/navigation/token/state foundation in `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`.
 
 ### L9 - V0.7 Team Operating System Pilot
 
@@ -368,3 +368,4 @@ This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime wo
 | 2026-05-16 | Completed V0.4 production Paperclip permanent enablement with rollback proof and Review Queue human gate intact | Codex PM / Runtime Owner / QA |
 | 2026-05-16 | Completed V0.5 hosted dev/demo SQLite canary with rollback proof; dev/demo remains SQLite-enabled on `taskhub-dashboard.service` | Codex PM / Runtime Owner / QA |
 | 2026-05-16 | PM accepted V0.5 foundation after short monitor passed at `2026-05-16T12:44:25Z` and `2026-05-16T12:45:35Z`; routed V0.6 UI V2 implementation | Codex PM / Runtime Owner / QA |
+| 2026-05-16 | Accepted V0.6-S0 first-slice implementation plan for shell/navigation/token/state foundation on `codex/v06-ui-v2-implementation`; runtime, Paperclip live behavior, Team OS product scope, external side effects, and Full Rewrite stay out of scope | Codex PM / UX Owner |
