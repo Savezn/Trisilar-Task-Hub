@@ -14,6 +14,7 @@ Deployment and hosted environment documents live here so deployment setup is not
 | `DEV_ENVIRONMENT_DEPLOYMENT.md` | V0.2-W1-03 dev deployment config, V0.2-W1-05 ngrok demo handoff, V0.2-W1-06/V0.2-W1-08 Cloudflare + DigitalOcean runtime plan, and W1-07 Paperclip service-auth handoff |
 | `DIGITALOCEAN_DASHBOARD_HANDOVER.md` | PM-normalized DigitalOcean Dashboard handoff reference for host layout, Paperclip Docs API boundary, and server-only token rules |
 | `RUNTIME_OPERATIONS_RUNBOOK.md` | Runtime incident, restart, rollback, and production Paperclip operations runbook |
+| `V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md` | V0.5 hosted dev/demo SQLite canary checklist, rollback proof, stop conditions, and evidence template |
 | `TROUBLESHOOTING.md` | Operator and QA troubleshooting guide for runtime, access, route, and Paperclip issues |
 | `ENVIRONMENT_MATRIX.md` | Canonical non-secret environment inventory for local, dev/demo, and production |
 

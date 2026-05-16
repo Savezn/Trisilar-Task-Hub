@@ -112,6 +112,22 @@ App rollback:
 4. Run standard checks.
 5. Route PM/QA for acceptance.
 
+### V0.5 SQLite Dev/Demo Rollback
+
+Use `V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md` for the full hosted dev/demo SQLite canary and rollback proof.
+
+Minimum rollback path:
+
+1. Confirm the target is hosted dev/demo, not production.
+2. Remove `TASKHUB_STATE_BACKEND=sqlite` from the dev/demo runtime environment.
+3. Restart or reload the dev/demo runtime.
+4. Set `JSON_ROLLBACK_BASE_URL` to the runtime-local app URL for verification.
+5. Run `npm.cmd run verify:json-rollback`.
+6. Confirm `/healthz`, `/api/config`, `/api/reviews`, and Paperclip operations status remain healthy and read-only.
+7. Route QA/PM with non-secret evidence.
+
+Stop if the target environment or `APP_DATA_DIR` is ambiguous. Production must remain JSON default unless a separate PM / Runtime decision approves a production SQLite switch.
+
 ---
 
 ## V0.4 Production Paperclip Gate
