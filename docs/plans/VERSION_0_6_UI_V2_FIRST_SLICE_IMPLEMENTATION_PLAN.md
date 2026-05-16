@@ -164,6 +164,34 @@ Rollback must not require:
 
 ---
 
+## S0 Implementation Result
+
+Status: **QA pass / PM review pending** on `codex/v06-s0-ui-foundation`.
+
+Implemented S0 coverage:
+
+- UI V2 token aliases in `public/style.css`.
+- Shell status strip in `public/index.html` / `public/style.css`.
+- Mobile bottom route bar for Today, Review, Tasks, and Settings.
+- Route metadata hook in `public/js/router.js` for active shell route/tone state.
+- Shared route-state helper in `public/js/utils.js`.
+- Review badge propagation to the mobile Review route item in `public/js/pages/review.js`.
+
+Verification evidence:
+
+- `npm.cmd ci`
+- `npm.cmd test` - 28/28 pass
+- `PORT=3016 APP_DATA_DIR=.tmp-v06-s0-data npm.cmd run check:all` - frontend verification and smoke pass
+- `npm.cmd run verify:rux-browser-regression` - `/today`, `/review`, `/all`, `/boards`, `/calendar`, `/planner`, `/okr`, `/focus`, `/settings`, and `/docs` pass on desktop `1440x960` and mobile `390x844`
+- screenshot evidence: `docs/logs/screenshots/v06-s0/today-desktop-1440x900.png`, `review-desktop-1440x900.png`, `today-mobile-390x844.png`, `review-mobile-390x844.png`
+
+Scope confirmation:
+
+- No runtime setup, Cloudflare policy, secrets, webhook auth, live Paperclip flags, external side effects, Team OS product scope, or Full Rewrite work.
+- No forbidden runtime/security/source files touched.
+
+---
+
 ## First Dev Handoff
 
 ```text
@@ -180,9 +208,9 @@ Inputs:
 - docs/logs/V0_3_RUX_FINDINGS.md
 
 Branch/worktree:
-- Branch: codex/v06-ui-v2-implementation
-- Worktree: trisilar-task-hub-v06-ui-v2
-- Base: latest origin/dev after PR #44 merge
+- Branch: codex/v06-s0-ui-foundation
+- Worktree: trisilar-task-hub-v06-s0-ui-foundation
+- Base: latest origin/dev after PR #45 merge
 
 Rules:
 - S0 only: shell, navigation, token layer, shared route states.

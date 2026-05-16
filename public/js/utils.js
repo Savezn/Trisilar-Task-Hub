@@ -151,13 +151,13 @@ function trelloConnectionSummary() {
 
 function trelloRouteUnavailableHtml(routeName) {
   const summary = trelloConnectionSummary();
-  return `
-    <div class="empty-state">
-      <div class="empty-icon">${icon("alert")}</div>
-      <h3>${esc(routeName)} needs Trello verification</h3>
-      <p>${esc(summary.description)}</p>
-      <p style="color:var(--text-muted);font-size:12px">Runtime owns Trello credential verification. You can continue using non-Trello routes while this is checked.</p>
-    </div>`;
+  return routeStateHtml({
+    tone: "warning",
+    iconName: "alert",
+    title: `${routeName} needs Trello verification`,
+    body: summary.description,
+    meta: "Runtime owns Trello credential verification. You can continue using non-Trello routes while this is checked.",
+  });
 }
 
 function updateTrelloSidebarStatus() {
@@ -168,6 +168,18 @@ function updateTrelloSidebarStatus() {
   const summary = trelloConnectionSummary();
   if (dot) dot.className = `status-dot ${summary.dotClass}`;
   if (label) label.textContent = `Trello ${summary.label.toLowerCase()}`;
+}
+
+function routeStateHtml({ tone = "neutral", iconName = "alert", title = "", body = "", meta = "", actionHtml = "" } = {}) {
+  const safeTone = ["neutral", "info", "warning", "danger", "success", "ai"].includes(tone) ? tone : "neutral";
+  return `
+    <div class="empty-state route-state-card is-${safeTone}">
+      <div class="empty-icon route-state-icon">${icon(iconName)}</div>
+      <h3>${esc(title)}</h3>
+      ${body ? `<p>${esc(body)}</p>` : ""}
+      ${meta ? `<p class="route-state-meta">${esc(meta)}</p>` : ""}
+      ${actionHtml ? `<div class="route-state-actions">${actionHtml}</div>` : ""}
+    </div>`;
 }
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
