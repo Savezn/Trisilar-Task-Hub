@@ -214,9 +214,9 @@ Focus:
 - SQLite migration for app-owned runtime state with JSON import/backups.
 - Preserve public API response shapes unless an ADR explicitly approves a contract change.
 
-V0.5 can start while V0.4 is waiting or monitoring, as long as V0.5 does not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior.
+V0.4 setup, staged canary, rollback, and 24-hour read-only monitoring are complete. V0.5 hosted dev/demo canary work may proceed from `origin/dev` as long as it does not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior.
 
-`V0.5-FND-01` is accepted through PR #28 at `dev@aaf8f58`. `V0.5-FND-02` through `V0.5-FND-05` are integrated through PR #30 at `dev@e3380ac`. The next handoff is hosted dev/demo SQLite canary execution by the Runtime Owner after host access is available.
+`V0.5-FND-01` is accepted through PR #28 at `dev@aaf8f58`. `V0.5-FND-02` through `V0.5-FND-05` are integrated through PR #30 at `dev@e3380ac`, and the hosted runtime checklist is integrated through PR #36. The next handoff is hosted dev/demo SQLite canary execution by the Runtime Owner after host access is available.
 
 Current V0.5 route:
 
@@ -228,6 +228,7 @@ V0.5 PM roadmap rebaseline accepted
 -> V0.5-FND-04 SQLite persistence migration
 -> V0.5-FND-05 foundation integration QA
 -> PR #30 merged to `dev@e3380ac`
+-> PR #36 integrated hosted SQLite canary Runtime Owner checklist
 -> hosted dev/demo SQLite canary pending Runtime Owner host access
 ```
 
@@ -261,7 +262,7 @@ Focus:
 - Compare current static JS, Vite, React, Next, and incremental migration options.
 - Define risks, migration criteria, rollback, and regression gates before any rewrite implementation.
 
-Do not execute a full rewrite while V0.4 canary/monitoring is active or before V0.5 foundation acceptance.
+Do not execute a full rewrite while a production runtime switch, V0.5 hosted canary, or UI shell stabilization task is active.
 
 ---
 
@@ -311,7 +312,7 @@ Paperclip runtime inputs confirmed
 -> PR #20 release candidate verified and PM accepted for main promotion
 -> V0.4 production private runtime prepared; service-auth, Settings connection, staged canary, and 24-hour read-only monitoring passed with production disabled
 -> PM inserts V0.5 Foundation Hardening before UI V2 implementation and Team OS product work
--> V0.5 can start in parallel with V0.4 waiting/monitoring if runtime/secrets/live flags are untouched
+-> V0.5 hosted dev/demo SQLite canary is the next active runtime task; production Paperclip permanent enablement is a separate optional decision
 ```
 
 This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not change the standing Paperclip dev/demo observation policy. Production deployment remains a separate Runtime / PM decision.
@@ -359,3 +360,4 @@ This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime wo
 | 2026-05-15 | Inserted V0.5 Foundation Hardening before UI V2 implementation and Team OS pilot; deferred full rewrite execution to V0.8+ decision memo | Codex PM |
 | 2026-05-15 | Accepted V0.5-FND-01 through PR #28 and routed next to FND-02 deterministic test baseline in the foundation worktree | Codex PM / Integration Owner |
 | 2026-05-15 | Integrated V0.5-FND-02/03/04/05 through PR #30 at `dev@e3380ac`; post-merge QA passed and hosted SQLite canary waits on Runtime Owner host access | Codex Integration Owner / QA |
+| 2026-05-16 | Closed V0.4 monitoring as non-blocking for follow-on versions and routed the next active handoff to V0.5 hosted dev/demo SQLite canary from latest `origin/dev` | Codex PM / Integration Owner |

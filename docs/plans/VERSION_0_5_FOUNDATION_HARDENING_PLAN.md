@@ -1,7 +1,7 @@
 # Version 0.5 Foundation Hardening Plan
 
 **Doc Role:** Active V0.5 foundation plan for persistence, tests, and contracts before UI V2 / Team Operating System implementation
-**Status:** FND-05 integrated via PR #30 / hosted dev-demo SQLite canary selected, blocked on host access
+**Status:** FND-05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev-demo SQLite canary selected, blocked on host access
 **Version:** V0.5
 **Owner:** PM / Architecture / Dev / QA
 **Created:** 2026-05-15
@@ -14,7 +14,7 @@
 
 V0.5 makes the codebase safe enough for larger UI V2 and Team Operating System expansion.
 
-V0.4 production Paperclip work can continue as a Runtime/QA track. V0.5 may start in parallel while V0.4 is in a read-only monitoring or waiting state, as long as V0.5 does not touch production runtime, secrets, Cloudflare policy, Paperclip live flags, or webhook auth behavior.
+V0.4 production Paperclip setup, staged canary, and 24-hour read-only monitoring have passed. V0.5 hosted dev/demo canary work may proceed from `origin/dev` as long as it does not touch production runtime, secrets, Cloudflare policy, Paperclip live flags, or webhook auth behavior. Production permanent Paperclip enablement remains a separate PM / Runtime Owner runtime decision.
 
 ---
 
@@ -75,7 +75,7 @@ codex/v05-sqlite-persistence
 
 Can proceed in parallel:
 
-- V0.4 Runtime/QA production service-auth, staged canary, and read-only monitoring.
+- Optional V0.4 permanent-enable runtime decision, only if PM explicitly opens it.
 - UI V2 design-only screens, tokens, component inventory, and implementation handoff notes.
 - Team OS docs-only pilot outline and onboarding assumptions.
 - V0.5 test/contracts planning and non-runtime implementation.
@@ -92,7 +92,7 @@ Do not run in parallel:
 - Production runtime/secrets work with code that changes webhook auth or live flags.
 - Multiple agents editing the same frontend shell or global stylesheet.
 - SQLite migration and Team OS product features against the same unsettled data model.
-- Full rewrite implementation while V0.4 canary/monitoring is active.
+- Full rewrite implementation while a production runtime switch, V0.5 hosted canary, or UI shell stabilization task is active.
 
 ---
 
@@ -155,6 +155,7 @@ Status: selected, not executed from this workstation.
 Completed before execution:
 
 - V0.5 code is integrated through PR #30 at `dev@e3380ac`.
+- The hosted runtime checklist is integrated through PR #36 at `dev@c866a7d`.
 - Post-merge local QA passed `npm test` 25/25.
 - Post-merge `check:all` passed with a controlled local server.
 - Local SQLite canary rehearsal passed on `e3380ac`: JSON import, SQLite runtime read, `/healthz`, `/api/config`, `/api/reviews`, Paperclip operations read-only status, `verify:sqlite-canary`, and rollback export.
@@ -213,7 +214,7 @@ Stop and rollback if `verify:sqlite-canary`, `/healthz`, `/api/config`, `/api/re
 
 ```text
 Role: Integration Owner / Runtime Owner
-Task: Execute hosted dev/demo SQLite canary from the latest accepted `dev` commit containing PR #30 foundation code after Runtime Owner host access is available
+Task: Execute hosted dev/demo SQLite canary from the latest accepted `dev` commit containing PR #30 foundation code and PR #36 runtime checklist after Runtime Owner host access is available
 
 Read:
 - docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md

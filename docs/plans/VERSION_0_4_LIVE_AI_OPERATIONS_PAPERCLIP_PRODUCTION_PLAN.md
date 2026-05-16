@@ -453,10 +453,10 @@ Draft PR routing:
 
 - Target branch: `dev`.
 - Draft PR: #27 (`codex/v04-paperclip-prod-integration` -> `dev`).
-- Draft status: ready to move out of draft after conflict resolution and verification.
+- PR status: merged to `dev@c866a7d` on 2026-05-16.
 - Ready-for-review condition: met for pre-permanent merge because 24-hour read-only monitoring passed with no stop condition.
 - PR body must state that the production webhook remains disabled and permanent enablement is not yet accepted.
-- Merge hold: release only if conflict resolution preserves V0.5 `dev` work and V0.4 production remains disabled.
+- Merge hold: cleared; permanent enablement remains a separate runtime switch outside PR #27.
 
 ---
 
@@ -474,14 +474,14 @@ Draft PR routing:
 ## Next Recommended Session
 
 ```text
-Role: Integration Owner / PM / Runtime Owner
-Task: Close V0.4 PR #27 into dev after verification, then decide whether to execute the separate permanent-enable runtime switch
-Branch: codex/v04-paperclip-prod-integration
-Worktree: trisilar-task-hub-v04-paperclip-prod-integration
-Owned files: V0.4 tracker docs, PR closeout docs, and runtime evidence only unless PM chooses permanent enablement
-Acceptance criteria: PR #27 preserves latest dev/V0.5 work, V0.4 monitoring pass is recorded, production runtime remains disabled/read_only, and permanent enablement is either deliberately executed with rollback evidence or explicitly held as a runtime decision
-Verification: conflict-marker scan, git diff --check, targeted V0.4 status search, PR #27 mergeability, and production disabled/read_only runtime check
-Stop conditions: merge conflict that would drop V0.5 work, enabled webhook outside PM-approved permanent window, danger warning, auto-approval, Trello/Calendar/Google side effect before human approval, secret exposure, or inability to restore disabled mode
+Role: PM / Runtime Owner
+Task: Hold or deliberately execute the separate permanent-enable production Paperclip runtime switch.
+Branch: dev or a new codex/runtime branch if PM chooses to change runtime flags
+Worktree: main dev/runtime worktree selected by Runtime Owner
+Owned files: decision log, QA log, runtime evidence, and production runtime flags only if PM chooses permanent enablement
+Acceptance criteria: a new PM decision is recorded before enabling production, production remains Review Queue gated, no secret values are exposed, and rollback evidence proves disabled mode can be restored
+Verification: production /healthz, /api/config, /api/reviews, operations status, disabled or permanent-mode status as selected, Review Queue counts, warning/danger-warning review, and rollback evidence if flags change
+Stop conditions: enabled webhook without PM decision, danger warning, auto-approval, Trello/Calendar/Google side effect before human approval, secret exposure, or inability to restore disabled mode
 ```
 
 ---
@@ -493,7 +493,7 @@ Stop conditions: merge conflict that would drop V0.5 work, enabled webhook outsi
 | 2026-05-15 | Created V0.4 Paperclip production permanent integration plan and repo readiness tracker | Codex PM / Dev |
 | 2026-05-15 | Added production runtime policy/status, production readiness verification, and local QA evidence; production deploy remains pending Runtime Owner | Codex Dev / QA |
 | 2026-05-15 | Integrated V0.4 repo readiness to `dev@7e069b5` and routed next process to separate production runtime setup | Codex Integration Owner |
-| 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection at that checkpoint | Codex Runtime Owner |
+| 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary at that checkpoint until production service-token and Settings connection were completed | Codex Runtime Owner |
 | 2026-05-15 | Refreshed V0.4 worktree from `origin/dev@eef107b` after main/dev update and reran Paperclip production/intake verifiers; runtime service-token and Settings connection remained pending at that checkpoint | Codex Runtime Owner / QA |
 | 2026-05-15 | Verified production runtime is still healthy with webhook disabled, but held staged canary because the available Paperclip sender env still targets dev/demo and production Settings connection is missing | Codex Runtime Owner |
 | 2026-05-15 | Merged latest `origin/dev@622c7dd` DoR/DoD governance baseline into the V0.4 branch; V0.4 production service-auth hold remains unchanged | Codex Runtime Owner / Integration |
@@ -501,5 +501,6 @@ Stop conditions: merge conflict that would drop V0.5 work, enabled webhook outsi
 | 2026-05-15 | Created and assigned production Cloudflare Access service token for `taskhub-prod.trisila.online`; runtime-only candidate env reached production `/healthz` with `200`; staged canary still awaited approval at that checkpoint | Codex Runtime Owner |
 | 2026-05-15 | Ran staged production canary against `taskhub-prod.trisila.online`; valid signed payload created pending Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07`, replay/negative checks passed, no external side effect occurred, and runtime rollback restored disabled mode | Codex Runtime Owner / QA |
 | 2026-05-15 | Started V0.4 24-hour read-only monitoring; first checkpoint passed with production gate disabled, no warnings, no danger warnings, and no external side effects; automation `v0-4-paperclip-prod-read-only-monitor` runs every 6 hours | Codex QA / Runtime Owner |
-| 2026-05-15 | Opened draft PR #27 to `dev` as a hold-state integration PR while 24-hour monitoring remains active; permanent enablement is not accepted yet | Codex Integration Owner |
-| 2026-05-16 | Completed V0.4 24-hour read-only monitoring with final production checkpoint pass; production webhook remains disabled while PR #27 is prepared for closeout and permanent enablement remains a separate runtime decision | Codex QA / PM / Runtime Owner |
+| 2026-05-15 | Opened draft PR #27 to `dev` as a hold-state integration PR while the 24-hour monitoring window was active; permanent enablement was not accepted | Codex Integration Owner |
+| 2026-05-16 | Completed V0.4 24-hour read-only monitoring with final production checkpoint pass; production webhook remains disabled and permanent enablement remains a separate runtime decision | Codex QA / PM / Runtime Owner |
+| 2026-05-16 | Merged PR #27 to `dev@c866a7d`; V0.4 monitoring no longer blocks follow-on versions, and permanent enablement remains a separate PM / Runtime Owner runtime switch | Codex Integration Owner |
