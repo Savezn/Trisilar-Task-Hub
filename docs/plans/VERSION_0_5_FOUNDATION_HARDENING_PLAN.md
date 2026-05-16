@@ -1,7 +1,7 @@
 # Version 0.5 Foundation Hardening Plan
 
 **Doc Role:** Active V0.5 foundation plan for persistence, tests, and contracts before UI V2 / Team Operating System implementation
-**Status:** FND-05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev-demo SQLite canary selected, blocked on host access
+**Status:** FND-05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev-demo SQLite canary selected, local preflight passed on `dev@3159a21`, blocked on host access
 **Version:** V0.5
 **Owner:** PM / Architecture / Dev / QA
 **Created:** 2026-05-15
@@ -166,6 +166,7 @@ Current gate before hosted execution:
 - Runtime Owner needs working DigitalOcean host access; the local SSH probe to `root@157.230.251.209` returned `Permission denied (publickey)`.
 - Runtime Owner must confirm dev/demo `APP_DATA_DIR`, current source commit, backup location, and expected Paperclip live flag before restart.
 - Production remains out of scope and must not receive `TASKHUB_STATE_BACKEND=sqlite` from this decision.
+- Latest repo-side preflight on 2026-05-16 synced the dedicated V0.5 worktree to `origin/dev@3159a21`; `npm.cmd ci`, `npm test` 25/25, and `npm.cmd run verify:persistence-canary-cycle` passed. The hosted canary was not run because SSH still returned `Permission denied (publickey)`.
 
 Runtime Owner runbook once gates are clear:
 
@@ -248,3 +249,4 @@ Expected output:
 | 2026-05-15 | Added `verify:json-rollback` for Runtime Owner read-only rollback verification after removing the SQLite backend flag and restarting JSON-backed dev/demo | Codex Dev / QA |
 | 2026-05-15 | Added `verify:persistence-canary-cycle` local preflight covering JSON import, SQLite runtime verification, rollback export, and JSON runtime verification using temp data only | Codex Dev / QA |
 | 2026-05-16 | Added dedicated Runtime Owner SQLite canary checklist with preflight, backup, stop conditions, rollback proof, and evidence template | Codex Dev / QA |
+| 2026-05-16 | Re-ran V0.5 local preflight on `origin/dev@3159a21`; hosted dev/demo execution remains blocked by DigitalOcean SSH publickey access | Codex Dev / QA |

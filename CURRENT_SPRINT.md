@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.4 Live AI Operations / V0.5 Foundation Hardening
-**Status:** V0.4 24-hour production read-only monitoring passed; production webhook remains disabled pending permanent-enable runtime decision; V0.5 foundation integrated via PR #30; hosted dev/demo SQLite canary blocked on Runtime Owner host access
+**Status:** V0.4 24-hour production read-only monitoring passed; production webhook remains disabled pending permanent-enable runtime decision; V0.5 foundation integrated via PR #30; hosted dev/demo SQLite canary preflight passed on `dev@3159a21` and remains blocked on Runtime Owner host access
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-16 - **Updated by:** Codex PM / Dev / QA
 
@@ -26,7 +26,7 @@
 | V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Repo-contained role skills are allowed under `docs/agent-skills/`; installed reusable Codex skill extraction remains deferred. |
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
 | V0.4 Paperclip production readiness | Repo readiness integrated to `dev@7e069b5`; production runtime prepared from `dev@e8a211b`; 24-hour production read-only monitoring passed on 2026-05-16 | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; production private runtime, Cloudflare tunnel route, DNS, Access app, production service token, and production Paperclip Settings connection are prepared; staged canary passed, runtime gate was closed, and 24-hour monitoring showed no danger warning or external side effect |
-| V0.5 Foundation Hardening | Integrated via PR #30; PM selected hosted dev/demo SQLite canary, blocked on host access | Deterministic `npm test`, app-owned contracts, SQLite migration/import/export, fail-loud rollback export, env-flagged SQLite runtime reader, Paperclip safety checks, post-merge QA, and local dev/demo-style SQLite canary rehearsal passed without production/runtime side effects |
+| V0.5 Foundation Hardening | Integrated via PR #30; PM selected hosted dev/demo SQLite canary; latest repo-side preflight passed on `dev@3159a21`, blocked on host access | Deterministic `npm test`, app-owned contracts, SQLite migration/import/export, fail-loud rollback export, env-flagged SQLite runtime reader, Paperclip safety checks, post-merge QA, and local dev/demo-style SQLite canary rehearsal passed without production/runtime side effects |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
 | Operations/security docs baseline | Merged to `origin/dev@681be25` via PR #25 | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge; branch/worktree cleanup completed |
 | UI Web Design V2 Claude Design experiment | PM-routed sidecar docs-only experiment | Adds a research allocation plan and Claude-ready UI/UX guideline under `docs/design/ui-design-v2/`; no product code, runtime config, Cloudflare, Paperclip, or V0.4 branch changes |
@@ -53,7 +53,7 @@ V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the priv
 
 PM rebaselined the post-V0.4 roadmap so the team does not wait idle during V0.4 waiting/monitoring windows. V0.5 Foundation Hardening now comes before UI V2 production implementation and Team Operating System product work. V0.5 covers ADR-backed persistence, real `npm test`, app-owned data contracts, and SQLite migration; it must not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior. PR #28 merged the roadmap rebaseline to `dev@aaf8f58`; PR #30 later integrated FND-02/03/04/05 to `dev@e3380ac`.
 
-V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrated to `dev@e3380ac`. Post-merge QA passed `npm test` 25/25, `check:all` with controlled local server, and a local SQLite canary rehearsal that imported JSON state, ran the server with `TASKHUB_STATE_BACKEND=sqlite`, verified `/healthz`, `/api/config`, and `/api/reviews`, then exported rollback JSON. PM selected the hosted dev/demo SQLite canary path, but execution is blocked until Runtime Owner host access is available. The current workstation SSH probe to `root@157.230.251.209` returned `Permission denied (publickey)`, so no hosted runtime change was performed. Production remains JSON default.
+V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrated to `dev@e3380ac`. Post-merge QA passed `npm test` 25/25, `check:all` with controlled local server, and a local SQLite canary rehearsal that imported JSON state, ran the server with `TASKHUB_STATE_BACKEND=sqlite`, verified `/healthz`, `/api/config`, and `/api/reviews`, then exported rollback JSON. PM selected the hosted dev/demo SQLite canary path. On 2026-05-16, the dedicated V0.5 worktree was synced to `origin/dev@3159a21`; `npm.cmd ci`, `npm test` 25/25, and `npm.cmd run verify:persistence-canary-cycle` passed, but SSH to `root@157.230.251.209` still returned `Permission denied (publickey)`, so no hosted runtime change was performed. Production remains JSON default.
 
 ---
 
@@ -184,6 +184,8 @@ V0.5 baseline:
 - FND-02/03/04/05 are integrated through PR #30 at dev@e3380ac.
 - V0.5 SQLite canary runtime checklist is integrated through PR #36 at dev@c866a7d.
 - npm test, contract checks, SQLite migration/rollback tests, Paperclip safety checks, post-merge check:all, local SQLite canary rehearsal, verify:sqlite-canary, verify:json-rollback, and verify:persistence-canary-cycle passed in prior V0.5 QA.
+- Latest repo-side preflight on 2026-05-16 passed from `origin/dev@3159a21`: `npm.cmd ci`, `npm test` 25/25, and `npm.cmd run verify:persistence-canary-cycle`.
+- Hosted execution remains blocked because SSH to `root@157.230.251.209` returns `Permission denied (publickey)`.
 
 Next V0.5 output:
 - Sync the dedicated V0.5 foundation worktree from origin/dev.

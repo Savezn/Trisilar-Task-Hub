@@ -33,7 +33,8 @@ Status on 2026-05-16:
 
 - Repo-side V0.5 test, contract, migration, SQLite canary, and rollback guards are implemented.
 - Local temp-data preflight exists as `npm.cmd run verify:persistence-canary-cycle`.
-- Hosted dev/demo execution is blocked from this workstation because SSH to the DigitalOcean host returned `Permission denied (publickey)`.
+- Latest local preflight from `origin/dev@3159a21` passed `npm.cmd ci`, `npm test` 25/25, and `npm.cmd run verify:persistence-canary-cycle`.
+- Hosted dev/demo execution is blocked from this workstation because SSH to the DigitalOcean host still returns `Permission denied (publickey)`.
 - Runtime Owner must provide or use host access before any hosted dev/demo runtime state changes.
 
 ---
@@ -218,4 +219,3 @@ Decision options:
 - keep SQLite enabled on hosted dev/demo for a limited observation window
 - rollback hosted dev/demo to JSON default and keep SQLite deferred
 - open a separate PM / Runtime decision for future production migration
-
