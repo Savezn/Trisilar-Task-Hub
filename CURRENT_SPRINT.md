@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
-**Phase:** V0.4 Live AI Operations / V0.5 Foundation Hardening
-**Status:** V0.4 production Paperclip permanent enablement complete; V0.5 hosted dev/demo SQLite canary passed and remains enabled for observation
+**Phase:** V0.5 Foundation Hardening Accepted / V0.6 UI V2 Routing
+**Status:** V0.4 production Paperclip permanent enablement complete; V0.5 foundation accepted after hosted dev/demo SQLite canary short monitor passed; next route is V0.6 UI V2 implementation
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-16 - **Updated by:** Codex PM / Dev / QA
 
@@ -26,10 +26,10 @@
 | V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Repo-contained role skills are allowed under `docs/agent-skills/`; installed reusable Codex skill extraction remains deferred. |
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
 | V0.4 Paperclip production readiness | Complete; production permanent enablement active on `taskhub-prod` | Production private runtime, Cloudflare Access route, production service token, Paperclip Settings connection, staged canary, 24-hour monitoring, rollback proof, and permanent mode verification passed. Review Queue remains the human gate; no auto-approval or Trello/Calendar/Google Tasks side effect occurred |
-| V0.5 Foundation Hardening | Hosted dev/demo SQLite canary passed on `taskhub-dashboard.service`; SQLite remains enabled for observation | Deterministic `npm test`, app-owned contracts, SQLite migration/import/export, fail-loud rollback export, env-flagged SQLite runtime reader, Paperclip safety checks, post-merge QA, hosted canary verification, and rollback proof passed without production/runtime side effects |
+| V0.5 Foundation Hardening | PM Accepted after hosted dev/demo SQLite canary and short monitor passed on `taskhub-dashboard.service` | Deterministic `npm test`, app-owned contracts, SQLite migration/import/export, fail-loud rollback export, env-flagged SQLite runtime reader, Paperclip safety checks, post-merge QA, hosted canary verification, rollback proof, and two short monitor checkpoints passed without production/runtime side effects |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
 | Operations/security docs baseline | Merged to `origin/dev@681be25` via PR #25 | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge; branch/worktree cleanup completed |
-| UI Web Design V2 Claude Design experiment | PM-routed sidecar docs-only experiment | Adds a research allocation plan and Claude-ready UI/UX guideline under `docs/design/ui-design-v2/`; no product code, runtime config, Cloudflare, Paperclip, or V0.4 branch changes |
+| UI Web Design V2 handoff | Design handoff ready; V0.6 implementation route opened | Research allocation plan and Claude-ready UI/UX guideline are under `docs/design/ui-design-v2/`; V0.6 implementation must stay route-by-route with no runtime config, Cloudflare, Paperclip, production, Team OS, or full rewrite scope |
 
 ---
 
@@ -53,7 +53,7 @@ V0.4 Paperclip production readiness is complete. The production runtime runs as 
 
 PM rebaselined the post-V0.4 roadmap so the team does not wait idle during V0.4 waiting/monitoring windows. V0.5 Foundation Hardening now comes before UI V2 production implementation and Team Operating System product work. V0.5 covers ADR-backed persistence, real `npm test`, app-owned data contracts, and SQLite migration; it must not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior. PR #28 merged the roadmap rebaseline to `dev@aaf8f58`; PR #30 later integrated FND-02/03/04/05 to `dev@e3380ac`.
 
-V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrated to `dev@e3380ac`. Post-merge QA passed `npm test` 25/25, `check:all` with controlled local server, and a local SQLite canary rehearsal that imported JSON state, ran the server with `TASKHUB_STATE_BACKEND=sqlite`, verified `/healthz`, `/api/config`, and `/api/reviews`, then exported rollback JSON. PM selected the hosted dev/demo SQLite canary path. On 2026-05-16, Runtime Owner/QA used `trisilar@157.230.251.209`, fast-forwarded `/home/trisilar/dashboard/app` to `dev@4ddca3c`, backed up `/home/trisilar/dashboard-data`, migrated app-owned JSON state to SQLite, restarted `taskhub-dashboard.service` with `TASKHUB_STATE_BACKEND=sqlite`, verified health/config/reviews/Paperclip operations with `verify:sqlite-canary`, exported rollback JSON, and verified rollback through a temporary JSON-backed local server. The hosted dev/demo canary remains enabled for observation. Production remains separate and was not touched by the V0.5 canary.
+V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrated to `dev@e3380ac`. Post-merge QA passed `npm test` 25/25, `check:all` with controlled local server, and a local SQLite canary rehearsal that imported JSON state, ran the server with `TASKHUB_STATE_BACKEND=sqlite`, verified `/healthz`, `/api/config`, and `/api/reviews`, then exported rollback JSON. PM selected the hosted dev/demo SQLite canary path. On 2026-05-16, Runtime Owner/QA used `trisilar@157.230.251.209`, fast-forwarded `/home/trisilar/dashboard/app` to `dev@4ddca3c`, backed up `/home/trisilar/dashboard-data`, migrated app-owned JSON state to SQLite, restarted `taskhub-dashboard.service` with `TASKHUB_STATE_BACKEND=sqlite`, verified health/config/reviews/Paperclip operations with `verify:sqlite-canary`, exported rollback JSON, and verified rollback through a temporary JSON-backed local server. A short monitor then passed at `2026-05-16T12:44:25Z` and `2026-05-16T12:45:35Z` with service active and `verify:sqlite-canary` clean. PM accepts V0.5 foundation; production remains separate and was not touched by the V0.5 canary.
 
 ---
 
@@ -77,10 +77,10 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.4-PROD-04 | 24-hour read-only monitoring | Pass; final checkpoint 2026-05-16T08:03:14Z confirmed disabled/read_only, no danger warnings, and no external side effects | PM / Integration closeout |
 | V0.4-PROD-05 | Permanent enablement acceptance | Complete; production `taskhub-prod` is permanent-enabled with Review Queue human gate intact | PM / Runtime Owner complete |
 | V0.5-FND-01 | Foundation ADRs + planning acceptance | Accepted / merged to `dev@aaf8f58` via PR #28 | PM complete |
-| V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, local integration QA, and hosted dev/demo SQLite canary | Hosted canary passed; dev/demo remains `TASKHUB_STATE_BACKEND=sqlite` for observation | Runtime Owner / QA monitor |
+| V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, local integration QA, hosted dev/demo SQLite canary, and short monitor | PM Accepted; dev/demo remains `TASKHUB_STATE_BACKEND=sqlite` as a dev/demo canary, production unchanged | PM complete / V0.6 route ready |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
-| UIV2-01 | Claude Design UI V2 research handoff | PM-routed docs-only sidecar experiment; guideline prepared for Claude Design review | PM / UX Owner / Claude Design |
+| UIV2-01 | Claude Design UI V2 research handoff | Design handoff ready; V0.6 implementation route opened on accepted V0.5 foundation | PM / UX Owner / Frontend Dev / QA |
 
 ---
 
@@ -167,39 +167,37 @@ Parallel rule:
 
 ---
 
-## Next Actions - V0.5 Foundation Handoff
+## Next Actions - V0.6 UI V2 Implementation Handoff
 
 ```text
-Role: Runtime Owner / QA
-Task: Monitor the hosted dev/demo SQLite canary for V0.5 foundation hardening.
+Role: Frontend Dev / UX Owner / QA / PM
+Task: Start V0.6 UI V2 implementation planning from the accepted UI V2 design handoff, route-by-route, without a full rewrite.
 
 Current release state:
 - V0.4 production Paperclip intake is no longer blocking follow-on work.
 - V0.4-PROD-04 passed the 24-hour read-only monitoring gate at 2026-05-16T08:03:14Z.
-- PR #27 merged V0.4 closeout to dev at c866a7d.
-- Production Paperclip permanent enablement is complete; V0.5 hosted dev/demo canary work must still avoid changing production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth.
+- Production Paperclip permanent enablement is complete with Review Queue as the mandatory human gate.
+- V0.5 foundation is PM Accepted after deterministic tests, app-owned contracts, SQLite migration/import/export, hosted dev/demo SQLite canary, rollback proof, and short monitor checkpoints passed.
+- Dev/demo `taskhub-dashboard.service` remains on `TASKHUB_STATE_BACKEND=sqlite` as a dev/demo canary with rollback proof available; production storage remains a separate Runtime Owner decision.
 
-V0.5 baseline:
-- V0.5 roadmap/FND-01 is accepted through PR #28.
-- FND-02/03/04/05 are integrated through PR #30 at dev@e3380ac.
-- V0.5 SQLite canary runtime checklist is integrated through PR #36 at dev@c866a7d.
-- npm test, contract checks, SQLite migration/rollback tests, Paperclip safety checks, post-merge check:all, local SQLite canary rehearsal, verify:sqlite-canary, verify:json-rollback, and verify:persistence-canary-cycle passed in prior V0.5 QA.
-- Hosted dev/demo canary passed on 2026-05-16 after using the correct SSH user `trisilar`.
-- `taskhub-dashboard.service` is running `dev@4ddca3c` with `APP_DATA_DIR=/home/trisilar/dashboard-data` and `TASKHUB_STATE_BACKEND=sqlite`.
-- Backup path: `/home/trisilar/backups/taskhub-dashboard-data-v05-sqlite-canary-20260516T122946Z`.
-- Rollback export manifest: `/home/trisilar/dashboard-data/sqlite-export-manifest-2026-05-16T123533165Z.json`.
-- JSON rollback proof passed through a temporary local server on an alternate port without changing the live canary state.
+V0.6 baseline:
+- Start from `docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md`.
+- Start from `docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md`.
+- Use a dedicated V0.6 branch/worktree from latest `origin/dev`.
+- Implement route-by-route, starting with shell/navigation and route states before deeper route rewrites.
+- Preserve Review Queue behavior and all public API/data contracts guarded by V0.5.
+- Keep the current static app workflow unless a new ADR explicitly approves a build-system change.
 
-Next V0.5 output:
-- Runtime Owner / QA monitor hosted dev/demo with `TASKHUB_STATE_BACKEND=sqlite` during the observation window.
-- If PM chooses rollback, remove `TASKHUB_STATE_BACKEND=sqlite` from `/home/trisilar/dashboard/.env`, restart `taskhub-dashboard.service`, and run `npm.cmd run verify:json-rollback` against `http://127.0.0.1:3000`.
-- If observation stays clean, PM may accept V0.5 foundation and route V0.6 UI V2 implementation.
+Expected V0.6 first output:
+- A scoped V0.6 implementation plan with write ownership, route order, regression targets, and rollback boundary.
+- First implementation slice should include browser regression evidence on desktop/mobile and should not modify runtime, Cloudflare, secrets, live Paperclip flags, webhook auth, or external integrations.
 
 Rules:
-- Do not touch production for V0.5 hosted dev/demo SQLite canary.
+- Do not touch production runtime for V0.6 UI work.
 - Do not change Cloudflare policy, secrets, production Paperclip live flags, or webhook auth.
 - Do not create Trello, Calendar, Google Tasks, or live Paperclip side effects.
-- If hosted canary fails, remove TASKHUB_STATE_BACKEND, restart dev/demo, run npm.cmd run verify:json-rollback, and route QA/PM.
+- Do not implement Team OS product features inside V0.6 UI slices.
+- Do not start a full rewrite; keep Full Rewrite as V0.8+ decision memo only.
 ```
 
 ## V0.4 Production Live
@@ -216,4 +214,4 @@ Current state:
 - V0.5, UI V2, and Team OS work must not change production Paperclip runtime flags unless PM opens a separate runtime change.
 ```
 
-**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, prepared as a separate production private runtime by Codex Runtime Owner, connected to production Paperclip Settings with a runtime-only signing secret, assigned a production Cloudflare Access service token, passed staged production canary, passed 24-hour read-only monitoring with production disabled and no side effects, then completed permanent enablement on `taskhub-prod` with rollback proof and no external side effects. V0.5 Foundation Hardening roadmap/FND-01 was routed by Codex PM, merged through PR #28 at `dev@aaf8f58`, implemented by Codex Dev / QA through PR #30 at `dev@e3380ac`, locally verified, and hosted dev/demo SQLite canary passed with observation active on `taskhub-dashboard.service`; full rewrite work remains deferred.
+**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, prepared as a separate production private runtime by Codex Runtime Owner, connected to production Paperclip Settings with a runtime-only signing secret, assigned a production Cloudflare Access service token, passed staged production canary, passed 24-hour read-only monitoring with production disabled and no side effects, then completed permanent enablement on `taskhub-prod` with rollback proof and no external side effects. V0.5 Foundation Hardening roadmap/FND-01 was routed by Codex PM, merged through PR #28 at `dev@aaf8f58`, implemented by Codex Dev / QA through PR #30 at `dev@e3380ac`, locally verified, hosted dev/demo SQLite canary passed on `taskhub-dashboard.service`, and PM accepted after short monitor checkpoints stayed clean; full rewrite work remains deferred.
