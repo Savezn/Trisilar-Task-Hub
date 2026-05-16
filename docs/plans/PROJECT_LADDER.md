@@ -61,8 +61,8 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L4 | V0.2 Integration Release | Complete | Accepted W1/W2/W3 work runs together on `dev` without regressions | Release/integration cleanup QA passed on clean `origin/dev@8027324`; workstream branch/worktree residue cleaned |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, deployed to dev/demo, and release-candidate verified; production deploy remains a separate runtime decision |
 | L6 | V0.4 Live AI Operations | Complete; production permanent enablement active with Review Queue gate | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | V0.4-PROD-05 accepted and verified; production webhook is enabled only behind Cloudflare Access, HMAC, and Review Queue controls |
-| L7 | V0.5 Foundation Hardening | Integrated via PR #30; hosted dev/demo SQLite canary passed and observation is active | Persistence, test gates, and app-owned contracts are strong enough for UI V2 and Team OS expansion | Meaningful `npm test`, deterministic fixtures, contract validation, SQLite migration, local integration QA, hosted SQLite canary, and rollback proof passed |
-| L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now | UI V2 tokens/component language are promoted route-by-route without uncontrolled rewrite | Browser regression passes across desktop/mobile core routes and Review Queue safety remains intact |
+| L7 | V0.5 Foundation Hardening | Complete / PM Accepted after hosted dev/demo SQLite canary short monitor | Persistence, test gates, and app-owned contracts are strong enough for UI V2 and Team OS expansion | Meaningful `npm test`, deterministic fixtures, contract validation, SQLite migration, local integration QA, hosted SQLite canary, rollback proof, and short monitor passed |
+| L8 | V0.6 UI V2 Design System Implementation | Next implementation route | UI V2 tokens/component language are promoted route-by-route without uncontrolled rewrite | Browser regression passes across desktop/mobile core routes and Review Queue safety remains intact |
 | L9 | V0.7 Team Operating System Pilot | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only | Full rewrite is approved only if V0.5/V0.6 evidence proves incremental migration is insufficient | PM accepts a decision memo comparing current static JS, Vite, React, Next, and migration risks |
 
@@ -216,7 +216,7 @@ Focus:
 
 V0.4 setup, staged canary, 24-hour read-only monitoring, rollback proof, and permanent production enablement are complete. V0.5 hosted dev/demo canary work proceeded from `origin/dev` without touching production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior.
 
-`V0.5-FND-01` is accepted through PR #28 at `dev@aaf8f58`. `V0.5-FND-02` through `V0.5-FND-05` are integrated through PR #30 at `dev@e3380ac`, and the hosted runtime checklist is integrated through PR #36. Hosted dev/demo SQLite canary execution passed on `taskhub-dashboard.service` and remains enabled for observation.
+`V0.5-FND-01` is accepted through PR #28 at `dev@aaf8f58`. `V0.5-FND-02` through `V0.5-FND-05` are integrated through PR #30 at `dev@e3380ac`, and the hosted runtime checklist is integrated through PR #36. Hosted dev/demo SQLite canary execution, rollback proof, and short monitor passed on `taskhub-dashboard.service`.
 
 Current V0.5 route:
 
@@ -229,7 +229,9 @@ V0.5 PM roadmap rebaseline accepted
 -> V0.5-FND-05 foundation integration QA
 -> PR #30 merged to `dev@e3380ac`
 -> PR #36 integrated hosted SQLite canary Runtime Owner checklist
--> hosted dev/demo SQLite canary passed; observation active
+-> hosted dev/demo SQLite canary passed with rollback proof
+-> short monitor passed at 2026-05-16T12:44:25Z and 2026-05-16T12:45:35Z
+-> PM accepts V0.5 foundation and routes V0.6 UI V2 implementation
 ```
 
 ### L8 - V0.6 UI V2 Design System Implementation
@@ -241,7 +243,7 @@ Focus:
 - Start with shell/navigation and route states, then Today/Tasks, Review Queue/Docs, Settings/operations.
 - Keep the current static JS workflow unless V0.5 produces an accepted build-system ADR.
 
-UI V2 design-only work may continue before V0.6. Production implementation waits for V0.5 foundation acceptance.
+UI V2 design handoff is ready for V0.6. Production implementation may proceed route-by-route now that V0.5 foundation is accepted, while preserving V0.5 contracts and Review Queue safety.
 
 ### L9 - V0.7 Team Operating System Pilot
 
@@ -274,7 +276,7 @@ Do not execute a full rewrite while a production runtime switch, V0.5 hosted can
 - Do not add broad platform features that make the tool heavier for a small team.
 - Do not use `main` as an integration branch.
 - Do not skip QA after behavior-changing Dev work.
-- Do not implement UI V2 production code before V0.5 foundation acceptance; design-only UI V2 work may continue.
+- Do not implement UI V2 production code outside the V0.6 route-by-route plan; V0.5 foundation acceptance is now complete.
 - Do not implement Team OS product features before UI shell/workflow stability.
 - Do not execute a full rewrite before an accepted V0.8+ decision memo.
 - Do not mix V0.5 foundation work into dirty UI V2 design artifact branches/worktrees.
@@ -312,7 +314,9 @@ Paperclip runtime inputs confirmed
 -> PR #20 release candidate verified and PM accepted for main promotion
 -> V0.4 production private runtime prepared; service-auth, Settings connection, staged canary, and 24-hour read-only monitoring passed with production disabled
 -> PM inserts V0.5 Foundation Hardening before UI V2 implementation and Team OS product work
--> V0.4 permanent production Paperclip enablement complete; V0.5 hosted dev/demo SQLite canary passed and is in observation
+-> V0.4 permanent production Paperclip enablement complete
+-> V0.5 hosted dev/demo SQLite canary, rollback proof, and short monitor passed
+-> PM accepts V0.5 foundation and routes V0.6 UI V2 implementation
 ```
 
 This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not change the standing Paperclip dev/demo observation policy. Production deployment remains a separate Runtime / PM decision.
@@ -362,4 +366,5 @@ This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime wo
 | 2026-05-15 | Integrated V0.5-FND-02/03/04/05 through PR #30 at `dev@e3380ac`; post-merge QA passed and hosted SQLite canary waits on Runtime Owner host access | Codex Integration Owner / QA |
 | 2026-05-16 | Closed V0.4 monitoring as non-blocking for follow-on versions and routed the next active handoff to V0.5 hosted dev/demo SQLite canary from latest `origin/dev` | Codex PM / Integration Owner |
 | 2026-05-16 | Completed V0.4 production Paperclip permanent enablement with rollback proof and Review Queue human gate intact | Codex PM / Runtime Owner / QA |
-| 2026-05-16 | Completed V0.5 hosted dev/demo SQLite canary with rollback proof; observation remains active on `taskhub-dashboard.service` | Codex PM / Runtime Owner / QA |
+| 2026-05-16 | Completed V0.5 hosted dev/demo SQLite canary with rollback proof; dev/demo remains SQLite-enabled on `taskhub-dashboard.service` | Codex PM / Runtime Owner / QA |
+| 2026-05-16 | PM accepted V0.5 foundation after short monitor passed at `2026-05-16T12:44:25Z` and `2026-05-16T12:45:35Z`; routed V0.6 UI V2 implementation | Codex PM / Runtime Owner / QA |

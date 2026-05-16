@@ -1,7 +1,7 @@
 # Version 0.5 Foundation Hardening Plan
 
-**Doc Role:** Active V0.5 foundation plan for persistence, tests, and contracts before UI V2 / Team Operating System implementation
-**Status:** FND-05 integrated via PR #30; runtime checklist integrated via PR #36; hosted dev-demo SQLite canary passed and remains enabled for observation
+**Doc Role:** Accepted V0.5 foundation plan for persistence, tests, and contracts before UI V2 / Team Operating System implementation
+**Status:** PM Accepted; FND-05 integrated via PR #30, runtime checklist integrated via PR #36, hosted dev-demo SQLite canary, rollback proof, and short monitor passed
 **Version:** V0.5
 **Owner:** PM / Architecture / Dev / QA
 **Created:** 2026-05-15
@@ -47,7 +47,7 @@ V0.4 production Paperclip setup, staged canary, 24-hour read-only monitoring, ro
 | `V0.5-FND-02` | Deterministic test baseline | Dev / QA | Integrated via PR #30 at `dev@e3380ac` | Replace placeholder `npm test` with meaningful route/model tests that do not require live secrets |
 | `V0.5-FND-03` | Data contract validation | Dev / QA | Integrated via PR #30 at `dev@e3380ac` | Validate app-owned Review Queue, config, Paperclip public connection, and normalized Trello card shapes |
 | `V0.5-FND-04` | SQLite persistence migration | Dev / QA / Runtime | Integrated via PR #30 at `dev@e3380ac` | Move app-owned JSON state to SQLite with JSON import/backups, rollback notes, and env-flagged runtime reader canary |
-| `V0.5-FND-05` | Foundation integration QA | QA / Integration / PM | Post-merge QA pass / hosted dev-demo canary selected | Verify tests, migration, contracts, optional SQLite runtime backend, and existing Paperclip safety gates together before any production switch |
+| `V0.5-FND-05` | Foundation integration QA | QA / Integration / PM | PM Accepted after hosted dev-demo canary and short monitor | Verify tests, migration, contracts, optional SQLite runtime backend, and existing Paperclip safety gates together before any production switch |
 
 ---
 
@@ -83,7 +83,7 @@ Can proceed in parallel:
 Must be sequenced:
 
 - SQLite migration after `V0.5-FND-01` ADR acceptance and `V0.5-FND-02` test baseline.
-- UI V2 production implementation after V0.5 foundation acceptance.
+- UI V2 production implementation only after V0.5 foundation acceptance; this gate is now complete.
 - Team OS product implementation after UI shell/workflow stability.
 - Full rewrite execution only after V0.5/V0.6 evidence shows it is still justified.
 
@@ -150,7 +150,7 @@ Boundary:
 
 PM selected the hosted dev/demo SQLite canary path on 2026-05-15.
 
-Status: selected, not executed from this workstation.
+Status: PM Accepted after hosted execution and short monitor.
 
 Completed before execution:
 
@@ -167,9 +167,10 @@ Current gate before hosted execution:
 - Runtime Owner confirmed dev/demo `APP_DATA_DIR`, current source commit, backup location, and expected Paperclip live flag before restart.
 - Production remains out of scope and must not receive `TASKHUB_STATE_BACKEND=sqlite` from this decision.
 - Hosted canary passed on 2026-05-16 from `/home/trisilar/dashboard/app` at `dev@4ddca3c`: `npm ci`, `npm test` 25/25, `verify:persistence-canary-cycle`, `migrate:sqlite`, service restart with `TASKHUB_STATE_BACKEND=sqlite`, `verify:sqlite-canary`, `migrate:sqlite:export`, and temporary JSON rollback verification passed.
-- Dev/demo remains SQLite-enabled for observation.
+- Short monitor passed with service active and `verify:sqlite-canary` clean at `2026-05-16T12:44:25Z` and `2026-05-16T12:45:35Z`.
+- Dev/demo remains SQLite-enabled as a dev/demo canary. Production storage remains JSON/default unless a separate PM/Runtime Owner task approves a switch.
 
-Runtime Owner runbook once gates are clear:
+Runtime Owner rollback runbook if future dev/demo rollback is needed:
 
 Detailed checklist: `../deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`
 
@@ -212,27 +213,48 @@ Stop and rollback if `verify:sqlite-canary`, `/healthz`, `/api/config`, `/api/re
 
 ---
 
+## V0.5 PM Acceptance
+
+```text
+Decision: Accept V0.5 Foundation Hardening.
+
+Evidence:
+- `npm test` is deterministic and meaningful.
+- App-owned data contracts are guarded.
+- SQLite import/export and rollback are implemented and verified.
+- Hosted dev/demo SQLite canary passed.
+- Rollback proof passed.
+- Short monitor checkpoints passed at 2026-05-16T12:44:25Z and 2026-05-16T12:45:35Z.
+
+Boundary:
+- Production storage is not switched by V0.5.
+- Dev/demo may remain SQLite-enabled as a canary.
+- Production runtime, Cloudflare policy, secrets, live Paperclip flags, webhook auth, Trello, Calendar, Google Tasks, and live Paperclip side effects remain out of scope.
+```
+
+---
+
 ## Next Recommended Session
 
 ```text
-Role: Runtime Owner / QA / PM
-Task: Monitor hosted dev/demo SQLite canary and decide V0.5 foundation acceptance
+Role: PM / UX Owner / Frontend Dev / QA
+Task: Start V0.6 UI V2 implementation planning from the accepted design handoff.
 
 Read:
-- docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md
-- docs/adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md
-- docs/adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md
+- CURRENT_SPRINT.md
+- docs/plans/PROJECT_LADDER.md
+- docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md
+- docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md
 - docs/testing/TEST_STRATEGY.md
 - docs/reference/ARCHITECTURE.md
-- docs/reference/DATA_BACKUP_RETENTION_POLICY.md
-- docs/deployment/ENVIRONMENT_MATRIX.md
-- docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md
+- docs/adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md
+- docs/adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md
 
 Expected output:
-- Runtime Owner / QA monitor `taskhub-dashboard.service` with `TASKHUB_STATE_BACKEND=sqlite`, confirm health/config/reviews/Paperclip operations stay healthy and read-only, and record whether the canary remains clean.
-- If PM accepts the observation, route V0.5 foundation acceptance and V0.6 UI V2 implementation readiness.
-- If PM chooses rollback or the canary fails, remove `TASKHUB_STATE_BACKEND`, restart dev/demo, verify JSON-backed health/config/reviews with `npm.cmd run verify:json-rollback`, and route QA/PM.
-- Production SQLite switch remains out of scope until a separate PM/Runtime acceptance.
+- V0.6 route-by-route UI implementation plan and first scoped slice.
+- Preserve V0.5 contracts and Review Queue behavior.
+- Browser regression evidence on desktop/mobile for touched routes.
+- No production runtime, Cloudflare, secret, live Paperclip flag, webhook auth, Team OS product feature, full rewrite, Trello, Calendar, Google Tasks, or live Paperclip side effect.
 ```
 
 ---
@@ -252,3 +274,4 @@ Expected output:
 | 2026-05-16 | Added dedicated Runtime Owner SQLite canary checklist with preflight, backup, stop conditions, rollback proof, and evidence template | Codex Dev / QA |
 | 2026-05-16 | Re-ran V0.5 local preflight on `origin/dev@3159a21`; hosted dev/demo execution remains blocked by DigitalOcean SSH publickey access | Codex Dev / QA |
 | 2026-05-16 | Executed hosted dev/demo SQLite canary on `taskhub-dashboard.service`; SQLite verification and rollback proof passed, and dev/demo remains SQLite-enabled for observation | Codex Runtime Owner / QA |
+| 2026-05-16 | PM accepted V0.5 foundation after hosted dev/demo SQLite canary short monitor passed at `2026-05-16T12:44:25Z` and `2026-05-16T12:45:35Z`; routed next to V0.6 UI V2 implementation planning | Codex PM / Runtime Owner / QA |

@@ -1,7 +1,7 @@
 # UI Web Design V2 Research And Claude Design Handoff Plan
 
 **Doc Role:** PM allocation plan for UI/UX research and Claude Design handoff
-**Status:** Active sidecar experiment
+**Status:** Design handoff ready; V0.6 implementation route opened on accepted V0.5 foundation
 **Owner:** PM / UX Owner
 **Created:** 2026-05-15
 **Updated by:** Codex PM
@@ -13,20 +13,20 @@
 
 This plan creates a design-only research packet for a Claude Design experiment: UI Web Design Version 2 for Trisilar Task Hub.
 
-The experiment runs alongside V0.4 Paperclip production work and V0.5 Foundation Hardening but does not change product code, runtime config, Cloudflare, Paperclip, or production behavior. Production UI V2 implementation is V0.6 work after V0.5 foundation acceptance.
+The experiment produced the UI V2 design handoff. V0.5 Foundation Hardening is now accepted, so production UI V2 implementation may start as V0.6 work. V0.6 still must not change runtime config, Cloudflare, Paperclip, production behavior, secrets, webhook auth, or Team OS product scope.
 
 ---
 
 ## Definition Of Ready
 
-Ready state for this sidecar experiment:
+Ready state for V0.6 implementation planning:
 
 - Role: PM / UX Owner with support from QA, Frontend Dev, AI Integration, Runtime, and Documentation Workflow.
-- Scope: research and write a Claude-ready UI/UX design guideline.
+- Scope: use the Claude-ready UI/UX design guideline to plan route-by-route implementation.
 - Branch/worktree: `codex/ui-v2-design-guidelines` from `origin/dev`; worktree `trisilar-task-hub-ui-v2-guidelines`; target `dev`.
-- Acceptance: a prompt-ready guideline exists under `docs/design/ui-design-v2/`, is linked from indexes, and preserves Task Hub product constraints.
-- Verification: docs-only `git diff --check`, reference search, conflict-marker scan, and no runtime/code changes.
-- Dependency: current V0.2 UI redesign, V0.3 RUX findings, operating model, and V0.4 runtime safety docs.
+- Acceptance: a scoped V0.6 implementation plan exists before code changes, and first UI slice preserves Task Hub product constraints.
+- Verification: browser regression on desktop/mobile for touched routes plus `npm test`; no runtime/code changes outside the UI slice.
+- Dependency: current V0.2 UI redesign, V0.3 RUX findings, operating model, V0.4 runtime safety docs, and accepted V0.5 foundation contracts.
 - Dirty state: start from clean `origin/dev`; preserve unrelated V0.4 worktree.
 - Secret/runtime boundary: no secrets, runtime flags, service tokens, production data, or live canary instructions.
 
@@ -126,21 +126,20 @@ Runtime checks are intentionally skipped because this is documentation and desig
 ## Next Handoff
 
 ```text
-Role: Claude Design / UX Owner
-Task: Use docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md to create UI Web Design Version 2 concepts for Trisilar Task Hub.
+Role: Frontend Dev / UX Owner / QA / PM
+Task: Start V0.6 UI V2 implementation planning from docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md.
 
 Rules:
-- Design only; do not modify production code.
+- Implement route-by-route; do not start a full rewrite.
 - Preserve Trello as execution surface and Task Hub as command/review layer.
 - Preserve Review Queue as the human approval gate.
 - Cover desktop and mobile.
 - Include empty, loading, error, disconnected, and audit/trace states.
-- Do not include secrets, runtime tokens, or production data.
+- Do not include secrets, runtime tokens, production data, runtime changes, Cloudflare changes, Paperclip live flag changes, webhook auth changes, or Team OS product features.
 
 Expected output:
-- UI V2 concept screens
-- design tokens
-- component inventory
-- responsive notes
-- implementation handoff notes for future Frontend Dev
+- V0.6 route order and first slice scope
+- UI tokens/component mapping to current static app
+- browser regression checklist for touched routes
+- rollback boundary and preserved-contract checklist
 ```
