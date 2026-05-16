@@ -5,7 +5,7 @@
 **Owner:** PM / UX Owner
 **Created:** 2026-05-15
 **Updated by:** Codex PM / UX Owner
-**Related Docs:** `PROJECT_LADDER.md`, `../../TODO.md`, `../design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`, `../design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`, `../design/ui-design-v2/UI_V2_CLAUDE_OUTPUT_REVIEW.md`, `../design/ui-design-v2/UI_V2_DESIGN_SYSTEM_HANDOFF.md`, `../design/ui-design-v2/UI_V2_ROUTE_SCREEN_SPECS.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `PROJECT_LADDER.md`, `../../TODO.md`, `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`, `../design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`, `../design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`, `../design/ui-design-v2/UI_V2_CLAUDE_OUTPUT_REVIEW.md`, `../design/ui-design-v2/UI_V2_DESIGN_SYSTEM_HANDOFF.md`, `../design/ui-design-v2/UI_V2_ROUTE_SCREEN_SPECS.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../logs/DECISION_LOG.md`
 
 ---
 
@@ -15,7 +15,7 @@ Decision: **Accept V0.6 UI V2 planning artifacts as the implementation-planning 
 
 This opens implementation planning after V0.5 acceptance. It does not approve production app changes outside scoped V0.6 UI slices, runtime changes, Cloudflare changes, Paperclip behavior changes, Team OS product scope, or a full rewrite.
 
-Implementation planning may proceed because V0.5 is accepted. First code work still requires a scoped V0.6 implementation plan with route order, file ownership, regression targets, and rollback boundaries.
+Implementation planning may proceed because V0.5 is accepted. First code work is routed through `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`, which defines route order, file ownership, regression targets, and rollback boundaries.
 
 Current allowed scope:
 
@@ -63,7 +63,7 @@ V0.6 planning may include:
 
 V0.6 planning must not include:
 
-- Edits under `public/` or `src/`.
+- Edits under `public/` or `src/` until a scoped first-slice plan is accepted.
 - Runtime setup, runtime flags, service deployment, or Cloudflare changes.
 - Secrets, live tokens, production data, or Paperclip live behavior changes.
 - New Trello, Calendar, Google Tasks, or Paperclip side effects.
@@ -86,6 +86,7 @@ Use these artifacts as the V0.6 planning baseline:
 | `../design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md` | Product guardrails and UX principles |
 | `../logs/V0_3_RUX_FINDINGS.md` | Existing reliability and UX baseline that UI V2 must preserve |
 | `PROJECT_LADDER.md` | Version sequencing and release gates |
+| `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` | S0 write ownership, route order, regression targets, and rollback boundary |
 
 ---
 
@@ -104,11 +105,13 @@ Use these artifacts as the V0.6 planning baseline:
 Current artifact packet:
 
 - `../design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`
+- `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`
 
 PM/UX review result:
 
 - Planning artifacts accepted.
 - V0.6 implementation route is opened by the later V0.5 acceptance decision.
+- First implementation branch/worktree is `codex/v06-ui-v2-implementation` / `trisilar-task-hub-v06-ui-v2`.
 - Production/runtime work and Full Rewrite remain out of scope.
 - PM closeout packet: `../design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`.
 
@@ -132,7 +135,7 @@ Frontend Dev planning may start from current `origin/dev`. First code slice may 
 
 Hold V0.6 planning or implementation if any of these occur:
 
-- A planning task requires changing production app code before PM opens V0.6 Dev.
+- A task requires changing production app code outside the accepted V0.6 slice.
 - The route map conflicts with V0.5 team operating-system evidence.
 - Review Queue approval behavior becomes ambiguous.
 - Trello is treated as no longer the execution surface.
@@ -145,8 +148,8 @@ Hold V0.6 planning or implementation if any of these occur:
 ## Next Handoff
 
 ```text
-Role: PM / UX Owner
-Task: Use accepted UIV2 design-system planning artifacts to prepare the first scoped V0.6 implementation slice.
+Role: Frontend Dev / UX Owner / QA
+Task: Execute the accepted V0.6-S0 implementation slice only.
 
 Inputs:
 - docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md
@@ -156,17 +159,18 @@ Inputs:
 - docs/design/ui-design-v2/UI_V2_DESIGN_SYSTEM_HANDOFF.md
 - docs/design/ui-design-v2/UI_V2_ROUTE_SCREEN_SPECS.md
 - docs/logs/V0_3_RUX_FINDINGS.md
+- docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md
 
 Rules:
-- Planning/docs only.
-- Do not edit public/ or src/ until the scoped V0.6 first-slice implementation plan is accepted.
+- S0 only: shell/navigation, token layer, shared route states.
 - Do not start Full Rewrite.
 - Do not touch runtime, Cloudflare, secrets, or Paperclip live behavior.
 - Preserve Trello as execution surface, Task Hub as command/review layer, and Review Queue as human gate.
 - Keep V0.6 route-by-route and outside Team OS product scope.
 
 Expected output:
-- V0.6 first-slice implementation plan
-- write ownership and route order
-- regression and rollback boundary
+- S0 implementation summary
+- route/component coverage
+- browser/responsive evidence
+- regression and rollback confirmation
 ```
