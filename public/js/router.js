@@ -17,6 +17,19 @@ const PATH_PAGES = Object.fromEntries(
   Object.entries(PAGE_PATHS).map(([page, path]) => [path, page])
 );
 
+const ROUTE_META = {
+  today: { label: "Today", tone: "work" },
+  review: { label: "Review Queue", tone: "review" },
+  all: { label: "Tasks", tone: "work" },
+  boards: { label: "Boards", tone: "ops" },
+  calendar: { label: "Calendar", tone: "info" },
+  docs: { label: "Docs / AI Trace", tone: "ai" },
+  planner: { label: "Planner", tone: "work" },
+  okr: { label: "OKR", tone: "ops" },
+  focus: { label: "Weekly Focus", tone: "work" },
+  settings: { label: "Settings", tone: "ops" },
+};
+
 function getPageFromPath(pathname = window.location.pathname) {
   const normalized = pathname.replace(/\/+$/, "") || "/";
   if (normalized === "/") return "today";
@@ -33,6 +46,18 @@ function syncPagePath(page, { replace = false } = {}) {
   else window.history.pushState(state, "", nextUrl);
 }
 
+function updateShellRouteState(page) {
+  const meta = ROUTE_META[page] || ROUTE_META.today;
+  document.body.dataset.route = page;
+  document.body.dataset.routeTone = meta.tone;
+
+  const routePill = $("shell-route-pill");
+  if (routePill) {
+    routePill.textContent = meta.label;
+    routePill.className = `shell-status-pill is-route is-${meta.tone}`;
+  }
+}
+
 function navigateTo(page, options = {}) {
   try {
     if (typeof closeMobileNav === "function") closeMobileNav();
@@ -40,6 +65,8 @@ function navigateTo(page, options = {}) {
     if (PAGE_PATHS[page] && options.updateUrl !== false) {
       syncPagePath(page, { replace: Boolean(options.replace) });
     }
+
+    updateShellRouteState(page);
 
     // Update active nav items
     document.querySelectorAll(".nav-item").forEach(el => {

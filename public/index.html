@@ -119,6 +119,13 @@
       </div>
     </header>
 
+    <div class="shell-status-strip" aria-label="Current workspace context">
+      <span id="shell-route-pill" class="shell-status-pill is-route">Today</span>
+      <span class="shell-status-pill is-work">Trello execution</span>
+      <span class="shell-status-pill is-review">Review gate</span>
+      <span class="shell-status-pill is-ai">Paperclip intake</span>
+    </div>
+
     <div id="board-content" class="board-content">
       <div class="empty-state">
         <div class="empty-icon">📊</div>
@@ -129,6 +136,26 @@
 </div>
 
 <!-- ── Manage Groups Modal ─────────────────────────────────────────────────── -->
+<nav class="mobile-route-bar" aria-label="Primary routes">
+  <a class="nav-item mobile-route-item" data-page="today" onclick="navigateTo('today')">
+    <span class="nav-icon"></span>
+    <span class="nav-label">Today</span>
+  </a>
+  <a class="nav-item mobile-route-item" data-page="review" onclick="navigateTo('review')">
+    <span class="nav-icon"></span>
+    <span class="nav-label">Review</span>
+    <span class="nav-badge" data-review-badge style="display:none">0</span>
+  </a>
+  <a class="nav-item mobile-route-item" data-page="all" onclick="navigateTo('all')">
+    <span class="nav-icon"></span>
+    <span class="nav-label">Tasks</span>
+  </a>
+  <a class="nav-item mobile-route-item" data-page="settings" onclick="navigateTo('settings')">
+    <span class="nav-icon"></span>
+    <span class="nav-label">Settings</span>
+  </a>
+</nav>
+
 <div id="mobile-nav-overlay" class="mobile-nav-overlay" aria-hidden="true"></div>
 
 <div id="manage-modal" class="modal-overlay hidden">

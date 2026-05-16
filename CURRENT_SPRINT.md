@@ -80,7 +80,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, local integration QA, hosted dev/demo SQLite canary, and short monitor | PM Accepted; dev/demo remains `TASKHUB_STATE_BACKEND=sqlite` as a dev/demo canary, production unchanged | PM complete / V0.6 route ready |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
-| UIV2-01 | UI V2 design-system handoff and V0.6 S0 route | First-slice implementation plan accepted for shell/navigation/token/state foundation on `codex/v06-ui-v2-implementation`; next Dev work is S0 only inside the accepted boundary | Frontend Dev / UX Owner / QA |
+| UIV2-01 | UI V2 design-system handoff and V0.6 S0 route | S0 implementation QA pass on `codex/v06-s0-ui-foundation`: shell/navigation/token/state foundation only, with screenshot evidence and no forbidden runtime/security/source files touched | PM review / merge |
 
 ---
 
@@ -142,7 +142,7 @@ Completion requires accepted work, verification, role-owned docs/logs, clear PR/
 | V0.4 runtime/production files | Runtime Owner / Paperclip Owner / QA | Do not mix with V0.5 code/docs work; no secret values or live flag changes from non-runtime branches. |
 | V0.5 foundation plan/ADR/test-contract work | PM / Architecture / Dev / QA | Use dedicated V0.5 branches/worktrees from `dev`; do not touch production runtime or dirty UI V2 artifacts. |
 | UI V2 design artifacts | UX Owner / Claude Design | Accepted as V0.6 baseline; preserve as design source, not product runtime code. |
-| V0.6 UI V2 S0 implementation | Frontend Dev / UX Owner / QA | Use `codex/v06-ui-v2-implementation` and `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`; S0 only until QA/PM acceptance. |
+| V0.6 UI V2 S0 implementation | Frontend Dev / UX Owner / QA | Use `codex/v06-s0-ui-foundation` and `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`; S0 only until QA/PM acceptance. |
 | Team OS pilot docs | PM / Operations | Docs-only assumptions may proceed; product implementation waits for V0.6 shell/workflow stability. |
 
 Completed V0.3 integration branch/worktree:
@@ -192,7 +192,7 @@ V0.6 baseline:
 - Use `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md` for route slice map, token migration map, component build sequence, responsive QA matrix, and Review Queue safety spec.
 - Use `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` for the original planning gate and implementation-ready conditions.
 - Use `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` for first-slice write ownership, route order, regression targets, and rollback boundary.
-- Use dedicated branch/worktree `codex/v06-ui-v2-implementation` / `trisilar-task-hub-v06-ui-v2` from latest `origin/dev`.
+- Use dedicated branch/worktree `codex/v06-s0-ui-foundation` / `trisilar-task-hub-v06-s0-ui-foundation` from latest `origin/dev`.
 - Implement S0 only first: shell/navigation, token layer, and route states before deeper route rewrites.
 - Preserve Review Queue behavior and all public API/data contracts guarded by V0.5.
 - Keep the current static app workflow unless a new ADR explicitly approves a build-system change.

@@ -87,7 +87,7 @@ Use `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md` and ADRs `ADR_0003` / 
 
 ### V0.6 - UI V2 Design System Implementation
 
-Status: Next implementation route. UI V2 design handoff is ready; V0.6-S0 first-slice plan is accepted for shell/navigation/token/state foundation on the accepted V0.5 base.
+Status: Active implementation route. V0.6-S0 shell/navigation/token/state foundation has QA pass evidence on `codex/v06-s0-ui-foundation`; PM merge review is next.
 
 Goal: promote UI V2 tokens and component language into production route-by-route on top of the accepted V0.5 foundation, without forcing an uncontrolled frontend rewrite.
 
@@ -115,7 +115,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Complete; production permanent enablement active with Review Queue gate |
 | L7 | V0.5 Foundation Hardening | Complete / PM Accepted after hosted dev/demo SQLite canary, rollback proof, and short monitor passed |
-| L8 | V0.6 UI V2 Design System Implementation | S0 first-slice plan accepted |
+| L8 | V0.6 UI V2 Design System Implementation | S0 QA pass / PM merge review |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
 

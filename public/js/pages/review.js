@@ -906,8 +906,14 @@ async function dismissReviewSession(sessionId) {
 async function updateReviewBadge() {
   const sessions = await api.get("/api/reviews");
   const count = sessions.reduce((n, s) => n + (s.tasks || []).filter(t => t.status === "pending").length, 0);
-  const badge = $("review-badge");
-  if (badge) { badge.textContent = count; badge.style.display = count > 0 ? "" : "none"; }
+  const badges = [
+    $("review-badge"),
+    ...document.querySelectorAll("[data-review-badge]"),
+  ].filter(Boolean);
+  badges.forEach(badge => {
+    badge.textContent = count;
+    badge.style.display = count > 0 ? "" : "none";
+  });
 }
 
 // Review: transcript upload modal
