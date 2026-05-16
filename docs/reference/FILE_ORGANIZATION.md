@@ -3,8 +3,8 @@
 **Doc Role:** File placement policy for future files
 **Status:** Active
 **Owner:** PM / Dev
-**Last Updated:** 2026-05-14
-**Updated by:** Codex PM / Documentation Architect
+**Last Updated:** 2026-05-16
+**Updated by:** Codex Documentation Workflow Owner
 
 Use this document before adding, moving, or renaming project files. The goal is to keep the repo navigable for humans and AI agents.
 
@@ -87,7 +87,7 @@ Rules:
 - New durable role guides must live under `docs/agents/`.
 - New repo-contained role skills must live under `docs/agent-skills/<role>/SKILL.md`.
 - New team-facing onboarding or routine-use guides must live under `docs/operations/`.
-- New operating or workflow references must live under `docs/reference/`.
+- New operating, workflow, external agent-harness adoption, or progress-sync references must live under `docs/reference/`.
 
 ---
 

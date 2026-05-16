@@ -4,9 +4,9 @@
 **Status:** PM accepted
 **Owner:** PM / Integration Owner
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-15
-**Updated by:** Codex PM
-**Related Docs:** `BRANCH_ENVIRONMENT_WORKFLOW.md`, `AI_AGENT_GOVERNANCE.md`, `../agents/INTEGRATION_OWNER.md`, `../../CONTRIBUTING.md`
+**Last Updated:** 2026-05-16
+**Updated by:** Codex Documentation Workflow Owner
+**Related Docs:** `BRANCH_ENVIRONMENT_WORKFLOW.md`, `AI_AGENT_GOVERNANCE.md`, `AGENT_HARNESS_ADOPTION.md`, `../agents/INTEGRATION_OWNER.md`, `../../CONTRIBUTING.md`
 
 ---
 
@@ -217,6 +217,18 @@ topic branch
 
 Feature agents do not merge sibling branches into each other. Integration Owner may merge accepted branches into `dev` after PM/QA acceptance and must record the evidence.
 
+## Progress Sync
+
+After a merge, QA pass, blocker, PM decision, or explicit hold, the owner must keep the status surfaces aligned:
+
+- `CURRENT_SPRINT.md` for current route and next action.
+- `PROJECT_LADDER.md` for version gate and sequencing changes.
+- `QA_LOG.md` for QA evidence and skipped checks.
+- worktree plan or handoff docs for folder, branch, owner, blocker, and cleanup state.
+- GitHub PR/branch state for source, target, merge, or hold evidence.
+
+Use `AGENT_HARNESS_ADOPTION.md` for the detailed progress-sync contract. Do not claim a lane is current from chat memory alone.
+
 ## Definition of Done
 
 Parallel work is not complete until the accepted branch is integrated or explicitly held and the branch/worktree cleanup gate is resolved.
@@ -245,3 +257,4 @@ Backup branches may remain as safety refs until PM approves deletion. Locked fol
 | 2026-05-14 | Created parallel Codex development model for V0.3 PM review | Codex PM / Documentation Architect |
 | 2026-05-14 | PM accepted the long-term parallel Codex branch/worktree model | Codex PM |
 | 2026-05-15 | Added Codex/Claude branch namespaces, backup branch rules, worktree examples, and cleanup expectations | Codex PM / Integration Owner |
+| 2026-05-16 | Added progress-sync contract pointer for external harness adoption | Codex Documentation Workflow Owner |

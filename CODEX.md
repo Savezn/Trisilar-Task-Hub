@@ -3,8 +3,8 @@
 **Doc Role:** Codex-specific agent extensions
 **Status:** Active
 **Universal Rules:** Read `.ai-instructions.md` first.
-**Last Updated:** 2026-05-15
-**Updated by:** Codex PM / Integration Owner
+**Last Updated:** 2026-05-16
+**Updated by:** Codex Documentation Workflow Owner
 
 This file intentionally avoids duplicating the shared project workflow. Shared rules live in `.ai-instructions.md`, `CONTRIBUTING.md`, `docs/reference/PROJECT_CONTEXT.md`, and `docs/reference/BRANCH_ENVIRONMENT_WORKFLOW.md`.
 
@@ -26,6 +26,7 @@ This file intentionally avoids duplicating the shared project workflow. Shared r
 - After `.ai-instructions.md`, load the matching repo-contained role skill under `docs/agent-skills/<role>/SKILL.md` before deeper role docs.
 - Repo-contained role skills complement Codex platform skills. Use relevant Codex/system skills when available, but do not skip this repo's role `SKILL.md`.
 - For role/parallel work, use `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and the relevant file under `docs/agents/`.
+- When adopting external agent-harness patterns, use `docs/reference/AGENT_HARNESS_ADOPTION.md`; distill only repo-relevant practices and do not install broad external packs without PM approval.
 
 ---
 
@@ -53,6 +54,7 @@ Every final handoff for repository work should include:
 - `docs/reference/PROJECT_CONTEXT.md`
 - `docs/reference/ORGANIZATION_OPERATING_MODEL.md`
 - `docs/reference/AI_AGENT_GOVERNANCE.md`
+- `docs/reference/AGENT_HARNESS_ADOPTION.md`
 - `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`
 - `docs/agent-skills/`
 - `docs/reference/ARCHITECTURE.md`

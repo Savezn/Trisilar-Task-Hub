@@ -20,6 +20,8 @@ npm.cmd test
 
 `npm test` currently runs Node's built-in test runner against `tests/*.test.js`.
 
+This is the V0.5 foundation verification loop. Run it before UI V2 production implementation, Team OS product work, or any claim that the foundation test gate is intact.
+
 For behavior, route, config, integration, or frontend runtime changes:
 
 ```powershell
@@ -64,6 +66,18 @@ npm run smoke
 | `tests/runtime-state-backend.test.js` | Runtime state backend coverage for JSON default, SQLite env-flag opt-in, JSON fallback, APP_DATA_DIR creation, Review Queue persistence, config shape, and Paperclip secret masking |
 
 Use `node --check <file>` for targeted JavaScript syntax checks when changing individual files.
+
+## Verification Loop
+
+Before a handoff claims a change is complete, identify the command that proves the claim, run it fresh, read the output, and report the result.
+
+| Claim | Required command |
+|---|---|
+| Deterministic foundation tests are intact | `npm.cmd test` |
+| Runtime route/config/frontend smoke is intact | `node server.js` plus `npm.cmd run check:all` |
+| Docs-only change is whitespace-safe | `git diff --check` |
+| Paperclip contract or runtime boundary is intact | Relevant `verify:paperclip-*` command |
+| SQLite canary or rollback path is intact | Relevant `verify:sqlite-canary`, `verify:json-rollback`, or `verify:persistence-canary-cycle` command |
 
 ---
 

@@ -4,8 +4,8 @@
 **Status:** PM accepted
 **Owner:** PM / Documentation Workflow Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM
-**Related Docs:** `ORGANIZATION_OPERATING_MODEL.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `SECURITY_ACCESS_POLICY.md`, `DATA_BACKUP_RETENTION_POLICY.md`, `../agents/PM.md`, `../plans/PROJECT_LADDER.md`
+**Updated by:** Codex Documentation Workflow Owner
+**Related Docs:** `ORGANIZATION_OPERATING_MODEL.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `AGENT_HARNESS_ADOPTION.md`, `SECURITY_ACCESS_POLICY.md`, `DATA_BACKUP_RETENTION_POLICY.md`, `../agents/PM.md`, `../plans/PROJECT_LADDER.md`
 
 ---
 
@@ -28,6 +28,7 @@ Accepted decisions:
 - Integration Owner owns accepted-branch merges into `dev`.
 - Lightweight repo-contained role `SKILL.md` entrypoints under `docs/agent-skills/` are approved for Codex, Claude, Gemini, and future agents.
 - The reusable installed `trisilar-task-hub-workflow` Codex skill remains deferred until PM explicitly asks for local skill extraction.
+- External agent-harness patterns may be distilled into repo docs, role skills, tests, and visible checklists, but full harness installs, broad rule packs, hidden hooks, and autonomous loops remain blocked without PM approval.
 
 ---
 
@@ -178,6 +179,16 @@ Completion also requires clear PR/merge state, role-owned docs/logs, and branch/
 
 Repo-contained role skills under `docs/agent-skills/` are approved as basic role entrypoints for Codex, Claude, Gemini, and future agents. They should point agents toward the right role guide, branch/worktree checks, boundaries, and output format.
 
+Role skills should use a consistent shape:
+
+- `When to use`
+- `Start`
+- `Do`
+- `Do not`
+- `Verification`
+- `Stop Conditions`
+- `Output`
+
 Do not create or install a reusable local Codex skill from these docs until PM explicitly asks. PM decision on 2026-05-14: defer the installed `trisilar-task-hub-workflow` skill and use the repo docs in real sessions first.
 
 Recommended sequence:
@@ -188,6 +199,8 @@ Recommended sequence:
 
 Repo-contained and future installed skills should teach agents how to work in this repo. They should not contain current commit hashes, live runtime values, status snapshots, or secrets.
 
+Use `AGENT_HARNESS_ADOPTION.md` before importing patterns from external agent systems. External patterns must strengthen existing PM/QA/Runtime gates rather than replace them.
+
 ---
 
 ## Change Attribution
@@ -197,3 +210,4 @@ Repo-contained and future installed skills should teach agents how to work in th
 | 2026-05-14 | Created AI agent governance draft for V0.3 PM review | Codex PM / Documentation Architect |
 | 2026-05-14 | PM accepted AI agent governance and deferred reusable skill extraction | Codex PM |
 | 2026-05-15 | Added approved repo-contained role skill entrypoints while keeping installed Codex skill extraction deferred | Codex PM / Documentation Workflow Owner |
+| 2026-05-16 | Added external agent-harness adoption boundary and role-skill shape | Codex Documentation Workflow Owner |
