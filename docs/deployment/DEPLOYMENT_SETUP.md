@@ -317,8 +317,8 @@ TASKHUB_PRODUCTION_HOSTNAME=https://taskhub-prod.trisila.online
 PAPERCLIP_ALLOWED_SOURCE_ID=paperclip-do-prod
 PAPERCLIP_PRODUCTION_SOURCE_ID=paperclip-do-prod
 PAPERCLIP_ALLOWED_ENVIRONMENT=production
-PAPERCLIP_WEBHOOK_ENABLED=false
-PAPERCLIP_LIVE_MODE=disabled
+PAPERCLIP_WEBHOOK_ENABLED=true
+PAPERCLIP_LIVE_MODE=permanent
 PAPERCLIP_WEBHOOK_MAX_SKEW_SECONDS=300
 ```
 
@@ -359,8 +359,8 @@ Current V0.4 production runtime checkpoint:
 | Cloudflare route | Existing healthy tunnel routes hostname to `http://localhost:3301` |
 | Access gate | Production Cloudflare Access app with team-email allow policy |
 | `APP_DATA_DIR` | `/home/trisilar/taskhub-prod-data` |
-| Webhook hard gate | `PAPERCLIP_WEBHOOK_ENABLED=false` |
-| Live mode | `PAPERCLIP_LIVE_MODE=disabled` |
+| Webhook hard gate | `PAPERCLIP_WEBHOOK_ENABLED=true` after V0.4-PROD-05 acceptance |
+| Live mode | `PAPERCLIP_LIVE_MODE=permanent` after V0.4-PROD-05 acceptance |
 
 Checkpoint evidence:
 

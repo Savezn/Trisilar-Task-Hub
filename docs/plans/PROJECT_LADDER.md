@@ -60,7 +60,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L3 | V0.2 Paperclip Foundation | Complete for V0.2 / standing dev-demo monitor active | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, safe cleanup for accumulated test sessions, retained traceability, and read-only operations visibility | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3-03 standing dev/demo observation active; W3-04/W3-04a cleanup merged to `dev@7ea4650`; runtime cleanup completed with 0 pending / 6 rejected / 0 Trello-linked; W3-05 operations status and copy polish merged/deployed at `dev@2c302dc`; closeout status is on `origin/dev@ff20e48` |
 | L4 | V0.2 Integration Release | Complete | Accepted W1/W2/W3 work runs together on `dev` without regressions | Release/integration cleanup QA passed on clean `origin/dev@8027324`; workstream branch/worktree residue cleaned |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, deployed to dev/demo, and release-candidate verified; production deploy remains a separate runtime decision |
-| L6 | V0.4 Live AI Operations | Production runtime setup, staged canary, and 24-hour read-only monitoring passed; permanent enablement remains a separate runtime switch | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | V0.4 monitoring gate accepted; production webhook remains disabled until PM / Runtime Owner deliberately enables permanent mode |
+| L6 | V0.4 Live AI Operations | Complete; production permanent enablement active with Review Queue gate | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | V0.4-PROD-05 accepted and verified; production webhook is enabled only behind Cloudflare Access, HMAC, and Review Queue controls |
 | L7 | V0.5 Foundation Hardening | Integrated via PR #30; hosted dev/demo SQLite canary blocked on Runtime Owner host access | Persistence, test gates, and app-owned contracts are strong enough for UI V2 and Team OS expansion | Meaningful `npm test`, deterministic fixtures, contract validation, SQLite migration, local integration QA, and rollback rehearsal passed; hosted canary remains pending |
 | L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now | UI V2 tokens/component language are promoted route-by-route without uncontrolled rewrite | Browser regression passes across desktop/mobile core routes and Review Queue safety remains intact |
 | L9 | V0.7 Team Operating System Pilot | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
@@ -201,7 +201,7 @@ V0.4 repo readiness integrated to dev@7e069b5
 -> Runtime Owner / Paperclip Owner complete production service-token path and Settings signing-secret connection
 -> QA / Runtime / Paperclip Owner run staged production canary and negative checks
 -> 24-hour read-only monitoring passed at 2026-05-16T08:03:14Z with no side effects
--> PM / Runtime Owner decide when to flip permanent enablement; production remains disabled meanwhile
+-> PM / Runtime Owner completed permanent enablement with rollback proof; production remains Review Queue gated
 ```
 
 ### L7 - V0.5 Foundation Hardening
@@ -214,7 +214,7 @@ Focus:
 - SQLite migration for app-owned runtime state with JSON import/backups.
 - Preserve public API response shapes unless an ADR explicitly approves a contract change.
 
-V0.4 setup, staged canary, rollback, and 24-hour read-only monitoring are complete. V0.5 hosted dev/demo canary work may proceed from `origin/dev` as long as it does not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior.
+V0.4 setup, staged canary, 24-hour read-only monitoring, rollback proof, and permanent production enablement are complete. V0.5 hosted dev/demo canary work may proceed from `origin/dev` as long as it does not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior.
 
 `V0.5-FND-01` is accepted through PR #28 at `dev@aaf8f58`. `V0.5-FND-02` through `V0.5-FND-05` are integrated through PR #30 at `dev@e3380ac`, and the hosted runtime checklist is integrated through PR #36. The next handoff is hosted dev/demo SQLite canary execution by the Runtime Owner after host access is available.
 
@@ -312,7 +312,7 @@ Paperclip runtime inputs confirmed
 -> PR #20 release candidate verified and PM accepted for main promotion
 -> V0.4 production private runtime prepared; service-auth, Settings connection, staged canary, and 24-hour read-only monitoring passed with production disabled
 -> PM inserts V0.5 Foundation Hardening before UI V2 implementation and Team OS product work
--> V0.5 hosted dev/demo SQLite canary is the next active runtime task; production Paperclip permanent enablement is a separate optional decision
+-> V0.4 permanent production Paperclip enablement complete; V0.5 hosted dev/demo SQLite canary is the next active runtime task
 ```
 
 This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime work, do not deploy production, do not expose service-token or HMAC secret values, and do not change the standing Paperclip dev/demo observation policy. Production deployment remains a separate Runtime / PM decision.
@@ -361,3 +361,4 @@ This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime wo
 | 2026-05-15 | Accepted V0.5-FND-01 through PR #28 and routed next to FND-02 deterministic test baseline in the foundation worktree | Codex PM / Integration Owner |
 | 2026-05-15 | Integrated V0.5-FND-02/03/04/05 through PR #30 at `dev@e3380ac`; post-merge QA passed and hosted SQLite canary waits on Runtime Owner host access | Codex Integration Owner / QA |
 | 2026-05-16 | Closed V0.4 monitoring as non-blocking for follow-on versions and routed the next active handoff to V0.5 hosted dev/demo SQLite canary from latest `origin/dev` | Codex PM / Integration Owner |
+| 2026-05-16 | Completed V0.4 production Paperclip permanent enablement with rollback proof and Review Queue human gate intact | Codex PM / Runtime Owner / QA |

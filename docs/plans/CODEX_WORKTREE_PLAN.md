@@ -25,7 +25,7 @@ Use the dedicated worktree for the version you are assigned. Do not point two Co
 | Phase / Work | Current state | Gate / Blocker |
 |---|---:|---|
 | V0.4-PROD-04 read-only monitoring | Passed | Final checkpoint `2026-05-16T08:03:14Z`; no longer blocks other versions |
-| V0.4-PROD-05 permanent enablement | Optional separate runtime decision | Production stays disabled until PM / Runtime Owner deliberately flips permanent mode using the V0.4 runbook |
+| V0.4-PROD-05 permanent enablement | Complete | Production `taskhub-prod` is permanent-enabled with Review Queue human gate and rollback proof |
 | V0.5-FND-01 planning / ADR acceptance | Complete | Merged via PR #28 |
 | V0.5-FND-02/03/04/05 foundation work | Integrated | Merged via PR #30 |
 | V0.5 hosted dev/demo SQLite canary | Next runtime task | Requires Runtime Owner host access; use `docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`; do not touch production |
@@ -42,6 +42,6 @@ Use this order:
 1. Sync the dedicated V0.5 foundation worktree from `origin/dev`.
 2. Run hosted dev/demo SQLite canary using `docs/deployment/V05_SQLITE_CANARY_RUNTIME_CHECKLIST.md`.
 3. Record canary evidence or blocker in `docs/logs/QA_LOG.md` and `CURRENT_SPRINT.md`.
-4. Keep production Paperclip disabled unless PM opens a separate V0.4-PROD-05 runtime-switch task.
+4. Keep production Paperclip permanent flags unchanged unless PM opens a separate runtime-change task.
 
-Do not mark V0.4 permanent enabled from V0.5, UI V2, Team OS, or rewrite work.
+Do not change V0.4 production permanent flags from V0.5, UI V2, Team OS, or rewrite work.

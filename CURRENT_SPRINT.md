@@ -1,7 +1,7 @@
 # Current Sprint - Trisilar Task Hub
 
 **Phase:** V0.4 Live AI Operations / V0.5 Foundation Hardening
-**Status:** V0.4 24-hour production read-only monitoring passed; production webhook remains disabled pending permanent-enable runtime decision; V0.5 foundation integrated via PR #30; hosted dev/demo SQLite canary preflight passed on `dev@3159a21` and remains blocked on Runtime Owner host access
+**Status:** V0.4 production Paperclip permanent enablement complete; V0.5 foundation integrated via PR #30; hosted dev/demo SQLite canary preflight passed on `dev@3159a21` and remains blocked on Runtime Owner host access
 **Doc Role:** Short active-state file for current work, active tasks, and next action only
 **Last Updated:** 2026-05-16 - **Updated by:** Codex PM / Dev / QA
 
@@ -25,7 +25,7 @@
 | Latest W3 dev closeout | `origin/dev@ff20e48` | `V0.2-W3-05` operations status and settings copy polish merged/deployed at `dev@2c302dc`; W3 foundation closeout status is on latest `dev` |
 | V0.3 operating model and agent structure | PM Accepted / merged to `dev@ed9fae0` | Reference docs define Task Hub/Trello/Review Queue operating model, AI governance, Codex parallel development, and long-term role ownership under `docs/agents/`. Repo-contained role skills are allowed under `docs/agent-skills/`; installed reusable Codex skill extraction remains deferred. |
 | V0.3 Product Reliability + UX Stabilization | Complete / post-sync release QA pass | RUX-02A through RUX-06 are accepted, integrated, deployed to dev/demo, runtime QA passed, release-candidate verification passed on `codex/v03-dev-to-main-release-candidate@5eb23ef`, and `origin/dev` / `origin/main` are synced at `631d3b2`. Production deploy remains a separate runtime decision. |
-| V0.4 Paperclip production readiness | Repo readiness integrated to `dev@7e069b5`; production runtime prepared from `dev@e8a211b`; 24-hour production read-only monitoring passed on 2026-05-16 | Adds production runtime profile/live mode/status warnings and `verify:paperclip-production-readiness`; production private runtime, Cloudflare tunnel route, DNS, Access app, production service token, and production Paperclip Settings connection are prepared; staged canary passed, runtime gate was closed, and 24-hour monitoring showed no danger warning or external side effect |
+| V0.4 Paperclip production readiness | Complete; production permanent enablement active on `taskhub-prod` | Production private runtime, Cloudflare Access route, production service token, Paperclip Settings connection, staged canary, 24-hour monitoring, rollback proof, and permanent mode verification passed. Review Queue remains the human gate; no auto-approval or Trello/Calendar/Google Tasks side effect occurred |
 | V0.5 Foundation Hardening | Integrated via PR #30; PM selected hosted dev/demo SQLite canary; latest repo-side preflight passed on `dev@3159a21`, blocked on host access | Deterministic `npm test`, app-owned contracts, SQLite migration/import/export, fail-loud rollback export, env-flagged SQLite runtime reader, Paperclip safety checks, post-merge QA, and local dev/demo-style SQLite canary rehearsal passed without production/runtime side effects |
 | Agent role skill entrypoints | Merged to `origin/dev@de3a6bc` via PR #23 | Added basic repo-contained `SKILL.md` files for Codex, Claude, Gemini, and future agents; no local Codex skill install and no product-version scope |
 | Operations/security docs baseline | Merged to `origin/dev@681be25` via PR #25 | Adds runtime operations runbook, data backup/retention policy, security/access policy, onboarding guide, troubleshooting guide, and environment matrix after DoR/DoD baseline merge; branch/worktree cleanup completed |
@@ -49,7 +49,7 @@ PM accepted the V0.3 `dev -> main` release candidate in PR #20 after merging `or
 
 On 2026-05-15, PM/Integration synced `origin/dev` and `origin/main` at `631d3b2`, confirmed V0.2 delivery/cleanup is complete, normalized Codex/Claude branch/worktree rules in project docs, and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. Verification passed `npm ci`, `git diff --check`, conflict-marker scan, `check:all` with isolated local server, all RUX checks, and Paperclip contract/mock/docs/operations/cleanup/connection/webhook checks. No production deploy, runtime flag change, live canary, secret exposure, or Trello/Calendar/Google Tasks side effect was performed.
 
-V0.4 Paperclip production readiness is integrated to `dev@7e069b5`, and the private production runtime is prepared from `dev@e8a211b`. The production runtime runs as Docker container `taskhub-prod` on the DigitalOcean host, binds privately to `127.0.0.1:3301`, uses separate `APP_DATA_DIR=/home/trisilar/taskhub-prod-data`, and reports production profile / disabled live mode through read-only operations status. Cloudflare tunnel routing, DNS, and a production Access app are configured for `https://taskhub-prod.trisila.online`; anonymous access returns Cloudflare Access `302`. Production Paperclip Settings is connected with a runtime-only signing secret, production service-token reachability passed, staged production canary passed, and the runtime gate was closed afterward.
+V0.4 Paperclip production readiness is complete. The production runtime runs as Docker container `taskhub-prod` on the DigitalOcean host, binds privately to `127.0.0.1:3301`, uses separate `APP_DATA_DIR=/home/trisilar/taskhub-prod-data`, and is routed through Cloudflare Access at `https://taskhub-prod.trisila.online`; anonymous access returns Cloudflare Access `302`. Production Paperclip Settings is connected with a runtime-only signing secret, production service-token reachability passed, staged production canary passed, 24-hour monitoring passed, rollback proof passed, and production is now in `PAPERCLIP_LIVE_MODE=permanent` with `PAPERCLIP_WEBHOOK_ENABLED=true`.
 
 PM rebaselined the post-V0.4 roadmap so the team does not wait idle during V0.4 waiting/monitoring windows. V0.5 Foundation Hardening now comes before UI V2 production implementation and Team Operating System product work. V0.5 covers ADR-backed persistence, real `npm test`, app-owned data contracts, and SQLite migration; it must not touch production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth behavior. PR #28 merged the roadmap rebaseline to `dev@aaf8f58`; PR #30 later integrated FND-02/03/04/05 to `dev@e3380ac`.
 
@@ -75,7 +75,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.4-PROD-02 | Separate production runtime setup | Pass for runtime setup: private runtime + Cloudflare Access route + production service token + Paperclip Settings connection prepared | Runtime complete |
 | V0.4-PROD-03 | Staged production canary window | Pass; runtime returned to disabled | QA / Runtime complete |
 | V0.4-PROD-04 | 24-hour read-only monitoring | Pass; final checkpoint 2026-05-16T08:03:14Z confirmed disabled/read_only, no danger warnings, and no external side effects | PM / Integration closeout |
-| V0.4-PROD-05 | Permanent enablement acceptance | Hold / optional separate PM runtime decision; production webhook remains disabled until explicit permanent-enable runtime change | PM / Runtime Owner |
+| V0.4-PROD-05 | Permanent enablement acceptance | Complete; production `taskhub-prod` is permanent-enabled with Review Queue human gate intact | PM / Runtime Owner complete |
 | V0.5-FND-01 | Foundation ADRs + planning acceptance | Accepted / merged to `dev@aaf8f58` via PR #28 | PM complete |
 | V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, and local integration QA | Integrated via PR #30; hosted dev/demo SQLite canary selected but blocked on Runtime Owner host access | Runtime Owner |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
@@ -177,7 +177,7 @@ Current release state:
 - V0.4 production Paperclip intake is no longer blocking follow-on work.
 - V0.4-PROD-04 passed the 24-hour read-only monitoring gate at 2026-05-16T08:03:14Z.
 - PR #27 merged V0.4 closeout to dev at c866a7d.
-- Production Paperclip webhook remains disabled; permanent enablement is a separate PM / Runtime Owner runtime switch, not a prerequisite for V0.5 hosted dev/demo canary work.
+- Production Paperclip permanent enablement is complete; V0.5 hosted dev/demo canary work must still avoid changing production runtime, secrets, Cloudflare policy, live Paperclip flags, or webhook auth.
 
 V0.5 baseline:
 - V0.5 roadmap/FND-01 is accepted through PR #28.
@@ -200,17 +200,18 @@ Rules:
 - If hosted canary fails, remove TASKHUB_STATE_BACKEND, restart dev/demo, run npm.cmd run verify:json-rollback, and route QA/PM.
 ```
 
-## V0.4 Runtime Hold
+## V0.4 Production Live
 
 ```text
 Role: PM / Runtime Owner
-Task: Decide later whether to execute permanent production Paperclip enablement.
+Task: Keep production Paperclip intake live and Review Queue gated.
 
 Current state:
 - Production Task Hub remains on the separate taskhub-prod runtime at https://taskhub-prod.trisila.online.
-- PAPERCLIP_WEBHOOK_ENABLED=false and PAPERCLIP_LIVE_MODE=disabled remain the expected state.
-- Permanent enablement uses the V0.4 runbook and must record a new PM decision plus rollback evidence.
-- Do not treat V0.5, UI V2, or Team OS work as approval to flip production Paperclip permanent mode.
+- PAPERCLIP_WEBHOOK_ENABLED=true and PAPERCLIP_LIVE_MODE=permanent are the expected production state.
+- Review Queue remains mandatory before Trello, Calendar, or Google Tasks writes.
+- Rollback proof passed by restoring disabled mode, verifying disabled webhook 403, then re-enabling permanent mode.
+- V0.5, UI V2, and Team OS work must not change production Paperclip runtime flags unless PM opens a separate runtime change.
 ```
 
-**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, prepared as a separate production private runtime by Codex Runtime Owner, connected to production Paperclip Settings with a runtime-only signing secret, assigned a production Cloudflare Access service token, passed staged production canary, and passed 24-hour read-only monitoring with production disabled and no side effects. V0.5 Foundation Hardening roadmap/FND-01 was routed by Codex PM, merged through PR #28 at `dev@aaf8f58`, implemented by Codex Dev / QA through PR #30 at `dev@e3380ac`, and post-merge verified locally with hosted canary blocked only by Runtime Owner host access; full rewrite work remains deferred.
+**Attribution:** W3-04 cleanup implemented by Codex Dev, QA passed, PM accepted, merged to `dev@7ea4650`, and runtime cleanup executed by Runtime Owner / QA. W3-05 implemented by Codex Dev, reviewed by Codex QA, accepted by Codex PM, merged/deployed at `dev@2c302dc`, and closed out on `origin/dev@ff20e48`; standing dev/demo monitoring remains read-only. V0.3 RUX work was implemented and accepted in the dedicated V0.3 branch/worktree, integrated through PR #18, merged to `origin/dev@02fe7cf`, deployed to dev/demo, accepted complete after runtime QA, and PM accepted for main promotion through PR #20 after release-candidate verification. On 2026-05-15, Codex PM / Integration Owner aligned Codex/Claude branch-workflow docs and ran post-sync V0.3 release/integration QA from `codex/v03-branch-workflow-release-qa`. V0.4 Paperclip production repo readiness was implemented and locally verified by Codex Dev / QA on `codex/v04-paperclip-prod-integration`, integrated by Codex Integration Owner to `dev@7e069b5`, prepared as a separate production private runtime by Codex Runtime Owner, connected to production Paperclip Settings with a runtime-only signing secret, assigned a production Cloudflare Access service token, passed staged production canary, passed 24-hour read-only monitoring with production disabled and no side effects, then completed permanent enablement on `taskhub-prod` with rollback proof and no external side effects. V0.5 Foundation Hardening roadmap/FND-01 was routed by Codex PM, merged through PR #28 at `dev@aaf8f58`, implemented by Codex Dev / QA through PR #30 at `dev@e3380ac`, and post-merge verified locally with hosted canary blocked only by Runtime Owner host access; full rewrite work remains deferred.

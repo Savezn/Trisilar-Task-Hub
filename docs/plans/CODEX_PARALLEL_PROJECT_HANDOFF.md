@@ -26,7 +26,7 @@ Do not point two Codex projects at the same folder. Do not switch branches insid
 | Codex Project Name | Folder To Link | Branch | Current Role | Status |
 |---|---|---|---|---|
 | `TaskHub PM Roadmap` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-roadmap-rebaseline` | `codex/v05-roadmap-rebaseline` | PM / Integration docs | Closed through PR #28; do not continue here unless PM reopens roadmap docs |
-| `TaskHub V0.4 Runtime` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v04-paperclip-prod-integration` | Merged via PR #27 | Runtime Owner / QA | Closed for monitoring; production permanent enablement is optional separate runtime decision |
+| `TaskHub V0.4 Runtime` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v04-paperclip-prod-integration` | Runtime live / docs closeout branch only if needed | Runtime Owner / QA | Complete; production permanent enablement active with rollback proof |
 | `TaskHub V0.5 Foundation` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v05-foundation` | Sync from latest `origin/dev` with PR #30 and PR #36 | Runtime Owner / QA | Next active runtime task: hosted dev/demo SQLite canary |
 | `TaskHub UI V2 Design` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-uiv2-design-system` | `codex/uiv2-design-system` | UX Owner / Frontend design | Design-system work only until V0.6 implementation approval |
 | `TaskHub Team OS Pilot` | `C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v07-team-os-pilot` | `codex/v07-team-os-pilot-docs` | PM / Operations | Docs-only pilot assumptions; no product features yet |
@@ -40,8 +40,8 @@ Do not use `trisilar-task-hub-v05-ui-v2-full-rewrite` as the active UI project u
 ```mermaid
 flowchart TD
   A["Start a Codex session"] --> B["Read CURRENT_SPRINT.md"]
-  B --> C{"Is this V0.4 permanent enablement?"}
-  C -- "Yes" --> D["Open separate PM/Runtime decision; production stays disabled until accepted"]
+  B --> C{"Is this a production runtime change?"}
+  C -- "Yes" --> D["Open separate PM/Runtime decision; preserve rollback proof"]
   C -- "No" --> E{"Is V0.5 hosted dev/demo SQLite canary done?"}
   E -- "No" --> G["Runtime Owner runs hosted SQLite canary or records blocker"]
   E -- "Yes" --> I["Start V0.6 UI V2 production implementation"]
@@ -101,7 +101,7 @@ Expected output:
 
 ```text
 Role: Runtime Owner / QA / Paperclip Owner
-Task: No active monitoring task. V0.4 production monitoring passed and PR #27 merged.
+Task: No active delivery task. V0.4 production monitoring, permanent enablement, and rollback proof passed.
 
 Workspace:
 C:\Users\User\Desktop\Shortcut\Programmer\Trisilar\trisilar-task-hub-v04-paperclip-prod-integration
@@ -115,22 +115,22 @@ Read first:
 - docs/reference/SECURITY_ACCESS_POLICY.md
 
 Goal:
-Only reopen this lane if PM explicitly chooses the separate V0.4-PROD-05 permanent-enable runtime switch.
+Only reopen this lane if PM explicitly chooses a new production runtime change or rollback exercise.
 
 Rules:
 - Do not print, commit, or document secret values.
 - Do not reuse dev/demo APP_DATA_DIR or secrets.
-- Do not set production PAPERCLIP_WEBHOOK_ENABLED=true unless PM records a new permanent-enable runtime decision.
+- Do not change production PAPERCLIP_WEBHOOK_ENABLED or PAPERCLIP_LIVE_MODE unless PM records a new runtime decision.
 - Do not create Trello cards, Calendar events, or Google Tasks.
 - Do not change non-runtime roadmap or UI docs from this project.
 
 Verification:
 - Confirm branch/folder with git status --short --branch.
 - Use read-only checks first.
-- If permanent enablement is approved later, follow the V0.4 runbook and record rollback evidence without secret values.
+- If a runtime change is approved later, follow the V0.4 runbook and record rollback evidence without secret values.
 
 Expected output:
-- PM permanent-enable or hold decision.
+- PM runtime change or no-change decision.
 - Runtime evidence and rollback proof if flags change.
 ```
 
