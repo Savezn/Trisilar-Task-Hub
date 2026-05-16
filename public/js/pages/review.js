@@ -145,6 +145,7 @@ function buildSessionCard(session) {
   const cleanupButton = paperclipMeta.isCleanupEligible && pendingTasks.length
     ? `<button class="btn btn-danger btn-sm" onclick="cleanupPaperclipTestSession('${session.id}')">${icon("x")} Cleanup test</button>`
     : "";
+  const sessionTrace = renderReviewSessionTrace(session, pendingTasks);
 
   const card = document.createElement("div");
   card.className = `review-session-card${expanded ? " active" : ""}`;
@@ -169,6 +170,7 @@ function buildSessionCard(session) {
         <span class="review-meta-dot">-</span>
         <span>${tasks.length} tasks extracted</span>
       </div>
+      ${sessionTrace}
     </div>
     <div class="review-session-controls">
       ${pendingTasks.length  ? `<span class="chip chip-review">${pendingTasks.length} pending</span>` : ""}
@@ -240,6 +242,11 @@ function buildTaskCard(session, task, paperclipDocsIndex = []) {
   const boardLabel = reviewBoardName(task.targetBoardId);
   const dueLabel = task.deadline ? formatThaiDateTime(task.deadline) : "No due date";
   const paperclipContext = renderPaperclipReviewContext(session);
+  const safety = reviewTaskSafety(session, task, confPct);
+  if (safety.blockApproval) {
+    el.classList.add("is-approval-blocked");
+    el.dataset.approvalBlocked = "1";
+  }
 
   el.innerHTML = `
     <div class="review-task-header">
@@ -260,6 +267,9 @@ function buildTaskCard(session, task, paperclipDocsIndex = []) {
       </div>
     </div>
     ${paperclipContext}
+    ${renderReviewTraceStrip(session)}
+    ${renderReviewSafetyPanel(safety)}
+    ${renderReviewApprovalGuard(task, safety)}
     <div class="review-task-meta-row">
       <span><span class="label">Owner</span>${esc(task.owner || "Unassigned")}</span>
       <span><span class="label">Due</span>${esc(dueLabel)}</span>
@@ -280,13 +290,116 @@ function buildTaskCard(session, task, paperclipDocsIndex = []) {
         ${icon("inbox")} Google Tasks <span>${task.syncGoogleTasks ? "On" : "Off"}</span>
       </label>
       <div class="review-actions-spacer"></div>
+      <button class="btn btn-ghost btn-sm review-hold-btn" onclick="holdReviewTaskForEdit('${session.id}','${task.id}')">${icon("alert")} Hold / edit</button>
       <button class="btn btn-ghost btn-sm" onclick="openReviewTaskDrawer('${session.id}','${task.id}')">${icon("edit")} Edit</button>
       <button class="btn btn-danger btn-sm" onclick="rejectReviewTask('${session.id}','${task.id}')">${icon("x")} Reject</button>
-      <button class="btn btn-success btn-sm rq-approve-btn" onclick="approveReviewTask('${session.id}','${task.id}')">${icon("check")} Approve</button>
+      <button class="btn btn-success btn-sm rq-approve-btn" onclick="approveReviewTask('${session.id}','${task.id}')" ${safety.blockApproval ? 'disabled title="Resolve missing owner, board, or list before approval."' : ""}>${icon("check")} Approve</button>
     </div>
   `;
 
   return el;
+}
+
+function shortReviewRef(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  return text.length > 24 ? `${text.slice(0, 10)}...${text.slice(-8)}` : text;
+}
+
+function reviewTaskSafety(session, task, confPct) {
+  const missing = [];
+  if (!String(task.owner || "").trim()) missing.push("owner");
+  if (!task.targetBoardId) missing.push("board");
+  if (!task.targetListId) missing.push("list");
+  const duplicate = task.diffStatus === "possible_duplicate";
+  const lowConfidence = confPct < 60;
+  const paperclip = getPaperclipReviewMeta(session);
+  const warnings = [];
+  if (missing.length) warnings.push(`Missing ${missing.join(", ")}`);
+  if (duplicate) warnings.push("Possible duplicate");
+  if (lowConfidence) warnings.push(`Low confidence (${confPct}%)`);
+  if (paperclip.isTestOrCanary) warnings.push("Paperclip test/canary");
+  return {
+    blockApproval: missing.length > 0,
+    duplicate,
+    lowConfidence,
+    missing,
+    paperclip,
+    tone: missing.length || duplicate || lowConfidence || paperclip.isTestOrCanary ? "warning" : "ready",
+    warnings,
+  };
+}
+
+function reviewApprovalSideEffects(task) {
+  const effects = [];
+  if (task.targetBoardId && task.targetListId) {
+    effects.push("Trello create/update");
+  } else {
+    effects.push("Trello write blocked until board/list is resolved");
+  }
+  if (task.syncCalendar) effects.push("Calendar sync if runtime is connected");
+  if (task.syncGoogleTasks) effects.push("Google Tasks sync if runtime is connected");
+  return effects;
+}
+
+function renderReviewSessionTrace(session, pendingTasks) {
+  const source = formatReviewSource(session.source);
+  const env = session.externalSource?.environment || "local";
+  const request = shortReviewRef(session.requestId) || "No request";
+  const run = shortReviewRef(session.agent?.runId) || "No run";
+  const riskCount = (pendingTasks || []).filter(task => {
+    const confPct = Math.round((task.confidence ?? 1) * 100);
+    return reviewTaskSafety(session, task, confPct).tone === "warning";
+  }).length;
+  return `
+    <div class="review-session-trace">
+      <span>Source: ${esc(source)}</span>
+      <span>Env: ${esc(env)}</span>
+      <span>Request: ${esc(request)}</span>
+      <span>Run: ${esc(run)}</span>
+      <span class="${riskCount ? "is-warning" : "is-ready"}">Risk: ${riskCount ? `${riskCount} needs review` : "ready"}</span>
+    </div>
+  `;
+}
+
+function renderReviewTraceStrip(session) {
+  const source = formatReviewSource(session.source);
+  const env = session.externalSource?.environment || "local";
+  const request = shortReviewRef(session.requestId) || "No request";
+  const agent = session.agent?.agentName || session.agent?.agentRole || "No agent";
+  const run = shortReviewRef(session.agent?.runId) || "No run";
+  return `
+    <div class="review-trace-strip" aria-label="Review trace metadata">
+      <span>Source: ${esc(source)}</span>
+      <span>Env: ${esc(env)}</span>
+      <span>Request: ${esc(request)}</span>
+      <span>Agent: ${esc(agent)}</span>
+      <span>Run: ${esc(run)}</span>
+    </div>
+  `;
+}
+
+function renderReviewSafetyPanel(safety) {
+  if (!safety.warnings.length) {
+    return '<div class="review-safety-panel is-ready"><strong>Risk: ready for human decision</strong><span>Owner, board, and list are present. Confirm side effects before approval.</span></div>';
+  }
+  return `
+    <div class="review-safety-panel is-warning">
+      <strong>Risk: ${esc(safety.warnings.join(" / "))}</strong>
+      <span>${safety.blockApproval ? "Resolve missing fields before approval. Hold or edit is the safe next action." : "Inspect the proposal before approval."}</span>
+    </div>
+  `;
+}
+
+function renderReviewApprovalGuard(task, safety) {
+  const effects = reviewApprovalSideEffects(task);
+  return `
+    <div class="review-approval-guard ${safety.blockApproval ? "is-blocked" : ""}">
+      <strong>Human approval required</strong>
+      <span>${safety.blockApproval ? "Approval is blocked until required target context is complete." : "Approval can create or update external work only after this human action."}</span>
+      <small>Side effects on approval: ${effects.map(esc).join("; ")}</small>
+    </div>
+  `;
 }
 
 function reviewDiffMeta(status) {
@@ -690,6 +803,13 @@ async function onReviewBoardChange(sessionId, taskId, boardId) {
 async function approveReviewTask(sessionId, taskId) {
   const taskEl = $(`task-${taskId}`);
   if (!taskEl) return;
+  if (taskEl.dataset.approvalBlocked === "1") {
+    toast("Resolve missing owner, board, or list before approval. Use Hold / edit.", true);
+    return;
+  }
+  const sideEffects = taskEl.querySelector(".review-approval-guard small")?.textContent
+    || "Side effects on approval: Trello, Calendar, or Google Tasks may be updated when enabled.";
+  if (!confirm(`Approve this Review Queue task?\n\n${sideEffects}\n\nA human approval is required before any external write runs.`)) return;
   const appBtn = taskEl.querySelector(".rq-approve-btn");
   if (appBtn) { appBtn.textContent = "Approving..."; appBtn.disabled = true; }
   try {
@@ -706,6 +826,11 @@ async function approveReviewTask(sessionId, taskId) {
     toast("Error: " + e.message, true);
     if (appBtn) { appBtn.innerHTML = `${icon("check")} Approve`; appBtn.disabled = false; }
   }
+}
+
+function holdReviewTaskForEdit(sessionId, taskId) {
+  toast("Held for reviewer edit. No external action ran.");
+  openReviewTaskDrawer(sessionId, taskId);
 }
 
 async function rejectReviewTask(sessionId, taskId) {
@@ -803,6 +928,30 @@ async function bulkApproveReview() {
     if (btn) { btn.textContent = "Approving..."; btn.disabled = true; }
   }
   try {
+    let selectedCount = 0;
+    const blocked = [];
+    S.reviewSelected.forEach(taskIds => {
+      selectedCount += taskIds.size;
+      taskIds.forEach(taskId => {
+        const taskEl = $(`task-${taskId}`);
+        if (taskEl?.dataset.approvalBlocked === "1") blocked.push(taskId);
+      });
+    });
+    if (blocked.length) {
+      toast(`Resolve missing fields before approving ${blocked.length} selected task${blocked.length === 1 ? "" : "s"}.`, true);
+      if (bar) {
+        const btn = bar.querySelector(".btn-success");
+        if (btn) { btn.innerHTML = `${icon("check")} Approve selected`; btn.disabled = false; }
+      }
+      return;
+    }
+    if (!confirm(`Approve ${selectedCount} selected Review Queue task${selectedCount === 1 ? "" : "s"}?\n\nApproval can create or update Trello, Calendar, or Google Tasks records when each selected item has those side effects enabled.`)) {
+      if (bar) {
+        const btn = bar.querySelector(".btn-success");
+        if (btn) { btn.innerHTML = `${icon("check")} Approve selected`; btn.disabled = false; }
+      }
+      return;
+    }
     const ops = [];
     S.reviewSelected.forEach((taskIds, sessionId) => {
       if (taskIds.size) ops.push(

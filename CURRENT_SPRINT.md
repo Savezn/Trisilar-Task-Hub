@@ -80,7 +80,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, local integration QA, hosted dev/demo SQLite canary, and short monitor | PM Accepted; dev/demo remains `TASKHUB_STATE_BACKEND=sqlite` as a dev/demo canary, production unchanged | PM complete / V0.6 route ready |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
-| UIV2-01 | UI V2 route-by-route implementation | S0 and S1 merged; S2 All Tasks inbox QA pass on `codex/v06-s2-all-tasks-inbox` with dense scan strip, saved-filter state, hidden-board notice, owner/source/context/next-action cues, clear-filter empty state, and screenshot evidence | PM review / merge |
+| UIV2-01 | UI V2 route-by-route implementation | S0, S1, and S2 merged; S3 Review Queue safety QA pass on `codex/v06-s3-review-queue` with trace/risk/side-effect disclosure, hold/edit action, blocked unsafe approve, confirmation guard, and screenshot evidence | PM review / merge |
 
 ---
 
@@ -142,7 +142,7 @@ Completion requires accepted work, verification, role-owned docs/logs, clear PR/
 | V0.4 runtime/production files | Runtime Owner / Paperclip Owner / QA | Do not mix with V0.5 code/docs work; no secret values or live flag changes from non-runtime branches. |
 | V0.5 foundation plan/ADR/test-contract work | PM / Architecture / Dev / QA | Use dedicated V0.5 branches/worktrees from `dev`; do not touch production runtime or dirty UI V2 artifacts. |
 | UI V2 design artifacts | UX Owner / Claude Design | Accepted as V0.6 baseline; preserve as design source, not product runtime code. |
-| V0.6 UI V2 route implementation | Frontend Dev / UX Owner / QA | S0 shell/navigation and S1 Today are merged. S2 All Tasks has QA pass evidence on `codex/v06-s2-all-tasks-inbox`; PM merge review is next, then continue S3 Review Queue. |
+| V0.6 UI V2 route implementation | Frontend Dev / UX Owner / QA | S0 shell/navigation, S1 Today, and S2 All Tasks are merged. S3 Review Queue has QA pass evidence on `codex/v06-s3-review-queue`; PM merge review is next, then continue the next route slice. |
 | Team OS pilot docs | PM / Operations | Docs-only assumptions may proceed; product implementation waits for V0.6 shell/workflow stability. |
 
 Completed V0.3 integration branch/worktree:
@@ -192,7 +192,7 @@ V0.6 baseline:
 - Use `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md` for route slice map, token migration map, component build sequence, responsive QA matrix, and Review Queue safety spec.
 - Use `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` for the original planning gate and implementation-ready conditions.
 - Use `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` for first-slice write ownership, route order, regression targets, and rollback boundary.
-- S0 and S1 are merged. Continue route-by-route with S2 All Tasks PM merge review, then S3 Review Queue.
+- S0, S1, and S2 are merged. Continue route-by-route with S3 Review Queue PM merge review, then the next route slice.
 - Preserve Review Queue behavior and all public API/data contracts guarded by V0.5.
 - Keep the current static app workflow unless a new ADR explicitly approves a build-system change.
 
@@ -201,6 +201,7 @@ V0.6 baseline:
 - Browser regression evidence on desktop/mobile.
 - Screenshot evidence for affected route desktop/mobile.
 - S2 QA evidence: `docs/logs/QA_V0_6_S2_ALL_TASKS_INBOX.md`.
+- S3 QA evidence: `docs/logs/QA_V0_6_S3_REVIEW_QUEUE_SAFETY.md`.
 - Confirmation that runtime, Cloudflare, secrets, live Paperclip flags, webhook auth, external integrations, Team OS, and Full Rewrite scope were not touched.
 
 Rules:
