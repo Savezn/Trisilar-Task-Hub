@@ -1,13 +1,13 @@
 # Version 0.4 Live AI Operations - Paperclip Production Permanent Integration Plan
 
 **Doc Role:** V0.4 plan and tracker for production Paperclip intake
-**Status:** Production private runtime + Cloudflare Access route prepared; staged canary not approved
+**Status:** Production runtime setup, staged canary, and 24-hour read-only monitoring passed; production webhook remains disabled pending separate permanent-enable runtime decision
 **Version:** V0.4
-**Planning Stage:** Runtime setup partial pass, production service-auth / Settings connection pending
+**Planning Stage:** Monitoring pass; PR closeout / permanent-enable runtime decision ready
 **Owner:** PM / AI Integration Owner / Runtime Owner / QA Release Owner
 **Created:** 2026-05-15
-**Last Updated:** 2026-05-15
-**Updated by:** Codex PM / Dev
+**Last Updated:** 2026-05-16
+**Updated by:** Codex PM / Dev / QA
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../deployment/DEPLOYMENT_SETUP.md`, `../deployment/DIGITALOCEAN_DASHBOARD_HANDOVER.md`, `../adr/ADR_0002_PAPERCLIP_TASKHUB_SERVICE_AUTH.md`, `VERSION_0_2_W3_PAPERCLIP_CONTRACT_PLAN.md`, `VERSION_0_3_RUX_06_RELEASE_CHECKLIST_DEV_MAIN.md`
 
 ---
@@ -92,10 +92,10 @@ Owner lanes:
 | ID | Phase | Status | Next Role |
 |---|---|---|---|
 | V0.4-PROD-01 | Repo production readiness | Integrated to `dev@7e069b5` | PM complete |
-| V0.4-PROD-02 | Separate production runtime setup | Partial pass: private runtime + Cloudflare route prepared; service-token and Settings connection pending | Runtime Owner / Paperclip Owner |
-| V0.4-PROD-03 | Staged production canary window | Pending runtime | QA / Runtime / Paperclip Owner |
-| V0.4-PROD-04 | 24-hour read-only monitoring | Pending staged pass | QA / Runtime |
-| V0.4-PROD-05 | Permanent enablement acceptance | Pending monitoring pass | PM |
+| V0.4-PROD-02 | Separate production runtime setup | Pass: private runtime + Cloudflare route + service token + Settings connection prepared | QA / Runtime / Paperclip Owner |
+| V0.4-PROD-03 | Staged production canary window | Pass; runtime returned to disabled | QA / Runtime complete |
+| V0.4-PROD-04 | 24-hour read-only monitoring | Pass; final checkpoint 2026-05-16T08:03:14Z | PM / Integration closeout |
+| V0.4-PROD-05 | Permanent enablement acceptance | Ready for separate PM / Runtime decision; production remains disabled meanwhile | PM / Runtime |
 
 ---
 
@@ -169,6 +169,31 @@ Verification:
 - git diff --check
 ```
 
+Post-main/dev refresh verification:
+
+```text
+Status: Pass
+Date: 2026-05-15
+Worktree: trisilar-task-hub-v04-paperclip-prod-integration
+Branch: codex/v04-paperclip-prod-integration@eef107b
+Base: origin/dev@eef107b
+Production deploy: Not performed
+Production live canary: Not sent
+Secret exposure: None recorded
+Verification:
+- npm.cmd ci
+- npm.cmd run verify:paperclip-production-readiness
+- npm.cmd run verify:paperclip-webhook
+- npm.cmd run verify:paperclip-operations
+- npm.cmd run verify:paperclip-connection
+- npm.cmd run verify:paperclip-contract
+- npm.cmd run verify:paperclip-mock
+- npm.cmd run verify:paperclip-docs
+- npm.cmd run verify:paperclip-cleanup
+- git diff --check
+Result: Repo-side V0.4 Paperclip production intake baseline remained ready at this checkpoint; staged canary was still blocked then on production service-token validation.
+```
+
 ### V0.4-PROD-02 - Separate Production Runtime Setup
 
 Runtime Owner configures a separate production service. Do not reuse dev/demo process, data directory, or secrets.
@@ -232,18 +257,38 @@ Verification:
 - anonymous public /healthz returns Cloudflare Access 302
 Not performed:
 - production service-token creation or validation
-- Paperclip Settings signing-secret connection
 - staged production canary
 - Trello, Calendar, or Google Tasks side effect
 - production secret disclosure
 ```
 
-Remaining before staged canary:
+Completed before staged canary:
 
-- Create or assign a production Cloudflare Access service token for the Paperclip sender.
-- Configure Paperclip sender with the production service-token headers out of band.
-- Connect production Paperclip Settings so Task Hub stores the signing secret in production `APP_DATA_DIR`.
-- Verify service-token reachability without printing token values.
+- Created and assigned a production Cloudflare Access service token for the Paperclip sender.
+- Configured the runtime-only production candidate Paperclip env with production service-token headers out of band.
+- Verified service-token reachability without printing token values.
+
+Runtime follow-up:
+
+```text
+Status: Runtime setup pass; staged canary completed after approval
+Date: 2026-05-15
+Host: DigitalOcean Droplet
+Task Hub production container: taskhub-prod running
+Production local checks:
+- /healthz 200
+- /api/config 200
+- /api/reviews 200
+- /api/integrations/paperclip/operations/status 200
+- disabled webhook probe 403
+Production env: APP_BASE_URL=https://taskhub-prod.trisila.online; APP_DATA_DIR=/home/trisilar/taskhub-prod-data; TASKHUB_RUNTIME_PROFILE=production; PAPERCLIP_WEBHOOK_ENABLED=false; PAPERCLIP_LIVE_MODE=disabled
+Operations status after Settings connection: mode=read_only; runtime.profile=production; connection.status=connected; connection.hasSecret=true; connection.secretPreview=configured; liveWebhook.enabled=false; reviewQueue.trelloLinked=0
+Connection file: /home/trisilar/taskhub-prod-data/paperclip-connection.json present and treated as secret-bearing production data
+Production candidate Paperclip env: /home/trisilar/.paperclip/.env.taskhub-prod created with TASKHUB_BASE_URL=https://taskhub-prod.trisila.online and matching runtime signing secret
+Service-token validation: production Cloudflare Access service token returns 200 for https://taskhub-prod.trisila.online/healthz
+Decision after canary: keep production runtime disabled until read-only monitoring passes and PM accepts permanent enablement.
+Secret exposure: None recorded in tracker; secret values were not copied into docs.
+```
 
 ### V0.4-PROD-03 - Staged Production Canary Window
 
@@ -274,6 +319,29 @@ Acceptance:
 - No Trello, Calendar, or Google Tasks side effect before human approval.
 - No danger warning in operations status.
 
+Staged production canary result:
+
+```text
+Status: Pass
+Date: 2026-05-15
+Runtime window: enabled temporarily; rolled back to disabled
+Preflight disabled probe: 403
+Staged mode: PAPERCLIP_LIVE_MODE=staged; PAPERCLIP_WEBHOOK_ENABLED=true
+Valid signed production payload: 201
+Review Queue session: 57fdc85e-fe1e-4711-9269-c26d5ead3b07
+Task status: pending
+Same-payload replay: 200
+Changed replay: 409
+Invalid signature: 401
+Invalid source: 403
+Invalid environment: 400
+Operations status: mode=read_only
+Review Queue counts after canary: pending=1; approved=0; rejected=0; trelloLinked=0
+Rollback: PAPERCLIP_LIVE_MODE=disabled; PAPERCLIP_WEBHOOK_ENABLED=false; disabled probe 403
+Secret exposure: None recorded
+External side effects: none
+```
+
 ### V0.4-PROD-04 - 24-Hour Read-Only Monitoring
 
 Monitoring rules:
@@ -291,6 +359,48 @@ Stop conditions:
 - Replay/auth negative behavior regresses.
 - Runtime Owner cannot disable `PAPERCLIP_WEBHOOK_ENABLED` immediately.
 
+Monitoring checkpoint 1:
+
+```text
+Status: Pass
+Date: 2026-05-15T05:24:25Z
+Automation: v0-4-paperclip-prod-read-only-monitor active every 6 hours
+Container: taskhub-prod up
+Health: /healthz 200; /api/config 200; /api/reviews 200
+Webhook gate: disabled probe 403
+Runtime: PAPERCLIP_LIVE_MODE=disabled; liveWebhook.enabled=false
+Operations: mode=read_only; connection.status=connected; connection.hasSecret=true
+Review Queue: pending=1; approved=0; rejected=0; trelloLinked=0; paperclipSessions=1; paperclipTasks=1
+Canary session: 57fdc85e-fe1e-4711-9269-c26d5ead3b07 remains pending
+Warnings: none
+Danger warnings: none
+Audit accepted: paperclip_payload_received=1; review_session_created=1; task_diff_resolved=1
+Audit replay: paperclip_duplicate_payload_ignored=1
+Audit rejected: paperclip_duplicate_payload_rejected=1
+External side effects: none
+```
+
+Monitoring final checkpoint:
+
+```text
+Status: Pass
+Date: 2026-05-16T08:03:14Z
+Elapsed time: more than 24 hours since 2026-05-15T05:24:25Z
+Container: taskhub-prod up 27 hours
+Health: /healthz 200; /api/config 200; /api/reviews 200
+Webhook gate: disabled probe 403
+Runtime: PAPERCLIP_LIVE_MODE=disabled; liveWebhook.enabled=false
+Operations: mode=read_only; connection.status=connected; connection.hasSecret=true
+Review Queue: pending=1; approved=0; rejected=0; trelloLinked=0; paperclipSessions=1; paperclipTasks=1
+Canary session: 57fdc85e-fe1e-4711-9269-c26d5ead3b07 remains pending
+Warnings: none
+Danger warnings: none
+Audit accepted: paperclip_payload_received=1; review_session_created=1; task_diff_resolved=1
+Audit replay: paperclip_duplicate_payload_ignored=1
+Audit rejected: paperclip_duplicate_payload_rejected=1
+External side effects: none
+```
+
 ### V0.4-PROD-05 - Permanent Enablement Acceptance
 
 After staged QA and 24-hour read-only monitoring pass, PM may accept permanent enablement:
@@ -300,12 +410,53 @@ PAPERCLIP_LIVE_MODE=permanent
 PAPERCLIP_WEBHOOK_ENABLED=true
 ```
 
-Acceptance:
+PM acceptance package:
 
-- PM records the permanent decision in `docs/logs/DECISION_LOG.md`.
-- QA records evidence in `docs/logs/QA_LOG.md`.
-- `CURRENT_SPRINT.md` moves V0.4 from active rollout to runtime monitoring.
-- Rollback remains a one-step hard gate: set `PAPERCLIP_WEBHOOK_ENABLED=false`.
+- Monitoring evidence covers at least 24 hours from `2026-05-15T05:24:25Z`.
+- Every checkpoint reports production runtime health `200` for `/healthz`, and no sustained API health failure.
+- Disabled webhook probe returns `403` until PM explicitly accepts permanent enablement.
+- Operations status remains `mode=read_only` during monitoring.
+- `PAPERCLIP_LIVE_MODE=disabled` and `liveWebhook.enabled=false` remain true during monitoring.
+- Paperclip Settings remains connected with `hasSecret=true`; no secret value is printed, copied into docs, committed, or returned to browser UI.
+- Canary Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07` remains pending until a human explicitly approves or rejects it.
+- Review Queue counts show no auto-approval and `trelloLinked=0`.
+- Warnings contain no `danger` level entries.
+- Audit categories preserve accepted/replay/rejected traceability for the staged canary.
+- No Trello card, Google Calendar event, or Google Task is created from Paperclip before human approval.
+- Runtime Owner confirms rollback path still works before permanent enablement.
+
+Permanent enablement runbook:
+
+1. Confirm the PM acceptance package above is complete and recorded in `docs/logs/QA_LOG.md`.
+2. Record the permanent enablement decision in `docs/logs/DECISION_LOG.md` before changing production runtime flags.
+3. Back up the current production runtime env file without printing secret values.
+4. Set only these production runtime policy values:
+   - `PAPERCLIP_LIVE_MODE=permanent`
+   - `PAPERCLIP_WEBHOOK_ENABLED=true`
+5. Restart or recreate only the production Task Hub runtime needed to load those flags.
+6. Verify `/healthz`, `/api/config`, `/api/reviews`, and `/api/integrations/paperclip/operations/status`.
+7. Confirm operations status shows production profile, permanent live mode, connected Paperclip Settings, no danger warnings, and `trelloLinked=0`.
+8. Do not send a new Paperclip canary unless PM/QA explicitly requests it after permanent enablement.
+9. Keep Review Queue as the mandatory human gate for external writes.
+
+Rollback runbook:
+
+1. Set `PAPERCLIP_WEBHOOK_ENABLED=false`.
+2. Set `PAPERCLIP_LIVE_MODE=disabled`.
+3. Restart or recreate only the production Task Hub runtime needed to load those flags.
+4. Verify `/healthz` returns `200`.
+5. Verify disabled webhook probe returns `403`.
+6. Verify operations status shows `mode=read_only`, `liveWebhook.enabled=false`, `runtime.liveMode=disabled`, and no danger warnings caused by external side effects.
+7. Record the rollback evidence in `docs/logs/QA_LOG.md` without secret values.
+
+Draft PR routing:
+
+- Target branch: `dev`.
+- Draft PR: #27 (`codex/v04-paperclip-prod-integration` -> `dev`).
+- Draft status: ready to move out of draft after conflict resolution and verification.
+- Ready-for-review condition: met for pre-permanent merge because 24-hour read-only monitoring passed with no stop condition.
+- PR body must state that the production webhook remains disabled and permanent enablement is not yet accepted.
+- Merge hold: release only if conflict resolution preserves V0.5 `dev` work and V0.4 production remains disabled.
 
 ---
 
@@ -323,14 +474,14 @@ Acceptance:
 ## Next Recommended Session
 
 ```text
-Role: Runtime Owner
-Task: Complete production service-auth and Paperclip Settings connection, keep the webhook hard gate disabled, and hand off staged QA evidence
-Branch: dev@e8a211b
-Worktree: production runtime checkout
-Owned files: runtime configuration only; no git docs/code changes unless setup docs are inaccurate
-Acceptance criteria: production service-token path reaches Task Hub, Paperclip Settings connection stores the runtime signing secret under production APP_DATA_DIR, PAPERCLIP_WEBHOOK_ENABLED remains false, and no secret values are printed
-Verification: Cloudflare Access service-token reachability path; read-only operations status shows production profile; disabled webhook probe returns 403
-Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, anonymous production access, exposed signing material, or any need to enable the production webhook before QA approval
+Role: Integration Owner / PM / Runtime Owner
+Task: Close V0.4 PR #27 into dev after verification, then decide whether to execute the separate permanent-enable runtime switch
+Branch: codex/v04-paperclip-prod-integration
+Worktree: trisilar-task-hub-v04-paperclip-prod-integration
+Owned files: V0.4 tracker docs, PR closeout docs, and runtime evidence only unless PM chooses permanent enablement
+Acceptance criteria: PR #27 preserves latest dev/V0.5 work, V0.4 monitoring pass is recorded, production runtime remains disabled/read_only, and permanent enablement is either deliberately executed with rollback evidence or explicitly held as a runtime decision
+Verification: conflict-marker scan, git diff --check, targeted V0.4 status search, PR #27 mergeability, and production disabled/read_only runtime check
+Stop conditions: merge conflict that would drop V0.5 work, enabled webhook outside PM-approved permanent window, danger warning, auto-approval, Trello/Calendar/Google side effect before human approval, secret exposure, or inability to restore disabled mode
 ```
 
 ---
@@ -342,4 +493,13 @@ Stop conditions: missing secret-management path, shared dev/demo APP_DATA_DIR, a
 | 2026-05-15 | Created V0.4 Paperclip production permanent integration plan and repo readiness tracker | Codex PM / Dev |
 | 2026-05-15 | Added production runtime policy/status, production readiness verification, and local QA evidence; production deploy remains pending Runtime Owner | Codex Dev / QA |
 | 2026-05-15 | Integrated V0.4 repo readiness to `dev@7e069b5` and routed next process to separate production runtime setup | Codex Integration Owner |
-| 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection | Codex Runtime Owner |
+| 2026-05-15 | Prepared production private runtime, Cloudflare tunnel route, DNS, and Access app; held staged canary pending production service-token and Settings connection at that checkpoint | Codex Runtime Owner |
+| 2026-05-15 | Refreshed V0.4 worktree from `origin/dev@eef107b` after main/dev update and reran Paperclip production/intake verifiers; runtime service-token and Settings connection remained pending at that checkpoint | Codex Runtime Owner / QA |
+| 2026-05-15 | Verified production runtime is still healthy with webhook disabled, but held staged canary because the available Paperclip sender env still targets dev/demo and production Settings connection is missing | Codex Runtime Owner |
+| 2026-05-15 | Merged latest `origin/dev@622c7dd` DoR/DoD governance baseline into the V0.4 branch; V0.4 production service-auth hold remains unchanged | Codex Runtime Owner / Integration |
+| 2026-05-15 | Connected production Paperclip Settings and prepared a runtime-only production Paperclip env candidate; staged canary remained blocked at that checkpoint because the copied Cloudflare Access token still returned 302 on the production hostname | Codex Runtime Owner |
+| 2026-05-15 | Created and assigned production Cloudflare Access service token for `taskhub-prod.trisila.online`; runtime-only candidate env reached production `/healthz` with `200`; staged canary still awaited approval at that checkpoint | Codex Runtime Owner |
+| 2026-05-15 | Ran staged production canary against `taskhub-prod.trisila.online`; valid signed payload created pending Review Queue session `57fdc85e-fe1e-4711-9269-c26d5ead3b07`, replay/negative checks passed, no external side effect occurred, and runtime rollback restored disabled mode | Codex Runtime Owner / QA |
+| 2026-05-15 | Started V0.4 24-hour read-only monitoring; first checkpoint passed with production gate disabled, no warnings, no danger warnings, and no external side effects; automation `v0-4-paperclip-prod-read-only-monitor` runs every 6 hours | Codex QA / Runtime Owner |
+| 2026-05-15 | Opened draft PR #27 to `dev` as a hold-state integration PR while 24-hour monitoring remains active; permanent enablement is not accepted yet | Codex Integration Owner |
+| 2026-05-16 | Completed V0.4 24-hour read-only monitoring with final production checkpoint pass; production webhook remains disabled while PR #27 is prepared for closeout and permanent enablement remains a separate runtime decision | Codex QA / PM / Runtime Owner |

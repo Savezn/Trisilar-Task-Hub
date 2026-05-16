@@ -60,7 +60,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L3 | V0.2 Paperclip Foundation | Complete for V0.2 / standing dev-demo monitor active | Paperclip task handoff has a contract, mock adapter, attribution, audit trail, signed inbound webhook, preserved human gate, safe cleanup for accumulated test sessions, retained traceability, and read-only operations visibility | Contract/mock verification passed; W3-02 signed webhook and live interop passed; W3-03 standing dev/demo observation active; W3-04/W3-04a cleanup merged to `dev@7ea4650`; runtime cleanup completed with 0 pending / 6 rejected / 0 Trello-linked; W3-05 operations status and copy polish merged/deployed at `dev@2c302dc`; closeout status is on `origin/dev@ff20e48` |
 | L4 | V0.2 Integration Release | Complete | Accepted W1/W2/W3 work runs together on `dev` without regressions | Release/integration cleanup QA passed on clean `origin/dev@8027324`; workstream branch/worktree residue cleaned |
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, deployed to dev/demo, and release-candidate verified; production deploy remains a separate runtime decision |
-| L6 | V0.4 Live AI Operations | Active; production private runtime + Cloudflare Access route prepared; staged canary pending service-auth and Settings connection | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | Production service-token path, Settings signing-secret connection, staged canary, then 24-hour read-only monitoring |
+| L6 | V0.4 Live AI Operations | Production runtime setup, staged canary, and 24-hour read-only monitoring passed; permanent enablement remains a separate runtime switch | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | V0.4 monitoring gate accepted; production webhook remains disabled until PM / Runtime Owner deliberately enables permanent mode |
 | L7 | V0.5 Foundation Hardening | Integrated via PR #30; hosted dev/demo SQLite canary blocked on Runtime Owner host access | Persistence, test gates, and app-owned contracts are strong enough for UI V2 and Team OS expansion | Meaningful `npm test`, deterministic fixtures, contract validation, SQLite migration, local integration QA, and rollback rehearsal passed; hosted canary remains pending |
 | L8 | V0.6 UI V2 Design System Implementation | Future; design-only sidecar may continue now | UI V2 tokens/component language are promoted route-by-route without uncontrolled rewrite | Browser regression passes across desktop/mobile core routes and Review Queue safety remains intact |
 | L9 | V0.7 Team Operating System Pilot | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
@@ -200,8 +200,8 @@ V0.4 repo readiness integrated to dev@7e069b5
 -> Runtime Owner prepared separate production Task Hub at https://taskhub-prod.trisila.online
 -> Runtime Owner / Paperclip Owner complete production service-token path and Settings signing-secret connection
 -> QA / Runtime / Paperclip Owner run staged production canary and negative checks
--> 24-hour read-only monitoring
--> PM decides permanent enablement
+-> 24-hour read-only monitoring passed at 2026-05-16T08:03:14Z with no side effects
+-> PM / Runtime Owner decide when to flip permanent enablement; production remains disabled meanwhile
 ```
 
 ### L7 - V0.5 Foundation Hardening
@@ -309,7 +309,7 @@ Paperclip runtime inputs confirmed
 -> dev/demo runtime deployed from dev@02fe7cf and runtime QA passed
 -> PR #19 closed V0.3 docs on origin/dev@e05eb66
 -> PR #20 release candidate verified and PM accepted for main promotion
--> V0.4 production private runtime prepared; staged canary waits on service-auth and Settings connection
+-> V0.4 production private runtime prepared; service-auth, Settings connection, staged canary, and 24-hour read-only monitoring passed with production disabled
 -> PM inserts V0.5 Foundation Hardening before UI V2 implementation and Team OS product work
 -> V0.5 can start in parallel with V0.4 waiting/monitoring if runtime/secrets/live flags are untouched
 ```
