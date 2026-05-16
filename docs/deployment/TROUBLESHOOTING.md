@@ -70,6 +70,38 @@ If any Paperclip path creates Trello, Calendar, or Google Tasks side effects bef
 
 ---
 
+## Production Trello Verification
+
+Use this when production pages show Trello verification copy, such as `Today needs Trello verification`, or Settings reports Trello as disconnected/invalid.
+
+Run from the production host or another approved operator environment that can reach the private `taskhub-prod` runtime. Do not print `TRELLO_API_KEY`, `TRELLO_TOKEN`, raw auth headers, or copied `.env` contents.
+
+Preferred host-local check:
+
+```bash
+docker exec taskhub-prod npm run verify:prod-trello-runtime
+```
+
+Equivalent endpoint check:
+
+```bash
+docker exec taskhub-prod node scripts/verify-prod-trello-runtime.js http://127.0.0.1:3301/api/trello/status
+```
+
+Expected classifications:
+
+| Classification | Meaning | Next action |
+|---|---|---|
+| `verified` | Runtime can verify Trello through `/api/trello/status`. | No Trello credential action required. |
+| `missing_credentials` | Runtime does not have both `TRELLO_API_KEY` and `TRELLO_TOKEN`. | Set runtime-only Trello env and recreate/restart `taskhub-prod`. |
+| `invalid_credentials` | Runtime has Trello env, but Trello rejects it. | Rotate or reissue the runtime-only Trello key/token pair. |
+| `rate_limited` | Trello verification hit rate limits. | Wait for the retry window, then rerun before rotating credentials. |
+| `unavailable` | Task Hub could not verify Trello for another reason. | Check runtime network egress and Trello API availability. |
+
+After changing runtime env, rerun the diagnostic and then reload the affected browser route. `/settings` should render the Settings page; Trello-dependent routes such as `/today`, `/boards`, `/okr`, and `/focus` should stop showing Trello verification copy once `/api/trello/status` is `verified`.
+
+---
+
 ## Browser / UX Troubleshooting
 
 For frontend or route issues:
@@ -89,6 +121,7 @@ For frontend or route issues:
 | Docs-only | `git diff --check` |
 | General code/config/route | `node server.js` plus `npm.cmd run check:all` |
 | RUX browser regression | `npm.cmd run verify:rux-browser-regression` |
+| Production Trello runtime | `npm.cmd run verify:prod-trello-runtime` from a runtime that can reach Task Hub |
 | Paperclip contract/mock/docs/operations | Relevant `npm.cmd run verify:paperclip-*` script |
 | Production readiness | `npm.cmd run verify:paperclip-production-readiness` |
 
