@@ -4,8 +4,8 @@
 **Status:** PM accepted
 **Owner:** PM / Integration Owner
 **Created:** 2026-05-14
-**Last Updated:** 2026-05-15
-**Updated by:** Codex PM
+**Last Updated:** 2026-05-17
+**Updated by:** Codex Documentation Workflow Owner
 **Related Docs:** `BRANCH_ENVIRONMENT_WORKFLOW.md`, `AI_AGENT_GOVERNANCE.md`, `AGENT_HARNESS_ADOPTION.md`, `../agents/INTEGRATION_OWNER.md`, `../../CONTRIBUTING.md`
 
 ---
@@ -84,6 +84,7 @@ If these conditions are present, PM should sequence the tasks or assign an Integ
 - Agents must start from `dev` unless PM says otherwise.
 - Agents must not merge sibling feature branches into each other.
 - Dev agents stage specific files only. Never use `git add .`.
+- Agents must run the Agent Status Refresh Protocol before editing, reviewing, merging, or declaring completion.
 - PM owns task decomposition and next-action routing.
 - QA owns acceptance evidence and branch pass/fail.
 - Integration Owner owns accepted-branch merges into `dev`.
@@ -127,7 +128,7 @@ If local Git cannot create slash-namespaced refs because of permissions or lock-
 Use a dedicated sibling worktree folder for each active branch. Example:
 
 ```powershell
-git fetch origin
+git fetch origin --prune
 git worktree add ..\trisilar-task-hub-project-operating-model -b codex/project-operating-model-agent-structure origin/dev
 git worktree add ..\trisilar-task-hub-v03-release-qa -b codex/v03-branch-workflow-release-qa origin/dev
 git worktree list
@@ -135,10 +136,13 @@ git worktree list
 
 If a branch already exists locally or remotely, attach the worktree to that branch instead of creating a duplicate branch.
 
-Before editing:
+Before editing, reviewing, merging, or declaring completion, run the Agent Status Refresh Protocol:
 
 ```powershell
+git fetch origin --prune
 git status --short --branch
+git branch -vv
+git worktree list
 git log --oneline --decorate --max-count=20
 ```
 
@@ -148,6 +152,11 @@ Confirm:
 - branch matches the assigned branch
 - dirty files are either yours or explicitly accepted by PM
 - base branch is `dev` unless PM assigned another base
+- upstream and target branch freshness are known
+- source-of-truth status docs have been read or searched for the task
+- open PRs, sibling worktrees, and active lanes that can touch the same files have been checked when conflict risk exists
+
+Stop before editing if the branch is behind the relevant upstream or target branch, if source-of-truth docs disagree, or if unrelated dirty/untracked files have not been routed.
 
 ## Definition of Ready
 
@@ -156,7 +165,7 @@ Parallel Codex/Claude work is ready only when:
 - role, branch, base, worktree, target branch, and ownership scope are named
 - goal, non-goals, acceptance criteria, verification commands, and stop conditions are clear
 - dependencies and runtime/secret boundaries are identified before implementation
-- `git status --short --branch` confirms the starting state
+- Agent Status Refresh Protocol confirms the starting state, branch freshness, relevant status docs, and conflict-risk surface
 - unrelated dirty files have an explicit preserve/ignore/backup/route decision
 
 PM should not start implementation if these inputs are missing.
@@ -233,7 +242,7 @@ Completion requires:
 - merged remote topic branches deleted unless PM keeps them
 - stale `.git/worktrees/*` metadata pruned
 - stale physical folders removed unless locked by Windows or another process
-- final checks from `git worktree list`, `git branch -vv`, and `git status --short --branch`
+- final Agent Status Refresh Protocol checks are rerun
 
 Backup branches may remain as safety refs until PM approves deletion. Locked folders may remain only if Git no longer registers them as worktrees and the blocker is recorded in the handoff.
 
@@ -246,3 +255,4 @@ Backup branches may remain as safety refs until PM approves deletion. Locked fol
 | 2026-05-14 | Created parallel Codex development model for V0.3 PM review | Codex PM / Documentation Architect |
 | 2026-05-14 | PM accepted the long-term parallel Codex branch/worktree model | Codex PM |
 | 2026-05-15 | Added Codex/Claude branch namespaces, backup branch rules, worktree examples, and cleanup expectations | Codex PM / Integration Owner |
+| 2026-05-17 | Added Agent Status Refresh Protocol as a required freshness and conflict-risk gate | Codex Documentation Workflow Owner |

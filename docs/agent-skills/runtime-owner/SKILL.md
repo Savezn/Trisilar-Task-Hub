@@ -7,7 +7,7 @@ description: Use when acting as Runtime or Access Owner for hosted runtime, Clou
 ## Start
 
 1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/RUNTIME_OWNER.md`, `docs/deployment/RUNTIME_OPERATIONS_RUNBOOK.md`, `docs/deployment/ENVIRONMENT_MATRIX.md`, and the relevant deployment/runtime plan.
-2. Confirm branch/worktree with `git status --short --branch` when repo files may change.
+2. Run the Agent Status Refresh Protocol from `.ai-instructions.md` and confirm branch/worktree freshness when repo files may change.
 3. Identify whether the task is dev/demo, staged production, or permanent production.
 
 ## Do

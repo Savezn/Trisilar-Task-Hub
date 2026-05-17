@@ -4,7 +4,7 @@
 **Status:** Active for V0.2 and V0.3 branch/worktree governance
 **Owner:** Dev / PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
+**Last Updated:** 2026-05-17 - **Updated by:** Codex Documentation Workflow Owner
 **Related Docs:** `../../CURRENT_SPRINT.md`, `../plans/VERSION_0_2_PLAN.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `AI_AGENT_GOVERNANCE.md`, `../../README.md`
 
 ---
@@ -68,7 +68,7 @@ Recommended local worktree folders:
 V0.3 role/scope branches should use dedicated sibling worktrees with descriptive names. Example:
 
 ```powershell
-git fetch origin
+git fetch origin --prune
 git worktree add ..\trisilar-task-hub-project-operating-model -b codex/project-operating-model-agent-structure origin/dev
 git worktree add ..\trisilar-task-hub-v03-release-qa -b codex/v03-branch-workflow-release-qa origin/dev
 git worktree list
@@ -83,13 +83,28 @@ git worktree add ..\trisilar-task-hub-w3-paperclip feature/w3-paperclip-integrat
 git worktree list
 ```
 
-Before starting any agent, run:
+## Agent Status Refresh Protocol
+
+Before starting any agent, and again before merge or completion, run:
 
 ```powershell
+git fetch origin --prune
 git status --short --branch
+git branch -vv
+git worktree list
+git log --oneline --decorate --max-count=10
 ```
 
-Confirm the folder and branch match the assigned workstream. If they do not match, stop and switch to the correct worktree folder before editing.
+Confirm:
+
+- the folder and branch match the assigned workstream
+- the branch, upstream, base, and target branch are known
+- the branch is not stale against the upstream or target branch required for the task
+- current source-of-truth docs were read or searched for the task: `CURRENT_SPRINT.md`, `TODO.md`, active version plan, relevant logs, and relevant ADRs
+- sibling worktrees, open PRs, or active lanes that can touch the same files have been checked when conflict risk exists
+- unrelated dirty or untracked files have an explicit preserve/ignore/backup/route decision
+
+If these checks fail, stop before editing and route the sync, dirty-state, or ownership decision to PM or Integration Owner.
 
 Definition of Ready:
 
@@ -97,6 +112,7 @@ Definition of Ready:
 - scope, owned files, non-goals, acceptance criteria, and stop conditions are clear
 - verification commands and runtime-check skip rules are clear
 - dependencies such as upstream branches, env vars, runtime flags, secrets, service tokens, or PM approval are identified
+- Agent Status Refresh Protocol has been run and any stale branch, open PR, sibling worktree, or status-doc mismatch has been routed
 - dirty state is checked with `git status --short --branch` and unrelated changes have an explicit preserve/ignore/backup/route decision
 - secret/runtime boundaries are named before deployment, auth, Paperclip, Cloudflare, env var, or production work starts
 
@@ -219,7 +235,7 @@ Completion requires:
 - merged remote topic branches deleted unless PM keeps them
 - stale `.git/worktrees/*` metadata pruned
 - stale physical folders removed unless locked by Windows or another process
-- final evidence from `git worktree list`, `git branch -vv`, and `git status --short --branch`
+- final evidence from the Agent Status Refresh Protocol checks
 
 Backup branches may remain as safety refs until PM approves deletion. Locked folders may remain only when Git no longer registers them as worktrees and the blocker is recorded in the handoff. Held work must keep a named branch/worktree, owner, and next action.
 

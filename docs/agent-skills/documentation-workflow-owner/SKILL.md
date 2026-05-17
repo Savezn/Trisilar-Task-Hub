@@ -7,7 +7,7 @@ description: Use when acting as Documentation or Agent Workflow Owner for repo d
 ## Start
 
 1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/DOCUMENTATION_WORKFLOW_OWNER.md`, and `docs/reference/FILE_ORGANIZATION.md`.
-2. Confirm branch/worktree with `git status --short --branch`.
+2. Run the Agent Status Refresh Protocol from `.ai-instructions.md`, then confirm branch/worktree freshness and dirty state.
 3. Search existing docs before creating a new file.
 
 ## Do
