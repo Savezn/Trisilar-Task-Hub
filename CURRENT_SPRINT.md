@@ -80,7 +80,7 @@ V0.5-FND-02 through FND-05 are implemented, merged through PR #30, and integrate
 | V0.5-FND-02/03/04/05 | Foundation tests, contracts, SQLite migration, local integration QA, hosted dev/demo SQLite canary, and short monitor | PM Accepted; dev/demo remains `TASKHUB_STATE_BACKEND=sqlite` as a dev/demo canary, production unchanged | PM complete / V0.6 route ready |
 | Agent Role Skills | Basic repo-contained role `SKILL.md` entrypoints for Codex/Claude/Gemini | Merged to `origin/dev@de3a6bc` via PR #23 | PM complete |
 | Operations Docs Baseline | Runtime operations, backup/retention, security/access, onboarding, troubleshooting, and environment matrix docs | Merged to `origin/dev@681be25`; cleanup complete | PM complete |
-| UIV2-01 | UI V2 route-by-route implementation | S0-S4 merged; S5 Settings Operations QA pass on `codex/v06-s5-settings` with readiness strip, owner/action states, guarded Paperclip controls, and screenshot evidence | PM review / merge |
+| UIV2-01 | UI V2 route-by-route implementation | S0-S5 merged; S6 Boards Monitor QA pass on `codex/v06-s6-boards-monitor` with health summary, hidden/workspace cues, warning counts, convention copy, team-view proof, and screenshot evidence | PM review / merge |
 
 ---
 
@@ -142,7 +142,7 @@ Completion requires accepted work, verification, role-owned docs/logs, clear PR/
 | V0.4 runtime/production files | Runtime Owner / Paperclip Owner / QA | Do not mix with V0.5 code/docs work; no secret values or live flag changes from non-runtime branches. |
 | V0.5 foundation plan/ADR/test-contract work | PM / Architecture / Dev / QA | Use dedicated V0.5 branches/worktrees from `dev`; do not touch production runtime or dirty UI V2 artifacts. |
 | UI V2 design artifacts | UX Owner / Claude Design | Accepted as V0.6 baseline; preserve as design source, not product runtime code. |
-| V0.6 UI V2 route implementation | Frontend Dev / UX Owner / QA | S0 shell/navigation, S1 Today, S2 All Tasks, S3 Review Queue, and S4 Docs / AI Trace are merged. S5 Settings Operations has QA pass evidence on `codex/v06-s5-settings`; PM merge review is next, then continue with S6 Boards Monitor. |
+| V0.6 UI V2 route implementation | Frontend Dev / UX Owner / QA | S0 shell/navigation, S1 Today, S2 All Tasks, S3 Review Queue, S4 Docs / AI Trace, and S5 Settings Operations are merged. S6 Boards Monitor has QA pass evidence on `codex/v06-s6-boards-monitor`; PM merge review is next, then continue with S7 Calendar. |
 | Team OS pilot docs | PM / Operations | Docs-only assumptions may proceed; product implementation waits for V0.6 shell/workflow stability. |
 
 Completed V0.3 integration branch/worktree:
@@ -192,7 +192,7 @@ V0.6 baseline:
 - Use `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md` for route slice map, token migration map, component build sequence, responsive QA matrix, and Review Queue safety spec.
 - Use `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md` for the original planning gate and implementation-ready conditions.
 - Use `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` for first-slice write ownership, route order, regression targets, and rollback boundary.
-- S0, S1, S2, S3, and S4 are merged. Continue route-by-route with S5 Settings Operations PM merge review, then S6 Boards Monitor.
+- S0, S1, S2, S3, S4, and S5 are merged. Continue route-by-route with S6 Boards Monitor PM merge review, then S7 Calendar.
 - Preserve Review Queue behavior and all public API/data contracts guarded by V0.5.
 - Keep the current static app workflow unless a new ADR explicitly approves a build-system change.
 
@@ -204,6 +204,7 @@ V0.6 baseline:
 - S3 QA evidence: `docs/logs/QA_V0_6_S3_REVIEW_QUEUE_SAFETY.md`.
 - S4 QA evidence: `docs/logs/QA_V0_6_S4_DOCS_AI_TRACE.md`.
 - S5 QA evidence: `docs/logs/QA_V0_6_S5_SETTINGS_OPERATIONS.md`.
+- S6 QA evidence: `docs/logs/QA_V0_6_S6_BOARDS_MONITOR.md`.
 - Confirmation that runtime, Cloudflare, secrets, live Paperclip flags, webhook auth, external integrations, Team OS, and Full Rewrite scope were not touched.
 
 Rules:

@@ -4,8 +4,8 @@ async function showBoardsMonitor() {
   S.mode = "boards";
   S.currentBoardId = null;
   S.currentGroupId = null;
-  $("board-title").textContent = "Boards";
-  $("board-subtitle").textContent = `${S.boards.filter(b => !S.config.hiddenBoards.includes(b.id)).length} boards`;
+  $("board-title").textContent = "Boards Monitor";
+  $("board-subtitle").textContent = `${S.boards.filter(b => !S.config.hiddenBoards.includes(b.id)).length} visible boards`;
   $("add-list-btn").classList.add("hidden");
 
   const content = $("board-content");
@@ -44,9 +44,17 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
   const now = new Date();
   const todayStr = now.toDateString();
   const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
+  const hiddenBoardsCount = (S.config.hiddenBoards || []).length;
+  const workspaceScopeCount = (S.config.allowedWorkspaceIds || []).length;
+  const lastChecked = now.toLocaleString("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   if (!visibleBoards.length) {
-    content.innerHTML = `<div class="empty-state boards-empty-state"><div class="empty-icon">${icon("layout")}</div><h3>No boards visible</h3><p>Unhide boards in Settings to monitor them here.</p></div>`;
+    content.innerHTML = `<div class="empty-state boards-empty-state"><div class="empty-icon">${icon("layout")}</div><h3>No boards visible</h3><p>No visible boards are available. Workspace or hidden-board settings should be reviewed before board health can be monitored.</p></div>`;
     return;
   }
 
@@ -209,6 +217,8 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
   const totalOverdue = unfilteredSummaries.reduce((sum, b) => sum + b.overdue.length, 0);
   const totalDueToday = unfilteredSummaries.reduce((sum, b) => sum + b.dueToday.length, 0);
   const totalMetaIssues = unfilteredSummaries.reduce((sum, b) => sum + b.metaHealth.issueCards.length, 0);
+  const totalConventionBoards = unfilteredSummaries.filter(b => b.metaHealth.issueCards.length > 0).length;
+  const totalOverdueBoards = unfilteredSummaries.filter(b => b.overdue.length > 0).length;
   const teamCount = (S.config.monitorTeams || []).length;
 
   const page = document.createElement("div");
@@ -218,12 +228,12 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
       <div class="boards-command-copy">
         <div class="boards-kicker">${icon("layout")} Boards monitor</div>
         <h1 class="boards-title">Boards</h1>
-        <p class="boards-subtitle">${visibleBoards.length} visible board${visibleBoards.length === 1 ? "" : "s"} / ${totalActive} active card${totalActive === 1 ? "" : "s"} across the workspace.</p>
+        <p class="boards-subtitle">${visibleBoards.length} visible board${visibleBoards.length === 1 ? "" : "s"} / ${totalActive} active card${totalActive === 1 ? "" : "s"} across the workspace. Health and convention warnings are read-only.</p>
       </div>
       <div class="boards-command-stats" aria-label="Boards summary">
         <div class="boards-stat-card">
-          <span>Total cards</span>
-          <strong>${totalCards}</strong>
+          <span>Visible boards</span>
+          <strong>${visibleBoards.length}</strong>
         </div>
         <div class="boards-stat-card is-danger">
           <span>Overdue</span>
@@ -237,6 +247,32 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
           <span>Metadata flags</span>
           <strong>${totalMetaIssues}</strong>
         </div>
+        <div class="boards-stat-card is-muted">
+          <span>Hidden boards</span>
+          <strong>${hiddenBoardsCount}</strong>
+        </div>
+      </div>
+    </section>
+    <section class="boards-health-strip" aria-label="Board health summary">
+      <div class="boards-health-item ${totalOverdueBoards ? "is-danger" : "is-ok"}">
+        <span>Status</span>
+        <strong>${totalOverdueBoards ? `${totalOverdueBoards} board${totalOverdueBoards === 1 ? "" : "s"} need attention` : "No overdue board warnings"}</strong>
+        <small>${totalOverdue ? `${totalOverdue} active card${totalOverdue === 1 ? "" : "s"} past due.` : "No overdue active cards in visible boards."}</small>
+      </div>
+      <div class="boards-health-item ${totalConventionBoards ? "is-warning" : "is-ok"}">
+        <span>Conventions</span>
+        <strong>${totalConventionBoards ? `${totalConventionBoards} board${totalConventionBoards === 1 ? "" : "s"} flagged` : "Conventions look clear"}</strong>
+        <small>${totalMetaIssues ? `${totalMetaIssues} card${totalMetaIssues === 1 ? "" : "s"} missing owner, priority, due, OKR/KR, or category metadata.` : "No visible metadata gaps found."}</small>
+      </div>
+      <div class="boards-health-item ${hiddenBoardsCount ? "is-warning" : "is-muted"}">
+        <span>Visibility</span>
+        <strong>${hiddenBoardsCount ? `${hiddenBoardsCount} hidden board${hiddenBoardsCount === 1 ? "" : "s"}` : "All loaded boards visible"}</strong>
+        <small>${workspaceScopeCount ? `${workspaceScopeCount} workspace${workspaceScopeCount === 1 ? "" : "s"} allowed in Settings.` : "Workspace scope is set to all available workspaces."}</small>
+      </div>
+      <div class="boards-health-item is-muted">
+        <span>Last checked</span>
+        <strong>${esc(lastChecked)}</strong>
+        <small>Read-only scan from loaded Trello data and board health endpoints.</small>
       </div>
     </section>
   `;
@@ -428,6 +464,7 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
       const { board, color, health, metaHealth, rawCards, cards, overdue, dueToday, done, completionPct, topLists, status } = stat;
       const hasConventionIssues = !health.ok || metaHealth.issueCards.length > 0;
       const missingLists = health.missing || [];
+      const warningCount = overdue.length + missingLists.length + metaHealth.issueCards.length;
       const conventionTitle = [
         !health.ok ? `Missing lists: ${missingLists.join(", ")}` : "",
         metaHealth.issueCards.length ? `${metaHealth.issueCards.length} card metadata issue${metaHealth.issueCards.length !== 1 ? "s" : ""}` : "",
@@ -448,9 +485,13 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
             <div class="bm-board-icon" style="background:${color}">${esc(boardInitials(board.name))}</div>
             <div class="bm-card-meta">
               <div class="bm-card-title">${esc(board.name)}${conventionBadge}</div>
-              <div class="bm-card-sub">${cards.length} visible / ${rawCards.length} total cards</div>
+              <div class="bm-card-sub">${cards.length} visible / ${rawCards.length} total cards · Last checked ${esc(lastChecked)}</div>
             </div>
             <button class="btn btn-ghost btn-sm bm-open-btn" type="button" title="Open board">${icon("external")} Open</button>
+          </div>
+          <div class="bm-warning-row">
+            <span class="bm-warning-chip ${warningCount ? "has-warning" : "is-clear"}">${warningCount} warning${warningCount === 1 ? "" : "s"}</span>
+            <span>${warningCount ? "Review overdue cards, missing lists, or metadata gaps before relying on this board for planning." : "No board-level warning found in the current scan."}</span>
           </div>
           <div class="bm-stats-row">
             <div class="bm-stat stat-total"><div class="bm-stat-num">${cards.length}</div><div class="bm-stat-label">Total</div></div>
