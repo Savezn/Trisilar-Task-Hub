@@ -7,7 +7,7 @@ description: Use when acting as PM or Product Owner in the Trisilar Task Hub rep
 ## Start
 
 1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/PM.md`, and the active plan named by the sprint or user.
-2. Confirm branch/worktree with `git status --short --branch`.
+2. Run the Agent Status Refresh Protocol from `.ai-instructions.md`, then confirm branch/worktree freshness and dirty state.
 3. Confirm Definition of Ready before routing work to implementation, QA, integration, runtime, or docs changes.
 4. Use the smallest safe role if the user has not assigned one.
 5. For every PM-routed task, fill `Primary role`, `Next role`, `Optional support role`, `Boundary`, and `Route if`.

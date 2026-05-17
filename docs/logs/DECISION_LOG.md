@@ -12,6 +12,7 @@ Use this file for major PM decisions that affect planning, workflow, branch stra
 
 | Date | Decision | Rationale | Updated by |
 |---|---|---|---|
+| 2026-05-17 | Add Agent Status Refresh Protocol as a required repo workflow gate | Agents must refresh remote refs, inspect branch/worktree/dirty state, read current source-of-truth docs, and route stale branch or conflict-risk conditions before edits, reviews, merges, or completion so parallel work stays aligned with latest `dev` and active lanes. | Codex Documentation Workflow Owner |
 | 2026-05-06 | Use Task Hub as command center and Project Boards as execution surfaces | Reduces board-sync overhead while preserving Trello as source of truth | Codex PM |
 | 2026-05-07 | Keep Dev -> QA -> PM as project-state workflow, not mandatory agent rotation | User switches agents mainly for rate limits/context limits | Codex PM |
 | 2026-05-08 | Close V0.1 after Release Acceptance pass | `check:all`, direct routes, sidebar navigation, back/forward, Phase 7 surfaces, and console check passed | Codex PM |

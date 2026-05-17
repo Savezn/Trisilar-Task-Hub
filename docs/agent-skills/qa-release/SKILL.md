@@ -7,7 +7,7 @@ description: Use when acting as QA or Release Owner for read-only verification, 
 ## Start
 
 1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/QA_RELEASE.md`, and the acceptance criteria for the task.
-2. Confirm branch/worktree with `git status --short --branch`.
+2. Run the Agent Status Refresh Protocol from `.ai-instructions.md`, then confirm branch/worktree freshness and dirty state.
 3. Keep the run read-only unless the user explicitly changes your role.
 4. For integration/release QA, check Definition of Done evidence, including cleanup state or explicit blocker.
 

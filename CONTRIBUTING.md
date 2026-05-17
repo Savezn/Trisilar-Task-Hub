@@ -14,17 +14,21 @@ This repository uses a small-team, multi-agent workflow. The goal is to keep imp
 
 1. Read `.ai-instructions.md`.
 2. Read `docs/reference/PROJECT_CONTEXT.md`.
-3. Check the current branch and dirty files:
+3. Run the Agent Status Refresh Protocol:
 
 ```powershell
+git fetch origin --prune
 git status --short --branch
+git branch -vv
+git worktree list
+git log --oneline --decorate --max-count=10
 ```
 
 4. Confirm and declare the current role, branch, and worktree.
 5. Confirm the owned files for the task.
 6. For V0.3 role-based work, confirm the relevant role guide under `docs/agents/`.
 
-Do not begin edits if the current folder or branch does not match the task.
+Do not begin edits if the current folder or branch does not match the task, the branch is stale against its upstream or target branch, or unrelated dirty/untracked files do not have an explicit preserve/ignore/backup/route decision.
 
 ---
 
@@ -38,7 +42,8 @@ A task, cycle, workstream, or release is ready to start only when these inputs a
 - Acceptance criteria: expected behavior, docs output, or verification evidence.
 - Verification plan: commands/checks to run and when runtime checks may be skipped.
 - Dependencies: upstream branch, runtime flag, secret, service token, env var, or PM approval.
-- Dirty state: `git status --short --branch` has been checked; unrelated dirty files are preserved, ignored, backed up, or routed explicitly.
+- Latest status: Agent Status Refresh Protocol has been run; current source-of-truth docs have been read or searched; upstream, base, and target branch freshness is known.
+- Dirty state: `git status --short --branch` has been checked; unrelated dirty/untracked files are preserved, ignored, backed up, or routed explicitly.
 - Secret/runtime boundary: required for deployment, auth, Paperclip, Cloudflare, env vars, or production work.
 
 If the Definition of Ready is incomplete, PM should route the work back to planning or clarification instead of starting implementation.
@@ -73,7 +78,7 @@ Parallel workstreams must use separate git worktree folders. Do not run W1/W2/W3
 From the main repo folder:
 
 ```powershell
-git fetch origin
+git fetch origin --prune
 git checkout dev
 git pull --ff-only origin dev
 git worktree add ..\trisilar-task-hub-w1-company-access feature/w1-company-access-deployment
@@ -163,7 +168,7 @@ A task, cycle, workstream, or release is not complete until all applicable gates
   - `docs/logs/DECISION_LOG.md` for PM/process/release decisions
   - `docs/logs/QA_LOG.md` for QA/completion evidence
 - PR/merge state is clear: merged into the correct target branch or explicitly held with owner/next action; no unresolved conflicts; local and remote target branch sync verified.
-- Cleanup gate passes: completed temporary worktrees are removed, merged local/remote topic branches are deleted unless PM keeps them, stale `.git/worktrees/*` metadata is pruned, stale physical folders are removed when not locked, and `git worktree list`, `git branch -vv`, and `git status --short --branch` are checked.
+- Cleanup gate passes: completed temporary worktrees are removed, merged local/remote topic branches are deleted unless PM keeps them, stale `.git/worktrees/*` metadata is pruned, stale physical folders are removed when not locked, and the Agent Status Refresh Protocol checks are rerun.
 
 Allowed exceptions:
 
