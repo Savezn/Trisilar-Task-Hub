@@ -8483,24 +8483,96 @@ a { text-decoration: none; }
 }
 
 .focus-command-panel {
+  background: var(--surface, #fff);
+  border-radius: 8px;
   grid-template-columns: minmax(0, 1fr) minmax(360px, 0.8fr);
 }
 
 .focus-command-stats {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.focus-signal-strip {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.focus-signal-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-left: 3px solid var(--info, #0284c7);
+  border-radius: 8px;
+  min-width: 0;
+  padding: 12px;
+}
+
+.focus-signal-card.is-ok {
+  background: var(--ok-soft, #ecfdf5);
+  border-left-color: var(--ok, #059669);
+}
+
+.focus-signal-card.is-warning {
+  background: var(--warn-soft, #fffbeb);
+  border-left-color: var(--warn, #d97706);
+}
+
+.focus-signal-card.is-review {
+  background: var(--purple-light, #f3e8ff);
+  border-left-color: var(--purple, #7c3aed);
+}
+
+.focus-signal-card span {
+  color: var(--ink-4, #94a3b8);
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.focus-signal-card strong {
+  color: var(--ink, #0f172a);
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+
+.focus-signal-card p {
+  color: var(--ink-3, #64748b);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
 }
 
 .focus-toolbar {
   align-items: center;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 8px;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   min-width: 0;
   padding: 12px;
+}
+
+.focus-filter-group {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.focus-filter-chip {
+  border-radius: 6px;
 }
 
 .focus-owner-summary,
@@ -8533,7 +8605,7 @@ a { text-decoration: none; }
   background: var(--surface);
   border: 1px solid var(--line);
   border-left: 4px solid var(--accent);
-  border-radius: var(--radius);
+  border-radius: 8px;
   box-shadow: var(--shadow-sm);
   min-width: 0;
   overflow: hidden;
@@ -8594,7 +8666,7 @@ a { text-decoration: none; }
 .focus-task-row {
   background: var(--surface-2);
   border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   cursor: pointer;
   display: grid;
   gap: 8px;
@@ -8634,6 +8706,59 @@ a { text-decoration: none; }
   font-weight: 800;
 }
 
+.focus-source-chip,
+.focus-status-chip,
+.focus-review-chip {
+  border-radius: 6px;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 5px 7px;
+  white-space: nowrap;
+}
+
+.focus-source-chip.is-trello {
+  background: var(--surface-3, #f1f5f9);
+  color: var(--ink-3, #64748b);
+}
+
+.focus-source-chip.is-ai,
+.focus-review-chip {
+  background: var(--purple-light, #f3e8ff);
+  color: var(--purple, #7c3aed);
+}
+
+.focus-status-chip.is-do-now {
+  background: #fef2f2;
+  color: var(--danger, #dc2626);
+}
+
+.focus-status-chip.is-review-ai {
+  background: var(--purple-light, #f3e8ff);
+  color: var(--purple, #7c3aed);
+}
+
+.focus-status-chip.is-blocked {
+  background: var(--warn-soft, #fffbeb);
+  color: var(--warn, #d97706);
+}
+
+.focus-status-chip.is-schedule {
+  background: #e0f2fe;
+  color: var(--info, #0284c7);
+}
+
+.focus-status-chip.is-done {
+  background: var(--ok-soft, #ecfdf5);
+  color: var(--ok, #059669);
+}
+
+.focus-status-chip.is-unscheduled {
+  background: var(--surface-3, #f1f5f9);
+  color: var(--ink-3, #64748b);
+}
+
 .focus-lane-empty,
 .focus-muted {
   color: var(--ink-4);
@@ -8647,6 +8772,7 @@ a { text-decoration: none; }
 
   .okr-command-panel,
   .okr-confidence-strip,
+  .focus-signal-strip,
   .focus-command-panel {
     grid-template-columns: 1fr;
   }
@@ -8768,6 +8894,15 @@ a { text-decoration: none; }
   .focus-task-meta {
     justify-content: flex-start;
     text-align: left;
+  }
+
+  .focus-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .focus-filter-group {
+    align-items: flex-start;
   }
 
   .group-edit-header,
