@@ -48,7 +48,7 @@ function renderOKRPage(allCards, boards) {
         <div class="empty-state okr-setup-guide">
           <div class="empty-icon">${icon("target")}</div>
           <h3>No OKR board found</h3>
-          <p>Follow these steps to start using OKR progress inside Trisilar Task Hub.</p>
+          <p>PM next action: confirm the planning board name, then create or expose the OKR board in Trello.</p>
           <div class="okr-guide-steps">
             <details class="okr-guide-step" open>
               <summary><span class="okr-step-num">1</span>Create a Trello board named "OKR Board"</summary>
@@ -89,6 +89,7 @@ function renderOKRPage(allCards, boards) {
 
   let labelFilter = "";
   let memberFilter = "";
+  let statusFilter = "";
 
   const allLabels = [];
   const allMembers = [];
@@ -139,12 +140,23 @@ function renderOKRPage(allCards, boards) {
     const memberChips = allMembers.map(m =>
       `<button type="button" class="filter-chip okr-member-filter${memberFilter === m.id ? " active" : ""}" data-member-id="${esc(m.id)}">${esc(m.fullName || m.username || m.id)}</button>`
     ).join("");
-    if (!labelChips && !memberChips) return "";
+    const statusOptions = [
+      ["at-risk", "At risk"],
+      ["missing-link", "Missing link"],
+      ["stale", "Stale status"],
+      ["done", "Done"],
+    ];
+    const statusChips = statusOptions.map(([key, label]) =>
+      `<button type="button" class="filter-chip okr-status-filter${statusFilter === key ? " active" : ""}" data-status="${key}">${label}</button>`
+    ).join("");
+    if (!labelChips && !memberChips && !statusChips) return "";
     return `
       <div class="filters filters-row2 okr-filter-row">
         ${labelChips ? `<span class="at-chip-label">Label:</span>${labelChips}` : ""}
-        ${labelChips && memberChips ? `<span class="at-chip-divider"></span>` : ""}
+        ${labelChips && (memberChips || statusChips) ? `<span class="at-chip-divider"></span>` : ""}
         ${memberChips ? `<span class="at-chip-label">Owner:</span>${memberChips}` : ""}
+        ${memberChips && statusChips ? `<span class="at-chip-divider"></span>` : ""}
+        ${statusChips ? `<span class="at-chip-label">Status:</span>${statusChips}` : ""}
       </div>`;
   }
 
@@ -159,6 +171,13 @@ function renderOKRPage(allCards, boards) {
     content.querySelectorAll(".okr-member-filter").forEach(btn => {
       btn.onclick = () => {
         memberFilter = memberFilter === btn.dataset.memberId ? "" : btn.dataset.memberId;
+        drillCard = null;
+        renderOverview();
+      };
+    });
+    content.querySelectorAll(".okr-status-filter").forEach(btn => {
+      btn.onclick = () => {
+        statusFilter = statusFilter === btn.dataset.status ? "" : btn.dataset.status;
         drillCard = null;
         renderOverview();
       };
@@ -189,10 +208,42 @@ function renderOKRPage(allCards, boards) {
     return { overdue, done, upcoming, nextDue: upcoming[0] || null };
   }
 
+  function krStatusInfo(card, linked = linkedCards(card)) {
+    const progress = card.checklistProgress || {};
+    const hasProgressSignal = (progress.total || 0) > 0 || card.dueComplete;
+    const hasDueSignal = Boolean(card.due);
+    const hasLinkSignal = linked.length > 0;
+    const stats = linkedStats(linked);
+    const progressPct = krProgress(card);
+    const signalCount = [hasProgressSignal, hasDueSignal, hasLinkSignal].filter(Boolean).length;
+    const confidence = signalCount >= 3 ? "High" : signalCount >= 2 ? "Medium" : "Low";
+    const stale = !hasProgressSignal && !hasDueSignal;
+
+    if (progressPct >= 100 || card.dueComplete) return { kind: "done", label: "Done", confidence, stale: false, action: "Review for next KR cycle" };
+    if (stats.overdue.length) return { kind: "at-risk", label: "At risk", confidence, stale, action: "Review overdue linked work" };
+    if (!hasLinkSignal) return { kind: "missing-link", label: "Missing link", confidence, stale, action: "Link project work by label" };
+    if (stale) return { kind: "stale", label: "Stale status", confidence, stale, action: "Update checklist or due date in Trello" };
+    return { kind: "on-track", label: "On track", confidence, stale: false, action: "Keep execution visible" };
+  }
+
+  function krSignalText(card, linked) {
+    const progress = card.checklistProgress || {};
+    if ((progress.total || 0) > 0) return `${progress.done}/${progress.total} checklist signal`;
+    if (card.due) return `Due signal: ${formatThaiDateTime(card.due, false)}`;
+    if (linked.length) return `${linked.length} linked task signal${linked.length === 1 ? "" : "s"}`;
+    return "No fresh status signal";
+  }
+
   function visibleKrsFor(krCards) {
-    return labelFilter || memberFilter
+    const filteredByOwnerOrLabel = labelFilter || memberFilter
       ? krCards.filter(card => linkedCards(card).length > 0)
       : krCards;
+    return statusFilter
+      ? filteredByOwnerOrLabel.filter(card => {
+        const info = krStatusInfo(card);
+        return statusFilter === "stale" ? info.stale || info.kind === "stale" : info.kind === statusFilter;
+      })
+      : filteredByOwnerOrLabel;
   }
 
   function averageProgress(krCards) {
@@ -206,6 +257,7 @@ function renderOKRPage(allCards, boards) {
   function renderDetail(krCard) {
     const linked = linkedCards(krCard);
     const { overdue, upcoming, done } = linkedStats(linked);
+    const status = krStatusInfo(krCard, linked);
     const filterHint = labelFilter || memberFilter
       ? "The current label/member filter may hide linked project cards."
       : "Add labels to this KR card that match labels on project board cards.";
@@ -217,15 +269,21 @@ function renderOKRPage(allCards, boards) {
             <button type="button" class="btn btn-ghost btn-xs okr-back-btn">Back to OKR Overview</button>
             <div class="okr-kicker">${esc(krCard.boardName)} / ${esc(krCard.listName)}</div>
             <h2 class="okr-command-title">${esc(krCard.name)}</h2>
-            <p class="okr-command-subtitle">${krCard.due ? `Due ${formatThaiDateTime(krCard.due, false)}` : "No due date set"}</p>
+            <p class="okr-command-subtitle">${esc(status.action)}. ${krCard.due ? `Due ${formatThaiDateTime(krCard.due, false)}` : "No due date set"}.</p>
           </div>
           <div class="okr-command-stats">
+            <div class="okr-summary-card"><span class="okr-summary-num"><span class="okr-status-chip is-${status.kind}">${esc(status.label)}</span></span><span class="okr-summary-label">Status</span></div>
+            <div class="okr-summary-card"><span class="okr-summary-num">${esc(status.confidence)}</span><span class="okr-summary-label">Confidence</span></div>
             <div class="okr-summary-card"><span class="okr-summary-num">${linked.length}</span><span class="okr-summary-label">Linked Tasks</span></div>
             <div class="okr-summary-card"><span class="okr-summary-num" style="color:var(--danger)">${overdue.length}</span><span class="okr-summary-label">Overdue</span></div>
             <div class="okr-summary-card"><span class="okr-summary-num" style="color:var(--success)">${done.length}</span><span class="okr-summary-label">Done</span></div>
             <div class="okr-summary-card"><span class="okr-summary-num">${upcoming.length}</span><span class="okr-summary-label">Upcoming</span></div>
           </div>
         </section>
+        <div class="okr-warning-strip ${status.kind === "on-track" || status.kind === "done" ? "is-muted" : ""}">
+          <strong>${esc(status.label)}</strong>
+          <span>${esc(krSignalText(krCard, linked))}. ${esc(status.action)}.</span>
+        </div>
         ${linked.length ? `
         <div class="okr-linked-table">
           <div class="task-table-head" style="grid-template-columns:1fr 130px 110px 90px"><div>TASK</div><div>BOARD</div><div>DUE</div><div>STATUS</div></div>
@@ -248,7 +306,7 @@ function renderOKRPage(allCards, boards) {
   }
 
   function renderOverview() {
-    const filtersActive = Boolean(labelFilter || memberFilter);
+    const filtersActive = Boolean(labelFilter || memberFilter || statusFilter);
     const visibleObjectives = [...objectiveMap.entries()]
       .map(([objName, krCards]) => ({ objName, krCards: visibleKrsFor(krCards) }))
       .filter(obj => obj.krCards.length > 0);
@@ -259,6 +317,10 @@ function renderOKRPage(allCards, boards) {
     const summaryStats = linkedStats(uniqueLinked);
     const overallProgress = averageProgress(visibleKrs);
     const sourceLabel = okrBoards.map(b => esc(b.name)).join(", ");
+    const statusInfos = visibleKrs.map(card => krStatusInfo(card));
+    const missingLinkCount = statusInfos.filter(info => info.kind === "missing-link").length;
+    const staleCount = statusInfos.filter(info => info.stale || info.kind === "stale").length;
+    const highConfidenceCount = statusInfos.filter(info => info.confidence === "High").length;
 
     const objectivesHtml = visibleObjectives.map(({ objName, krCards: visibleKrs }) => {
       const avgProg = averageProgress(visibleKrs);
@@ -271,18 +333,22 @@ function renderOKRPage(allCards, boards) {
         const prog = krProgress(card);
         const linked = linkedCards(card);
         const stats = linkedStats(linked);
+        const status = krStatusInfo(card, linked);
 
         return `
           <div class="okr-kr-row" data-card-id="${card.id}">
             <div class="okr-kr-main">
               <div class="okr-kr-name">${esc(card.name)}</div>
-              <div class="okr-kr-submeta">${esc(krProgressLabel(card))}</div>
+              <div class="okr-kr-submeta">${esc(krProgressLabel(card))} / ${esc(krSignalText(card, linked))}</div>
             </div>
             <div class="okr-kr-progress">
               <div class="okr-progress-bar"><div class="okr-progress-fill" style="width:${prog}%"></div></div>
               <span class="okr-progress-pct">${prog}%</span>
             </div>
             <div class="okr-kr-meta">
+              <span class="okr-status-chip is-${status.kind}">${esc(status.label)}</span>
+              <span class="okr-confidence-chip is-${status.confidence.toLowerCase()}">${esc(status.confidence)} confidence</span>
+              ${status.stale ? `<span class="okr-status-chip is-stale">Stale status</span>` : ""}
               ${linked.length ? `<span class="okr-meta-tag">${linked.length} task${linked.length !== 1 ? "s" : ""}</span>` : ""}
               ${stats.done.length ? `<span class="okr-meta-tag okr-meta-done">${stats.done.length} done</span>` : ""}
               ${stats.overdue.length ? `<span class="okr-meta-tag okr-meta-overdue">${stats.overdue.length} overdue</span>` : ""}
@@ -326,8 +392,25 @@ function renderOKRPage(allCards, boards) {
             <div class="okr-summary-card"><span class="okr-summary-num" style="color:var(--danger)">${summaryStats.overdue.length}</span><span class="okr-summary-label">Overdue</span></div>
           </div>
         </section>
+        <div class="okr-confidence-strip" aria-label="OKR status confidence summary">
+          <div class="okr-confidence-card">
+            <span>Portfolio source</span>
+            <strong>${okrBoards.length} OKR board${okrBoards.length === 1 ? "" : "s"}</strong>
+            <p>${sourceLabel}</p>
+          </div>
+          <div class="okr-confidence-card is-ok">
+            <span>Status confidence</span>
+            <strong>${highConfidenceCount}/${visibleKrs.length || 0} high confidence</strong>
+            <p>Confidence improves when KR progress, due date, and linked work are all present.</p>
+          </div>
+          <div class="okr-confidence-card ${missingLinkCount || staleCount ? "is-warning" : "is-ok"}">
+            <span>Quality signals</span>
+            <strong>${missingLinkCount} missing links / ${staleCount} stale</strong>
+            <p>${missingLinkCount || staleCount ? "Safe next action: update Trello KR labels, checklist, or due date." : "KR links and progress signals are visible."}</p>
+          </div>
+        </div>
         <div class="okr-toolbar">
-          <div class="okr-board-label">Filters narrow linked project cards and visible KRs.</div>
+          <div class="okr-board-label">Filters narrow linked project cards, owners, status risk, and visible KRs.</div>
           ${filterBarHtml()}
         </div>
         <div class="okr-overview">
