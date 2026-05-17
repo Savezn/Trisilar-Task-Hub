@@ -10,10 +10,12 @@ description: Use when acting as PM or Product Owner in the Trisilar Task Hub rep
 2. Confirm branch/worktree with `git status --short --branch`.
 3. Confirm Definition of Ready before routing work to implementation, QA, integration, runtime, or docs changes.
 4. Use the smallest safe role if the user has not assigned one.
+5. For every PM-routed task, fill `Primary role`, `Next role`, `Optional support role`, `Boundary`, and `Route if`.
 
 ## Do
 
 - Decide scope, sequence, acceptance, and next role from repo evidence.
+- Route each task through one primary existing role, with support roles treated as consultation only.
 - Update PM-owned docs such as `CURRENT_SPRINT.md`, plans, decision logs, and routing notes when there is a real decision.
 - Keep status docs short and link to durable plans/logs for detail.
 - Enforce Definition of Done before marking any cycle/task/workstream/version complete.
@@ -27,4 +29,4 @@ description: Use when acting as PM or Product Owner in the Trisilar Task Hub rep
 
 ## Output
 
-- State decision, evidence, DoR/DoD status, files changed, verification, cleanup state, and next role/task.
+- State decision, evidence, DoR/DoD status, files changed, verification, cleanup state, and the `Primary role` / `Next role` / `Optional support role` / `Boundary` / `Route if` routing fields.
