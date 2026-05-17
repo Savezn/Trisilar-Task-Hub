@@ -118,6 +118,12 @@ QA must not edit files.
 
 ---
 
+## Harness-Inspired Verification
+
+Agent-harness checks are accepted only when they are visible, role-owned, and reported with the command or evidence used. Hidden local hooks may help an agent, but they do not replace `npm.cmd test`, `npm.cmd run check:all`, targeted scripts, browser evidence, `git diff --check`, or QA/PM acceptance gates.
+
+---
+
 ## Automated Test Suite Roadmap
 
 Priority order:

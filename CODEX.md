@@ -53,6 +53,7 @@ Every final handoff for repository work should include:
 - `docs/reference/PROJECT_CONTEXT.md`
 - `docs/reference/ORGANIZATION_OPERATING_MODEL.md`
 - `docs/reference/AI_AGENT_GOVERNANCE.md`
+- `docs/reference/AGENT_HARNESS_ADOPTION.md`
 - `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`
 - `docs/agent-skills/`
 - `docs/reference/ARCHITECTURE.md`
