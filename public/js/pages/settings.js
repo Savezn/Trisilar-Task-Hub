@@ -16,6 +16,9 @@ function showSettingsPage() {
     const trelloConnection = trelloConnectionSummary();
     const hiddenCount = (config.hiddenBoards || []).length;
     const workspaceCount = (config.allowedWorkspaceIds || []).length;
+    const trelloOwnerAction = trelloConnection.label === "Verified"
+      ? "Runtime verified; board data can load."
+      : "Runtime Owner action: verify or rotate Trello credentials.";
 
     const page = document.createElement("div");
     page.className = "settings-page";
@@ -43,6 +46,34 @@ function showSettingsPage() {
             <span class="settings-stat-label">Hidden boards</span>
             <strong>${hiddenCount}</strong>
           </div>
+        </div>
+      </section>
+
+      <section class="settings-readiness-strip" aria-label="Operational readiness">
+        <div class="settings-readiness-item ${trelloConnection.statClass}">
+          <span>Trello</span>
+          <strong>${esc(trelloConnection.label)}</strong>
+          <small>${esc(trelloOwnerAction)}</small>
+        </div>
+        <div class="settings-readiness-item ${calConnected ? "is-ok" : "is-muted"}">
+          <span>Calendar</span>
+          <strong>${calConnected ? "Connected" : "Owner action"}</strong>
+          <small>${calConnected ? "OAuth connected for schedule context." : "Connect OAuth before calendar sync."}</small>
+        </div>
+        <div class="settings-readiness-item ${calConnected ? "is-ok" : "is-muted"}">
+          <span>Google Tasks</span>
+          <strong>${calConnected ? "Shared OAuth" : "Blocked"}</strong>
+          <small>${calConnected ? "Uses the Calendar connection." : "Connect Calendar first."}</small>
+        </div>
+        <div class="settings-readiness-item is-warning">
+          <span>Paperclip</span>
+          <strong>Guarded controls</strong>
+          <small>Secret is write-only; rotation and disconnect require confirmation.</small>
+        </div>
+        <div class="settings-readiness-item is-ok">
+          <span>Review Queue</span>
+          <strong>Human gate</strong>
+          <small>External writes still require approval before execution.</small>
         </div>
       </section>
 
@@ -196,7 +227,7 @@ function showSettingsPage() {
     };
   } catch (e) {
     console.error("[Settings Error]", e);
-    $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Settings error</h3><p>${esc(e.message)}</p></div>`;
+    $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">${icon("alert")}</div><h3>Settings unavailable</h3><p>Settings could not load. Runtime Owner should check the connection health before changing integration controls.</p></div>`;
   }
 }
 
@@ -216,7 +247,11 @@ async function loadPaperclipConnection() {
     ]);
     renderPaperclipConnection(connection, operations);
   } catch (e) {
-    container.innerHTML = `<p style="color:var(--danger)">Connection status failed: ${esc(e.message)}</p>`;
+    container.innerHTML = `
+      <div class="settings-empty-inline is-error">
+        Paperclip status is unavailable. Runtime/Paperclip Owner should check connector health; no secret value is exposed here.
+      </div>
+    `;
   }
 }
 
@@ -229,17 +264,19 @@ function renderPaperclipConnection(connection, operations = null) {
   const counts = ops.reviewQueue || {};
   const warnings = Array.isArray(ops.warnings) ? ops.warnings : [];
   const statusText = connected
-    ? "Ready for signed webhook validation. Shared secret is configured."
+    ? "Connected. Shared secret is configured but never shown; Review Queue remains the human gate."
     : connection.status === "disabled"
-      ? "Disconnected. Future live webhook requests must be rejected."
-      : "Paste a shared secret to enable future live webhook validation.";
+      ? "Disconnected. Live Paperclip intake must stay blocked until Runtime/Paperclip Owner reconnects it."
+      : "Connection incomplete. Runtime/Paperclip Owner must configure a write-only shared secret; value is never shown.";
+  const secretPlaceholder = connected ? "Enter a new secret to rotate" : "Enter shared secret from Paperclip";
 
   container.innerHTML = `
     <div class="integration-row" style="padding-top:0">
-      <span class="integration-icon">PC</span>
+      <span class="settings-integration-icon">PC</span>
       <div class="integration-info">
         <div class="integration-name">Paperclip</div>
         <div class="integration-desc">${esc(statusText)}</div>
+        <div class="settings-owner-action">${connected ? "Runtime/Paperclip Owner action: rotate only when Paperclip changes the signing secret." : "Runtime/Paperclip Owner action: connect only after PM/Runtime confirms Paperclip readiness."}</div>
       </div>
       <div class="integration-status-dot ${connected ? "dot-green" : "dot-gray"}"></div>
       ${paperclipStatusChip(connection.status)}
@@ -256,7 +293,8 @@ function renderPaperclipConnection(connection, operations = null) {
     </div>
     <div class="form-group">
       <label for="paperclip-shared-secret">Shared secret <span class="label-hint">write-only, not returned after save</span></label>
-      <input id="paperclip-shared-secret" class="form-input" type="password" placeholder="${connected ? "Enter a new secret to rotate" : "Enter shared secret from Paperclip"}" autocomplete="off">
+      <input id="paperclip-shared-secret" class="form-input" type="password" placeholder="${esc(secretPlaceholder)}" autocomplete="off" aria-describedby="paperclip-secret-note">
+      <p class="settings-secret-note" id="paperclip-secret-note">${connected ? "Leave blank unless rotating. Rotate Secret unlocks only after a new value is typed." : "The value is write-only and must not appear in screenshots, logs, or page copy."}</p>
     </div>
     <div class="form-group">
       <label>Webhook URL</label>
@@ -290,16 +328,29 @@ function renderPaperclipConnection(connection, operations = null) {
         </div>
       ` : '<div class="settings-empty-inline">No Paperclip stop-condition warning found.</div>'}
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <div class="settings-control-actions" aria-label="Paperclip connection controls">
       <button class="btn btn-primary btn-sm" id="paperclip-connect-btn">${connected ? "Update Connection" : "Connect Paperclip"}</button>
-      <button class="btn btn-sm" id="paperclip-rotate-btn" ${connected ? "" : "disabled"}>Rotate Secret</button>
+      <button class="btn btn-sm" id="paperclip-rotate-btn" ${connected ? "disabled" : "disabled"} title="${connected ? "Enter a new shared secret to enable rotation" : "Connect Paperclip before rotating"}">Rotate Secret</button>
       <button class="btn btn-danger btn-sm" id="paperclip-disconnect-btn" ${connected ? "" : "disabled"}>Disconnect</button>
     </div>
+    <div class="settings-confirmation-region" id="paperclip-confirmation-region" aria-live="polite"></div>
   `;
 
   $("paperclip-connect-btn").onclick = connectPaperclip;
-  $("paperclip-rotate-btn").onclick = rotatePaperclipSecret;
-  $("paperclip-disconnect-btn").onclick = disconnectPaperclip;
+  $("paperclip-rotate-btn").onclick = requestPaperclipSecretRotation;
+  $("paperclip-disconnect-btn").onclick = requestPaperclipDisconnect;
+  const secretInput = $("paperclip-shared-secret");
+  const rotateButton = $("paperclip-rotate-btn");
+  if (secretInput && rotateButton) {
+    secretInput.oninput = () => {
+      const hasSecret = Boolean(secretInput.value.trim());
+      rotateButton.disabled = !connected || !hasSecret;
+      rotateButton.title = connected && !hasSecret
+        ? "Enter a new shared secret to enable rotation"
+        : "";
+      clearPaperclipConfirmation();
+    };
+  }
 }
 
 function renderPaperclipOpsAudit(audit = {}) {
@@ -325,14 +376,53 @@ function paperclipConnectionPayload() {
   };
 }
 
+function clearPaperclipConfirmation() {
+  const region = $("paperclip-confirmation-region");
+  if (region) region.innerHTML = "";
+}
+
+function showPaperclipConfirmation({ title, body, confirmText, danger = false, onConfirm }) {
+  const region = $("paperclip-confirmation-region");
+  if (!region) return;
+  region.innerHTML = `
+    <div class="settings-confirmation-card ${danger ? "is-danger" : "is-warning"}">
+      <div>
+        <strong>${esc(title)}</strong>
+        <p>${esc(body)}</p>
+      </div>
+      <div class="settings-confirmation-actions">
+        <button type="button" class="btn ${danger ? "btn-danger" : "btn-primary"} btn-sm" id="paperclip-confirm-action">${esc(confirmText)}</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="paperclip-cancel-action">Cancel</button>
+      </div>
+    </div>
+  `;
+  $("paperclip-confirm-action").onclick = onConfirm;
+  $("paperclip-cancel-action").onclick = clearPaperclipConfirmation;
+}
+
 async function connectPaperclip() {
   try {
     await api.post("/api/integrations/paperclip/connection/connect", paperclipConnectionPayload());
     toast("Paperclip connected");
     await loadPaperclipConnection();
   } catch (e) {
-    toast("Paperclip connect failed: " + e.message, true);
+    toast("Paperclip connect failed. Runtime/Paperclip Owner should check the connection details.", true);
   }
+}
+
+function requestPaperclipSecretRotation() {
+  const nextSecret = $("paperclip-shared-secret")?.value?.trim() || "";
+  if (!nextSecret) {
+    toast("Enter a new shared secret before rotating.", true);
+    return;
+  }
+  showPaperclipConfirmation({
+    title: "Confirm secret rotation",
+    body: "This replaces the stored Paperclip signing secret. Continue only after Paperclip is ready to send with the new value.",
+    confirmText: "Confirm Rotate",
+    danger: true,
+    onConfirm: rotatePaperclipSecret,
+  });
 }
 
 async function rotatePaperclipSecret() {
@@ -343,8 +433,18 @@ async function rotatePaperclipSecret() {
     toast("Paperclip secret rotated");
     await loadPaperclipConnection();
   } catch (e) {
-    toast("Paperclip rotate failed: " + e.message, true);
+    toast("Paperclip rotate failed. Runtime/Paperclip Owner should verify connector readiness.", true);
   }
+}
+
+function requestPaperclipDisconnect() {
+  showPaperclipConfirmation({
+    title: "Confirm Paperclip disconnect",
+    body: "This disables the Task Hub Paperclip connection. Future live webhook requests should be rejected until it is reconnected.",
+    confirmText: "Confirm Disconnect",
+    danger: true,
+    onConfirm: disconnectPaperclip,
+  });
 }
 
 async function disconnectPaperclip() {
@@ -353,7 +453,7 @@ async function disconnectPaperclip() {
     toast("Paperclip disconnected");
     await loadPaperclipConnection();
   } catch (e) {
-    toast("Paperclip disconnect failed: " + e.message, true);
+    toast("Paperclip disconnect failed. Runtime/Paperclip Owner should check connector state.", true);
   }
 }
 
@@ -549,7 +649,7 @@ async function loadSettingsWorkspaces() {
       container.appendChild(row);
     });
   } catch (e) {
-    container.innerHTML = `<div class="settings-empty-inline is-error">${esc(e.message)}</div>`;
+    container.innerHTML = `<div class="settings-empty-inline is-error">Workspaces are unavailable. Runtime Owner should verify Trello connection health before changing workspace scope.</div>`;
   }
 }
 

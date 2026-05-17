@@ -7329,6 +7329,65 @@ a { text-decoration: none; }
 .settings-stat-card.is-warning { border-color: rgba(217,119,6,0.28); background: var(--warn-soft); }
 .settings-stat-card.is-muted { background: var(--surface-2); }
 
+.settings-readiness-strip {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.settings-readiness-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+  padding: 12px;
+}
+
+.settings-readiness-item.is-ok {
+  background: var(--ok-soft);
+  border-left-color: var(--ok);
+}
+
+.settings-readiness-item.is-warning {
+  background: var(--warn-soft);
+  border-left-color: var(--warn);
+}
+
+.settings-readiness-item.is-muted {
+  background: var(--surface-2);
+}
+
+.settings-readiness-item span {
+  color: var(--ink-3);
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.settings-readiness-item strong {
+  color: var(--ink);
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.settings-readiness-item small {
+  color: var(--ink-3);
+  display: block;
+  font-size: 12px;
+  line-height: 1.35;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
 .settings-layout {
   align-items: start;
   display: grid;
@@ -7496,6 +7555,15 @@ a { text-decoration: none; }
   overflow-wrap: anywhere;
 }
 
+.settings-owner-action {
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+
 .settings-status-chip {
   border: 1px solid var(--line);
   border-radius: var(--radius-pill);
@@ -7522,6 +7590,72 @@ a { text-decoration: none; }
   background: var(--warn-soft);
   border-color: rgba(217,119,6,0.24);
   color: var(--warn);
+}
+
+.settings-secret-note {
+  color: var(--ink-3);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.settings-control-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.settings-control-actions .btn-danger {
+  box-shadow: 0 0 0 1px rgba(220,38,38,0.12);
+}
+
+.settings-confirmation-region {
+  min-width: 0;
+}
+
+.settings-confirmation-card {
+  align-items: center;
+  border: 1px solid var(--warn-mid);
+  border-left: 4px solid var(--warn);
+  border-radius: var(--radius-sm);
+  background: var(--warn-soft);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-width: 0;
+  padding: 12px;
+}
+
+.settings-confirmation-card.is-danger {
+  background: var(--over-soft);
+  border-color: var(--over-mid);
+  border-left-color: var(--over);
+}
+
+.settings-confirmation-card strong {
+  color: var(--ink);
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.settings-confirmation-card p {
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.settings-confirmation-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 .ws-row,
@@ -8053,6 +8187,10 @@ a { text-decoration: none; }
 }
 
 @media (max-width: 1180px) {
+  .settings-readiness-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .okr-command-panel,
   .focus-command-panel {
     grid-template-columns: 1fr;
@@ -8130,6 +8268,34 @@ a { text-decoration: none; }
   .integration-row .btn,
   .vis-toggle {
     justify-self: start;
+  }
+
+  .settings-readiness-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-control-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .settings-control-actions .btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .settings-confirmation-card {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .settings-confirmation-actions {
+    justify-content: stretch;
+  }
+
+  .settings-confirmation-actions .btn {
+    justify-content: center;
+    width: 100%;
   }
 
   .settings-nav-panel {

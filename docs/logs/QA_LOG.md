@@ -2,7 +2,7 @@
 
 **Doc Role:** Append-only QA and completion history
 **Status:** Active log
-**Last Updated:** 2026-05-16 - **Updated by:** Codex PM / Dev / QA
+**Last Updated:** 2026-05-17 - **Updated by:** Codex PM / Dev / QA
 
 This file preserves historical QA rounds, completed sprint work, bug fixes, and deferred items moved from `CURRENT_SPRINT.md` to keep the active sprint file short.
 
@@ -33,6 +33,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.6-S2 - All Tasks Inbox | QA pass / PM merge review next | `codex/v06-s2-all-tasks-inbox` |
 | V0.6-S3 - Review Queue Safety | QA pass / PM merge review next | `codex/v06-s3-review-queue` |
 | V0.6-S4 - Docs / AI Trace | QA pass / PM merge review next | `codex/v06-s4-docs-ai-trace` |
+| V0.6-S5 - Settings Operations | QA pass / PM merge review next | `codex/v06-s5-settings` |
 | V0.4/V0.5 Post-Monitoring Handoff Docs | Docs QA pass / PR pending | `codex/v04-final-handoff-docs` |
 | B10 — Tasks label group scroll | ✅ QA Pass | `ac48125` |
 | B11 — Pending Review badge ซ้ำ | ✅ QA Pass | `8c73b7d` |
