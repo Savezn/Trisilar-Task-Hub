@@ -4,7 +4,7 @@
 **Status:** PM accepted
 **Owner:** PM / Documentation Workflow Owner
 **Created:** 2026-05-14
-**Updated by:** Codex PM
+**Updated by:** Codex Documentation Workflow Owner
 **Related Docs:** `ORGANIZATION_OPERATING_MODEL.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../agents/PM.md`, `../plans/PROJECT_LADDER.md`
 
 ---
@@ -72,7 +72,7 @@ Rules:
 
 ## Repo Agent Roles
 
-Long-term work is split into role lanes. Each session should act as one role.
+Long-term work is split into role lanes. Each session has one current role, selected from the existing repo roles.
 
 | Role | Primary responsibility |
 |---|---|
@@ -88,6 +88,32 @@ Long-term work is split into role lanes. Each session should act as one role.
 
 Role docs live in `docs/agents/`.
 
+Role selection rules:
+
+- If the user names a role, use that role unless it conflicts with the requested action.
+- If the user does not name a role, infer the smallest safe existing role for the next action.
+- Declare the current role before substantial work and in the final handoff.
+- Do not merge roles to unlock extra permissions or broaden scope.
+- When multiple roles are relevant, choose the role that owns the current action and route follow-up work to the next owner.
+
+PM-routed task template:
+
+```text
+Primary role:
+Next role:
+Optional support role:
+Boundary:
+Route if:
+```
+
+Template rules:
+
+- `Primary role` is required and must be one existing repo role.
+- `Next role` is required when the task naturally continues to QA, PM, Dev Fix, Integration, Runtime, or another owner.
+- `Optional support role` is only for consultation, context, or review input; it does not grant extra permission.
+- `Boundary` names what the current role must not touch.
+- `Route if` names the condition that stops current-role work and hands off to another role.
+
 ---
 
 ## Role Boundary Rules
@@ -98,6 +124,7 @@ Role docs live in `docs/agents/`.
 - Integration Owner merges accepted branches into `dev`; feature agents do not merge sibling branches into each other.
 - Runtime Owner manages runtime flags/secrets/access; product agents do not enable runtime behavior directly.
 - Documentation Owner updates durable process docs; status docs still stay short and current.
+- Supporting expertise may inform the work, but the current role's boundary controls what the agent may change.
 
 When a task crosses role boundaries, stop and route the next role instead of silently expanding scope.
 
@@ -187,3 +214,5 @@ The future skill should teach agents how to work in this repo. It should not con
 |---|---|---|
 | 2026-05-14 | Created AI agent governance draft for V0.3 PM review | Codex PM / Documentation Architect |
 | 2026-05-14 | PM accepted AI agent governance and deferred reusable skill extraction | Codex PM |
+| 2026-05-17 | Clarified current-role declaration, smallest-safe-role selection, and boundary routing without combining roles | Codex Documentation Workflow Owner |
+| 2026-05-17 | Added lightweight PM task role routing template for Primary role, Next role, Optional support role, Boundary, and Route if | Codex Documentation Workflow Owner |
