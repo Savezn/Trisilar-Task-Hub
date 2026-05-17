@@ -6,7 +6,7 @@
 **Created:** 2026-05-14
 **Last Updated:** 2026-05-15
 **Updated by:** Codex PM
-**Related Docs:** `BRANCH_ENVIRONMENT_WORKFLOW.md`, `AI_AGENT_GOVERNANCE.md`, `../agents/INTEGRATION_OWNER.md`, `../../CONTRIBUTING.md`
+**Related Docs:** `BRANCH_ENVIRONMENT_WORKFLOW.md`, `AI_AGENT_GOVERNANCE.md`, `AGENT_HARNESS_ADOPTION.md`, `../agents/INTEGRATION_OWNER.md`, `../../CONTRIBUTING.md`
 
 ---
 
@@ -90,6 +90,7 @@ If these conditions are present, PM should sequence the tasks or assign an Integ
 - Runtime Owner owns runtime changes, environment variables, flags, access, and rollback.
 - `CURRENT_SPRINT.md`, `PROJECT_LADDER.md`, and logs remain the single source of truth for status and decisions.
 - Role docs and future skills should describe process, not current commit hashes or transient runtime state.
+- Harness-style progress sync and local observability must stay file-backed and visible in PRs, sprint docs, QA logs, decision logs, or handoff notes as defined in `AGENT_HARNESS_ADOPTION.md`.
 
 ---
 

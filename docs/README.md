@@ -86,6 +86,7 @@ Keep active prompts in `../CURRENT_SPRINT.md`. Keep historical QA/completion row
 | `reference/ARCHITECTURE.md` | Current technical architecture reference |
 | `reference/ORGANIZATION_OPERATING_MODEL.md` | Long-term operating model for Trello, Task Hub, Review Queue, AI intake, runtime governance, and Codex agents |
 | `reference/AI_AGENT_GOVERNANCE.md` | AI-originated work rules, role boundaries, Review Queue safety, and attribution |
+| `reference/AGENT_HARNESS_ADOPTION.md` | Lightweight policy for adopting external agent-harness patterns without bypassing repo roles or gates |
 | `reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md` | Parallel Codex branch/worktree ownership and contamination-prevention model |
 | `reference/BRANCH_ENVIRONMENT_WORKFLOW.md` | Branch, environment, PR, and verification workflow |
 | `reference/FILE_ORGANIZATION.md` | File placement policy for future files |

@@ -5,7 +5,7 @@
 **Owner:** PM / Documentation Workflow Owner
 **Created:** 2026-05-14
 **Updated by:** Codex Documentation Workflow Owner
-**Related Docs:** `ORGANIZATION_OPERATING_MODEL.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `SECURITY_ACCESS_POLICY.md`, `DATA_BACKUP_RETENTION_POLICY.md`, `../agents/PM.md`, `../plans/PROJECT_LADDER.md`
+**Related Docs:** `ORGANIZATION_OPERATING_MODEL.md`, `CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `AGENT_HARNESS_ADOPTION.md`, `SECURITY_ACCESS_POLICY.md`, `DATA_BACKUP_RETENTION_POLICY.md`, `../agents/PM.md`, `../plans/PROJECT_LADDER.md`
 
 ---
 
@@ -128,6 +128,12 @@ Template rules:
 - Supporting expertise may inform the work, but the current role's boundary controls what the agent may change.
 
 When a task crosses role boundaries, stop and route the next role instead of silently expanding scope.
+
+---
+
+## Agent Harness Adoption Boundary
+
+External agent-harness practices may inform role entrypoints, progress sync, local observability, and verification checklists, but they do not create new permissions or override the current-role boundary. Use `AGENT_HARNESS_ADOPTION.md` when changing harness-style workflow policy. If harness guidance overlaps with PM task role routing, keep the PM routing template canonical and consolidate the harness guidance under that template.
 
 ---
 
