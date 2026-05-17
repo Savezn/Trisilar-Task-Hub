@@ -34,6 +34,7 @@ This file preserves historical QA rounds, completed sprint work, bug fixes, and 
 | V0.6-S3 - Review Queue Safety | QA pass / PM merge review next | `codex/v06-s3-review-queue` |
 | V0.6-S4 - Docs / AI Trace | QA pass / PM merge review next | `codex/v06-s4-docs-ai-trace` |
 | V0.6-S5 - Settings Operations | QA pass / PM merge review next | `codex/v06-s5-settings` |
+| V0.6-S6 - Boards Monitor | QA pass / PM merge review next | `codex/v06-s6-boards-monitor` |
 | V0.4/V0.5 Post-Monitoring Handoff Docs | Docs QA pass / PR pending | `codex/v04-final-handoff-docs` |
 | B10 — Tasks label group scroll | ✅ QA Pass | `ac48125` |
 | B11 — Pending Review badge ซ้ำ | ✅ QA Pass | `8c73b7d` |
