@@ -87,7 +87,7 @@ Use `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md` and ADRs `ADR_0003` / 
 
 ### V0.6 - UI V2 Design System Implementation
 
-Status: Active implementation route. V0.6-S0 through V0.6-S6 are merged; V0.6-S7 Calendar has QA pass evidence on `codex/v06-s7-calendar`; PM merge review is next.
+Status: Active implementation route. V0.6-S0 through V0.6-S7 are merged; V0.6-S8 Planner has QA pass evidence on `codex/v06-s8-planner`; PM merge review is next.
 
 Goal: promote UI V2 tokens and component language into production route-by-route on top of the accepted V0.5 foundation, without forcing an uncontrolled frontend rewrite.
 
@@ -115,7 +115,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Complete; production permanent enablement active with Review Queue gate |
 | L7 | V0.5 Foundation Hardening | Complete / PM Accepted after hosted dev/demo SQLite canary, rollback proof, and short monitor passed |
-| L8 | V0.6 UI V2 Design System Implementation | S7 Calendar QA pass / PM merge review |
+| L8 | V0.6 UI V2 Design System Implementation | S8 Planner QA pass / PM merge review |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
 
@@ -133,7 +133,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 - UX issue intake and route-by-route usability review.
 - Agent role docs and future Codex skill extraction after PM approval.
 - Team onboarding docs exist; next step is team pilot feedback and routine-use SOP refinement.
-- UI Web Design V2 handoff for V0.6 implementation; S0 should proceed first with shell/navigation/token/state foundation on top of the accepted V0.5 foundation.
+- UI Web Design V2 handoff for V0.6 implementation; continue route-by-route from the accepted S0-S7 baseline on top of the accepted V0.5 foundation.
 - Full Rewrite decision memo after V0.5/V0.6 evidence; no full rewrite implementation yet.
 
 ---

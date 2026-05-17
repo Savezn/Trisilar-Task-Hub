@@ -7182,6 +7182,70 @@ a { text-decoration: none; }
   font-weight: 700;
 }
 
+.planner-page .planner-command-panel {
+  background: var(--surface, #fff);
+  border-radius: 8px;
+}
+
+.planner-page .planner-title {
+  font-size: 32px;
+}
+
+.planner-source-summary {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.planner-source-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 8px;
+  min-width: 0;
+  padding: 12px;
+}
+
+.planner-source-card span {
+  align-items: center;
+  color: var(--ink-4, #94a3b8);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 800;
+  gap: 6px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.planner-source-card strong {
+  color: var(--ink, #0f172a);
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.planner-source-card p {
+  color: var(--ink-3, #64748b);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 6px 0 0;
+}
+
+.planner-source-card.is-google strong,
+.planner-source-pill.is-google {
+  color: var(--accent, #4f46e5);
+}
+
+.planner-source-card.is-trello strong,
+.planner-source-pill.is-trello {
+  color: var(--warning, #d97706);
+}
+
+.planner-source-card.is-boundary strong {
+  color: var(--purple, #7c3aed);
+}
+
 .planner-grid {
   align-items: start;
   display: grid;
@@ -7193,7 +7257,7 @@ a { text-decoration: none; }
 .planner-section {
   background: var(--surface, #fff);
   border: 1px solid var(--line, #e5e7eb);
-  border-radius: 14px;
+  border-radius: 8px;
   box-shadow: var(--shadow-sm, 0 1px 2px rgba(15, 23, 42, 0.06));
   min-width: 0;
   overflow: hidden;
@@ -7285,11 +7349,35 @@ a { text-decoration: none; }
 
 .planner-source-pill {
   background: var(--accent-soft, #eef2ff);
-  border-radius: 999px;
+  border-radius: 6px;
   color: var(--accent, #4f46e5);
   font-size: 10px;
   font-weight: 800;
   padding: 4px 7px;
+}
+
+.planner-source-pill.is-trello {
+  background: #fff7ed;
+}
+
+.planner-source-pill.chip-danger {
+  background: #fef2f2;
+  color: var(--danger, #dc2626);
+}
+
+.planner-source-pill.chip-warning {
+  background: #fff7ed;
+}
+
+.planner-task-row.is-complete .planner-task-title {
+  text-decoration: line-through;
+}
+
+.planner-complete-note {
+  color: var(--success, #16a34a);
+  font-size: 11px;
+  font-weight: 800;
+  grid-column: 2 / -1;
 }
 
 .planner-add-row {
@@ -7305,7 +7393,7 @@ a { text-decoration: none; }
 .planner-add-input {
   background: #fff;
   border: 1px solid var(--line, #e5e7eb);
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--ink, #0f172a);
   flex: 1;
   font-size: 13px;
@@ -7335,6 +7423,7 @@ a { text-decoration: none; }
   .calendar-command-panel,
   .planner-command-panel,
   .calendar-source-summary,
+  .planner-source-summary,
   .calendar-schedule-layout,
   .planner-grid {
     grid-template-columns: 1fr;
@@ -7376,6 +7465,10 @@ a { text-decoration: none; }
   }
 
   .calendar-view .calendar-title {
+    font-size: 28px;
+  }
+
+  .planner-page .planner-title {
     font-size: 28px;
   }
 

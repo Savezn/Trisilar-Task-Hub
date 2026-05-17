@@ -61,7 +61,7 @@ async function showPlannerPage() {
       <div class="planner-command-panel">
         <div class="planner-command-copy">
           <div class="planner-kicker">${icon("checkSquare")} Daily planner</div>
-          <h1 class="planner-title">Daily Planner</h1>
+          <h1 class="planner-title">Planner</h1>
           <p class="planner-subtitle">Plan today from Google Tasks and Trello deadlines without mixing the source systems.</p>
           <div class="planner-date">${dateStr}</div>
         </div>
@@ -69,6 +69,24 @@ async function showPlannerPage() {
           <div class="planner-stat-card"><span>Google Tasks</span><strong id="planner-gtasks-count">...</strong></div>
           <div class="planner-stat-card is-warning"><span>Due today</span><strong id="planner-today-count">...</strong></div>
           <div class="planner-stat-card"><span>Due tomorrow</span><strong id="planner-tomorrow-count">...</strong></div>
+        </div>
+      </div>
+
+      <div class="planner-source-summary" aria-label="Planner source summary">
+        <div class="planner-source-card is-google">
+          <span><i class="source-dot is-google"></i>Google Tasks</span>
+          <strong id="planner-google-source-state">Checking</strong>
+          <p id="planner-google-source-copy">Personal task source for add and complete actions.</p>
+        </div>
+        <div class="planner-source-card is-trello">
+          <span><i class="source-dot is-trello"></i>Trello deadlines</span>
+          <strong id="planner-trello-source-state">Checking</strong>
+          <p id="planner-trello-source-copy">Execution source stays separate from personal planning tasks.</p>
+        </div>
+        <div class="planner-source-card is-boundary">
+          <span><i class="source-dot is-review"></i>Review gate</span>
+          <strong>Human approval first</strong>
+          <p>AI-proposed work reaches Google Tasks or Trello only after Review Queue approval.</p>
         </div>
       </div>
 
@@ -101,26 +119,36 @@ async function loadPlannerGTasks() {
   try {
     const status = await api.get("/api/google-tasks/status");
     if (!status.connected) {
-      const statusMessage = status.error || "Connect Google to add and complete daily tasks from the Planner.";
       if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = "Off";
       if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Disconnected";
+      setPlannerSourceCard("google", "Disconnected", "Owner action: connect Google Tasks in Settings. Trello deadlines remain visible below.");
       body.innerHTML = `
         <div class="planner-connect-state">
           <strong>Google Tasks is disconnected</strong>
-          <p>${esc(statusMessage)}</p>
-          <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Connect Google</button>
+          <p>Owner action: connect Google Tasks in Settings. Planner keeps Trello deadline context available while personal tasks are offline.</p>
+          <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Open Settings connection</button>
         </div>`;
       return;
     }
     const tasks = await api.get("/api/google-tasks/today");
     if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = tasks.length;
     if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Connected";
+    setPlannerSourceCard("google", `${tasks.length} task${tasks.length === 1 ? "" : "s"}`, "Connected source for personal tasks due today or overdue.");
     renderPlannerGTasks(tasks);
   } catch (e) {
+    console.error("[Planner Google Tasks Error]", e);
     if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = "!";
     if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Error";
-    body.innerHTML = `<div class="planner-error">Error: ${esc(e.message)}</div>`;
+    setPlannerSourceCard("google", "Needs attention", "Owner action: check Google Tasks connection in Settings.");
+    body.innerHTML = `<div class="planner-error">Google Tasks could not be loaded. Owner action: check the Settings connection and retry.</div>`;
   }
+}
+
+function setPlannerSourceCard(source, state, copy) {
+  const stateEl = $(`planner-${source}-source-state`);
+  const copyEl = $(`planner-${source}-source-copy`);
+  if (stateEl) stateEl.textContent = state;
+  if (copyEl) copyEl.textContent = copy;
 }
 
 function renderPlannerGTasks(tasks) {
@@ -137,7 +165,7 @@ function renderPlannerGTasks(tasks) {
           <input type="checkbox" class="planner-checkbox"
             onchange="plannerCompleteTask('${esc(t.id)}',this)">
           <span class="planner-task-title">${esc(t.title)}</span>
-          <span class="planner-source-pill">Google</span>
+          <span class="planner-source-pill is-google">Google Tasks</span>
         </div>`).join("") +
     `</div>`;
   }
@@ -157,6 +185,8 @@ async function plannerCompleteTask(taskId, checkbox) {
     await api.put(`/api/google-tasks/${taskId}`, { complete: true });
     const row = checkbox.closest(".planner-task-row");
     if (row) {
+      row.classList.add("is-complete");
+      row.insertAdjacentHTML("beforeend", `<span class="planner-complete-note">Completed</span>`);
       row.style.opacity = "0.35";
       setTimeout(() => {
         row.remove();
@@ -167,13 +197,15 @@ async function plannerCompleteTask(taskId, checkbox) {
         if ($("planner-gtasks-count")) {
           const remaining = $("planner-gtasks-body")?.querySelectorAll(".planner-task-row").length ?? 0;
           $("planner-gtasks-count").textContent = remaining;
+          setPlannerSourceCard("google", `${remaining} task${remaining === 1 ? "" : "s"}`, "Connected source for personal tasks due today or overdue.");
         }
       }, 350);
     }
   } catch (e) {
+    console.error("[Planner Complete Error]", e);
     checkbox.checked = false;
     checkbox.disabled = false;
-    toast("ไม่สามารถ update task: " + e.message, true);
+    toast("Google Task could not be completed. Check the Google Tasks connection and retry.", true);
   }
 }
 
@@ -199,15 +231,17 @@ async function plannerAddTask() {
         <input type="checkbox" class="planner-checkbox"
           onchange="plannerCompleteTask('${esc(task.id)}',this)">
         <span class="planner-task-title">${esc(task.title)}</span>
-        <span class="planner-source-pill">Google</span>`;
+        <span class="planner-source-pill is-google">Google Tasks</span>`;
       list.appendChild(row);
       if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = list.querySelectorAll(".planner-task-row").length;
+      setPlannerSourceCard("google", `${list.querySelectorAll(".planner-task-row").length} tasks`, "Connected source for personal tasks due today or overdue.");
     } else {
       await loadPlannerGTasks();
     }
-    toast("เพิ่ม task แล้ว ✓");
+    toast("Google Task added");
   } catch (e) {
-    toast("Error: " + e.message, true);
+    console.error("[Planner Add Error]", e);
+    toast("Google Task could not be added. Check the Google Tasks connection and retry.", true);
   } finally {
     input.disabled = false;
     input?.focus();
@@ -221,7 +255,8 @@ async function loadPlannerTrello() {
   if (!isTrelloVerified()) {
     if ($("planner-today-count")) $("planner-today-count").textContent = "Off";
     if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = "Off";
-    body.innerHTML = `<div class="planner-error">${esc(trelloConnectionSummary().description)}</div>`;
+    setPlannerSourceCard("trello", "Disconnected", "Owner action: check Trello in Settings. Google Tasks remain separate.");
+    body.innerHTML = `<div class="planner-error">Trello deadlines are unavailable. Owner action: check Trello connection in Settings.</div>`;
     return;
   }
 
@@ -231,6 +266,7 @@ async function loadPlannerTrello() {
     } catch (e) {
       if ($("planner-today-count")) $("planner-today-count").textContent = "!";
       if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = "!";
+      setPlannerSourceCard("trello", "Needs attention", "Owner action: check Trello connection and workspace visibility.");
       body.innerHTML = `<div class="planner-error">Unable to load Trello cards.</div>`;
       return;
     }
@@ -246,6 +282,7 @@ async function loadPlannerTrello() {
   const tomorrowCards = cards.filter(c => c.due && new Date(c.due) >= tomorrowStart && new Date(c.due) < dayAfterStart);
   if ($("planner-today-count")) $("planner-today-count").textContent = todayCards.length;
   if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = tomorrowCards.length;
+  setPlannerSourceCard("trello", `${todayCards.length + tomorrowCards.length} due item${todayCards.length + tomorrowCards.length === 1 ? "" : "s"}`, `${todayCards.length} due today, ${tomorrowCards.length} due tomorrow from Trello execution boards.`);
 
   if (!todayCards.length && !tomorrowCards.length) {
     body.innerHTML = `<div class="planner-empty">No Trello cards due today or tomorrow.</div>`;
@@ -254,9 +291,9 @@ async function loadPlannerTrello() {
 
   const cardRow = (c, label, cls) => `
     <div class="planner-trello-row">
-      <span class="chip ${cls}" style="font-size:10px;flex-shrink:0">${label}</span>
+      <span class="planner-source-pill is-trello ${cls}">${label}</span>
       <span class="planner-trello-title">${esc(c.name)}</span>
-      <span class="planner-trello-meta">${esc(c.boardName)} · ${esc(c.listName)}</span>
+      <span class="planner-trello-meta">${esc(c.boardName)} / ${esc(c.listName)}</span>
     </div>`;
 
   let html = "";
