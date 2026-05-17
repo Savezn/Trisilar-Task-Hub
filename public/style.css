@@ -6886,6 +6886,7 @@ a { text-decoration: none; }
 
 .source-dot.is-google { background: var(--accent, #4f46e5); }
 .source-dot.is-trello { background: var(--warning, #d97706); }
+.source-dot.is-review { background: var(--purple, #7c3aed); }
 .source-dot.is-overdue { background: var(--danger, #dc2626); }
 
 .cal-add-btn {
@@ -6897,6 +6898,76 @@ a { text-decoration: none; }
 
 .calendar-source-strip {
   padding: 10px;
+}
+
+.calendar-view .calendar-command-panel {
+  background: var(--surface, #fff);
+  border-radius: 8px;
+}
+
+.calendar-view .calendar-title {
+  font-size: 32px;
+}
+
+.calendar-view .calendar-stat-card,
+.calendar-view .calendar-toolbar,
+.calendar-view .calendar-source-strip,
+.calendar-view .cal-grid-wrap,
+.calendar-view .calendar-agenda-panel,
+.calendar-view .cal-connect-state,
+.calendar-view .cal-nav-btn,
+.calendar-view .cal-today-btn {
+  border-radius: 8px;
+}
+
+.calendar-source-summary {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  min-width: 0;
+}
+
+.calendar-source-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 8px;
+  min-width: 0;
+  padding: 12px;
+}
+
+.calendar-source-card span {
+  align-items: center;
+  color: var(--ink-4, #94a3b8);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 800;
+  gap: 6px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.calendar-source-card strong {
+  color: var(--ink, #0f172a);
+  display: block;
+  font-size: 15px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.calendar-source-card p {
+  color: var(--ink-3, #64748b);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 6px 0 0;
+}
+
+.calendar-source-card.is-warning strong {
+  color: var(--warning, #d97706);
+}
+
+.calendar-source-card.is-review strong,
+.calendar-source-card.is-muted strong {
+  color: var(--purple, #7c3aed);
 }
 
 .calendar-schedule-layout {
@@ -6955,6 +7026,15 @@ a { text-decoration: none; }
 
 .cal-event-chip.trello-start {
   background: #fff;
+}
+
+.cal-event-chip.review-pending,
+.cal-event-chip.review-approved {
+  background: var(--purple, #7c3aed);
+}
+
+.cal-event-chip.review-approved {
+  background: #16a34a;
 }
 
 .calendar-agenda-panel {
@@ -7025,10 +7105,30 @@ a { text-decoration: none; }
 
 .calendar-agenda-item.is-trello .calendar-agenda-date { background: #fff7ed; color: var(--warning, #d97706); }
 .calendar-agenda-item.is-overdue .calendar-agenda-date { background: #fef2f2; color: var(--danger, #dc2626); }
+.calendar-agenda-item.is-review-pending .calendar-agenda-date,
+.calendar-agenda-item.is-review-approved .calendar-agenda-date { background: #f5f3ff; color: var(--purple, #7c3aed); }
 
 .calendar-agenda-copy {
   min-width: 0;
 }
+
+.calendar-agenda-source {
+  align-items: center;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 6px;
+  color: var(--ink-3, #64748b);
+  display: inline-flex;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 5px;
+  max-width: 100%;
+  padding: 3px 6px;
+  text-transform: uppercase;
+}
+
+.calendar-agenda-item.is-review-pending .calendar-agenda-source,
+.calendar-agenda-item.is-review-approved .calendar-agenda-source { border-color: #ddd6fe; color: var(--purple, #7c3aed); }
 
 .calendar-agenda-copy strong {
   color: var(--ink, #0f172a);
@@ -7044,6 +7144,12 @@ a { text-decoration: none; }
   color: var(--ink-3, #64748b);
   font-size: 12px;
   line-height: 1.5;
+}
+
+.calendar-agenda-copy .calendar-agenda-source {
+  color: var(--ink-3, #64748b);
+  font-size: 10px;
+  line-height: 1.2;
 }
 
 .calendar-agenda-empty {
@@ -7228,6 +7334,7 @@ a { text-decoration: none; }
 @media (max-width: 1040px) {
   .calendar-command-panel,
   .planner-command-panel,
+  .calendar-source-summary,
   .calendar-schedule-layout,
   .planner-grid {
     grid-template-columns: 1fr;
@@ -7266,6 +7373,10 @@ a { text-decoration: none; }
 
   .calendar-source-legend {
     justify-content: flex-start;
+  }
+
+  .calendar-view .calendar-title {
+    font-size: 28px;
   }
 
   .cal-grid {

@@ -6,6 +6,7 @@ const CAL = {
   status: null,
   events: [],
   trelloCards: [],
+  reviewSessions: [],
   currentYear: new Date().getFullYear(),
   currentMonth: new Date().getMonth(),
   editingEventId: null,
@@ -30,17 +31,34 @@ async function showCalendar() {
             <div class="calendar-command-copy">
               <div class="calendar-kicker">${icon("calendar")} Calendar view</div>
               <h1 class="calendar-title">Calendar</h1>
-              <p class="calendar-subtitle">Connect Google Calendar to manage events. Trello deadlines stay available through the task and planner views.</p>
+              <p class="calendar-subtitle">Google Calendar is disconnected. Trello deadlines and Review Queue commitments remain available in their source routes.</p>
             </div>
             <div class="calendar-command-stats" aria-label="Calendar connection state">
-              <div class="calendar-stat-card is-muted"><span>Status</span><strong>Offline</strong></div>
-              <div class="calendar-stat-card"><span>Redirect</span><strong>Ready</strong></div>
+              <div class="calendar-stat-card is-muted"><span>Calendar</span><strong>Disconnected</strong></div>
+              <div class="calendar-stat-card"><span>Owner action</span><strong>Settings</strong></div>
+            </div>
+          </div>
+          <div class="calendar-source-summary" aria-label="Calendar source availability">
+            <div class="calendar-source-card is-muted">
+              <span><i class="source-dot is-google"></i>Google Calendar</span>
+              <strong>Needs connection</strong>
+              <p>Connect in Settings to show and manage Google events.</p>
+            </div>
+            <div class="calendar-source-card">
+              <span><i class="source-dot is-trello"></i>Trello deadlines</span>
+              <strong>Source preserved</strong>
+              <p>Deadline context stays in Today, All Tasks, and Planner.</p>
+            </div>
+            <div class="calendar-source-card">
+              <span><i class="source-dot is-review"></i>Review Queue</span>
+              <strong>Human gate intact</strong>
+              <p>Review-derived work remains pending or approved in Review Queue.</p>
             </div>
           </div>
           <div class="cal-connect-state">
             <div class="empty-icon">${icon("calendar")}</div>
             <h3>Connect Google Calendar</h3>
-            <p>Google Calendar is disconnected. Connect it to create, edit, and delete schedule events from Task Hub.</p>
+            <p>Calendar Owner action: connect Google Calendar in Settings. This route will show product-safe setup guidance only.</p>
             <button class="btn btn-primary" onclick="openCalSetup()">Connect Google Calendar</button>
           </div>
         </div>`;
@@ -49,7 +67,7 @@ async function showCalendar() {
     await renderCalendar();
   } catch (e) {
     console.error("[Calendar Error]", e);
-    $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">⚠</div><h3>Calendar error</h3><p>${esc(e.message)}</p></div>`;
+    $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">!</div><h3>Calendar unavailable</h3><p>Calendar data could not be loaded. Calendar Owner should check the Settings connection and retry.</p></div>`;
   }
 }
 
@@ -70,18 +88,21 @@ async function renderCalendar() {
     const end   = new Date(y, m + 1, 0, 23, 59, 59).toISOString();
 
     try {
-      const [gcalEvents, trelloData] = await Promise.all([
+      const [gcalEvents, trelloData, reviewSessions] = await Promise.all([
         CAL.status?.connected
           ? api.get(`/api/calendar/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`).catch(() => [])
           : Promise.resolve([]),
         isTrelloVerified() && CAL.selectedBoardIds.length
           ? api.post("/api/boards/cards", { boardIds: CAL.selectedBoardIds })
           : Promise.resolve([]),
+        api.get("/api/reviews").catch(() => []),
       ]);
       CAL.events      = gcalEvents;
       CAL.trelloCards = trelloData;
+      CAL.reviewSessions = reviewSessions;
     } catch (e) {
-      content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">⚠ ${e.message}</p></div>`;
+      console.error("[Calendar Source Error]", e);
+      content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Calendar sources could not be loaded. Calendar Owner should check connection state and retry.</p></div>`;
       return;
     }
 
@@ -90,7 +111,10 @@ async function renderCalendar() {
     const now = new Date();
     const trelloDueThisMonth = CAL.trelloCards.filter(c => c.due?.startsWith(monthPrefix));
     const trelloOverdue = trelloDueThisMonth.filter(c => !c.dueComplete && new Date(c.due) < now);
-    const agendaItems = buildCalendarAgendaItems(CAL.events, CAL.trelloCards, y, m);
+    const reviewItems = buildReviewCalendarItems(CAL.reviewSessions, y, m);
+    const reviewPendingThisMonth = reviewItems.filter(item => item.type === "review-pending");
+    const hiddenBoardCount = Array.isArray(S.config.hiddenBoards) ? S.config.hiddenBoards.length : 0;
+    const agendaItems = buildCalendarAgendaItems(CAL.events, CAL.trelloCards, y, m, reviewItems);
 
     content.innerHTML = "";
     const view = document.createElement("div");
@@ -102,16 +126,25 @@ async function renderCalendar() {
       <div class="calendar-command-copy">
         <div class="calendar-kicker">${icon("calendar")} Calendar view</div>
         <h1 class="calendar-title">${monthLabel}</h1>
-        <p class="calendar-subtitle">Google events and Trello deadlines are shown together while keeping their source and action paths separate.</p>
+        <p class="calendar-subtitle">Google events, Trello deadlines, and Review Queue due items are shown together while keeping their source and action paths separate.</p>
       </div>
       <div class="calendar-command-stats" aria-label="Calendar summary">
         <div class="calendar-stat-card"><span>Google events</span><strong>${CAL.events.length}</strong></div>
         <div class="calendar-stat-card is-warning"><span>Trello deadlines</span><strong>${trelloDueThisMonth.length}</strong></div>
+        <div class="calendar-stat-card is-muted"><span>Review items</span><strong>${reviewItems.length}</strong></div>
         <div class="calendar-stat-card is-danger"><span>Overdue</span><strong>${trelloOverdue.length}</strong></div>
-        <div class="calendar-stat-card is-muted"><span>Boards shown</span><strong>${CAL.selectedBoardIds.length}</strong></div>
       </div>
     `;
     view.appendChild(header);
+
+    view.appendChild(buildCalendarSourceSummary({
+      googleEvents: CAL.events.length,
+      trelloDue: trelloDueThisMonth.length,
+      reviewItems: reviewItems.length,
+      reviewPending: reviewPendingThisMonth.length,
+      visibleBoards: CAL.selectedBoardIds.length,
+      hiddenBoards: hiddenBoardCount,
+    }));
 
     const topbar = document.createElement("div");
     topbar.className = "cal-topbar calendar-toolbar";
@@ -123,8 +156,9 @@ async function renderCalendar() {
         <button class="cal-today-btn" id="cal-go-today">Today</button>
       </div>
       <div class="calendar-source-legend" aria-label="Calendar sources">
-        <span><i class="source-dot is-google"></i>Google event</span>
-        <span><i class="source-dot is-trello"></i>Trello due</span>
+        <span><i class="source-dot is-google"></i>Google Calendar</span>
+        <span><i class="source-dot is-trello"></i>Trello deadline</span>
+        <span><i class="source-dot is-review"></i>Review Queue</span>
         <span><i class="source-dot is-overdue"></i>Overdue</span>
       </div>
       <button class="btn btn-primary cal-add-btn" id="cal-add">${icon("plus")} New event</button>
@@ -171,18 +205,18 @@ async function renderCalendar() {
 
     const gridWrap = document.createElement("div");
     gridWrap.className = "cal-grid-wrap";
-    gridWrap.appendChild(buildCalGrid(y, m, CAL.events, CAL.trelloCards));
+    gridWrap.appendChild(buildCalGrid(y, m, CAL.events, CAL.trelloCards, reviewItems));
     scheduleLayout.appendChild(gridWrap);
     scheduleLayout.appendChild(buildCalendarAgenda(agendaItems));
     view.appendChild(scheduleLayout);
 
     // P6-2: empty state banner when no events for this month
     const hasTrelloThisMonth = CAL.trelloCards.some(c => c.due?.startsWith(monthPrefix));
-    if (!CAL.events.length && !hasTrelloThisMonth) {
+    if (!CAL.events.length && !hasTrelloThisMonth && !reviewItems.length) {
       const calEmpty = document.createElement("div");
       calEmpty.className = "cal-empty-notice";
       calEmpty.innerHTML = CAL.status?.connected
-        ? "No events or Trello deadlines this month"
+        ? "No Google events, Trello deadlines, or Review Queue due items this month."
         : `No Trello deadlines this month · <a href="#" onclick="openCalSetup();return false" style="color:var(--primary)">Connect Google Calendar</a> to see more`;
       view.appendChild(calEmpty);
     }
@@ -195,12 +229,72 @@ async function renderCalendar() {
     $("cal-add").onclick = () => openCalCreate();
   } catch (e) {
     console.error("[Calendar Render Error]", e);
-    content.innerHTML = `<div class="empty-state"><div class="empty-icon">!</div><h3>Calendar render error</h3><p>${esc(e.message)}</p></div>`;
-    toast("Calendar render error: " + e.message, true);
+    content.innerHTML = `<div class="empty-state"><div class="empty-icon">!</div><h3>Calendar unavailable</h3><p>Calendar could not render safely. Calendar Owner should check the source connection and retry.</p></div>`;
+    toast("Calendar could not render safely. Check the source connection and retry.", true);
   }
 }
 
-function buildCalendarAgendaItems(events, trelloCards, year, month) {
+function buildCalendarSourceSummary({ googleEvents, trelloDue, reviewItems, reviewPending, visibleBoards, hiddenBoards }) {
+  const summary = document.createElement("div");
+  summary.className = "calendar-source-summary";
+  summary.setAttribute("aria-label", "Calendar source summary");
+  summary.innerHTML = `
+    <div class="calendar-source-card">
+      <span><i class="source-dot is-google"></i>Google Calendar</span>
+      <strong>${googleEvents} event${googleEvents === 1 ? "" : "s"}</strong>
+      <p>Connected source for scheduled meetings and calendar blocks.</p>
+    </div>
+    <div class="calendar-source-card is-warning">
+      <span><i class="source-dot is-trello"></i>Trello deadlines</span>
+      <strong>${trelloDue} due this month</strong>
+      <p>${visibleBoards} board${visibleBoards === 1 ? "" : "s"} shown${hiddenBoards ? `, ${hiddenBoards} hidden by workspace settings` : ""}.</p>
+    </div>
+    <div class="calendar-source-card is-review">
+      <span><i class="source-dot is-review"></i>Review Queue</span>
+      <strong>${reviewItems} due item${reviewItems === 1 ? "" : "s"}</strong>
+      <p>${reviewPending} pending review item${reviewPending === 1 ? "" : "s"} still require human approval.</p>
+    </div>
+  `;
+  return summary;
+}
+
+function readCalendarDate(value) {
+  if (!value) return "";
+  const text = String(value);
+  const match = text.match(/^\d{4}-\d{2}-\d{2}/);
+  if (match) return match[0];
+  const date = new Date(text);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().slice(0, 10);
+}
+
+function getTaskReviewDeadline(task) {
+  return readCalendarDate(task.deadline || task.due || task.dueDate || task.dueAt || task.target?.due || task.proposed?.due);
+}
+
+function buildReviewCalendarItems(reviewSessions, year, month) {
+  const monthPrefix = `${year}-${String(month + 1).padStart(2, "0")}`;
+  const items = [];
+  (reviewSessions || []).forEach(session => {
+    (session.tasks || []).forEach(task => {
+      const dateStr = getTaskReviewDeadline(task);
+      if (!dateStr || !dateStr.startsWith(monthPrefix)) return;
+      if (task.status && !["pending", "approved"].includes(task.status)) return;
+      const status = task.status === "approved" ? "approved" : "pending";
+      items.push({
+        date: dateStr,
+        type: status === "approved" ? "review-approved" : "review-pending",
+        title: task.title || session.title || "Review Queue item",
+        meta: `${session.title || "Review Queue"} / ${status}`,
+        actionLabel: status === "approved" ? "Approved item" : "Needs review",
+        sourceLabel: status === "approved" ? "Review Queue approved" : "Review Queue pending",
+      });
+    });
+  });
+  return items;
+}
+
+function buildCalendarAgendaItems(events, trelloCards, year, month, reviewItems = []) {
   const monthPrefix = `${year}-${String(month + 1).padStart(2, "0")}`;
   const items = [];
 
@@ -213,6 +307,7 @@ function buildCalendarAgendaItems(events, trelloCards, year, month) {
       title: ev.summary || "(No title)",
       meta: ev.start?.dateTime ? new Date(ev.start.dateTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : "All day",
       actionLabel: "Edit event",
+      sourceLabel: "Google Calendar",
     });
   });
 
@@ -225,10 +320,13 @@ function buildCalendarAgendaItems(events, trelloCards, year, month) {
       title: card.name,
       meta: `${card.boardName || card.boardId || "Board"} / ${card.listName || "List"}`,
       actionLabel: "Open card",
+      sourceLabel: overdue ? "Trello overdue" : "Trello deadline",
     });
   });
 
-  return items.sort((a, b) => a.date.localeCompare(b.date)).slice(0, 8);
+  reviewItems.forEach(item => items.push(item));
+
+  return items.sort((a, b) => a.date.localeCompare(b.date)).slice(0, 10);
 }
 
 function buildCalendarAgenda(items) {
@@ -240,7 +338,7 @@ function buildCalendarAgenda(items) {
         <span>Agenda</span>
         <strong>0</strong>
       </div>
-      <div class="calendar-agenda-empty">No Google events or Trello deadlines in this month.</div>
+      <div class="calendar-agenda-empty">No Google events, Trello deadlines, or Review Queue due items in this month.</div>
     `;
     return panel;
   }
@@ -255,6 +353,7 @@ function buildCalendarAgenda(items) {
         <div class="calendar-agenda-item is-${esc(item.type)}">
           <div class="calendar-agenda-date">${esc(item.date.slice(5))}</div>
           <div class="calendar-agenda-copy">
+            <span class="calendar-agenda-source">${esc(item.sourceLabel || item.type)}</span>
             <strong>${esc(item.title)}</strong>
             <span>${esc(item.meta)}</span>
           </div>
@@ -266,7 +365,7 @@ function buildCalendarAgenda(items) {
   return panel;
 }
 
-function buildCalGrid(year, month, events, trelloCards = []) {
+function buildCalGrid(year, month, events, trelloCards = [], reviewItems = []) {
   const grid = document.createElement("div");
   grid.className = "cal-grid";
 
@@ -308,6 +407,11 @@ function buildCalGrid(year, month, events, trelloCards = []) {
         eventMap[startStr].push({ type: "trello-start", data: card });
       }
     }
+  });
+
+  reviewItems.forEach(item => {
+    if (!eventMap[item.date]) eventMap[item.date] = [];
+    eventMap[item.date].push({ type: item.type, data: item });
   });
 
   const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
@@ -382,6 +486,12 @@ function buildCalGrid(year, month, events, trelloCards = []) {
         chip.textContent = "Start " + card.name;
         chip.title = `Start: [${card.boardName || card.boardId}] ${card.name}`;
         chip.onclick = e => { e.stopPropagation(); openEditAllTasks(card); };
+      } else if (item.type === "review-pending" || item.type === "review-approved") {
+        const reviewItem = item.data;
+        chip.className = "cal-event-chip " + item.type;
+        chip.textContent = (item.type === "review-approved" ? "Approved " : "Review ") + reviewItem.title;
+        chip.title = reviewItem.sourceLabel || "Review Queue";
+        chip.onclick = e => { e.stopPropagation(); showReviewPage(); };
       }
 
       cell.appendChild(chip);
@@ -395,7 +505,7 @@ function buildCalGrid(year, month, events, trelloCards = []) {
       cell.appendChild(more);
     }
 
-    cell.onclick = () => openCalCreate(dateStr);
+    cell.onclick = CAL.status?.connected ? () => openCalCreate(dateStr) : null;
     grid.appendChild(cell);
   }
 
@@ -413,15 +523,16 @@ function closeCalSetup() { $("cal-setup-modal").classList.add("hidden"); }
 async function startGoogleAuth() {
   const clientId     = $("setup-client-id").value.trim();
   const clientSecret = $("setup-client-secret").value.trim();
-  if (!clientId || !clientSecret) { toast("กรุณากรอก Client ID และ Client Secret", true); return; }
+  if (!clientId || !clientSecret) { toast("Enter the Google Calendar client ID and client secret.", true); return; }
   try {
     // POST credentials in body — never in URL — to avoid browser history / server log exposure
     const data = await api.post("/auth/google", { clientId, clientSecret });
     const popup = window.open(data.url, "_blank", "width=500,height=650");
-    if (!popup) { toast("กรุณาอนุญาต popup เพื่อเชื่อมต่อ Google", true); return; }
+    if (!popup) { toast("Allow popups to continue Google Calendar connection.", true); return; }
     closeCalSetup();
   } catch (e) {
-    toast("เชื่อมต่อ Google ไม่ได้: " + e.message, true);
+    console.error("[Calendar Connect Error]", e);
+    toast("Google Calendar connection was not completed. Check Settings credentials and retry.", true);
   }
 }
 
@@ -501,7 +612,7 @@ async function saveCalEvent() {
     reminderMinutes: reminderVal !== "" ? parseInt(reminderVal) : null,
   };
 
-  if (!payload.start) { toast("กรุณาระบุ Start Date", true); return; }
+  if (!payload.start) { toast("Enter a start date before saving the event.", true); return; }
 
   const btn = $("cal-save-btn");
   btn.textContent = "Saving..."; btn.disabled = true;
@@ -516,7 +627,10 @@ async function saveCalEvent() {
     }
     closeCalModal();
     await renderCalendar();
-  } catch (e) { toast("Error: " + e.message, true); }
+  } catch (e) {
+    console.error("[Calendar Save Error]", e);
+    toast("Calendar event could not be saved. Check the Calendar connection and retry.", true);
+  }
   finally { btn.textContent = "Save"; btn.disabled = false; }
 }
 
@@ -528,5 +642,8 @@ async function deleteCalEvent() {
     await api.del(`/api/calendar/events/${CAL.editingEventId}`);
     toast("Event deleted");
     await renderCalendar();
-  } catch (e) { toast("Error: " + e.message, true); }
+  } catch (e) {
+    console.error("[Calendar Delete Error]", e);
+    toast("Calendar event could not be deleted. Check the Calendar connection and retry.", true);
+  }
 }
