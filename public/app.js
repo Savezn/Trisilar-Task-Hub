@@ -868,6 +868,8 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
       if (m.id && !seenMembers.has(m.id)) { seenMembers.add(m.id); allMembers.push(m); }
     });
   });
+  let focusSource = "all";
+  let focusStatus = "all";
 
   function labelText(card) {
     return (card.labels || []).map(l => l.name || "").join(" ");
@@ -914,6 +916,42 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     return cards.filter(c => (c.members || []).some(m => m.id === S.focusOwner));
   }
 
+  function sourceKind(card) {
+    return isAiWork(card) ? "ai" : "trello";
+  }
+
+  function sourceLabel(card) {
+    return sourceKind(card) === "ai" ? "AI / agent" : "Trello";
+  }
+
+  function statusKind(card) {
+    if (card.dueComplete) return "done";
+    if (isBlocked(card)) return "blocked";
+    if (isAiWork(card)) return "review-ai";
+    if (isPriority(card) || isDueSoon(card)) return "do-now";
+    if (card.due) return "schedule";
+    return "unscheduled";
+  }
+
+  function statusLabel(card) {
+    const labels = {
+      "do-now": "Do Now",
+      "review-ai": "Review handoff",
+      blocked: "Blocked",
+      schedule: "Scheduled",
+      done: "Done",
+      unscheduled: "Unscheduled",
+    };
+    return labels[statusKind(card)] || "Active";
+  }
+
+  function applyFocusFilters(cards) {
+    let result = filterOwner(cards);
+    if (focusSource !== "all") result = result.filter(c => sourceKind(c) === focusSource);
+    if (focusStatus !== "all") result = result.filter(c => statusKind(c) === focusStatus);
+    return result;
+  }
+
   function sortFocus(cards) {
     return [...cards].sort((a, b) => {
       const pa = isPriority(a) ? 0 : 1;
@@ -924,8 +962,8 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
   }
 
   function buildLanes(cards) {
-    const active = filterOwner(cards.filter(c => !c.dueComplete));
-    const done = filterOwner(cards.filter(c => c.dueComplete));
+    const active = applyFocusFilters(cards.filter(c => !c.dueComplete));
+    const done = applyFocusFilters(cards.filter(c => c.dueComplete));
     const doNow = active.filter(c => isPriority(c) || isDueSoon(c));
     const blocked = active.filter(isBlocked);
     const reviewAi = active.filter(isAiWork);
@@ -959,12 +997,51 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     return bits.join("");
   }
 
+  function ownerLoadStats(cards) {
+    const counts = new Map();
+    cards.filter(c => !c.dueComplete).forEach(card => {
+      (card.members || []).forEach(member => {
+        if (!member.id) return;
+        const current = counts.get(member.id) || { member, count: 0, blocked: 0 };
+        current.count += 1;
+        if (isBlocked(card)) current.blocked += 1;
+        counts.set(member.id, current);
+      });
+    });
+    const overloaded = [...counts.values()].filter(item => item.count >= 4 || item.blocked >= 2);
+    return { counts, overloaded };
+  }
+
+  function filterButtonHtml(type, value, label, active) {
+    return `<button type="button" class="filter-chip focus-filter-chip ${active ? "active" : ""}" data-filter-type="${type}" data-filter-value="${value}">${label}</button>`;
+  }
+
+  function focusSourceLabel() {
+    if (focusSource === "trello") return "Trello";
+    if (focusSource === "ai") return "AI / agent";
+    return "All sources";
+  }
+
+  function focusStatusLabel() {
+    const labels = {
+      all: "All status",
+      "do-now": "Do Now",
+      "review-ai": "Review",
+      blocked: "Blocked",
+      schedule: "Scheduled",
+      done: "Done",
+    };
+    return labels[focusStatus] || "All status";
+  }
+
   function render() {
     const lanes = buildLanes(allCards);
-    const activeCards = filterOwner(allCards.filter(c => !c.dueComplete));
+    const activeCards = applyFocusFilters(allCards.filter(c => !c.dueComplete));
     const doNowCount = lanes.find(l => l.key === "do-now")?.cards.length || 0;
     const reviewAiCount = lanes.find(l => l.key === "review-ai")?.cards.length || 0;
+    const blockedCount = lanes.find(l => l.key === "waiting")?.cards.length || 0;
     const doneCount = lanes.find(l => l.key === "done")?.cards.length || 0;
+    const { counts: ownerCounts, overloaded } = ownerLoadStats(allCards);
 
     const ownerOpts = allMembers.map(m =>
       `<option value="${esc(m.id)}"${S.focusOwner === m.id ? " selected" : ""}>${esc(m.fullName || m.username || m.id)}</option>`
@@ -977,9 +1054,23 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     const ownerLabel = selectedOwner
       ? selectedOwner.fullName || selectedOwner.username || selectedOwner.id
       : "Everyone";
+    const selectedOwnerLoad = S.focusOwner ? ownerCounts.get(S.focusOwner) : null;
     const pendingBadgeHtml = pendingCount
       ? `<span class="focus-pending-badge">${pendingCount} pending review</span>`
       : "";
+    const sourceFilters = [
+      ["all", "All sources"],
+      ["trello", "Trello"],
+      ["ai", "AI / agent"],
+    ].map(([value, label]) => filterButtonHtml("source", value, label, focusSource === value)).join("");
+    const statusFilters = [
+      ["all", "All status"],
+      ["do-now", "Do Now"],
+      ["review-ai", "Review"],
+      ["blocked", "Blocked"],
+      ["schedule", "Scheduled"],
+      ["done", "Done"],
+    ].map(([value, label]) => filterButtonHtml("status", value, label, focusStatus === value)).join("");
 
     const laneHtml = lanes.map(({ key, label, hint, cards, showReviewAction }) => `
       <div class="focus-day-group is-${key}">
@@ -997,17 +1088,20 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
               ).join("")}
             </div>
             <div class="focus-task-meta">
+              <span class="focus-source-chip is-${sourceKind(c)}">${sourceLabel(c)}</span>
+              <span class="focus-status-chip is-${statusKind(c)}">${statusLabel(c)}</span>
+              ${sourceKind(c) === "ai" ? `<span class="focus-review-chip">Review Queue handoff</span>` : ""}
               ${cardMeta(c)}
             </div>
           </div>`).join("")}
-        ${!cards.length && !showReviewAction ? `<div class="focus-lane-empty">No matching work</div>` : ""}
+        ${!cards.length && !showReviewAction ? `<div class="focus-lane-empty">No matching work. Adjust owner, source, or status filters if this lane should contain work.</div>` : ""}
       </div>`).join("");
 
     const emptyHtml = !activeCards.length && !doneCount && !pendingCount
       ? `<div class="empty-state" style="padding:48px">
           <div class="empty-icon">${icon("calendar")}</div>
           <h3>No weekly focus work</h3>
-          <p>${S.focusOwner ? "No assigned active work for this owner." : "No active work or pending review items found."}</p>
+          <p>${S.focusOwner || focusSource !== "all" || focusStatus !== "all" ? "No work matches the current owner, source, or status filters." : "No active work or pending review items found."}</p>
         </div>`
       : "";
 
@@ -1023,15 +1117,37 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
             <div class="focus-stat"><span class="focus-stat-num">${doNowCount}</span><span class="focus-stat-label">Do Now</span></div>
             <div class="focus-stat"><span class="focus-stat-num" style="color:var(--warning)">${reviewAiCount}</span><span class="focus-stat-label">AI / Agent</span></div>
             <div class="focus-stat"><span class="focus-stat-num" style="color:var(--purple,#8b5cf6)">${pendingCount}</span><span class="focus-stat-label">Pending review</span></div>
+            <div class="focus-stat"><span class="focus-stat-num" style="color:var(--danger)">${blockedCount}</span><span class="focus-stat-label">Blocked</span></div>
             <div class="focus-stat"><span class="focus-stat-num" style="color:var(--success)">${doneCount}</span><span class="focus-stat-label">Done this week</span></div>
           </div>
         </section>
+        <div class="focus-signal-strip" aria-label="Weekly focus safety signals">
+          <div class="focus-signal-card ${overloaded.length ? "is-warning" : "is-ok"}">
+            <span>Owner load</span>
+            <strong>${S.focusOwner && selectedOwnerLoad ? `${selectedOwnerLoad.count} active / ${selectedOwnerLoad.blocked} blocked` : `${overloaded.length} overloaded owner${overloaded.length === 1 ? "" : "s"}`}</strong>
+            <p>${overloaded.length ? "Safe next action: rebalance or unblock before adding more work." : "No overload signal from visible assignments."}</p>
+          </div>
+          <div class="focus-signal-card ${pendingCount ? "is-review" : "is-ok"}">
+            <span>Review Queue handoff</span>
+            <strong>${pendingCount} pending review</strong>
+            <p>${pendingCount ? "AI-originated work must pass Review Queue before execution." : "No pending Review Queue handoff right now."}</p>
+          </div>
+          <div class="focus-signal-card">
+            <span>Filters</span>
+            <strong>${focusSourceLabel()} / ${focusStatusLabel()}</strong>
+            <p>Owner, source, and status filters keep this weekly view from becoming resource planning.</p>
+          </div>
+        </div>
         <div class="focus-toolbar">
           ${allMembers.length ? `
             <span class="at-chip-label">Owner:</span>
             <select class="at-select" id="focus-owner-sel">
               <option value="">Everyone</option>${ownerOpts}
             </select>` : ""}
+          <span class="at-chip-label">Source:</span>
+          <div class="focus-filter-group">${sourceFilters}</div>
+          <span class="at-chip-label">Status:</span>
+          <div class="focus-filter-group">${statusFilters}</div>
           <span class="focus-owner-summary">Showing ${esc(ownerLabel)}</span>
           ${pendingBadgeHtml}
         </div>
@@ -1042,6 +1158,13 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
 
     const sel = $("focus-owner-sel");
     if (sel) sel.onchange = () => { S.focusOwner = sel.value; render(); };
+    content.querySelectorAll(".focus-filter-chip").forEach(btn => {
+      btn.onclick = () => {
+        if (btn.dataset.filterType === "source") focusSource = btn.dataset.filterValue || "all";
+        if (btn.dataset.filterType === "status") focusStatus = btn.dataset.filterValue || "all";
+        render();
+      };
+    });
     content.querySelectorAll("[data-action='review']").forEach(btn => {
       btn.onclick = () => navigateTo("review");
     });
