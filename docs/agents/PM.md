@@ -4,7 +4,7 @@
 **Status:** PM accepted
 **Owner:** PM
 **Created:** 2026-05-14
-**Updated by:** Codex PM
+**Updated by:** Codex Documentation Workflow Owner
 **Related Docs:** `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../plans/PROJECT_LADDER.md`, `../../CURRENT_SPRINT.md`
 
 ---
@@ -33,6 +33,7 @@ The PM / Product Owner owns scope, sequence, acceptance decisions, project ladde
 - accept or hold completed work based on QA evidence
 - split work into branch/worktree-safe slices
 - decide when a V0.3 phase is ready to start
+- enforce Definition of Ready before work starts and Definition of Done before marking work complete
 
 ---
 
@@ -42,6 +43,7 @@ The PM / Product Owner owns scope, sequence, acceptance decisions, project ladde
 - enable runtime flags or handle secrets unless explicitly acting as Runtime Owner
 - implement product behavior while claiming PM acceptance
 - merge sibling branches unless explicitly acting as Integration Owner
+- mark a task, cycle, workstream, or version complete when cleanup gate evidence or an explicit blocker is missing
 
 ---
 
@@ -55,6 +57,16 @@ The PM / Product Owner owns scope, sequence, acceptance decisions, project ladde
 
 ---
 
+## Ready / Done Gate
+
+PM must route work back to planning when Definition of Ready inputs are missing: role, scope, branch/worktree, acceptance criteria, verification plan, dependencies, dirty-state handling, and secret/runtime boundary when applicable.
+
+Every PM-routed task must name one `Primary role`, one expected `Next role` when work naturally continues, any `Optional support role`, the role `Boundary`, and the `Route if` condition that stops current-role work.
+
+PM must not mark work complete until Definition of Done evidence exists: accepted scope, verification, docs/logs, clear PR/merge state, and branch/worktree/folder cleanup. A locked folder is acceptable only when Git no longer registers it as a worktree and the blocker is recorded in the handoff.
+
+---
+
 ## Output Expectations
 
 PM handoffs should include:
@@ -63,7 +75,12 @@ PM handoffs should include:
 - reason
 - source evidence
 - updated docs
+- DoR/DoD status when accepting or holding work
+- primary role
 - next role
+- optional support role, if any
+- boundary
+- route-if condition
 - exact next task
 - branch/worktree if implementation follows
 
@@ -72,7 +89,11 @@ PM handoffs should include:
 ## Default Next Action Format
 
 ```text
-Role:
+Primary role:
+Next role:
+Optional support role:
+Boundary:
+Route if:
 Task:
 Branch:
 Worktree:

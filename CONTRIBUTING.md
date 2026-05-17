@@ -3,8 +3,8 @@
 **Doc Role:** Contribution workflow for humans and AI agents
 **Status:** Active
 **Owner:** PM
-**Last Updated:** 2026-05-15
-**Updated by:** Codex PM / Integration Owner
+**Last Updated:** 2026-05-17
+**Updated by:** Codex Documentation Workflow Owner
 
 This repository uses a small-team, multi-agent workflow. The goal is to keep implementation fast without losing traceability, branch hygiene, or release confidence.
 
@@ -20,11 +20,28 @@ This repository uses a small-team, multi-agent workflow. The goal is to keep imp
 git status --short --branch
 ```
 
-4. Confirm the assigned role, branch, and worktree.
+4. Confirm and declare the current role, branch, and worktree.
 5. Confirm the owned files for the task.
 6. For V0.3 role-based work, confirm the relevant role guide under `docs/agents/`.
 
 Do not begin edits if the current folder or branch does not match the task.
+
+---
+
+## Definition of Ready
+
+A task, cycle, workstream, or release is ready to start only when these inputs are clear:
+
+- Role routing: `Primary role`, `Next role`, `Optional support role`, `Boundary`, and `Route if`. If no role is assigned, infer and declare the smallest safe existing role for the next action.
+- Scope: goal, owned files/areas, non-goals, and stop conditions.
+- Branch/worktree: branch name, base branch, worktree folder, and target branch.
+- Acceptance criteria: expected behavior, docs output, or verification evidence.
+- Verification plan: commands/checks to run and when runtime checks may be skipped.
+- Dependencies: upstream branch, runtime flag, secret, service token, env var, or PM approval.
+- Dirty state: `git status --short --branch` has been checked; unrelated dirty files are preserved, ignored, backed up, or routed explicitly.
+- Secret/runtime boundary: required for deployment, auth, Paperclip, Cloudflare, env vars, or production work.
+
+If the Definition of Ready is incomplete, PM should route the work back to planning or clarification instead of starting implementation.
 
 ---
 
