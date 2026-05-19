@@ -63,6 +63,13 @@ function relativeDue(isoString) {
   return formatThaiDateTime(isoString);
 }
 
+function nextUpDuePhrase(isoString) {
+  const label = relativeDue(isoString);
+  const sameDay = label.match(/^(Today|Tomorrow|Yesterday)\s+(.+)$/);
+  if (sameDay) return `${sameDay[2]} ${sameDay[1].toLowerCase()}`;
+  return label;
+}
+
 function todayContextLabel(card) {
   return [card.boardName || "Trello", card.listName || "No list"].filter(Boolean).join(" / ");
 }
@@ -127,6 +134,25 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null, int
   const totalAttention = overdue.length + dueToday.length + pendingCount;
   const activeBoards = new Set([...overdue, ...dueToday].map(c => c.boardId || c.boardName).filter(Boolean)).size;
   const hero = dueToday[0] || overdue[0] || upcoming[0] || null;
+
+  renderTodayV2({
+    content,
+    cards,
+    dateStr,
+    now,
+    todayStr,
+    overdue,
+    dueToday,
+    upcoming,
+    totalAttention,
+    activeBoards,
+    hero,
+    pendingTasks,
+    pendingCount,
+    activeReviewSessions,
+    calEvents,
+  });
+  return;
 
   const page = document.createElement("div");
   page.className = "today-page";
@@ -241,6 +267,367 @@ function renderTodayPage(allCards, dateStr, sessions = [], calEvents = null, int
 
   content.innerHTML = "";
   content.appendChild(page);
+  if (typeof ensureButtonTypes === "function") ensureButtonTypes(page);
+  wireTodayActions(page, cards);
+}
+
+function renderTodayV2({
+  content,
+  cards,
+  dateStr,
+  now,
+  todayStr,
+  overdue,
+  dueToday,
+  upcoming,
+  totalAttention,
+  activeBoards,
+  hero,
+  pendingTasks,
+  pendingCount,
+  activeReviewSessions,
+  calEvents,
+}) {
+  const todayWorkFilter = ["all", "mine", "risky"].includes(S.todayWorkFilter) ? S.todayWorkFilter : "all";
+  const allTodayWork = [...overdue, ...dueToday, ...upcoming];
+  const calendarCount = Array.isArray(calEvents) ? calEvents.length : 0;
+  const missingOwnerCards = cards.filter(c => !Array.isArray(c.members) || c.members.length === 0).slice(0, 2);
+  const blockedCards = cards.filter(c => (c.labels || []).some(l => /block|waiting/i.test(l.name || ""))).slice(0, 2);
+  const staleCards = cards.filter(c => c.dateLastActivity && (now - new Date(c.dateLastActivity)) > 7 * 86400000).slice(0, 2);
+  const quickAddBoards = typeof getVisibleBoardsForScope === "function" ? getVisibleBoardsForScope() : S.boards;
+
+  function isRiskyWork(card) {
+    return dueStateForToday(card) === "over"
+      || !Array.isArray(card.members)
+      || card.members.length === 0
+      || (card.labels || []).some(l => /block|waiting|risk/i.test(l.name || ""))
+      || (card.dateLastActivity && (now - new Date(card.dateLastActivity)) > 7 * 86400000);
+  }
+
+  function matchesTodayWorkFilter(card) {
+    if (todayWorkFilter === "mine") return Array.isArray(card.members) && card.members.length > 0;
+    if (todayWorkFilter === "risky") return isRiskyWork(card);
+    return true;
+  }
+
+  const filteredTodayWork = allTodayWork.filter(matchesTodayWorkFilter);
+  const todayWork = filteredTodayWork.slice(0, 8);
+
+  function dueStateForToday(card) {
+    if (card.dueComplete) return "done";
+    if (!card.due) return "none";
+    const due = new Date(card.due);
+    if (due < now) return "over";
+    if (due.toDateString() === todayStr) return "warn";
+    return "upcoming";
+  }
+
+  function checklistProgress(card) {
+    const checklists = Array.isArray(card.checklists) ? card.checklists : [];
+    const total = checklists.reduce((sum, list) => sum + ((list.checkItems || []).length), 0);
+    if (!total) return "";
+    const done = checklists.reduce((sum, list) => sum + (list.checkItems || []).filter(item => item.state === "complete").length, 0);
+    return `${done}/${total}`;
+  }
+
+  function workRow(card) {
+    const dueState = dueStateForToday(card);
+    const status = dueState === "over" ? "Overdue" : dueState === "warn" ? "Today" : dueState === "done" ? "Done" : "Upcoming";
+    const checklist = checklistProgress(card);
+    const taskTitle = card.name || "Untitled task";
+    const boardName = card.boardName || "No board";
+    const listName = card.listName || "No list";
+    const rowTitle = `${taskTitle} - ${boardName} / ${listName}`;
+    const labelHtml = (card.labels || []).filter(l => l.name).slice(0, 2)
+      .map(l => uiChip(labelTone(l.color), l.name, { sm: true }))
+      .join("");
+    return `
+      <div class="trow today-work-row" data-card-id="${esc(card.id)}" data-today-row-open="${esc(card.id)}" title="${esc(rowTitle)}">
+        <span class="tck">${card.dueComplete ? icon("check") : ""}</span>
+        <div class="tmain">
+          <div class="ttitle uiv2-decision-text uiv2-text-reveal" title="${esc(taskTitle)}">${esc(taskTitle)}</div>
+          <div class="tmeta">
+            ${uiBoardTag(boardName, boardColorForName(card.boardName || ""))}
+            <span class="sep">&middot;</span>
+            <span class="today-list-name uiv2-meta-text uiv2-text-reveal" title="${esc(listName)}">${esc(listName)}</span>
+            ${checklist ? `<span class="sep">&middot;</span><span class="mono">${esc(checklist)}</span>` : ""}
+          </div>
+        </div>
+        <div class="tlabels">${labelHtml}</div>
+        <div class="tmem" data-uiv2="task-owner">${uiAvatarStack(card.members || [])}</div>
+        <div class="tdue">${uiDue(card.due ? relativeDue(card.due) : "No due", dueState)}</div>
+        <div class="today-row-actions">
+          <button class="btn ghost sm today-row-open" type="button" data-today-card-open="${esc(card.id)}" aria-label="Open ${esc(taskTitle)} edit card" title="Open edit card for ${esc(taskTitle)}">${icon("external")}Open</button>
+        </div>
+        <div class="tstatus">${uiChip(dueToneFromState(dueState), status, { sm: true })}</div>
+      </div>`;
+  }
+
+  function calendarPeekHtml() {
+    if (calEvents === null) {
+      return uiStateCard({
+        kind: "disconnected",
+        iconName: "calendar",
+        title: "Google Calendar is not connected",
+        desc: "Today still shows Trello deadlines and Review Queue handoff. Connect Calendar from Settings when schedule context is ready.",
+      });
+    }
+    if (!calEvents.length) {
+      return uiStateCard({
+        kind: "empty",
+        iconName: "calendar",
+        title: "No calendar events today",
+        desc: "Trello due work and Review Queue items remain visible in the Today command center.",
+      });
+    }
+    return `
+      <div class="stack">
+        ${calEvents.slice(0, 4).map(evt => {
+          const fmt = dt => new Date(dt).toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+          const time = evt.start?.dateTime ? `${fmt(evt.start.dateTime)} - ${fmt(evt.end?.dateTime || evt.start.dateTime)}` : "All day";
+          return `
+            <button type="button" class="cal-peek-row" onclick="navigateTo('calendar')">
+              <span class="mono">${esc(time)}</span>
+              <span><strong>${esc(evt.summary || "(no title)")}</strong><small>Google Calendar</small></span>
+            </button>`;
+        }).join("")}
+      </div>`;
+  }
+
+  function reviewHandoffHtml() {
+    const firstTask = pendingTasks[0];
+    const highRisk = pendingTasks.filter(t => {
+      const conf = Number(t.confidence || 0);
+      return !t.owner || conf < 0.72 || String(t.diffStatus || "").includes("duplicate");
+    }).length;
+    const diffKinds = [...new Set(pendingTasks.map(t => t.diffStatus || "create_new"))].slice(0, 4);
+    return `
+      <div class="stack" data-uiv2="review-handoff">
+        <div class="row" style="justify-content:space-between">
+          ${uiKV("source", firstTask?.externalSource?.system || "paperclip", "ai")}
+          ${uiKV("env", firstTask?.externalSource?.environment || "review", "env-stage")}
+          ${uiKV("pending", String(pendingCount))}
+        </div>
+        <div class="row" style="flex-wrap:wrap">
+          ${diffKinds.length ? diffKinds.map(kind => uiDiffBadge(kind)).join("") : uiChip("ok", "Queue clear")}
+        </div>
+        <div class="today-review-brief">
+          <strong>${esc(firstTask?.title || "No pending review work")}</strong>
+          <span>${pendingCount ? `${activeReviewSessions} active session${activeReviewSessions === 1 ? "" : "s"} / ${highRisk} needs extra context.` : "Human gate is clear."}</span>
+        </div>
+      </div>`;
+  }
+
+  function signalsHtml() {
+    const signals = [
+      ...missingOwnerCards.map(c => ({ tone: "warn", label: "Missing owner", title: c.name, meta: c.boardName })),
+      ...blockedCards.map(c => ({ tone: "over", label: "Blocked", title: c.name, meta: c.boardName })),
+      ...staleCards.map(c => ({ tone: "info", label: "Stale", title: c.name, meta: c.boardName })),
+    ].slice(0, 4);
+    if (!signals.length) {
+      return uiStateCard({
+        kind: "empty",
+        iconName: "check",
+        title: "No cross-board warnings",
+        desc: "Visible Trello work has enough metadata for today's operating view.",
+      });
+    }
+    return `<div class="signal-list">${signals.map(signal => `
+      <div class="signal-row">
+        ${uiChip(signal.tone, signal.label, { sm: true })}
+        <span><strong>${esc(signal.title)}</strong><small>${esc(signal.meta || "No board")}</small></span>
+      </div>
+    `).join("")}</div>`;
+  }
+
+  function mobileTodayHtml() {
+    const heroState = hero ? dueStateForToday(hero) : "none";
+    const firstTask = pendingTasks[0];
+    const reviewTitle = pendingCount ? `${pendingCount} proposals await approval` : "Review Queue is clear";
+    const reviewMeta = pendingCount
+      ? `${firstTask?.externalSource?.system || "paperclip"} · ${firstTask?.externalSource?.environment || "review"} · ${activeReviewSessions} active`
+      : "paperclip · human gate";
+    const mobileWork = todayWork.slice(0, 5);
+    const heroTitle = hero?.name || "Today is clear from Trello due work.";
+    const heroMeta = hero ? `${todayContextLabel(hero)} - ${todayOwnerLabel(hero)}` : "Review Queue and Calendar remain available - No owner required";
+    return `
+      <div class="today-mobile-source" data-uiv2="mobile-today-prototype">
+        <div class="m-card today-mobile-next">
+        <div class="m-eyebrow">${hero ? `${heroState === "over" ? "Top priority" : "Next up"} · ${esc(nextUpDuePhrase(hero.due))}` : "No priority due work"}</div>
+          <div class="m-title uiv2-decision-text uiv2-text-reveal" title="${esc(heroTitle)}">${esc(heroTitle)}</div>
+          <div class="today-mobile-next-meta" title="${esc(heroMeta)}">${esc(hero ? todayContextLabel(hero) : "Review Queue and Calendar remain available")} · ${esc(hero ? todayOwnerLabel(hero) : "No owner required")}</div>
+          <div class="today-mobile-next-actions">
+            ${hero ? `<button class="btn primary" type="button" data-today-card-open="${esc(hero.id)}">${icon("external")} Open</button>` : `<button class="btn primary" type="button" data-today-action="review">${icon("sparkles")} Review</button>`}
+            ${hero ? `<button class="btn" type="button" data-today-card-done="${esc(hero.id)}">${icon("check")} Done</button>` : ""}
+          </div>
+        </div>
+
+        <div class="today-mobile-stat-grid">
+          <div class="m-card today-mobile-stat is-over">
+            <div class="m-eyebrow">Overdue</div>
+            <strong>${overdue.length}</strong>
+            <span>${overdue.length ? esc(relativeDue(overdue[0].due)) : "All caught up"}</span>
+          </div>
+          <div class="m-card today-mobile-stat is-warn">
+            <div class="m-eyebrow">Due Today</div>
+            <strong>${dueToday.length}</strong>
+            <span>${dueToday.length ? `${activeBoards || 1} board${activeBoards === 1 ? "" : "s"}` : "Open day"}</span>
+          </div>
+        </div>
+
+        <button class="m-card today-mobile-review" type="button" data-today-action="review">
+          <span class="today-mobile-review-mark">AI</span>
+          <span>
+            <strong>${esc(reviewTitle)}</strong>
+            <small>${esc(reviewMeta)}</small>
+          </span>
+          <span class="btn ai sm">Open ${icon("external")}</span>
+        </button>
+
+        <div class="today-mobile-work-label">Today's work · ${mobileWork.length}</div>
+        ${mobileWork.length ? mobileWork.map(card => {
+          const dueState = dueStateForToday(card);
+          const taskTitle = card.name || "Untitled task";
+          const boardName = card.boardName || "No board";
+          const listName = card.listName || "No list";
+          const rowTitle = `${taskTitle} - ${boardName} / ${listName}`;
+          const labelHtml = (card.labels || []).filter(l => l.name).slice(0, 1)
+            .map(l => uiChip(labelTone(l.color), l.name, { sm: true }))
+            .join("");
+          return `
+            <div class="m-trow today-mobile-task" data-card-id="${esc(card.id)}" data-today-row-open="${esc(card.id)}" title="${esc(rowTitle)}">
+              <div class="row1">
+                <div class="ttitle uiv2-decision-text uiv2-text-reveal" title="${esc(taskTitle)}">${esc(taskTitle)}</div>
+                ${uiDue(card.due ? relativeDue(card.due) : "No due", dueState)}
+              </div>
+              <div class="row2">
+                ${uiBoardTag(boardName, boardColorForName(card.boardName || ""))}
+                <span>·</span>
+                <span class="today-list-name uiv2-meta-text uiv2-text-reveal" title="${esc(listName)}">${esc(listName)}</span>
+                ${labelHtml}
+                <span class="today-mobile-task-members">${uiAvatarStack(card.members || [])}</span>
+              </div>
+            </div>`;
+        }).join("") : uiStateCard({ kind: "empty", iconName: "check", title: "No visible due work", desc: "Trello due work is clear for today." })}
+      </div>`;
+  }
+
+  if (typeof setTopbarRouteActions === "function") {
+    setTopbarRouteActions(`
+      <button class="btn" type="button" id="today-topbar-filter">${icon("filter")} Filter</button>
+      <button class="btn primary" type="button" id="today-topbar-quick-add" data-today-action="focus-quick-add">${icon("plus")} Quick add</button>
+    `);
+  }
+
+  const page = document.createElement("div");
+  page.className = "today-page";
+  page.innerHTML = `
+    ${mobileTodayHtml()}
+
+    ${uiRouteBar({
+      title: "Daily command center",
+      sub: `<span>${esc(dateStr)}</span><span>${totalAttention} items need attention: ${overdue.length} overdue / ${dueToday.length} due today / ${pendingCount} pending review</span>`,
+    })}
+
+    ${uiStatStrip([
+      { label: "Overdue", value: overdue.length, detail: overdue.length ? relativeDue(overdue[0].due) : "All caught up", tone: "over" },
+      { label: "Due Today", value: dueToday.length, detail: dueToday.length ? `Across ${activeBoards} boards` : "Open day", tone: "warn" },
+      { label: "Next 7 Days", value: upcoming.length, detail: "Plan ahead" },
+      { label: "Pending Review", value: pendingCount, detail: `${activeReviewSessions} active session${activeReviewSessions === 1 ? "" : "s"}`, tone: "ai" },
+    ])}
+
+    <div id="today-quick-panel" class="today-quick-panel" hidden>
+      ${uiPanel({
+        title: "Quick add",
+        eyebrow: "Trello",
+        body: `
+          <div class="today-quick-add compact">
+            <div class="today-qa-input-row">
+              <input type="text" placeholder="+ Add a task for today..." id="today-quick-input" onkeydown="if(event.key==='Enter')showTodayQuickSelector()">
+              <button class="btn primary sm" type="button" onclick="showTodayQuickSelector()">Add</button>
+            </div>
+            <div id="today-qa-selector" class="today-qa-selector hidden">
+              <select id="today-qa-board" class="today-qa-select" onchange="loadTodayQALists()">
+                <option value="">Board</option>
+                ${quickAddBoards.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join("")}
+              </select>
+              <select id="today-qa-list" class="today-qa-select" disabled>
+                <option value="">List</option>
+              </select>
+              <button class="btn primary sm" type="button" onclick="confirmTodayQuickAdd(this)">${icon("check")} Add</button>
+              <button class="btn ghost sm" type="button" onclick="hideTodayQuickSelector()">Cancel</button>
+            </div>
+          </div>`,
+      })}
+    </div>
+
+    <div class="today-grid">
+      <div class="stack">
+        <div class="next-up">
+          <div class="eyebrow">${hero ? `${hero.due && new Date(hero.due) < now ? "Top priority" : "Next up"} · ${esc(nextUpDuePhrase(hero.due))}` : "No priority due work"}</div>
+          <div class="nu-title uiv2-decision-text uiv2-text-reveal" title="${esc(hero?.name || "Today is clear from Trello due work.")}">${esc(hero?.name || "Today is clear from Trello due work.")}</div>
+          <div class="nu-meta">
+            <span>${esc(hero ? todayContextLabel(hero) : "Review Queue and Calendar remain available")}</span>
+            <span>${esc(hero ? todayOwnerLabel(hero) : "No due task selected")}</span>
+            <span>${esc(hero ? relativeDue(hero.due) : "Use Quick add if new work came in")}</span>
+          </div>
+          <div class="nu-actions">
+            ${hero ? `<button class="btn primary" type="button" data-today-card-open="${esc(hero.id)}">${icon("external")} Open in Trello</button>` : `<button class="btn primary" type="button" data-today-action="review">${icon("sparkles")} Check Review</button>`}
+            ${hero ? `<button class="btn" type="button" data-today-card-done="${esc(hero.id)}">${icon("check")} Mark done</button>` : ""}
+            ${hero ? `<button class="btn" type="button" data-today-card-reschedule="${esc(hero.id)}">${icon("chevron")} Reschedule</button>` : ""}
+          </div>
+        </div>
+
+        ${uiPanel({
+          title: "Today's work",
+          actions: `<span class="eyebrow">${todayWork.length} / ${allTodayWork.length} items</span><div class="seg" role="group" aria-label="Today work filter">
+            <button class="${todayWorkFilter === "all" ? "on" : ""}" type="button" aria-pressed="${todayWorkFilter === "all"}" data-today-work-filter="all" title="Show all due and upcoming work">All</button>
+            <button class="${todayWorkFilter === "mine" ? "on" : ""}" type="button" aria-pressed="${todayWorkFilter === "mine"}" data-today-work-filter="mine" title="Show assigned work. Personal identity is not inferred in this UI-only slice.">Mine</button>
+            <button class="${todayWorkFilter === "risky" ? "on" : ""}" type="button" aria-pressed="${todayWorkFilter === "risky"}" data-today-work-filter="risky" title="Show overdue, blocked, stale, or unassigned work">Risky</button>
+          </div>`,
+          tight: true,
+          body: todayWork.length ? todayWork.map(workRow).join("") : uiStateCard({
+            kind: "empty",
+            iconName: todayWorkFilter === "risky" ? "alert" : "check",
+            title: todayWorkFilter === "all" ? "No visible due work" : `No ${todayWorkFilter} work in this window`,
+            desc: todayWorkFilter === "mine"
+              ? "No due or upcoming task has a visible Trello member assignment in this workspace slice."
+              : todayWorkFilter === "risky"
+                ? "No overdue, blocked, stale, or unassigned work appears in today's visible work window."
+                : "Trello due work is clear for today.",
+          }),
+        })}
+      </div>
+
+      <div class="stack">
+        ${uiPanel({
+          eyebrow: "AI Review Queue",
+          title: `${pendingCount} tasks await approval ${pendingCount ? uiChip("ai", "human gate", { sm: true }) : ""}`,
+          actions: `<button class="btn ai sm" type="button" data-today-action="review">Open queue ${icon("arrowR")}</button>`,
+          body: reviewHandoffHtml(),
+        })}
+
+        ${uiPanel({
+          title: "Today on calendar",
+          actions: `<span class="eyebrow">${calEvents === null ? "off" : `${calendarCount} events`}</span>`,
+          body: `<div data-uiv2="calendar-peek">${calendarPeekHtml()}</div>`,
+          tight: calEvents !== null && calendarCount > 0,
+        })}
+
+        ${uiPanel({
+          eyebrow: "Cross-board signals",
+          title: `${missingOwnerCards.length + blockedCards.length + staleCards.length} metadata warnings`,
+          actions: `<button class="btn sm ghost" type="button" onclick="navigateTo('boards')">Open Boards ${icon("arrowR")}</button>`,
+          body: signalsHtml(),
+        })}
+
+      </div>
+    </div>
+  `;
+
+  content.innerHTML = "";
+  content.appendChild(page);
+  if (typeof ensureButtonTypes === "function") ensureButtonTypes(page);
   wireTodayActions(page, cards);
 }
 
@@ -254,7 +641,7 @@ function buildTodayPriorityLane({ hero, overdue, dueToday, pendingTasks, activeR
     const isHeroOverdue = overdue.some(c => c.id === hero.id);
     const heroState = isHeroOverdue ? "overdue" : dueToday.some(c => c.id === hero.id) ? "today" : "upcoming";
     focusCard.innerHTML = `
-      <div class="today-priority-eyebrow">${typeof icon === "function" ? icon(isHeroOverdue ? "alert" : "target") : ""}Top priority - ${isHeroOverdue ? "Most overdue" : "Next up"}</div>
+      <div class="today-priority-eyebrow">${typeof icon === "function" ? icon(isHeroOverdue ? "alert" : "target") : ""}${isHeroOverdue ? "Top priority" : "Next up"} · ${esc(nextUpDuePhrase(hero.due))}</div>
       <div class="today-priority-time">${esc(relativeDue(hero.due))}</div>
       <div class="today-priority-title">${esc(hero.name)}</div>
       <div class="today-priority-meta">
@@ -264,7 +651,7 @@ function buildTodayPriorityLane({ hero, overdue, dueToday, pendingTasks, activeR
         <span>${esc(todayNextActionLabel(hero, heroState))}</span>
       </div>
       <div class="today-priority-actions">
-        <button class="btn btn-primary btn-sm" type="button" data-today-card-open="${esc(hero.id)}">Open task</button>
+        <button class="btn btn-primary btn-sm" type="button" data-today-card-open="${esc(hero.id)}">Open in Trello</button>
         <button class="btn btn-ghost btn-sm" type="button" data-today-card-done="${esc(hero.id)}">${typeof icon === "function" ? icon("check") : ""}Mark done</button>
       </div>
     `;
@@ -366,18 +753,18 @@ function buildQuickAddWidget() {
         <div class="today-qa-input-row">
           <input type="text" placeholder="+ Add a task for today..." id="today-quick-input"
             onkeydown="if(event.key==='Enter')showTodayQuickSelector()">
-          <button class="btn btn-primary btn-sm" onclick="showTodayQuickSelector()">Add</button>
+          <button class="btn btn-primary btn-sm" type="button" onclick="showTodayQuickSelector()">Add</button>
         </div>
         <div id="today-qa-selector" class="today-qa-selector hidden">
           <select id="today-qa-board" class="today-qa-select" onchange="loadTodayQALists()">
             <option value="">Board</option>
-            ${S.boards.map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join("")}
+            ${(typeof getVisibleBoardsForScope === "function" ? getVisibleBoardsForScope() : S.boards).map(b => `<option value="${esc(b.id)}">${esc(b.name)}</option>`).join("")}
           </select>
           <select id="today-qa-list" class="today-qa-select" disabled>
             <option value="">List</option>
           </select>
-          <button class="btn btn-primary btn-sm" onclick="confirmTodayQuickAdd(this)">${typeof icon === "function" ? icon("check") : ""}Add</button>
-          <button class="btn btn-ghost btn-sm" onclick="hideTodayQuickSelector()">Cancel</button>
+          <button class="btn btn-primary btn-sm" type="button" onclick="confirmTodayQuickAdd(this)">${typeof icon === "function" ? icon("check") : ""}Add</button>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="hideTodayQuickSelector()">Cancel</button>
         </div>
       </div>
     </div>
@@ -431,12 +818,43 @@ function wireTodayActions(page, cards) {
   page.querySelectorAll("[data-today-action='review']").forEach(el => {
     el.addEventListener("click", () => navigateTo("review"));
   });
-  page.querySelector("[data-today-action='focus-quick-add']")?.addEventListener("click", () => {
+  const revealQuickAdd = () => {
+    const panel = $("today-quick-panel");
+    if (panel) panel.hidden = false;
     $("today-quick-input")?.focus();
+  };
+  page.querySelector("[data-today-action='focus-quick-add']")?.addEventListener("click", revealQuickAdd);
+  $("today-topbar-quick-add")?.addEventListener("click", revealQuickAdd);
+  $("today-topbar-filter")?.addEventListener("click", () => {
+    const target = page.querySelector(".today-grid .seg");
+    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    target?.classList.add("uiv2-control-highlight");
+    target?.querySelector("button:not([disabled])")?.focus();
+    toast("Today's work filters are ready: All, Mine, and Risky.");
+    setTimeout(() => target?.classList.remove("uiv2-control-highlight"), 900);
+  });
+  page.querySelectorAll("[data-today-work-filter]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      S.todayWorkFilter = btn.dataset.todayWorkFilter || "all";
+      showTodayPage();
+    });
   });
   page.querySelectorAll("[data-today-card-open]").forEach(btn => {
     btn.addEventListener("click", () => {
       const card = cards.find(c => c.id === btn.dataset.todayCardOpen);
+      if (card) openEditAllTasks(card);
+    });
+  });
+  page.querySelectorAll("[data-today-row-open]").forEach(row => {
+    row.addEventListener("click", event => {
+      if (event.target.closest("button,input,select,a")) return;
+      const card = cards.find(c => c.id === row.dataset.todayRowOpen);
+      if (card) openEditAllTasks(card);
+    });
+  });
+  page.querySelectorAll("[data-today-card-reschedule]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const card = cards.find(c => c.id === btn.dataset.todayCardReschedule);
       if (card) openEditAllTasks(card);
     });
   });

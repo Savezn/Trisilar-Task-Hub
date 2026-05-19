@@ -1,0 +1,498 @@
+{
+  "generatedAt": "2026-05-18T14:57:26.110Z",
+  "source": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-fourth-pass-results.json",
+  "totals": {
+    "expected_sidebar_search_adornment": 20,
+    "expected_settings_sticky_side_nav": 1,
+    "expected_mobile_bottom_nav": 20
+  },
+  "examples": {
+    "expected_sidebar_search_adornment": [
+      {
+        "route": "today",
+        "viewport": "desktop-1440x900",
+        "selector": "span.side-search-icon",
+        "position": "absolute",
+        "zIndex": "1",
+        "rect": {
+          "x": 21,
+          "y": 100,
+          "w": 14,
+          "h": 14,
+          "right": 35,
+          "bottom": 114
+        },
+        "text": ""
+      },
+      {
+        "route": "today",
+        "viewport": "desktop-1440x900",
+        "selector": "span.side-search-kbd",
+        "position": "absolute",
+        "zIndex": "auto",
+        "rect": {
+          "x": 172,
+          "y": 98,
+          "w": 27,
+          "h": 18,
+          "right": 199,
+          "bottom": 116
+        },
+        "text": "⌘K"
+      },
+      {
+        "route": "review-queue",
+        "viewport": "desktop-1440x900",
+        "selector": "span.side-search-icon",
+        "position": "absolute",
+        "zIndex": "1",
+        "rect": {
+          "x": 21,
+          "y": 100,
+          "w": 14,
+          "h": 14,
+          "right": 35,
+          "bottom": 114
+        },
+        "text": ""
+      },
+      {
+        "route": "review-queue",
+        "viewport": "desktop-1440x900",
+        "selector": "span.side-search-kbd",
+        "position": "absolute",
+        "zIndex": "auto",
+        "rect": {
+          "x": 172,
+          "y": 98,
+          "w": 27,
+          "h": 18,
+          "right": 199,
+          "bottom": 116
+        },
+        "text": "⌘K"
+      },
+      {
+        "route": "all-tasks",
+        "viewport": "desktop-1440x900",
+        "selector": "span.side-search-icon",
+        "position": "absolute",
+        "zIndex": "1",
+        "rect": {
+          "x": 21,
+          "y": 100,
+          "w": 14,
+          "h": 14,
+          "right": 35,
+          "bottom": 114
+        },
+        "text": ""
+      },
+      {
+        "route": "all-tasks",
+        "viewport": "desktop-1440x900",
+        "selector": "span.side-search-kbd",
+        "position": "absolute",
+        "zIndex": "auto",
+        "rect": {
+          "x": 172,
+          "y": 98,
+          "w": 27,
+          "h": 18,
+          "right": 199,
+          "bottom": 116
+        },
+        "text": "⌘K"
+      }
+    ],
+    "expected_settings_sticky_side_nav": [
+      {
+        "route": "settings",
+        "viewport": "desktop-1440x900",
+        "selector": "aside.set-side",
+        "position": "sticky",
+        "zIndex": "auto",
+        "rect": {
+          "x": 244,
+          "y": 198,
+          "w": 200,
+          "h": 270,
+          "right": 444,
+          "bottom": 468
+        },
+        "text": "Integrations Workspace visibility Hidden boards BU groups Paperclip / AI intake "
+      }
+    ],
+    "expected_mobile_bottom_nav": [
+      {
+        "route": "today",
+        "viewport": "app-pane-747x910",
+        "selector": "nav.mobile-route-bar",
+        "position": "fixed",
+        "zIndex": "70",
+        "rect": {
+          "x": 0,
+          "y": 842,
+          "w": 747,
+          "h": 68,
+          "right": 747,
+          "bottom": 910
+        },
+        "text": "Today Review Tasks Boards More"
+      },
+      {
+        "route": "review-queue",
+        "viewport": "app-pane-747x910",
+        "selector": "nav.mobile-route-bar",
+        "position": "fixed",
+        "zIndex": "70",
+        "rect": {
+          "x": 0,
+          "y": 842,
+          "w": 747,
+          "h": 68,
+          "right": 747,
+          "bottom": 910
+        },
+        "text": "Today Review Tasks Boards More"
+      },
+      {
+        "route": "all-tasks",
+        "viewport": "app-pane-747x910",
+        "selector": "nav.mobile-route-bar",
+        "position": "fixed",
+        "zIndex": "70",
+        "rect": {
+          "x": 0,
+          "y": 842,
+          "w": 747,
+          "h": 68,
+          "right": 747,
+          "bottom": 910
+        },
+        "text": "Today Review Tasks Boards More"
+      },
+      {
+        "route": "boards-monitor",
+        "viewport": "app-pane-747x910",
+        "selector": "nav.mobile-route-bar",
+        "position": "fixed",
+        "zIndex": "70",
+        "rect": {
+          "x": 0,
+          "y": 842,
+          "w": 747,
+          "h": 68,
+          "right": 747,
+          "bottom": 910
+        },
+        "text": "Today Review Tasks Boards More"
+      },
+      {
+        "route": "calendar",
+        "viewport": "app-pane-747x910",
+        "selector": "nav.mobile-route-bar",
+        "position": "fixed",
+        "zIndex": "70",
+        "rect": {
+          "x": 0,
+          "y": 842,
+          "w": 747,
+          "h": 68,
+          "right": 747,
+          "bottom": 910
+        },
+        "text": "Today Review Tasks Boards More"
+      },
+      {
+        "route": "planner",
+        "viewport": "app-pane-747x910",
+        "selector": "nav.mobile-route-bar",
+        "position": "fixed",
+        "zIndex": "70",
+        "rect": {
+          "x": 0,
+          "y": 842,
+          "w": 747,
+          "h": 68,
+          "right": 747,
+          "bottom": 910
+        },
+        "text": "Today Review Tasks Boards More"
+      }
+    ]
+  },
+  "routes": [
+    {
+      "route": "today",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-today-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "review-queue",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-review-queue-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "all-tasks",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-all-tasks-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "boards-monitor",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-boards-monitor-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "calendar",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-calendar-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "planner",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-planner-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "okr-portfolio",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-okr-portfolio-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "weekly-focus",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-weekly-focus-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "docs-ai-trace",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-docs-ai-trace-desktop-1440x900.png",
+      "total": 2,
+      "categories": {
+        "expected_sidebar_search_adornment": 2
+      }
+    },
+    {
+      "route": "settings",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc4-settings-desktop-1440x900.png",
+      "total": 3,
+      "categories": {
+        "expected_sidebar_search_adornment": 2,
+        "expected_settings_sticky_side_nav": 1
+      }
+    },
+    {
+      "route": "today",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-today-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "review-queue",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-review-queue-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "all-tasks",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-all-tasks-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "boards-monitor",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-boards-monitor-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "calendar",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-calendar-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "planner",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-planner-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "okr-portfolio",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-okr-portfolio-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "weekly-focus",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-weekly-focus-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "docs-ai-trace",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-docs-ai-trace-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "settings",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc4-settings-app-pane-747x910.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "today",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-today-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "review-queue",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-review-queue-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "all-tasks",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-all-tasks-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "boards-monitor",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-boards-monitor-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "calendar",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-calendar-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "planner",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-planner-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "okr-portfolio",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-okr-portfolio-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "weekly-focus",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-weekly-focus-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "docs-ai-trace",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-docs-ai-trace-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    },
+    {
+      "route": "settings",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc4-settings-mobile-small-375x667.png",
+      "total": 1,
+      "categories": {
+        "expected_mobile_bottom_nav": 1
+      }
+    }
+  ]
+}

@@ -1,12 +1,14 @@
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
+  setupShellPrimitives();
+
   const [trelloStatus, config, calStatus] = await Promise.all([
     api.get("/api/trello/status").catch(() => ({
       configured: false,
       verified: false,
       connected: false,
       state: "unavailable",
-      error: "Trello connection could not be verified. Ask Runtime to check credentials and connectivity.",
+      error: "Trello connection could not be verified. Ask Runtime to check private connection values and connectivity.",
     })),
     api.get("/api/config").catch(() => ({ groups: [], hiddenBoards: [], allowedWorkspaceIds: [] })),
     api.get("/api/calendar/status").catch(() => null),
@@ -15,14 +17,15 @@ async function init() {
   const boards = isTrelloVerified() ? await api.get("/api/boards").catch(() => []) : [];
   S.boards = boards;
   S.config = config;
+  if (!S.config.groups) S.config.groups = [];
+  if (!S.config.hiddenBoards) S.config.hiddenBoards = [];
   if (!S.config.allowedWorkspaceIds) S.config.allowedWorkspaceIds = [];
+  if (!Array.isArray(S.config.monitorTeams)) S.config.monitorTeams = [];
+  if (S.scopeGroupId && !getScopeGroups().some(group => group.id === S.scopeGroupId)) S.scopeGroupId = "";
   CAL.status = calStatus;
 
-  // Update GCal sidebar status
-  if (calStatus?.connected) {
-    const gcalEl = $("sidebar-gcal-status");
-    if (gcalEl) gcalEl.style.display = "";
-  }
+  if (typeof updateGcalSidebarStatus === "function") updateGcalSidebarStatus(Boolean(calStatus?.connected));
+  if (typeof updateIntegrationStatusbar === "function") updateIntegrationStatusbar();
 
   setupShellPrimitives();
   renderSidebar();
@@ -38,60 +41,334 @@ async function init() {
 function getAllowedCards() {
   if (!S.allCardsCache) return [];
   const allowedIds = new Set(S.boards.map(b => b.id));
-  return S.allCardsCache.filter(c =>
+  let cards = S.allCardsCache.filter(c =>
     allowedIds.has(c.boardId) && !S.config.hiddenBoards.includes(c.boardId)
   );
+  const activeScope = getActiveScopeGroup();
+  if (activeScope) cards = cards.filter(card => cardMatchesScope(card, activeScope));
+  return cards;
+}
+
+function normalizeScopeName(name = "") {
+  return String(name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function getScopeGroups() {
+  const scopePalette = ["#2563eb", "#0ea5e9", "#137e52", "#b86a05", "#7c3aed", "#db2777"];
+  const seen = new Set();
+  return (S.config?.monitorTeams || [])
+    .map(label => String(label || "").trim())
+    .filter(Boolean)
+    .filter(label => {
+      const key = normalizeScopeName(label);
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map((label, index) => ({
+      id: `team:${normalizeScopeName(label)}`,
+      name: label,
+      color: scopePalette[index % scopePalette.length],
+      source: "team-label",
+    }));
+}
+
+function getActiveScopeGroup() {
+  return getScopeGroups().find(group => group.id === S.scopeGroupId) || null;
+}
+
+function getScopeBoardIds() {
+  return null;
+}
+
+function cardMatchesScope(card, scope = getActiveScopeGroup()) {
+  if (!scope) return true;
+  const target = normalizeScopeName(scope.name);
+  return (card.labels || []).some(label => normalizeScopeName(label.name) === target);
+}
+
+function scopeLabel() {
+  return getActiveScopeGroup()?.name || "All BUs";
+}
+
+function getScopeColor(group = getActiveScopeGroup()) {
+  return group?.color || "#2563eb";
+}
+
+function getVisibleBoardsForScope() {
+  const hidden = new Set(S.config.hiddenBoards || []);
+  let boards = (S.boards || []).filter(board => !hidden.has(board.id));
+  const activeScope = getActiveScopeGroup();
+  if (activeScope && S.allCardsCache) {
+    const matchingBoardIds = new Set(getAllowedCards().map(card => card.boardId));
+    boards = boards.filter(board => matchingBoardIds.has(board.id));
+  }
+  return boards;
+}
+
+function selectScope(groupId = "") {
+  const groups = getScopeGroups();
+  const validId = groups.some(group => group.id === groupId) ? groupId : "";
+  const nextId = validId && validId === S.scopeGroupId ? "" : validId;
+  S.scopeGroupId = nextId;
+  S.currentBoardId = null;
+  S.currentGroupId = null;
+  if (typeof CAL !== "undefined") CAL.selectedBoardIds = null;
+  updateScopeShell();
+  renderScopeList();
+  const page = typeof getPageFromPath === "function" ? getPageFromPath() : S.mode || "today";
+  if (typeof navigateTo === "function") navigateTo(page, { updateUrl: false, replace: true });
+}
+
+function positionTopbarPopover(panel, anchor) {
+  if (!panel || !anchor) return;
+  const rect = anchor.getBoundingClientRect();
+  const width = panel.offsetWidth || 300;
+  const maxLeft = Math.max(8, window.innerWidth - width - 8);
+  const left = Math.min(Math.max(8, rect.right - width), maxLeft);
+  panel.style.left = `${left}px`;
+  panel.style.top = `${Math.round(rect.bottom + 8)}px`;
+}
+
+function closeTopbarScopeMenu({ restore = false, focusTarget = ".topbar .scope-pick" } = {}) {
+  const panel = $("topbar-scope-popover");
+  if (panel) panel.remove();
+  document.querySelectorAll(".topbar .scope-pick").forEach(pick => pick.setAttribute("aria-expanded", "false"));
+  if (restore && typeof restoreFocus === "function") restoreFocus(focusTarget);
+}
+
+function renderTopbarScopeRow({ id = "", label, color = "#2563eb", active = false, disabled = false, meta = "" }) {
+  return `
+    <button class="topbar-scope-row${active ? " is-active" : ""}" type="button"
+      data-scope-menu-id="${esc(id)}" ${disabled ? "disabled aria-disabled=\"true\"" : ""}
+      role="option" aria-selected="${active}">
+      <span class="scope-dot" style="--scope-color:${esc(color)}"></span>
+      <span class="topbar-scope-row-copy">
+        <strong>${esc(label)}</strong>
+        ${meta ? `<small>${esc(meta)}</small>` : ""}
+      </span>
+      ${active ? `<span class="topbar-scope-check">${icon("check")}</span>` : ""}
+    </button>
+  `;
+}
+
+function toggleTopbarScopeMenu(event) {
+  event?.stopPropagation?.();
+  const anchor = event?.currentTarget || document.querySelector(".topbar .scope-pick");
+  const existing = $("topbar-scope-popover");
+  if (existing) {
+    closeTopbarScopeMenu({ restore: true, focusTarget: anchor });
+    return;
+  }
+  closeTopbarNotifications();
+
+  const groups = getScopeGroups();
+  const active = getActiveScopeGroup();
+  const panel = document.createElement("div");
+  panel.id = "topbar-scope-popover";
+  panel.className = "topbar-control-popover topbar-scope-popover";
+  panel.setAttribute("role", "listbox");
+  panel.setAttribute("aria-label", "Business unit scope");
+  panel.innerHTML = `
+    <div class="topbar-popover-head">
+      <span class="eyebrow">Scope</span>
+      <button class="iconbtn" type="button" aria-label="Close scope menu" data-close-scope-menu>${icon("x")}</button>
+    </div>
+    <div class="topbar-popover-note">${active ? `Filtering this route by the ${esc(active.name)} Team mode label.` : "Showing all configured Team mode labels."}</div>
+    <div class="topbar-scope-list">
+      ${renderTopbarScopeRow({ label: "All BUs", active: !active, meta: "Show every visible label" })}
+      ${groups.length ? groups.map(group => renderTopbarScopeRow({
+        id: group.id,
+        label: group.name,
+        color: group.color || "#2563eb",
+        active: active?.id === group.id,
+        meta: "Team mode label",
+      })).join("") : `
+        <button class="topbar-scope-row" type="button" data-scope-settings>
+          <span class="scope-dot" style="--scope-color:#6b7280"></span>
+          <span class="topbar-scope-row-copy"><strong>Configure labels</strong><small>Add Team mode labels in Settings</small></span>
+          ${icon("chevron")}
+        </button>
+      `}
+    </div>
+  `;
+  document.body.appendChild(panel);
+  anchor?.setAttribute("aria-expanded", "true");
+  positionTopbarPopover(panel, anchor);
+
+  panel.querySelector("[data-close-scope-menu]")?.addEventListener("click", () => closeTopbarScopeMenu({ restore: true, focusTarget: anchor }));
+  panel.querySelector("[data-scope-settings]")?.addEventListener("click", () => {
+    closeTopbarScopeMenu();
+    navigateTo("settings");
+  });
+  panel.querySelectorAll("[data-scope-menu-id]:not([disabled])").forEach(row => {
+    row.addEventListener("click", () => {
+      selectScope(row.getAttribute("data-scope-menu-id") || "");
+      closeTopbarScopeMenu();
+    });
+  });
+}
+
+function onScopeKeydown(event, groupId = "") {
+  if (event.key === "Escape") {
+    closeTopbarScopeMenu({ restore: true });
+    return;
+  }
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  if (event.currentTarget?.classList?.contains("scope-pick")) {
+    toggleTopbarScopeMenu(event);
+  } else {
+    selectScope(groupId);
+  }
+}
+
+function updateScopeShell() {
+  const active = getActiveScopeGroup();
+  document.querySelectorAll(".topbar .scope-pick").forEach(pick => {
+    let label = pick.querySelector(".scope-pick-label");
+    if (!label) {
+      const dot = pick.querySelector(".scope-dot");
+      const text = [...pick.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+      label = document.createElement("span");
+      label.className = "scope-pick-label";
+      label.textContent = (text?.textContent || "All BUs").trim();
+      if (text) text.remove();
+      if (dot) dot.insertAdjacentElement("afterend", label);
+      else pick.prepend(label);
+    }
+    label.textContent = scopeLabel();
+    pick.classList.toggle("is-filtered", Boolean(active));
+    pick.style.setProperty("--scope-color", getScopeColor(active));
+    pick.removeAttribute("role");
+    pick.removeAttribute("tabindex");
+    if (pick.tagName === "BUTTON") pick.type = "button";
+    pick.dataset.action = "open-scope-menu";
+    pick.setAttribute("aria-haspopup", "listbox");
+    pick.setAttribute("aria-controls", "topbar-scope-popover");
+    pick.setAttribute("aria-expanded", String(Boolean($("topbar-scope-popover"))));
+    pick.setAttribute("title", active ? `Scope: ${active.name}. Open scope menu.` : "Scope: All BUs. Open scope menu.");
+    pick.setAttribute("aria-label", active ? `Scope filter ${active.name}. Open scope menu.` : "Scope filter All BUs. Open scope menu.");
+    pick.onclick = toggleTopbarScopeMenu;
+    pick.onkeydown = null;
+  });
+}
+
+function renderScopeList() {
+  const list = document.querySelector(".scope-list");
+  if (!list) return;
+  const scopePalette = ["#2563eb", "#0ea5e9", "#137e52", "#b86a05"];
+  const groups = getScopeGroups();
+  if (S.scopeGroupId && !groups.some(group => group.id === S.scopeGroupId)) S.scopeGroupId = "";
+  if (!groups.length) {
+    list.innerHTML = `
+      <button class="nav-item scope-item scope-configure" type="button" data-scope-configure style="--scope-color:#6b7280" title="Configure Team mode labels in Settings">
+        <span class="ico scope-dot"></span>
+        <span class="lbl">Configure Labels</span>
+      </button>
+    `;
+    list.querySelector("[data-scope-configure]")?.addEventListener("click", () => navigateTo("settings"));
+    updateScopeShell();
+    return;
+  }
+
+  list.innerHTML = groups.map((group, index) => {
+    const color = group.color || scopePalette[index % scopePalette.length];
+    const active = group.id === S.scopeGroupId;
+    const title = active ? `Clear ${group.name} scope filter` : `Filter visible work by ${group.name} label`;
+    return `
+      <button class="nav-item scope-item${active ? " active" : ""}" type="button"
+        data-scope-id="${esc(group.id)}" style="--scope-color:${esc(color)}"
+        aria-pressed="${active}"
+        aria-label="${esc(active ? `Clear ${group.name} scope filter` : `Filter visible work by ${group.name} label`)}"
+        title="${esc(title)}">
+        <span class="ico scope-dot"></span>
+        <span class="lbl">${esc(group.name)}</span>
+      </button>
+    `;
+  }).join("");
+  list.querySelectorAll(".scope-item:not([disabled])").forEach(item => {
+    item.addEventListener("click", () => selectScope(item.dataset.scopeId || ""));
+    item.addEventListener("keydown", event => onScopeKeydown(event, item.dataset.scopeId || ""));
+  });
+  updateScopeShell();
 }
 
 
 // ── Planner Page ──────────────────────────────────────────────────────────────
+function getPlannerWindow() {
+  return ["today", "tomorrow", "week"].includes(S.plannerWindow) ? S.plannerWindow : "today";
+}
+
+function plannerWindowLabel(mode = getPlannerWindow()) {
+  if (mode === "tomorrow") return "Tomorrow";
+  if (mode === "week") return "This week";
+  return "Today";
+}
+
+function plannerWindowRange(mode = getPlannerWindow()) {
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const start = new Date(todayStart);
+  const end = new Date(todayStart);
+  if (mode === "tomorrow") {
+    start.setDate(todayStart.getDate() + 1);
+    end.setDate(todayStart.getDate() + 2);
+  } else if (mode === "week") {
+    end.setDate(todayStart.getDate() + 7);
+  } else {
+    end.setDate(todayStart.getDate() + 1);
+  }
+  return { start, end, label: plannerWindowLabel(mode) };
+}
+
+function setPlannerWindow(mode) {
+  S.plannerWindow = ["today", "tomorrow", "week"].includes(mode) ? mode : "today";
+  showPlannerPage();
+}
+
 // V0.2-W2-05 Planner redesign implemented by Codex Dev.
 async function showPlannerPage() {
   S.mode = "planner";
   S.currentBoardId = null;
   S.currentGroupId = null;
-  $("board-title").textContent = "Daily Planner";
-  $("board-subtitle").textContent = "";
+  $("board-title").textContent = "Planner";
+  $("board-subtitle").textContent = "Read-only";
   $("add-list-btn").classList.add("hidden");
 
   const dateStr = formatThaiDateTime(new Date().toISOString(), false);
+  const plannerWindow = getPlannerWindow();
+  const plannerLabel = plannerWindowLabel(plannerWindow);
+  const plannerSeg = `
+    <div class="seg" aria-label="Planner window">
+      <button type="button" class="${plannerWindow === "today" ? "on" : ""}" aria-pressed="${plannerWindow === "today"}" onclick="setPlannerWindow('today')">Today</button>
+      <button type="button" class="${plannerWindow === "tomorrow" ? "on" : ""}" aria-pressed="${plannerWindow === "tomorrow"}" onclick="setPlannerWindow('tomorrow')">Tomorrow</button>
+      <button type="button" class="${plannerWindow === "week" ? "on" : ""}" aria-pressed="${plannerWindow === "week"}" onclick="setPlannerWindow('week')">This week</button>
+    </div>
+  `;
 
   $("board-content").innerHTML = `
     <div class="planner-page">
-      <div class="planner-command-panel">
-        <div class="planner-command-copy">
-          <div class="planner-kicker">${icon("checkSquare")} Daily planner</div>
-          <h1 class="planner-title">Planner</h1>
-          <p class="planner-subtitle">Plan today from Google Tasks and Trello deadlines without mixing the source systems.</p>
-          <div class="planner-date">${dateStr}</div>
+      ${uiRouteBar({
+        title: `${plannerLabel} plan`,
+        sub: `<span>Daily Planner</span><span>&middot;</span><span>window ${esc(plannerLabel.toLowerCase())}</span><span>&middot;</span><span>gtasks off</span><span>&middot;</span><span>trello connected</span><span>&middot;</span><span>${dateStr}</span>`,
+        actions: plannerSeg,
+      })}
+
+      <div class="planner-disconnect-banner planner-source-card" data-uiv2="planner-source" aria-label="Planner source summary">
+        ${icon("alert")}
+        <div>
+          <strong>Google Tasks is disconnected</strong>
+          <p>Planner is showing Trello deadlines only. Connect Google Tasks in Settings to add and complete personal tasks.</p>
         </div>
-        <div class="planner-command-stats" aria-label="Planner summary">
-          <div class="planner-stat-card"><span>Google Tasks</span><strong id="planner-gtasks-count">...</strong></div>
-          <div class="planner-stat-card is-warning"><span>Due today</span><strong id="planner-today-count">...</strong></div>
-          <div class="planner-stat-card"><span>Due tomorrow</span><strong id="planner-tomorrow-count">...</strong></div>
-        </div>
+        <button class="btn sm" type="button" onclick="navigateTo('settings')" aria-label="Open Planner connection settings for Google Tasks" title="Open Planner connection settings for Google Tasks">Open Settings</button>
       </div>
 
-      <div class="planner-source-summary" aria-label="Planner source summary">
-        <div class="planner-source-card is-google">
-          <span><i class="source-dot is-google"></i>Google Tasks</span>
-          <strong id="planner-google-source-state">Checking</strong>
-          <p id="planner-google-source-copy">Personal task source for add and complete actions.</p>
-        </div>
-        <div class="planner-source-card is-trello">
-          <span><i class="source-dot is-trello"></i>Trello deadlines</span>
-          <strong id="planner-trello-source-state">Checking</strong>
-          <p id="planner-trello-source-copy">Execution source stays separate from personal planning tasks.</p>
-        </div>
-        <div class="planner-source-card is-boundary">
-          <span><i class="source-dot is-review"></i>Review gate</span>
-          <strong>Human approval first</strong>
-          <p>AI-proposed work reaches Google Tasks or Trello only after Review Queue approval.</p>
-        </div>
-      </div>
-
-      <div class="planner-grid">
-        <section class="planner-section planner-panel-google">
+      <div class="planner-grid planner-cols">
+        <section class="planner-section planner-panel-google panel">
           <div class="planner-section-title">
             <span>${icon("checkSquare")} Google Tasks</span>
             <em id="planner-gtasks-state">Loading</em>
@@ -99,10 +376,10 @@ async function showPlannerPage() {
           <div id="planner-gtasks-body"><div class="planner-loading">Loading Google Tasks...</div></div>
         </section>
 
-        <section class="planner-section planner-panel-trello">
+        <section class="planner-section planner-panel-trello panel">
           <div class="planner-section-title">
             <span>${icon("calendar")} Trello deadlines</span>
-            <em>Today and tomorrow</em>
+            <em>${esc(plannerLabel)}</em>
           </div>
           <div id="planner-trello-body"><div class="planner-loading">Loading Trello deadlines...</div></div>
         </section>
@@ -123,10 +400,32 @@ async function loadPlannerGTasks() {
       if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Disconnected";
       setPlannerSourceCard("google", "Disconnected", "Owner action: connect Google Tasks in Settings. Trello deadlines remain visible below.");
       body.innerHTML = `
-        <div class="planner-connect-state">
-          <strong>Google Tasks is disconnected</strong>
-          <p>Owner action: connect Google Tasks in Settings. Planner keeps Trello deadline context available while personal tasks are offline.</p>
-          <button class="btn btn-primary btn-sm" onclick="openCalSetup()">Open Settings connection</button>
+        <div class="planner-connect-state planner-connect-card">
+          <div class="empty-icon">${icon("checkSquare")}</div>
+          <h3>Connect Google Tasks</h3>
+          <p>Once connected, your personal day plan from Google Tasks shows up here next to Trello deadlines. No tasks are written until you approve a connection.</p>
+          <div class="planner-connect-actions">
+            <button class="btn primary sm" type="button" onclick="openCalSetup()" aria-label="Open Google Tasks connection setup" title="Open Google Tasks connection setup">Open Settings</button>
+            <button class="btn sm" type="button" onclick="toast('Google Tasks stays read-only until connected in Settings')">Why this exists</button>
+          </div>
+        </div>`;
+      return;
+    }
+    const plannerWindow = getPlannerWindow();
+    if (plannerWindow !== "today") {
+      const label = plannerWindowLabel(plannerWindow);
+      if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = "Today only";
+      if ($("planner-gtasks-state")) $("planner-gtasks-state").textContent = "Connected";
+      setPlannerSourceCard("google", "Today only", `Google Tasks personal task list stays on Today while the Trello deadline window is set to ${label}.`);
+      body.innerHTML = `
+        <div class="planner-connect-state planner-connect-card">
+          <div class="empty-icon">${icon("checkSquare")}</div>
+          <h3>Google Tasks stays on Today</h3>
+          <p>The ${esc(label)} window updates Trello deadlines below. Google Tasks remains the connected Today list in this frontend slice.</p>
+          <div class="planner-connect-actions">
+            <button class="btn primary sm" type="button" onclick="setPlannerWindow('today')">Show Today</button>
+            <button class="btn sm" type="button" onclick="navigateTo('settings')" aria-label="Open Google Tasks connection settings">Connection settings</button>
+          </div>
         </div>`;
       return;
     }
@@ -161,10 +460,10 @@ function renderPlannerGTasks(tasks) {
   } else {
     listHtml = `<div class="planner-task-list">` +
       tasks.map(t => `
-        <div class="planner-task-row" data-task-id="${esc(t.id)}">
+        <div class="planner-task-row" data-task-id="${esc(t.id)}" title="${esc(t.title || "Untitled Google Task")}">
           <input type="checkbox" class="planner-checkbox"
             onchange="plannerCompleteTask('${esc(t.id)}',this)">
-          <span class="planner-task-title">${esc(t.title)}</span>
+          <span class="planner-task-title uiv2-decision-text uiv2-text-reveal" title="${esc(t.title || "Untitled Google Task")}">${esc(t.title)}</span>
           <span class="planner-source-pill is-google">Google Tasks</span>
         </div>`).join("") +
     `</div>`;
@@ -175,7 +474,7 @@ function renderPlannerGTasks(tasks) {
       <input type="text" id="planner-add-input" class="planner-add-input"
         placeholder="Add a Google Task for today..."
         onkeydown="if(event.key==='Enter')plannerAddTask()">
-      <button class="btn btn-sm planner-add-btn" onclick="plannerAddTask()">${icon("plus")} Add</button>
+      <button class="btn btn-sm planner-add-btn" type="button" onclick="plannerAddTask()">${icon("plus")} Add</button>
     </div>`;
 }
 
@@ -230,8 +529,9 @@ async function plannerAddTask() {
       row.innerHTML = `
         <input type="checkbox" class="planner-checkbox"
           onchange="plannerCompleteTask('${esc(task.id)}',this)">
-        <span class="planner-task-title">${esc(task.title)}</span>
+        <span class="planner-task-title uiv2-decision-text uiv2-text-reveal" title="${esc(task.title || "Untitled Google Task")}">${esc(task.title)}</span>
         <span class="planner-source-pill is-google">Google Tasks</span>`;
+      row.title = task.title || "Untitled Google Task";
       list.appendChild(row);
       if ($("planner-gtasks-count")) $("planner-gtasks-count").textContent = list.querySelectorAll(".planner-task-row").length;
       setPlannerSourceCard("google", `${list.querySelectorAll(".planner-task-row").length} tasks`, "Connected source for personal tasks due today or overdue.");
@@ -274,27 +574,34 @@ async function loadPlannerTrello() {
 
   const cards = getAllowedCards();
   const now = new Date();
-  const todayStart    = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const tomorrowStart = new Date(todayStart); tomorrowStart.setDate(tomorrowStart.getDate() + 1);
   const dayAfterStart = new Date(tomorrowStart); dayAfterStart.setDate(dayAfterStart.getDate() + 1);
+  const { start, end, label } = plannerWindowRange();
 
-  const todayCards    = cards.filter(c => c.due && new Date(c.due) >= todayStart    && new Date(c.due) < tomorrowStart);
-  const tomorrowCards = cards.filter(c => c.due && new Date(c.due) >= tomorrowStart && new Date(c.due) < dayAfterStart);
+  const windowCards = cards.filter(c => c.due && new Date(c.due) >= start && new Date(c.due) < end);
+  const todayCards = windowCards.filter(c => c.due && new Date(c.due) >= todayStart && new Date(c.due) < tomorrowStart);
+  const tomorrowCards = windowCards.filter(c => c.due && new Date(c.due) >= tomorrowStart && new Date(c.due) < dayAfterStart);
+  const laterCards = windowCards.filter(c => !todayCards.includes(c) && !tomorrowCards.includes(c));
   if ($("planner-today-count")) $("planner-today-count").textContent = todayCards.length;
   if ($("planner-tomorrow-count")) $("planner-tomorrow-count").textContent = tomorrowCards.length;
-  setPlannerSourceCard("trello", `${todayCards.length + tomorrowCards.length} due item${todayCards.length + tomorrowCards.length === 1 ? "" : "s"}`, `${todayCards.length} due today, ${tomorrowCards.length} due tomorrow from Trello execution boards.`);
+  setPlannerSourceCard("trello", `${windowCards.length} due item${windowCards.length === 1 ? "" : "s"}`, `${label} Trello deadline window from execution boards.`);
 
-  if (!todayCards.length && !tomorrowCards.length) {
-    body.innerHTML = `<div class="planner-empty">No Trello cards due today or tomorrow.</div>`;
+  if (!windowCards.length) {
+    body.innerHTML = `<div class="planner-empty">No Trello cards due in ${esc(label.toLowerCase())}.</div>`;
     return;
   }
 
-  const cardRow = (c, label, cls) => `
-    <div class="planner-trello-row">
+  const cardRow = (c, label, cls) => {
+    const taskTitle = c.name || "Untitled Trello card";
+    const sourceMeta = `${c.boardName || "No board"} / ${c.listName || "No list"}`;
+    return `
+    <div class="planner-trello-row" title="${esc(`${taskTitle} - ${sourceMeta}`)}">
       <span class="planner-source-pill is-trello ${cls}">${label}</span>
-      <span class="planner-trello-title">${esc(c.name)}</span>
-      <span class="planner-trello-meta">${esc(c.boardName)} / ${esc(c.listName)}</span>
+      <span class="planner-trello-title uiv2-decision-text uiv2-text-reveal" title="${esc(taskTitle)}">${esc(taskTitle)}</span>
+      <span class="planner-trello-meta uiv2-meta-text uiv2-text-reveal" title="${esc(sourceMeta)}">${esc(sourceMeta)}</span>
     </div>`;
+  };
 
   let html = "";
   if (todayCards.length) {
@@ -305,35 +612,203 @@ async function loadPlannerTrello() {
     html += `<div class="planner-sub-label">Tomorrow</div>`;
     html += tomorrowCards.map(c => cardRow(c, "Tomorrow", "chip-warning")).join("");
   }
+  if (laterCards.length) {
+    html += `<div class="planner-sub-label">Later this week</div>`;
+    html += laterCards.map(c => cardRow(c, "This week", "chip-info")).join("");
+  }
   body.innerHTML = html;
 }
 
 // ── Sidebar ───────────────────────────────────────────────────────────────────
 function setupShellPrimitives() {
   // Implemented by Codex Dev: code-native icons and mobile nav shell.
+  if (typeof ensureButtonTypes === "function") ensureButtonTypes(document);
+  if (typeof syncClosedSurfaces === "function") syncClosedSurfaces();
+  if (typeof setupStatusbarDescriptions === "function") setupStatusbarDescriptions();
   const navIcons = {
     today: "today",
     review: "sparkles",
-    all: "inbox",
-    boards: "layout",
+    all: "tasks",
+    boards: "boards",
     calendar: "calendar",
-    planner: "checkSquare",
+    planner: "planner",
     okr: "target",
-    focus: "calendar",
+    focus: "focus",
+    docs: "trace",
     settings: "settings",
   };
+  document.querySelectorAll(".logo").forEach(el => { el.textContent = "T"; });
+  document.querySelectorAll(".sidebar-header h1 span").forEach(el => { el.textContent = "Task Hub · v2"; });
+  document.querySelectorAll(".side-search-kbd").forEach(el => { el.innerHTML = "&#8984;K"; });
+  const sidebarNav = document.querySelector(".sidebar-nav");
+  const scopeHeading = sidebarNav?.querySelector(".scope-heading");
+  if (sidebarNav && scopeHeading) {
+    ["today", "review", "all", "boards", "calendar", "planner", "okr", "focus", "docs", "settings"].forEach(page => {
+      const item = sidebarNav.querySelector(`.nav-item[data-page="${page}"]`);
+      if (item) sidebarNav.insertBefore(item, scopeHeading);
+    });
+  }
   document.querySelectorAll(".nav-item[data-page]").forEach(item => {
     const slot = item.querySelector(".nav-icon");
     if (slot && typeof icon === "function") {
       slot.innerHTML = icon(navIcons[item.dataset.page] || "today");
     }
   });
+  document.querySelectorAll(".mobile-route-item[data-page='settings'] .nav-icon").forEach(slot => {
+    if (typeof icon === "function") slot.innerHTML = icon("more");
+  });
+  document.querySelectorAll(".side-search-icon").forEach(slot => {
+    if (typeof icon === "function") slot.innerHTML = icon("search");
+  });
+  document.querySelectorAll(".modal-close").forEach(btn => {
+    if (typeof icon === "function") {
+      btn.innerHTML = icon("x");
+      if (!btn.getAttribute("aria-label")) btn.setAttribute("aria-label", "Close");
+    }
+  });
+  document.querySelectorAll(".topbar .scope-pick").forEach(pick => {
+    if (typeof icon === "function" && !pick.querySelector("svg")) {
+      pick.insertAdjacentHTML("beforeend", icon("down", 'width="11" height="11"'));
+    }
+  });
+  updateScopeShell();
   const refreshBtn = $("topbar-refresh-btn");
   if (refreshBtn && typeof icon === "function") {
     refreshBtn.innerHTML = icon("refresh");
     refreshBtn.setAttribute("aria-label", "Refresh current view");
   }
+  const notificationsBtn = $("topbar-notifications-btn");
+  if (notificationsBtn && typeof icon === "function") {
+    notificationsBtn.innerHTML = icon("bell");
+    notificationsBtn.setAttribute("aria-haspopup", "dialog");
+    notificationsBtn.setAttribute("aria-expanded", "false");
+    notificationsBtn.onclick = event => {
+      event.stopPropagation();
+      toggleTopbarNotifications();
+    };
+  }
+  const manageBtn = $("manage-btn");
+  if (manageBtn && typeof icon === "function") {
+    manageBtn.innerHTML = icon("settings");
+    manageBtn.setAttribute("aria-label", "Manage groups and visibility");
+  }
+  const sidebarRefreshBtn = $("refresh-btn");
+  if (sidebarRefreshBtn && typeof icon === "function") {
+    sidebarRefreshBtn.innerHTML = icon("refresh");
+    sidebarRefreshBtn.setAttribute("aria-label", "Refresh boards");
+  }
+  const hiddenToggleBtn = $("toggle-hidden-btn");
+  if (hiddenToggleBtn && typeof icon === "function") {
+    const count = $("hidden-count")?.textContent || "0";
+    hiddenToggleBtn.innerHTML = `${icon("eye")} Show hidden boards (<span id="hidden-count">${esc(count)}</span>)`;
+  }
+  if (typeof ensureButtonTypes === "function") ensureButtonTypes(document);
+  if (typeof syncClosedSurfaces === "function") syncClosedSurfaces();
   setupMobileNavigation();
+  bindTopbarControlDismissals();
+}
+
+function bindTopbarControlDismissals() {
+  if (window.__topbarControlsBound) return;
+  window.__topbarControlsBound = true;
+  document.addEventListener("click", event => {
+    if (!event.target.closest("#topbar-scope-popover") && !event.target.closest(".topbar .scope-pick")) {
+      closeTopbarScopeMenu({ restore: Boolean($("topbar-scope-popover")) });
+    }
+    if (!event.target.closest("#topbar-notification-popover") && !event.target.closest("#topbar-notifications-btn")) {
+      closeTopbarNotifications({ restore: Boolean($("topbar-notification-popover")) });
+    }
+    if (!event.target.closest("#docs-filter-popover") && !event.target.closest("#docs-topbar-filter")) {
+      if (typeof closeDocsFilterMenu === "function") closeDocsFilterMenu({ restore: Boolean($("docs-filter-popover")) });
+    }
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    closeTopbarScopeMenu({ restore: Boolean($("topbar-scope-popover")) });
+    closeTopbarNotifications({ restore: Boolean($("topbar-notification-popover")) });
+    if (typeof closeDocsFilterMenu === "function") closeDocsFilterMenu({ restore: Boolean($("docs-filter-popover")) });
+  });
+  window.addEventListener("resize", () => {
+    closeTopbarScopeMenu();
+    closeTopbarNotifications();
+    if (typeof closeDocsFilterMenu === "function") closeDocsFilterMenu();
+  });
+}
+
+function closeTopbarNotifications({ restore = false, focusTarget = "#topbar-notifications-btn" } = {}) {
+  const panel = $("topbar-notification-popover");
+  if (panel) panel.remove();
+  $("topbar-notifications-btn")?.setAttribute("aria-expanded", "false");
+  if (restore && typeof restoreFocus === "function") restoreFocus(focusTarget);
+}
+
+function topbarNotificationStatus(label, value, tone = "") {
+  return `
+    <div class="topbar-notification-row ${tone ? `is-${tone}` : ""}">
+      <span>${esc(label)}</span>
+      <strong>${esc(value)}</strong>
+    </div>
+  `;
+}
+
+function toggleTopbarNotifications() {
+  const existing = $("topbar-notification-popover");
+  if (existing) {
+    closeTopbarNotifications({ restore: true });
+    return;
+  }
+  closeTopbarScopeMenu();
+  if (typeof closeDocsFilterMenu === "function") closeDocsFilterMenu();
+
+  const anchor = $("topbar-notifications-btn");
+  const host = document.querySelector(".topbar-actions");
+  if (!anchor || !host) return;
+
+  const reviewBadgeText = document.querySelector(".nav-item[data-page='review'] .badge")?.textContent?.trim();
+  const reviewPending = reviewBadgeText || "0";
+  const trelloState = S.trelloStatus?.verified ? "connected" : S.trelloStatus?.configured ? "needs retry" : "setup needed";
+  const calendarState = CAL?.status?.connected ? "connected" : "settings action";
+  const docsCount = Array.isArray(S.paperclipDocsIndex?.documents) ? S.paperclipDocsIndex.documents.length : 0;
+  const routeTitle = $("board-title")?.textContent?.trim() || "Current route";
+
+  const panel = document.createElement("div");
+  panel.id = "topbar-notification-popover";
+  panel.className = "topbar-notification-popover";
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-label", "Route notifications");
+  panel.innerHTML = `
+    <div class="topbar-notification-head">
+      <span class="eyebrow">Notifications</span>
+      <button class="iconbtn" type="button" aria-label="Close notifications" data-close-topbar-notifications>${icon("x")}</button>
+    </div>
+    <div class="topbar-notification-body">
+      ${topbarNotificationStatus("Current route", routeTitle, "route")}
+      ${topbarNotificationStatus("Review Queue", `${reviewPending} pending`, Number(reviewPending) ? "review" : "ok")}
+      ${topbarNotificationStatus("Trello", trelloState, S.trelloStatus?.verified ? "ok" : "warn")}
+      ${topbarNotificationStatus("Google Calendar", calendarState, CAL?.status?.connected ? "ok" : "warn")}
+      ${topbarNotificationStatus("Docs / AI Trace", `${docsCount} trace${docsCount === 1 ? "" : "s"}`, "trace")}
+    </div>
+    <div class="topbar-notification-actions">
+      <button class="btn sm" type="button" data-notification-route="review">Open Review</button>
+      <button class="btn sm" type="button" data-notification-route="settings">Connections</button>
+      <button class="btn sm ghost" type="button" data-notification-route="docs">Trace</button>
+    </div>
+  `;
+  host.appendChild(panel);
+  anchor.setAttribute("aria-expanded", "true");
+  positionTopbarPopover(panel, anchor);
+  panel.querySelector("[data-close-topbar-notifications]")?.focus({ preventScroll: true });
+
+  panel.querySelector("[data-close-topbar-notifications]")?.addEventListener("click", () => closeTopbarNotifications({ restore: true }));
+  panel.querySelectorAll("[data-notification-route]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const route = btn.getAttribute("data-notification-route");
+      closeTopbarNotifications();
+      navigateTo(route);
+    });
+  });
+
+  bindTopbarControlDismissals();
 }
 
 function setupMobileNavigation() {
@@ -361,6 +836,7 @@ function closeMobileNav() {
 
 function renderSidebar() {
   updateTrelloSidebarStatus();
+  renderScopeList();
   renderGroupsList();
   renderBoardsList();
 }
@@ -424,7 +900,9 @@ function renderBoardsList() {
   ul.innerHTML = "";
   hiddenUl.innerHTML = "";
 
-  const visible = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
+  const visible = typeof getVisibleBoardsForScope === "function"
+    ? getVisibleBoardsForScope()
+    : S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
   const hidden  = S.boards.filter(b =>  S.config.hiddenBoards.includes(b.id));
 
   visible.forEach((board, i) => ul.appendChild(buildBoardLi(board, i)));
@@ -451,9 +929,12 @@ async function selectBoard(boardId, boardName) {
   S.allCardsCache = null;
 
   // Show boards section and set active nav
-  document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".nav-item[data-page]").forEach(el => el.classList.remove("active"));
   const boardsSection = $("sidebar-boards-section");
-  if (boardsSection) boardsSection.style.display = "";
+  if (boardsSection) {
+    boardsSection.style.display = "";
+    if (typeof setInteractiveHidden === "function") setInteractiveHidden(boardsSection, false);
+  }
 
   $("board-title").textContent = boardName;
   $("board-subtitle").textContent = "";
@@ -492,9 +973,12 @@ async function selectGroup(groupId, groupName) {
   S.allCardsCache = null;
 
   // Show boards section
-  document.querySelectorAll(".nav-item").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".nav-item[data-page]").forEach(el => el.classList.remove("active"));
   const boardsSection = $("sidebar-boards-section");
-  if (boardsSection) boardsSection.style.display = "";
+  if (boardsSection) {
+    boardsSection.style.display = "";
+    if (typeof setInteractiveHidden === "function") setInteractiveHidden(boardsSection, false);
+  }
 
   const boardsInGroup = S.boards.filter(b => group.boardIds.includes(b.id));
   $("board-title").textContent = groupName;
@@ -533,7 +1017,7 @@ async function loadGroupView(group, boards) {
         <span class="bu-board-color" style="background:${board.color}"></span>
         <h3>${esc(board.name)}</h3>
         <span style="font-size:11px;color:var(--text-muted)">${board.lists.reduce((n,l)=>n+l.cards.length,0)} cards</span>
-        <button class="collapse-btn">▲ Collapse</button>
+        <button class="collapse-btn" type="button">▲ Collapse</button>
       `;
 
       const kanbanWrap = document.createElement("div");
@@ -609,7 +1093,7 @@ function buildCard(card, listId, boardId, lists) {
   let meta = "";
   if (card.start) meta += `<span class="start-badge">▶ ${formatThaiDateTime(card.start)}</span>`;
   if (card.due)   meta += buildDueBadge(card.due, card.dueComplete);
-  if (card.dueReminder != null && card.dueReminder !== -1) meta += `<span class="reminder-icon" title="Reminder set">🔔</span>`;
+  if (card.dueReminder != null && card.dueReminder !== -1) meta += `<span class="reminder-icon" title="Reminder set">${icon("bell")}</span>`;
   if (card.desc)  meta += `<span class="desc-icon">≡</span>`;
 
   const checklists = card.checklists || [];
@@ -625,7 +1109,7 @@ function buildCard(card, listId, boardId, lists) {
       clHTML += `
         <div class="card-cl">
           <div class="card-cl-header">
-            <span class="card-cl-name">☑ ${esc(cl.name)}</span>
+            <span class="card-cl-name">${icon("checkSquare")} ${esc(cl.name)}</span>
             <span class="card-cl-count${allDone ? " done" : ""}">${done}/${total}</span>
           </div>
           <div class="card-cl-bar"><div class="card-cl-fill${allDone ? " done" : ""}" style="width:${pct}%"></div></div>
@@ -835,6 +1319,7 @@ async function showWeeklyFocusPage() {
       api.get("/api/reviews").catch(() => []),
     ]);
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
+    if (S.mode !== "focus") return;
     const pendingCount = sessions.reduce((n, s) => n + (s.tasks || []).filter(t => t.status === "pending").length, 0);
 
     // Update sidebar badge
@@ -844,21 +1329,29 @@ async function showWeeklyFocusPage() {
       badge.style.display = pendingCount ? "" : "none";
     }
 
-    renderWeeklyFocusPage(getAllowedCards(), pendingCount);
+    renderWeeklyFocusPage(getAllowedCards(), sessions);
   } catch (e) {
+    if (S.mode !== "focus") return;
     content.innerHTML = trelloRouteUnavailableHtml("Weekly Focus");
   }
 }
 
-function renderWeeklyFocusPage(allCards, pendingCount) {
+function renderWeeklyFocusPage(allCards, reviewSessions = []) {
   const content = $("board-content");
+  const reviewProposals = normalizeFocusReviewProposals(reviewSessions);
+  const pendingCount = reviewProposals.length;
   const now = new Date();
-  const weekStart = new Date(now);
-  weekStart.setDate(weekStart.getDate() - 7);
+  const weekOffset = Number(S.focusWeekOffset || 0);
+  const weekAnchor = new Date(now);
+  weekAnchor.setDate(weekAnchor.getDate() + weekOffset * 7);
+  const weekStart = new Date(weekAnchor);
+  const daysSinceMonday = (weekStart.getDay() + 6) % 7;
+  weekStart.setDate(weekStart.getDate() - daysSinceMonday);
   weekStart.setHours(0, 0, 0, 0);
-  const weekEnd = new Date(now);
-  weekEnd.setDate(weekEnd.getDate() + 7);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
   weekEnd.setHours(23, 59, 59, 999);
+  const focusMonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   // Collect unique members
   const allMembers = [];
@@ -945,6 +1438,29 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     return labels[statusKind(card)] || "Active";
   }
 
+  function normalizeFocusReviewProposals(sessions = []) {
+    return (Array.isArray(sessions) ? sessions : []).flatMap(session =>
+      (session.tasks || [])
+        .filter(task => task.status === "pending")
+        .map((task, index) => ({
+          id: `review-${session.id || "session"}-${task.id || task.externalTaskId || index}`,
+          kind: "review",
+          name: task.title || task.name || "Untitled proposal",
+          diffStatus: task.diffStatus || task.diff || "create_new",
+          confidence: Number(task.confidence ?? task.confidenceScore ?? 0.86),
+          risk: task.risk || task.riskLevel || task.sideEffectRisk || "low",
+          target: [task.targetBoardName || task.boardName, task.targetListName || task.listName].filter(Boolean).join(" · ") || "Review Queue",
+          sessionTitle: session.title || session.id || "AI review session",
+        }))
+    );
+  }
+
+  function filterReviewProposals(items) {
+    if (focusSource === "trello") return [];
+    if (!["all", "review-ai"].includes(focusStatus)) return [];
+    return items;
+  }
+
   function applyFocusFilters(cards) {
     let result = filterOwner(cards);
     if (focusSource !== "all") result = result.filter(c => sourceKind(c) === focusSource);
@@ -963,38 +1479,103 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
 
   function buildLanes(cards) {
     const active = applyFocusFilters(cards.filter(c => !c.dueComplete));
-    const done = applyFocusFilters(cards.filter(c => c.dueComplete));
-    const doNow = active.filter(c => isPriority(c) || isDueSoon(c));
     const blocked = active.filter(isBlocked);
-    const reviewAi = active.filter(isAiWork);
+    const blockedIds = new Set(blocked.map(card => card.id));
+    const reviewAi = filterReviewProposals(reviewProposals);
+    const doNow = active.filter(c =>
+      !blockedIds.has(c.id) &&
+      (isPriority(c) || isDueSoon(c))
+    );
+    const doNowIds = new Set(doNow.map(card => card.id));
     const schedule = active.filter(c =>
       c.due &&
       new Date(c.due) > now &&
       new Date(c.due) <= weekEnd &&
-      !doNow.some(d => d.id === c.id) &&
-      !blocked.some(d => d.id === c.id)
+      !doNowIds.has(c.id) &&
+      !blockedIds.has(c.id)
     );
-    const doneThisWeek = done.filter(c =>
-      c.due &&
-      new Date(c.due) >= weekStart &&
-      new Date(c.due) <= weekEnd
-    );
-
     return [
       { key: "do-now", label: "Do Now", hint: "P0/P1, urgent, overdue, or due in 48h", cards: sortFocus(doNow) },
-      { key: "review-ai", label: "Review AI", hint: "Pending review plus AI-agent/source tasks", cards: sortFocus(reviewAi), showReviewAction: pendingCount > 0 },
+      { key: "review-ai", label: "Review AI", hint: "Pending Review Queue proposals", cards: sortFocus(reviewAi), showReviewAction: true },
       { key: "waiting", label: "Waiting / Blocked", hint: "Blocked, waiting, held, or stuck work", cards: sortFocus(blocked) },
       { key: "schedule", label: "Schedule", hint: "Active work due in the next 7 days", cards: sortFocus(schedule) },
-      { key: "done", label: "Done This Week", hint: "Completed cards with due dates in this weekly window", cards: sortFocus(doneThisWeek) },
     ];
   }
 
   function cardMeta(card) {
     const bits = [`<span class="focus-task-board">${esc(card.boardName)}</span>`];
-    if (card.listName) bits.push(`<span>${esc(card.listName)}</span>`);
-    if (card.due) bits.push(buildDueBadge(card.due, card.dueComplete));
+    if (card.listName) bits.push(`<span class="focus-meta-dot">&middot;</span><span>${esc(card.listName)}</span>`);
+    bits.push('<span class="focus-meta-dot">&middot;</span>');
+    if (card.due) bits.push(focusDuePill(card.due, card.dueComplete));
     else bits.push('<span class="focus-muted">No due</span>');
     return bits.join("");
+  }
+
+  function focusDuePill(due, complete) {
+    const d = new Date(due);
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dueDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const days = Math.round((dueDay - today) / 86400000);
+    const time = d.toLocaleTimeString("th-TH", { hour: "2-digit", minute: "2-digit" });
+    const tone = complete ? "done" : days < 0 ? "over" : days <= 1 ? "soon" : "ok";
+    const text = complete ? `Done ${time}`
+      : days === 0 ? `${time} today`
+        : days === 1 ? `${time} tomorrow`
+          : days < 0 ? `${Math.abs(days)}d overdue`
+            : days <= 7 ? `in ${days}d`
+              : formatThaiDateTime(due, false);
+    return `<span class="focus-due is-${tone}">${esc(text)}</span>`;
+  }
+
+  function labelDots(card, limit = 4) {
+    const labels = (card.labels || []).filter(l => l.name);
+    const visible = labels.slice(0, limit);
+    const hidden = Math.max(0, labels.length - visible.length);
+    return [
+      ...visible.map(l => `<span class="focus-label-dot" title="${esc(l.name)}" style="background:${labelColor(l.color)}"></span>`),
+      hidden ? `<span class="focus-label-more">+${hidden}</span>` : "",
+    ].join("");
+  }
+
+  function renderFocusLaneCard(card) {
+    const labels = labelDots(card);
+    return `
+      <div class="focus-task-row lane-item" data-card-id="${esc(card.id)}">
+        <div class="focus-task-name lt">${esc(card.name)}</div>
+        <div class="focus-task-meta lm">${cardMeta(card)}</div>
+        ${labels ? `<div class="focus-task-meta lm focus-label-row">${labels}</div>` : ""}
+      </div>
+    `;
+  }
+
+  function reviewDiffLabel(kind) {
+    const labels = {
+      create_new: "Create new",
+      update_existing: "Update",
+      move_card: "Move",
+      no_change: "No change",
+    };
+    return labels[kind] || String(kind || "Proposal").replace(/[_-]+/g, " ");
+  }
+
+  function reviewRiskLabel(level) {
+    return String(level || "low").replace(/_/g, " ").toUpperCase();
+  }
+
+  function renderFocusReviewCard(item) {
+    const confidence = Math.max(0, Math.min(100, Math.round((item.confidence || 0) * 100)));
+    return `
+      <div class="focus-review-row lane-item" data-review-proposal="${esc(item.id)}">
+        <div class="focus-task-name lt">${esc(item.name)}</div>
+        <div class="focus-task-meta lm">
+          <span class="focus-diff-badge">${esc(reviewDiffLabel(item.diffStatus))}</span>
+        </div>
+        <div class="focus-task-meta lm">
+          <span class="focus-confidence">Conf ${confidence}%</span>
+          <span class="focus-risk is-${esc(String(item.risk || "low").toLowerCase())}">${esc(reviewRiskLabel(item.risk))}</span>
+        </div>
+      </div>
+    `;
   }
 
   function ownerLoadStats(cards) {
@@ -1040,14 +1621,19 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     const doNowCount = lanes.find(l => l.key === "do-now")?.cards.length || 0;
     const reviewAiCount = lanes.find(l => l.key === "review-ai")?.cards.length || 0;
     const blockedCount = lanes.find(l => l.key === "waiting")?.cards.length || 0;
-    const doneCount = lanes.find(l => l.key === "done")?.cards.length || 0;
+    const doneCount = applyFocusFilters(allCards.filter(c =>
+      c.dueComplete &&
+      c.due &&
+      new Date(c.due) >= weekStart &&
+      new Date(c.due) <= weekEnd
+    )).length;
     const { counts: ownerCounts, overloaded } = ownerLoadStats(allCards);
 
     const ownerOpts = allMembers.map(m =>
       `<option value="${esc(m.id)}"${S.focusOwner === m.id ? " selected" : ""}>${esc(m.fullName || m.username || m.id)}</option>`
     ).join("");
 
-    const weekRange = `${formatThaiDateTime(weekStart, false)} - ${formatThaiDateTime(weekEnd, false)}`;
+    const weekRange = `Week of ${weekStart.getDate()} - ${weekEnd.getDate()} ${focusMonthNames[weekEnd.getMonth()]} ${weekEnd.getFullYear()}`;
     const selectedOwner = S.focusOwner
       ? allMembers.find(m => m.id === S.focusOwner)
       : null;
@@ -1069,33 +1655,35 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
       ["review-ai", "Review"],
       ["blocked", "Blocked"],
       ["schedule", "Scheduled"],
-      ["done", "Done"],
     ].map(([value, label]) => filterButtonHtml("status", value, label, focusStatus === value)).join("");
 
-    const laneHtml = lanes.map(({ key, label, hint, cards, showReviewAction }) => `
-      <div class="focus-day-group is-${key}">
-        <div class="focus-day-header">
-          <span class="focus-day-label">${esc(label)}</span>
-          <span class="focus-day-count">${cards.length}</span>
-        </div>
-        <div class="focus-lane-hint">${esc(hint)}</div>
-        ${showReviewAction ? `<button class="focus-review-action" data-action="review">Open Review Queue (${pendingCount})</button>` : ""}
-        ${cards.map(c => `
-          <div class="focus-task-row" data-card-id="${c.id}">
-            <div class="focus-task-name">${esc(c.name)}
-              ${(c.labels || []).filter(l => l.name).map(l =>
-                `<span class="task-label-chip" style="background:${labelColor(l.color)}">${esc(l.name)}</span>`
-              ).join("")}
-            </div>
-            <div class="focus-task-meta">
-              <span class="focus-source-chip is-${sourceKind(c)}">${sourceLabel(c)}</span>
-              <span class="focus-status-chip is-${statusKind(c)}">${statusLabel(c)}</span>
-              ${sourceKind(c) === "ai" ? `<span class="focus-review-chip">Review Queue handoff</span>` : ""}
-              ${cardMeta(c)}
-            </div>
-          </div>`).join("")}
-        ${!cards.length && !showReviewAction ? `<div class="focus-lane-empty">No matching work. Adjust owner, source, or status filters if this lane should contain work.</div>` : ""}
-      </div>`).join("");
+    const laneHtml = lanes.map(({ key, label, hint, cards, showReviewAction }) => {
+      const visibleCards = cards.slice(0, 3);
+      const hiddenCount = Math.max(0, cards.length - visibleCards.length);
+      const laneTone = key === "do-now" ? "do"
+        : key === "review-ai" ? "review"
+          : key === "waiting" ? "blocked"
+            : "schedule";
+      return `
+        <div class="focus-day-group panel lane is-${key}" ${key === "review-ai" ? 'data-uiv2="review-ai-lane"' : key === "waiting" ? 'data-uiv2="blocked-lane"' : ""}>
+          <div class="focus-day-header lane-head">
+            <span class="focus-day-label lane-name ${laneTone}"><span class="pip"></span>${esc(label)}</span>
+            <span class="focus-day-count lane-count">${cards.length}</span>
+          </div>
+          <div class="focus-lane-hint">${esc(hint)}</div>
+          <div class="lane-body">
+            ${key === "review-ai" ? `
+              <div class="focus-review-explainer" data-uiv2="review-ai-explainer">
+                <strong>Review Queue only.</strong>
+                <span>Use this lane to plan AI-originated proposals; approve, reject, hold, or edit in Review Queue before any Trello execution.</span>
+              </div>` : ""}
+            ${visibleCards.map(c => c.kind === "review" ? renderFocusReviewCard(c) : renderFocusLaneCard(c)).join("")}
+            ${showReviewAction ? `<button class="focus-review-action btn sm ghost" type="button" data-action="review">Open queue ${icon("arrowR", "width=\"11\" height=\"11\"")}</button>` : ""}
+            ${hiddenCount ? `<div class="focus-lane-more">+${hiddenCount} more in this lane</div>` : ""}
+            ${!cards.length ? `<div class="focus-lane-empty">${key === "review-ai" ? "No pending Review Queue proposals." : "No matching work. Adjust owner, source, or status filters if this lane should contain work."}</div>` : ""}
+          </div>
+        </div>`;
+    }).join("");
 
     const emptyHtml = !activeCards.length && !doneCount && !pendingCount
       ? `<div class="empty-state" style="padding:48px">
@@ -1107,6 +1695,17 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
 
     content.innerHTML = `
       <div class="focus-wrap focus-page">
+        ${uiRouteBar({
+          title: esc(weekRange),
+          sub: `<span>Prioritized from due dates, labels, review status, and blocked signals.</span><span>&middot;</span><span>owner: ${esc(ownerLabel)}</span>`,
+          actions: `<button class="btn sm" type="button" data-action="owner-filter" aria-label="Focus Weekly Focus owner filter" title="Focus the owner filter, or explain when no owner filter is available.">${icon("filter")} Owner</button><button class="btn ai sm" type="button" data-action="review" aria-label="Open Review Queue from Weekly Focus" title="Open Review Queue for pending AI or review work.">Open Review Queue &middot; ${pendingCount}${icon("arrowR")}</button>`,
+        })}
+        ${uiStatStrip([
+          { label: "Do Now", value: doNowCount, detail: "due / overdue", tone: "warn" },
+          { label: "Review AI", value: reviewAiCount, detail: `${pendingCount} pending`, tone: "ai" },
+          { label: "Blocked", value: blockedCount, detail: "needs owner action", tone: "over" },
+          { label: "Done", value: doneCount, detail: "this week", tone: "ok" },
+        ])}
         <section class="focus-command-panel">
           <div class="focus-command-copy">
             <div class="focus-kicker">Weekly operating view</div>
@@ -1141,7 +1740,7 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
         <div class="focus-toolbar">
           ${allMembers.length ? `
             <span class="at-chip-label">Owner:</span>
-            <select class="at-select" id="focus-owner-sel">
+            <select class="at-select" id="focus-owner-sel" aria-label="Filter Weekly Focus by owner">
               <option value="">Everyone</option>${ownerOpts}
             </select>` : ""}
           <span class="at-chip-label">Source:</span>
@@ -1151,10 +1750,20 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
           <span class="focus-owner-summary">Showing ${esc(ownerLabel)}</span>
           ${pendingBadgeHtml}
         </div>
-        <div class="focus-task-list">
+        <div class="focus-task-list lanes">
           ${laneHtml}${emptyHtml}
         </div>
       </div>`;
+
+    if (typeof setTopbarRouteActions === "function") {
+      setTopbarRouteActions(`
+        <div class="seg" aria-label="Weekly Focus week range">
+          <button type="button" class="${weekOffset === -1 ? "on" : ""}" aria-pressed="${weekOffset === -1}" title="Show the previous weekly focus range." onclick="setWeeklyFocusWeekOffset(-1)">Last week</button>
+          <button type="button" class="${weekOffset === 0 ? "on" : ""}" aria-pressed="${weekOffset === 0}" title="Return to the current weekly focus range." onclick="setWeeklyFocusWeekOffset(0)">This week</button>
+          <button type="button" class="${weekOffset === 1 ? "on" : ""}" aria-pressed="${weekOffset === 1}" title="Preview next week's focus range." onclick="setWeeklyFocusWeekOffset(1)">Next week</button>
+        </div>
+      `);
+    }
 
     const sel = $("focus-owner-sel");
     if (sel) sel.onchange = () => { S.focusOwner = sel.value; render(); };
@@ -1167,6 +1776,17 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
     });
     content.querySelectorAll("[data-action='review']").forEach(btn => {
       btn.onclick = () => navigateTo("review");
+    });
+    content.querySelectorAll("[data-action='owner-filter']").forEach(btn => {
+      btn.onclick = () => {
+        const ownerSelect = $("focus-owner-sel");
+        if (!ownerSelect) {
+          toast("No owner filter is available for the current visible work.");
+          return;
+        }
+        ownerSelect.scrollIntoView({ behavior: "smooth", block: "center" });
+        ownerSelect.focus();
+      };
     });
 
     content.querySelectorAll(".focus-task-row").forEach(row => {
@@ -1183,6 +1803,11 @@ function renderWeeklyFocusPage(allCards, pendingCount) {
 }
 
 // ── Card Modal ────────────────────────────────────────────────────────────────
+function setWeeklyFocusWeekOffset(offset) {
+  S.focusWeekOffset = Number(offset) || 0;
+  showWeeklyFocusPage();
+}
+
 function openCreate(listId, lists) {
   S.editing = { cardId: null, listId, lists: lists || S.currentLists };
   $("modal-title").textContent = "New Card";
@@ -1211,7 +1836,7 @@ function openEdit(card, listId, boardId, lists) {
   populateListSelect(listId, lists || S.currentLists);
   $("list-select-group").classList.remove("hidden");
   $("checklist-section").style.display = "";
-  $("checklists-container").innerHTML = '<div style="color:var(--text-muted);font-size:12px">Loading...</div>';
+  $("checklists-container").innerHTML = '<div class="cl-loading">Loading checklist...</div>';
   setupGCalSyncRow(!!card.due);
   showModal();
   loadChecklists(card.id);
@@ -1228,7 +1853,7 @@ function openEditAllTasks(card) {
   $("delete-card-btn").classList.remove("hidden");
   $("list-select-group").classList.add("hidden");
   $("checklist-section").style.display = "";
-  $("checklists-container").innerHTML = '<div style="color:var(--text-muted);font-size:12px">Loading...</div>';
+  $("checklists-container").innerHTML = '<div class="cl-loading">Loading checklist...</div>';
   setupGCalSyncRow(!!card.due);
   showModal();
   loadChecklists(card.id);
@@ -1308,9 +1933,28 @@ async function refreshCurrentView() {
   updateOverdueAlerts(); // P8-1: update tab title + session overdue alert
 }
 
+function currentRouteFeedbackLabel() {
+  const labels = {
+    today: "Today",
+    review: "Review Queue",
+    all: "All Tasks",
+    boards: "Boards Monitor",
+    calendar: "Calendar",
+    planner: "Planner",
+    okr: "OKR / Portfolio",
+    focus: "Weekly Focus",
+    docs: "Docs / AI Trace",
+    settings: "Settings",
+    board: "Board",
+    group: "Group",
+  };
+  return labels[S.mode] || "Current view";
+}
+
 function confirmDelete() {
   S.pendingDeleteId = S.editing.cardId;
-  $("confirm-modal").classList.remove("hidden");
+  if (typeof openSurface === "function") openSurface($("confirm-modal"));
+  else $("confirm-modal").classList.remove("hidden");
 }
 async function doDelete() {
   closeConfirm(); closeModal();
@@ -1322,9 +1966,18 @@ async function doDelete() {
   } catch (e) { toast("Error: " + e.message, true); }
 }
 
-function showModal()    { $("card-modal").classList.remove("hidden"); }
-function closeModal()   { $("card-modal").classList.add("hidden"); }
-function closeConfirm() { $("confirm-modal").classList.add("hidden"); }
+function showModal() {
+  if (typeof openSurface === "function") openSurface($("card-modal"));
+  else $("card-modal").classList.remove("hidden");
+}
+function closeModal() {
+  if (typeof closeSurface === "function") closeSurface($("card-modal"), "#topbar-refresh-btn");
+  else $("card-modal").classList.add("hidden");
+}
+function closeConfirm() {
+  if (typeof closeSurface === "function") closeSurface($("confirm-modal"), "#delete-card-btn");
+  else $("confirm-modal").classList.add("hidden");
+}
 
 // ── Checklists ────────────────────────────────────────────────────────────────
 async function loadChecklists(cardId) {
@@ -1333,7 +1986,7 @@ async function loadChecklists(cardId) {
     const checklists = await api.get(`/api/cards/${cardId}/checklists`);
     renderChecklists(cardId, checklists);
   } catch (e) {
-    container.innerHTML = `<p style="color:var(--danger);font-size:12px">⚠ ${e.message}</p>`;
+    container.innerHTML = `<p style="color:var(--danger);font-size:12px">${icon("alert")} ${esc(e.message)}</p>`;
   }
 }
 
@@ -1341,7 +1994,7 @@ function renderChecklists(cardId, checklists) {
   const container = $("checklists-container");
   container.innerHTML = "";
   if (!checklists.length) {
-    container.innerHTML = '<p style="color:var(--text-muted);font-size:12px;padding:4px 0">No checklists</p>';
+    container.innerHTML = '<div class="cl-empty">No checklists</div>';
     return;
   }
   checklists.forEach(cl => {
@@ -1353,26 +2006,30 @@ function renderChecklists(cardId, checklists) {
     section.className = "cl-section";
     section.innerHTML = `
       <div class="cl-header">
-        <span class="cl-name">☑ ${esc(cl.name)}</span>
-        <span class="cl-progress-text">${done}/${total}</span>
-        <button class="cl-del-btn" title="Delete checklist" data-clid="${cl.id}">🗑</button>
+        <span class="cl-name" title="${esc(cl.name)}">${icon("checkSquare")} <span>${esc(cl.name)}</span></span>
+        <span class="cl-progress-text" aria-label="${done} of ${total} checklist items complete">${done}/${total}</span>
+        <button class="cl-del-btn" type="button" title="Delete checklist" aria-label="Delete checklist: ${esc(cl.name)}" data-clid="${cl.id}">${icon("trash")}</button>
       </div>
       <div class="cl-progress-bar"><div class="cl-progress-fill" style="width:${pct}%"></div></div>
       <ul class="cl-items">
         ${cl.checkItems.sort((a,b) => a.pos - b.pos).map(item => `
           <li class="cl-item${item.state === "complete" ? " done" : ""}" data-itemid="${item.id}" data-clid="${cl.id}">
-            <input type="checkbox" class="cl-checkbox" ${item.state === "complete" ? "checked" : ""}
-              data-cardid="${cardId}" data-clid="${cl.id}" data-itemid="${item.id}">
-            <span class="cl-item-name">${esc(item.name)}</span>
-            <button class="cl-item-del" data-clid="${cl.id}" data-itemid="${item.id}">✕</button>
+            <label class="cl-checkline">
+              <input type="checkbox" class="cl-checkbox" ${item.state === "complete" ? "checked" : ""}
+                aria-label="${item.state === "complete" ? "Mark incomplete" : "Mark complete"}: ${esc(item.name)}"
+                data-cardid="${cardId}" data-clid="${cl.id}" data-itemid="${item.id}">
+              <span class="cl-item-name">${esc(item.name)}</span>
+            </label>
+            <button class="cl-item-del" type="button" title="Delete checklist item" aria-label="Delete checklist item: ${esc(item.name)}" data-clid="${cl.id}" data-itemid="${item.id}">${icon("x")}</button>
           </li>
         `).join("")}
       </ul>
       <div class="cl-add-item">
-        <input type="text" class="cl-add-input form-input" placeholder="Add an item..." data-clid="${cl.id}">
-        <button class="btn btn-ghost btn-sm cl-add-btn" data-clid="${cl.id}" data-cardid="${cardId}">Add</button>
+        <input type="text" class="cl-add-input form-input" placeholder="Add an item..." aria-label="Add checklist item to ${esc(cl.name)}" data-clid="${cl.id}">
+        <button class="btn btn-ghost btn-sm cl-add-btn" type="button" data-clid="${cl.id}" data-cardid="${cardId}">Add</button>
       </div>
     `;
+    if (typeof ensureButtonTypes === "function") ensureButtonTypes(section);
 
     section.querySelector(".cl-del-btn").onclick = async function() {
       if (!confirm(`Delete checklist "${cl.name}"?`)) return;
@@ -1441,7 +2098,8 @@ async function openManage() {
   if (!S.draftConfig.allowedWorkspaceIds) S.draftConfig.allowedWorkspaceIds = [];
   renderGroupsEditor();
   renderVisibilityEditor();
-  $("manage-modal").classList.remove("hidden");
+  if (typeof openSurface === "function") openSurface($("manage-modal"));
+  else $("manage-modal").classList.remove("hidden");
   switchManageTab("groups");
   loadWorkspacesEditor();
 }
@@ -1473,7 +2131,7 @@ async function loadWorkspacesEditor() {
         row.innerHTML = `
           <label class="ws-label">
             <input type="checkbox" class="ws-check" data-wsid="${ws.id}" ${isChecked ? "checked" : ""}>
-            <span class="ws-name">🏢 ${esc(ws.displayName || ws.name)}</span>
+            <span class="ws-name">${icon("building")} ${esc(ws.displayName || ws.name)}</span>
           </label>
           <span style="font-size:11px;color:var(--text-muted)">${esc(ws.name)}</span>
         `;
@@ -1492,6 +2150,7 @@ async function loadWorkspacesEditor() {
       const shortcuts = document.createElement("div");
       shortcuts.style.cssText = "display:flex;gap:8px;margin-top:10px";
       const allBtn = document.createElement("button");
+      allBtn.type = "button";
       allBtn.className = "btn btn-ghost";
       allBtn.style.fontSize = "12px";
       allBtn.textContent = "เลือกทั้งหมด";
@@ -1502,7 +2161,7 @@ async function loadWorkspacesEditor() {
     };
     render();
   } catch (e) {
-    container.innerHTML = `<p style="color:var(--danger)">⚠ ${e.message}</p>`;
+    container.innerHTML = `<p style="color:var(--danger)">${icon("alert")} ${esc(e.message)}</p>`;
   }
 }
 
@@ -1524,7 +2183,11 @@ function updateWsHint(workspaces) {
   }
 }
 
-function closeManage() { $("manage-modal").classList.add("hidden"); S.draftConfig = null; }
+function closeManage() {
+  if (typeof closeSurface === "function") closeSurface($("manage-modal"), "#topbar-refresh-btn");
+  else $("manage-modal").classList.add("hidden");
+  S.draftConfig = null;
+}
 
 function renderGroupsEditor() {
   const container = $("groups-editor");
@@ -1537,7 +2200,7 @@ function renderGroupsEditor() {
       <div class="group-edit-header">
         <input type="color" class="group-color-picker" value="${group.color || "#6366f1"}" data-gi="${gi}">
         <input type="text" class="group-edit-name" value="${esc(group.name)}" placeholder="Group name..." data-gi="${gi}">
-        <button class="group-del-btn" data-gi="${gi}" title="Delete group">🗑</button>
+        <button class="group-del-btn" type="button" data-gi="${gi}" title="Delete group">${icon("trash")}</button>
       </div>
       <div class="group-boards-selector" data-gi="${gi}">
         ${S.boards.filter(b => !S.config.hiddenBoards.includes(b.id)).map(b => `
@@ -1575,8 +2238,8 @@ function renderVisibilityEditor() {
     row.innerHTML = `
       <span class="vis-dot" style="background:${COLORS[i % COLORS.length]}"></span>
       <span class="vis-name" title="${esc(board.name)}">${esc(board.name)}</span>
-      <button class="vis-toggle${isHidden ? " hidden-toggle" : ""}" data-bid="${board.id}">
-        ${isHidden ? "🙈 Hidden" : "👁 Visible"}
+      <button class="vis-toggle${isHidden ? " hidden-toggle" : ""}" type="button" data-bid="${board.id}">
+        ${isHidden ? `${icon("eyeOff")} Hidden` : `${icon("eye")} Visible`}
       </button>
     `;
     row.querySelector(".vis-toggle").onclick = function() {
@@ -1584,7 +2247,7 @@ function renderVisibilityEditor() {
       const idx = S.draftConfig.hiddenBoards.indexOf(bid);
       if (idx === -1) {
         S.draftConfig.hiddenBoards.push(bid);
-        this.textContent = "🙈 Hidden";
+        this.innerHTML = `${icon("eyeOff")} Hidden`;
         this.classList.add("hidden-toggle");
         S.draftConfig.groups.forEach(g => {
           const bi = g.boardIds.indexOf(bid);
@@ -1592,7 +2255,7 @@ function renderVisibilityEditor() {
         });
       } else {
         S.draftConfig.hiddenBoards.splice(idx, 1);
-        this.textContent = "👁 Visible";
+        this.innerHTML = `${icon("eye")} Visible`;
         this.classList.remove("hidden-toggle");
       }
     };
@@ -1638,12 +2301,33 @@ async function saveConfig() {
 
 // ── Topbar Refresh ────────────────────────────────────────────────────────────
 async function topbarRefresh() {
-  S.allCardsCache = null;
-  await api.post("/api/cache/clear").catch(() => {}); // B16: bypass server TTL on manual refresh
-  const [boards] = await Promise.all([api.get("/api/boards").catch(() => S.boards)]);
-  S.boards = boards;
-  renderSidebar();
-  await refreshCurrentView();
+  const btn = $("topbar-refresh-btn");
+  const routeLabel = currentRouteFeedbackLabel();
+  const scopeName = typeof scopeLabel === "function" ? scopeLabel() : "All BUs";
+  if (btn) {
+    btn.disabled = true;
+    btn.classList.add("is-loading");
+    btn.setAttribute("aria-label", `Refreshing ${routeLabel}`);
+    btn.setAttribute("title", `Refreshing ${routeLabel}`);
+  }
+  try {
+    S.allCardsCache = null;
+    await api.post("/api/cache/clear").catch(() => {}); // B16: bypass server TTL on manual refresh
+    const [boards] = await Promise.all([api.get("/api/boards").catch(() => S.boards)]);
+    S.boards = boards;
+    renderSidebar();
+    await refreshCurrentView();
+    if (typeof updateIntegrationStatusbar === "function") updateIntegrationStatusbar();
+    const syncText = $("statusbar-sync")?.textContent?.trim();
+    toast(`${routeLabel} refreshed · Scope: ${scopeName}${syncText ? ` · last sync ${syncText}` : ""}`);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.classList.remove("is-loading");
+      btn.setAttribute("aria-label", "Refresh current view");
+      btn.setAttribute("title", "Refresh current view");
+    }
+  }
 }
 
 // ── Toggle hidden boards ──────────────────────────────────────────────────────
@@ -1654,7 +2338,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const ul = $("hidden-boards-list");
       const visible = ul.style.display !== "none";
       ul.style.display = visible ? "none" : "block";
-      toggleBtn.textContent = `${visible ? "👁" : "🙈"} ${visible ? "Show" : "Hide"} hidden boards (${$("hidden-count").textContent})`;
+      toggleBtn.innerHTML = `${visible ? icon("eye") : icon("eyeOff")} ${visible ? "Show" : "Hide"} hidden boards (<span id="hidden-count">${$("hidden-count").textContent}</span>)`;
     };
   }
 });
@@ -1677,12 +2361,12 @@ function updateOverdueAlerts() {
 function showOverdueAlert(count) {
   const el = $("overdue-alert");
   el.innerHTML = `
-    <span class="overdue-alert-icon">⚠️</span>
+    <span class="overdue-alert-icon">${icon("alert")}</span>
     <div class="overdue-alert-body">
       <div class="overdue-alert-title">${count} tasks overdue</div>
       <div class="overdue-alert-msg">มี tasks ที่เกินกำหนดเกิน 3 วัน</div>
     </div>
-    <button class="overdue-alert-close" onclick="dismissOverdueAlert()" title="ปิด">✕</button>
+    <button class="overdue-alert-close" type="button" onclick="dismissOverdueAlert()" title="Close" aria-label="Close overdue alert">${icon("x")}</button>
   `;
   el.classList.remove("hidden");
   // click away (outside the alert) also dismisses
@@ -1723,6 +2407,7 @@ document.addEventListener("keydown", e => {
     closeCalSetup();
     closeCalModal();
     if (typeof closeReviewTaskDrawer === "function") closeReviewTaskDrawer();
+    if (typeof closeDocsDetailDrawer === "function") closeDocsDetailDrawer();
   }
   if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
     if (!$("card-modal").classList.contains("hidden"))      saveCard();
@@ -1734,9 +2419,9 @@ window.addEventListener("message", e => {
   if (e.origin !== window.location.origin) return;
   if (e.data === "cal_connected") {
     CAL.status = { connected: true };
-    const gcalEl = $("sidebar-gcal-status");
-    if (gcalEl) gcalEl.style.display = "";
+    if (typeof updateGcalSidebarStatus === "function") updateGcalSidebarStatus(true);
     toast("Google Calendar connected ✓");
+    if (typeof updateIntegrationStatusbar === "function") updateIntegrationStatusbar();
     navigateTo("calendar");
   }
 });

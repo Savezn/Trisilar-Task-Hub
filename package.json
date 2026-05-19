@@ -27,6 +27,9 @@
     "verify:rux-ai-trace": "node scripts/verify-rux-ai-trace-clarity.js",
     "verify:rux-decision-flow": "node scripts/verify-rux-today-tasks-decision-flow.js",
     "verify:rux-browser-regression": "node scripts/verify-rux-browser-regression.js",
+    "verify:uiv2-full-fidelity": "node scripts/verify-uiv2-full-fidelity.js",
+    "verify:uiv2-state-fixtures": "node scripts/capture-uiv2-state-fixtures.js",
+    "preview:uiv2-fixture": "node scripts/preview-uiv2-fixture.js",
     "check:all": "node scripts/verify-frontend.js && npm run smoke",
     "test": "node --test tests/*.test.js"
   },

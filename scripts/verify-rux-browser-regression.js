@@ -132,16 +132,16 @@ const docsPayload = {
 };
 
 const routeMatrix = [
-  { path: "/today", texts: ["Daily command center", "Start here", "Source: Trello", "Next action:", "Needs human approval"] },
-  { path: "/review", texts: ["Review Queue", "awaiting approval", "RUX-05 fixture session"] },
-  { path: "/all", texts: ["Tasks", "Source: Trello", "Next action:", "Nora PM"] },
+  { path: "/today", texts: ["Daily command center", "Trello", "Today on calendar", "human gate"] },
+  { path: "/review", texts: ["AI Review Queue", "human approval", "RUX-05 fixture session"] },
+  { path: "/all", texts: ["Cross-board task inbox", "Trello execution source", "Next action:", "Nora PM"] },
   { path: "/boards", texts: ["Boards", "Revenue Board"] },
   { path: "/calendar", texts: ["Calendar", "Connect Google Calendar", "Google Calendar is disconnected"] },
   { path: "/planner", texts: ["Daily Planner", "Google Tasks is disconnected", "Trello deadlines"] },
-  { path: "/okr", texts: ["OKR Progress", "KR1.1 Stabilize Task Hub regression gate"] },
+  { path: "/okr", texts: ["OKR / Portfolio", "KR1.1 Stabilize Task Hub regression gate"] },
   { path: "/focus", texts: ["Weekly Focus", "Open Review Queue", "Do Now"] },
   { path: "/settings", texts: ["Settings", "Trello", "Paperclip"] },
-  { path: "/docs", texts: ["Agent Documents", "RUX-05 QA Fixture", "Source system", "Source mode"] },
+  { path: "/docs", texts: ["Docs / AI Trace", "RUX-05 QA Fixture", "Source system", "Source mode"] },
 ];
 
 const viewports = [
@@ -205,7 +205,7 @@ async function installControlledApi(page, { trelloVerified = true } = {}) {
     if (pathname === "/api/trello/status") {
       return fulfillJson(route, trelloVerified
         ? { configured: true, verified: true, connected: true, state: "verified" }
-        : { configured: false, verified: false, connected: false, state: "disconnected", error: "Runtime needs to configure Trello credentials before board data can load." });
+        : { configured: false, verified: false, connected: false, state: "disconnected", error: "Runtime needs to configure Trello private connection values before board data can load." });
     }
     if (pathname === "/api/config") {
       return fulfillJson(route, {
@@ -294,7 +294,7 @@ async function checkDisconnectedToday(browser, baseUrl) {
   await installControlledApi(page, { trelloVerified: false });
   await page.goto(`${baseUrl}/today`, { waitUntil: "domcontentloaded" });
   await waitForVisibleText(page, "Today needs Trello verification");
-  await waitForVisibleText(page, "Runtime owns Trello credential verification");
+  await waitForVisibleText(page, "Runtime owns Trello connection verification");
   const envCopy = await visibleTextCount(page, ".env");
   const apiKeyCopy = await visibleTextCount(page, "API key");
   await assertNoHorizontalOverflow(page, "mobile disconnected /today");

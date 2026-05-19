@@ -4,8 +4,8 @@
 **Status:** Active
 **Owner:** PM
 **Created:** 2026-05-08
-**Last Updated:** 2026-05-15 - **Updated by:** Codex PM / Integration Owner
-**Related Docs:** `../../TODO.md`, `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_5_FOUNDATION_HARDENING_PLAN.md`, `../adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md`, `../adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md`, `../reference/PROJECT_CONTEXT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`
+**Last Updated:** 2026-05-17 - **Updated by:** Codex PM / UX Owner / QA
+**Related Docs:** `../../TODO.md`, `../../CURRENT_SPRINT.md`, `VERSION_0_2_PLAN.md`, `VERSION_0_5_FOUNDATION_HARDENING_PLAN.md`, `VERSION_0_6_UI_V2_PLANNING_SCOPE.md`, `../design/ui-design-v2/UI_V2_CODEX_PARITY_HANDOFF.md`, `../design/ui-design-v2/UI_V2_PROTOTYPE_SOURCE_INVENTORY.md`, `../design/ui-design-v2/UI_V2_VISUAL_PARITY_REVIEW.md`, `../logs/UI_V2_FULL_ROUTE_FIDELITY_AUDIT.md`, `../adr/ADR_0003_FOUNDATION_BEFORE_UI_TEAM_OS.md`, `../adr/ADR_0004_V05_PERSISTENCE_TESTS_AND_CONTRACTS.md`, `../reference/PROJECT_CONTEXT.md`, `../reference/ORGANIZATION_OPERATING_MODEL.md`, `../reference/AI_AGENT_GOVERNANCE.md`, `../reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, `../reference/BRANCH_ENVIRONMENT_WORKFLOW.md`, `../testing/TEST_STRATEGY.md`, `../logs/DECISION_LOG.md`
 
 ---
 
@@ -62,7 +62,7 @@ Do not expand into a heavy project-management platform. Each ladder level should
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 | UX issue intake, route-by-route usability review, Review Queue clarity, audit visibility, repeatable browser regression, and release checklist for `dev -> main` | RUX-02A through RUX-06 are PM accepted, integrated, deployed to dev/demo, and release-candidate verified; production deploy remains a separate runtime decision |
 | L6 | V0.4 Live AI Operations | Complete; production permanent enablement active with Review Queue gate | Paperclip/live AI handoff can operate with approval gates, attribution, and no accidental Trello/Calendar side effects | V0.4-PROD-05 accepted and verified; production webhook is enabled only behind Cloudflare Access, HMAC, and Review Queue controls |
 | L7 | V0.5 Foundation Hardening | Complete / PM Accepted after hosted dev/demo SQLite canary short monitor | Persistence, test gates, and app-owned contracts are strong enough for UI V2 and Team OS expansion | Meaningful `npm test`, deterministic fixtures, contract validation, SQLite migration, local integration QA, hosted SQLite canary, rollback proof, and short monitor passed |
-| L8 | V0.6 UI V2 Design System Implementation | Next implementation route | UI V2 tokens/component language are promoted route-by-route without uncontrolled rewrite | Browser regression passes across desktop/mobile core routes and Review Queue safety remains intact |
+| L8 | V0.6 UI V2 Design System Implementation | QA pass / PM-UX re-review pending | UI V2 tokens/component language are promoted route-by-route without uncontrolled rewrite, and parity follow-ups use the handoff contract before code changes | `UI_V2_CODEX_PARITY_HANDOFF.md` first-read; route/component audits and screenshot evidence pass; latest sidebar/icon correction is QA-passed after PM/UX reopened the visual review |
 | L9 | V0.7 Team Operating System Pilot | Future | Team onboarding, management reporting, portfolio rhythm, and non-developer usability are mature enough for routine company use | Team pilot feedback and operational adoption pass |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only | Full rewrite is approved only if V0.5/V0.6 evidence proves incremental migration is insufficient | PM accepts a decision memo comparing current static JS, Vite, React, Next, and migration risks |
 
@@ -242,8 +242,9 @@ Focus:
 - Implement route-by-route, not as a whole-app rewrite.
 - Start with shell/navigation and route states, then Today/Tasks, Review Queue/Docs, Settings/operations.
 - Keep the current static JS workflow unless V0.5 produces an accepted build-system ADR.
+- Use source-led parity workflow for all remaining fixes: read `UI_V2_CODEX_PARITY_HANDOFF.md`, name prototype source, log a gap row, patch narrowly, and regenerate evidence.
 
-UI V2 design handoff is ready for V0.6. Production implementation may proceed route-by-route now that V0.5 foundation is accepted, while preserving V0.5 contracts and Review Queue safety. The first slice is S0 shell/navigation/token/state foundation in `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`.
+UI V2 design handoff is implemented through the current full-fidelity recovery branch. PM/UX reopened the final visual review for sidebar/icon primitive drift; the targeted correction is QA-passed and awaits PM/UX re-review. Future production follow-ups may proceed only as targeted source-led parity fixes, while preserving V0.5 contracts and Review Queue safety. Generated audit PASS rows remain evidence, not final acceptance for newly reopened gaps.
 
 ### L9 - V0.7 Team Operating System Pilot
 
@@ -277,6 +278,7 @@ Do not execute a full rewrite while a production runtime switch, V0.5 hosted can
 - Do not use `main` as an integration branch.
 - Do not skip QA after behavior-changing Dev work.
 - Do not implement UI V2 production code outside the V0.6 route-by-route plan; V0.5 foundation acceptance is now complete.
+- Do not call UI V2 "full fidelity accepted" from selector/no-overflow checks alone; use the source-led handoff and PM/UX visual review gate.
 - Do not implement Team OS product features before UI shell/workflow stability.
 - Do not execute a full rewrite before an accepted V0.8+ decision memo.
 - Do not mix V0.5 foundation work into dirty UI V2 design artifact branches/worktrees.
@@ -369,3 +371,6 @@ This is now a post-V0.3 main release route. Do not reopen W1 Task Hub runtime wo
 | 2026-05-16 | Completed V0.5 hosted dev/demo SQLite canary with rollback proof; dev/demo remains SQLite-enabled on `taskhub-dashboard.service` | Codex PM / Runtime Owner / QA |
 | 2026-05-16 | PM accepted V0.5 foundation after short monitor passed at `2026-05-16T12:44:25Z` and `2026-05-16T12:45:35Z`; routed V0.6 UI V2 implementation | Codex PM / Runtime Owner / QA |
 | 2026-05-16 | Accepted V0.6-S0 first-slice implementation plan for shell/navigation/token/state foundation on `codex/v06-ui-v2-implementation`; runtime, Paperclip live behavior, Team OS product scope, external side effects, and Full Rewrite stay out of scope | Codex PM / UX Owner |
+| 2026-05-17 | Adopted `UI_V2_CODEX_PARITY_HANDOFF.md` as the first-read source-led contract for V0.6 full-fidelity recovery and PM/UX visual review | Codex PM / UX Owner / QA |
+| 2026-05-17 | Accepted V0.6 UI V2 source-led full-route parity after PM/UX final visual review, with Review Queue safety extras, hidden-board disclosure, Settings Paperclip controls, and Calendar/Planner disconnected states logged as deviations | Codex PM / UX Owner / QA |
+| 2026-05-17 | Reopened V0.6 UI V2 final visual review after PM/UX found sidebar/icon primitive drift; targeted repair is QA-passed and PM/UX re-review is pending | Codex PM / UX Owner / QA |

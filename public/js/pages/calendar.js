@@ -9,6 +9,7 @@ const CAL = {
   reviewSessions: [],
   currentYear: new Date().getFullYear(),
   currentMonth: new Date().getMonth(),
+  viewMode: "month",
   editingEventId: null,
   selectedBoardIds: null,
 };
@@ -23,10 +24,24 @@ async function showCalendar() {
     $("add-list-btn").classList.add("hidden");
 
     CAL.status = await api.get("/api/calendar/status").catch(() => null);
+    if (S.mode !== "calendar") return;
 
     if (!CAL.status?.connected) {
+      await renderCalendar();
+      return;
       $("board-content").innerHTML = `
         <div class="calendar-view calendar-disconnected">
+          ${uiRouteBar({
+            title: "Calendar",
+            sub: "<span>Google Calendar disconnected</span><span>Trello deadlines and Review Queue commitments remain visible in source routes</span>",
+            actions: `<button class="btn primary" type="button" onclick="openCalSetup()">${icon("calendar")} Connect Calendar</button>`,
+          })}
+          ${uiStatStrip([
+            { label: "Google events", value: "Off", detail: "connect in Settings" },
+            { label: "Trello deadlines", value: "Source", detail: "Today / Tasks / Planner", tone: "warn" },
+            { label: "Review items", value: "Gate", detail: "human approval", tone: "ai" },
+            { label: "Owner action", value: "Settings", detail: "safe setup copy" },
+          ])}
           <div class="calendar-command-panel">
             <div class="calendar-command-copy">
               <div class="calendar-kicker">${icon("calendar")} Calendar view</div>
@@ -38,7 +53,7 @@ async function showCalendar() {
               <div class="calendar-stat-card"><span>Owner action</span><strong>Settings</strong></div>
             </div>
           </div>
-          <div class="calendar-source-summary" aria-label="Calendar source availability">
+          <div class="calendar-source-summary cal-legend panel" aria-label="Calendar source availability">
             <div class="calendar-source-card is-muted">
               <span><i class="source-dot is-google"></i>Google Calendar</span>
               <strong>Needs connection</strong>
@@ -55,17 +70,18 @@ async function showCalendar() {
               <p>Review-derived work remains pending or approved in Review Queue.</p>
             </div>
           </div>
-          <div class="cal-connect-state">
+          <div class="cal-connect-state state-card panel">
             <div class="empty-icon">${icon("calendar")}</div>
             <h3>Connect Google Calendar</h3>
             <p>Calendar Owner action: connect Google Calendar in Settings. This route will show product-safe setup guidance only.</p>
-            <button class="btn btn-primary" onclick="openCalSetup()">Connect Google Calendar</button>
+            <button class="btn btn-primary" type="button" onclick="openCalSetup()">Connect Google Calendar</button>
           </div>
         </div>`;
       return;
     }
     await renderCalendar();
   } catch (e) {
+    if (S.mode !== "calendar") return;
     console.error("[Calendar Error]", e);
     $("board-content").innerHTML = `<div class="empty-state"><div class="empty-icon">!</div><h3>Calendar unavailable</h3><p>Calendar data could not be loaded. Calendar Owner should check the Settings connection and retry.</p></div>`;
   }
@@ -73,12 +89,15 @@ async function showCalendar() {
 
 async function renderCalendar() {
   const content = $("board-content");
+  if (S.mode !== "calendar") return;
   try {
       content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading events...</div>';
 
     if (CAL.selectedBoardIds === null) {
-      CAL.selectedBoardIds = S.boards
-        .filter(b => !S.config.hiddenBoards.includes(b.id))
+      const scopedBoards = typeof getVisibleBoardsForScope === "function"
+        ? getVisibleBoardsForScope()
+        : S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
+      CAL.selectedBoardIds = scopedBoards
         .map(b => b.id);
     }
 
@@ -101,20 +120,35 @@ async function renderCalendar() {
       CAL.trelloCards = trelloData;
       CAL.reviewSessions = reviewSessions;
     } catch (e) {
+      if (S.mode !== "calendar") return;
       console.error("[Calendar Source Error]", e);
       content.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Calendar sources could not be loaded. Calendar Owner should check connection state and retry.</p></div>`;
       return;
     }
+    if (S.mode !== "calendar") return;
 
     const monthPrefix = `${y}-${String(m + 1).padStart(2, "0")}`;
     const monthLabel = `${monthNames[m]} ${y}`;
-    const now = new Date();
     const trelloDueThisMonth = CAL.trelloCards.filter(c => c.due?.startsWith(monthPrefix));
-    const trelloOverdue = trelloDueThisMonth.filter(c => !c.dueComplete && new Date(c.due) < now);
     const reviewItems = buildReviewCalendarItems(CAL.reviewSessions, y, m);
-    const reviewPendingThisMonth = reviewItems.filter(item => item.type === "review-pending");
-    const hiddenBoardCount = Array.isArray(S.config.hiddenBoards) ? S.config.hiddenBoards.length : 0;
-    const agendaItems = buildCalendarAgendaItems(CAL.events, CAL.trelloCards, y, m, reviewItems);
+    const calendarAction = CAL.status?.connected
+      ? `<button class="btn primary cal-add-btn" type="button" id="cal-add" aria-label="Create Google Calendar event draft" title="Open an event draft. No Google Calendar write happens until you choose Save.">${icon("plus")} New event draft</button>`
+      : `<button class="btn primary cal-connect-btn" type="button" onclick="openCalSetup()" data-uiv2="calendar-disconnected">${icon("calendar")} Connect Google Calendar</button>`;
+    const viewMode = ["day", "week", "month"].includes(CAL.viewMode) ? CAL.viewMode : "month";
+    const activeScopeLabel = typeof scopeLabel === "function" ? scopeLabel() : "All BUs";
+    const routeSub = CAL.status?.connected
+      ? `<span>Trello deadlines + Google Calendar + Review-derived events</span><span>&middot;</span><span>scope ${esc(activeScopeLabel)}</span><span>&middot;</span>${uiKV("gcal", "ops@trisilar")}`
+      : `<span>Google Calendar is disconnected</span><span>&middot;</span><span>Trello deadlines and Review Queue items remain visible</span><span>&middot;</span><span>scope ${esc(activeScopeLabel)}</span><span>&middot;</span>${uiKV("gcal", "off")}`;
+    if (typeof setTopbarRouteActions === "function") {
+      setTopbarRouteActions(`
+        <div class="seg cal-view-seg" aria-label="Calendar view mode">
+          <button type="button" class="${viewMode === "day" ? "on" : ""}" aria-pressed="${viewMode === "day"}" title="Show day agenda" onclick="setCalendarViewMode('day')">Day</button>
+          <button type="button" class="${viewMode === "week" ? "on" : ""}" aria-pressed="${viewMode === "week"}" title="Show week agenda" onclick="setCalendarViewMode('week')">Week</button>
+          <button type="button" class="${viewMode === "month" ? "on" : ""}" aria-pressed="${viewMode === "month"}" title="Show month grid and agenda" onclick="setCalendarViewMode('month')">Month</button>
+        </div>
+        ${calendarAction}
+      `);
+    }
 
     content.innerHTML = "";
     const view = document.createElement("div");
@@ -123,91 +157,52 @@ async function renderCalendar() {
     const header = document.createElement("div");
     header.className = "calendar-command-panel";
     header.innerHTML = `
-      <div class="calendar-command-copy">
-        <div class="calendar-kicker">${icon("calendar")} Calendar view</div>
-        <h1 class="calendar-title">${monthLabel}</h1>
-        <p class="calendar-subtitle">Google events, Trello deadlines, and Review Queue due items are shown together while keeping their source and action paths separate.</p>
-      </div>
-      <div class="calendar-command-stats" aria-label="Calendar summary">
-        <div class="calendar-stat-card"><span>Google events</span><strong>${CAL.events.length}</strong></div>
-        <div class="calendar-stat-card is-warning"><span>Trello deadlines</span><strong>${trelloDueThisMonth.length}</strong></div>
-        <div class="calendar-stat-card is-muted"><span>Review items</span><strong>${reviewItems.length}</strong></div>
-        <div class="calendar-stat-card is-danger"><span>Overdue</span><strong>${trelloOverdue.length}</strong></div>
-      </div>
+      ${uiRouteBar({
+        title: monthLabel,
+        sub: routeSub,
+        actions: `
+          <div class="row calendar-month-nav" style="gap:4px">
+            <button class="iconbtn" type="button" id="cal-prev" title="Previous month">${icon("chevron", 'style="transform:rotate(180deg)"')}</button>
+            <button class="btn sm" type="button" id="cal-go-today">Today</button>
+            <button class="iconbtn" type="button" id="cal-next" title="Next month">${icon("chevron")}</button>
+          </div>`,
+      })}
     `;
     view.appendChild(header);
 
-    view.appendChild(buildCalendarSourceSummary({
-      googleEvents: CAL.events.length,
-      trelloDue: trelloDueThisMonth.length,
-      reviewItems: reviewItems.length,
-      reviewPending: reviewPendingThisMonth.length,
-      visibleBoards: CAL.selectedBoardIds.length,
-      hiddenBoards: hiddenBoardCount,
-    }));
-
-    const topbar = document.createElement("div");
-    topbar.className = "cal-topbar calendar-toolbar";
-    topbar.innerHTML = `
-      <div class="cal-nav-group">
-        <button class="cal-nav-btn" id="cal-prev" title="Previous month">&lt;</button>
-        <span class="cal-month-label">${monthLabel}</span>
-        <button class="cal-nav-btn" id="cal-next" title="Next month">&gt;</button>
-        <button class="cal-today-btn" id="cal-go-today">Today</button>
-      </div>
-      <div class="calendar-source-legend" aria-label="Calendar sources">
+    const legend = document.createElement("div");
+    legend.className = "calendar-source-legend cal-legend";
+    legend.setAttribute("data-uiv2", "calendar-legend");
+    legend.setAttribute("aria-label", "Calendar sources");
+    legend.innerHTML = `
         <span><i class="source-dot is-google"></i>Google Calendar</span>
         <span><i class="source-dot is-trello"></i>Trello deadline</span>
-        <span><i class="source-dot is-review"></i>Review Queue</span>
+        <span><i class="source-dot is-review"></i>AI-proposed (post-approval)</span>
         <span><i class="source-dot is-overdue"></i>Overdue</span>
-      </div>
-      <button class="btn btn-primary cal-add-btn" id="cal-add">${icon("plus")} New event</button>
     `;
-    view.appendChild(topbar);
+    view.appendChild(legend);
 
-    const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
-    const selectorRow = document.createElement("div");
-    selectorRow.className = "cal-board-selector calendar-source-strip";
-    const selectorLabel = document.createElement("span");
-    selectorLabel.className = "cal-selector-label";
-    selectorLabel.textContent = "Show boards:";
-    selectorRow.appendChild(selectorLabel);
+    if (CAL.status?.connected) {
+      const actionNote = document.createElement("div");
+      actionNote.className = "calendar-action-note";
+      actionNote.setAttribute("role", "note");
+      actionNote.innerHTML = `${icon("lock")} Calendar edits open as drafts first; Google Calendar changes happen only after an explicit Save through the existing connector.`;
+      view.appendChild(actionNote);
+    }
 
-    visibleBoards.forEach((board, i) => {
-      const chip = document.createElement("button");
-      chip.className = "cal-board-chip" + (CAL.selectedBoardIds.includes(board.id) ? " active" : "");
-      chip.style.setProperty("--chip-color", COLORS[i % COLORS.length]);
-      chip.textContent = board.name;
-      chip.title = board.name;
-      chip.onclick = () => {
-        const idx = CAL.selectedBoardIds.indexOf(board.id);
-        if (idx === -1) CAL.selectedBoardIds.push(board.id);
-        else CAL.selectedBoardIds.splice(idx, 1);
-        renderCalendar();
-      };
-      selectorRow.appendChild(chip);
-    });
-
-    const allBtn = document.createElement("button");
-    allBtn.className = "cal-selector-shortcut";
-    allBtn.textContent = "All";
-    allBtn.onclick = () => { CAL.selectedBoardIds = visibleBoards.map(b => b.id); renderCalendar(); };
-    const noneBtn = document.createElement("button");
-    noneBtn.className = "cal-selector-shortcut";
-    noneBtn.textContent = "None";
-    noneBtn.onclick = () => { CAL.selectedBoardIds = []; renderCalendar(); };
-    selectorRow.appendChild(allBtn);
-    selectorRow.appendChild(noneBtn);
-    view.appendChild(selectorRow);
-
+    const agendaItems = buildCalendarAgendaItems(CAL.events, CAL.trelloCards, y, m, reviewItems);
     const scheduleLayout = document.createElement("div");
     scheduleLayout.className = "calendar-schedule-layout";
-
-    const gridWrap = document.createElement("div");
-    gridWrap.className = "cal-grid-wrap";
-    gridWrap.appendChild(buildCalGrid(y, m, CAL.events, CAL.trelloCards, reviewItems));
-    scheduleLayout.appendChild(gridWrap);
-    scheduleLayout.appendChild(buildCalendarAgenda(agendaItems));
+    if (viewMode === "month") {
+      const gridWrap = document.createElement("div");
+      gridWrap.className = "cal-grid-wrap panel";
+      gridWrap.appendChild(buildCalGrid(y, m, CAL.events, CAL.trelloCards, reviewItems));
+      scheduleLayout.appendChild(gridWrap);
+      scheduleLayout.appendChild(buildCalendarAgenda(agendaItems.slice(0, 10)));
+    } else {
+      scheduleLayout.classList.add("is-focused");
+      scheduleLayout.appendChild(buildCalendarFocusedAgenda(agendaItems, y, m, viewMode));
+    }
     view.appendChild(scheduleLayout);
 
     // P6-2: empty state banner when no events for this month
@@ -222,27 +217,39 @@ async function renderCalendar() {
     }
 
     content.appendChild(view);
+    if (typeof ensureButtonTypes === "function") ensureButtonTypes(view);
 
     $("cal-prev").onclick = () => { if (CAL.currentMonth === 0) { CAL.currentMonth = 11; CAL.currentYear--; } else CAL.currentMonth--; renderCalendar(); };
     $("cal-next").onclick = () => { if (CAL.currentMonth === 11) { CAL.currentMonth = 0; CAL.currentYear++; } else CAL.currentMonth++; renderCalendar(); };
     $("cal-go-today").onclick = () => { CAL.currentYear = new Date().getFullYear(); CAL.currentMonth = new Date().getMonth(); renderCalendar(); };
-    $("cal-add").onclick = () => openCalCreate();
+    const addBtn = $("cal-add");
+    if (addBtn) addBtn.onclick = () => openCalCreate();
   } catch (e) {
+    if (S.mode !== "calendar") return;
     console.error("[Calendar Render Error]", e);
     content.innerHTML = `<div class="empty-state"><div class="empty-icon">!</div><h3>Calendar unavailable</h3><p>Calendar could not render safely. Calendar Owner should check the source connection and retry.</p></div>`;
     toast("Calendar could not render safely. Check the source connection and retry.", true);
   }
 }
 
+function setCalendarViewMode(mode) {
+  const nextMode = ["day", "week", "month"].includes(mode) ? mode : "month";
+  const changed = CAL.viewMode !== nextMode;
+  CAL.viewMode = nextMode;
+  renderCalendar();
+  if (changed) toast(`Calendar ${nextMode} view active`);
+}
+
 function buildCalendarSourceSummary({ googleEvents, trelloDue, reviewItems, reviewPending, visibleBoards, hiddenBoards }) {
   const summary = document.createElement("div");
-  summary.className = "calendar-source-summary";
+  summary.className = "calendar-source-summary cal-legend panel";
   summary.setAttribute("aria-label", "Calendar source summary");
+  const googleConnected = Boolean(CAL.status?.connected);
   summary.innerHTML = `
-    <div class="calendar-source-card">
+    <div class="calendar-source-card${googleConnected ? "" : " is-muted"}">
       <span><i class="source-dot is-google"></i>Google Calendar</span>
-      <strong>${googleEvents} event${googleEvents === 1 ? "" : "s"}</strong>
-      <p>Connected source for scheduled meetings and calendar blocks.</p>
+      <strong>${googleConnected ? `${googleEvents} event${googleEvents === 1 ? "" : "s"}` : "Needs connection"}</strong>
+      <p>${googleConnected ? "Connected source for scheduled meetings and calendar blocks." : "Connect in Settings to show and manage Google events."}</p>
     </div>
     <div class="calendar-source-card is-warning">
       <span><i class="source-dot is-trello"></i>Trello deadlines</span>
@@ -308,6 +315,8 @@ function buildCalendarAgendaItems(events, trelloCards, year, month, reviewItems 
       meta: ev.start?.dateTime ? new Date(ev.start.dateTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : "All day",
       actionLabel: "Edit event",
       sourceLabel: "Google Calendar",
+      actionKind: "gcal",
+      actionId: ev.id,
     });
   });
 
@@ -321,12 +330,14 @@ function buildCalendarAgendaItems(events, trelloCards, year, month, reviewItems 
       meta: `${card.boardName || card.boardId || "Board"} / ${card.listName || "List"}`,
       actionLabel: "Open card",
       sourceLabel: overdue ? "Trello overdue" : "Trello deadline",
+      actionKind: "trello",
+      actionId: card.id,
     });
   });
 
   reviewItems.forEach(item => items.push(item));
 
-  return items.sort((a, b) => a.date.localeCompare(b.date)).slice(0, 10);
+  return items.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 function buildCalendarAgenda(items) {
@@ -354,31 +365,153 @@ function buildCalendarAgenda(items) {
           <div class="calendar-agenda-date">${esc(item.date.slice(5))}</div>
           <div class="calendar-agenda-copy">
             <span class="calendar-agenda-source">${esc(item.sourceLabel || item.type)}</span>
-            <strong>${esc(item.title)}</strong>
-            <span>${esc(item.meta)}</span>
+            <strong class="calendar-agenda-title uiv2-decision-text uiv2-text-reveal" title="${esc(item.title)}">${esc(item.title)}</strong>
+            <span class="calendar-agenda-meta uiv2-meta-text uiv2-text-reveal" title="${esc(item.meta)}">${esc(item.meta)}</span>
           </div>
-          <em>${esc(item.actionLabel)}</em>
+          ${calendarAgendaActionButton(item)}
         </div>
       `).join("")}
     </div>
   `;
+  wireCalendarAgendaActions(panel);
   return panel;
+}
+
+function calendarAgendaActionButton(item) {
+  const kind = item.actionKind || (item.type?.startsWith("review") ? "review" : "");
+  if (!kind) return `<em>${esc(item.actionLabel || "")}</em>`;
+  const label = item.actionLabel || "Open";
+  return `<button class="calendar-agenda-action" type="button" data-cal-action="${esc(kind)}" data-cal-id="${esc(item.actionId || "")}" aria-label="${esc(`${label}: ${item.title}`)}">${esc(label)}</button>`;
+}
+
+function wireCalendarAgendaActions(root) {
+  root.querySelectorAll("[data-cal-action]").forEach(button => {
+    button.onclick = () => handleCalendarAgendaAction(button.dataset.calAction, button.dataset.calId);
+  });
+  if (typeof ensureButtonTypes === "function") ensureButtonTypes(root);
+}
+
+function handleCalendarAgendaAction(kind, id) {
+  if (kind === "gcal") {
+    const ev = CAL.events.find(item => String(item.id) === String(id));
+    if (ev) openCalEdit(ev);
+    else toast("Calendar event is no longer available. Refresh Calendar and try again.", true);
+    return;
+  }
+  if (kind === "trello") {
+    const card = CAL.trelloCards.find(item => String(item.id) === String(id));
+    if (card) openEditAllTasks(card);
+    else toast("Trello card is no longer available. Refresh Calendar and try again.", true);
+    return;
+  }
+  if (kind === "review") {
+    showReviewPage();
+  }
+}
+
+function calendarDateKey(date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+function calendarFocusDate(year, month) {
+  const today = new Date();
+  if (today.getFullYear() === year && today.getMonth() === month) {
+    return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  }
+  return new Date(year, month, 1);
+}
+
+function calendarWeekRange(date) {
+  const start = new Date(date);
+  const daysSinceMonday = (start.getDay() + 6) % 7;
+  start.setDate(start.getDate() - daysSinceMonday);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  return { start, end };
+}
+
+function formatCalendarFocusLabel(start, end, mode) {
+  if (mode === "day") {
+    return start.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  }
+  return `${start.toLocaleDateString("en-US", { month: "short", day: "numeric" })} - ${end.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
+}
+
+function buildCalendarFocusedAgenda(items, year, month, mode) {
+  const focus = calendarFocusDate(year, month);
+  const range = mode === "day"
+    ? { start: focus, end: focus }
+    : calendarWeekRange(focus);
+  const startKey = calendarDateKey(range.start);
+  const endKey = calendarDateKey(range.end);
+  const filtered = items.filter(item => item.date >= startKey && item.date <= endKey);
+  const panel = document.createElement("section");
+  panel.className = "calendar-agenda-panel calendar-focused-panel";
+  panel.setAttribute("data-uiv2", `calendar-${mode}-view`);
+  panel.innerHTML = `
+    <div class="calendar-agenda-head">
+      <span>${mode === "day" ? "Day view" : "Week view"}</span>
+      <strong>${filtered.length}</strong>
+    </div>
+    <div class="calendar-focused-range">${esc(formatCalendarFocusLabel(range.start, range.end, mode))}</div>
+    ${filtered.length ? `
+      <div class="calendar-agenda-list">
+        ${filtered.map(item => `
+          <div class="calendar-agenda-item is-${esc(item.type)}">
+            <div class="calendar-agenda-date">${esc(item.date.slice(5))}</div>
+            <div class="calendar-agenda-copy">
+              <span class="calendar-agenda-source">${esc(item.sourceLabel || item.type)}</span>
+              <strong class="calendar-agenda-title uiv2-decision-text uiv2-text-reveal" title="${esc(item.title)}">${esc(item.title)}</strong>
+              <span class="calendar-agenda-meta uiv2-meta-text uiv2-text-reveal" title="${esc(item.meta)}">${esc(item.meta)}</span>
+            </div>
+            ${calendarAgendaActionButton(item)}
+          </div>
+        `).join("")}
+      </div>
+    ` : `<div class="calendar-agenda-empty">No Google events, Trello deadlines, or Review Queue due items in this ${mode}.</div>`}
+  `;
+  wireCalendarAgendaActions(panel);
+  return panel;
+}
+
+function setCalendarChipAction(chip, label, handler) {
+  chip.title = label;
+  chip.classList.add("uiv2-decision-text", "uiv2-text-reveal");
+  chip.dataset.uiv2Reveal = "calendar-event";
+  chip.setAttribute("role", "button");
+  chip.setAttribute("tabindex", "0");
+  chip.setAttribute("aria-label", label);
+  chip.onclick = e => {
+    e.stopPropagation();
+    handler();
+  };
+  chip.onkeydown = e => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    handler();
+  };
 }
 
 function buildCalGrid(year, month, events, trelloCards = [], reviewItems = []) {
   const grid = document.createElement("div");
   grid.className = "cal-grid";
 
-  const DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
   DAYS.forEach((d, i) => {
     const h = document.createElement("div");
-    h.className = "cal-dow" + (i === 0 || i === 6 ? " weekend" : "");
+    h.className = "cal-dow" + (i >= 5 ? " weekend" : "");
     h.textContent = d;
     grid.appendChild(h);
   });
 
   const today = new Date();
-  const firstDay    = new Date(year, month, 1).getDay();
+  const firstDay    = (new Date(year, month, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysInPrev  = new Date(year, month, 0).getDate();
 
@@ -418,7 +551,7 @@ function buildCalGrid(year, month, events, trelloCards = [], reviewItems = []) {
 
   for (let i = 0; i < totalCells; i++) {
     const cell = document.createElement("div");
-    cell.className = "cal-cell";
+    cell.className = "cal-cell cal-day";
 
     let day, dateStr, isCurrentMonth = true;
 
@@ -442,7 +575,7 @@ function buildCalGrid(year, month, events, trelloCards = [], reviewItems = []) {
     }
 
     const dow = (i % 7);
-    if (dow === 0 || dow === 6) cell.classList.add("weekend");
+    if (dow >= 5) cell.classList.add("weekend");
     if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === day && isCurrentMonth)
       cell.classList.add("today");
 
@@ -458,40 +591,36 @@ function buildCalGrid(year, month, events, trelloCards = [], reviewItems = []) {
 
       if (item.type === "gcal") {
         const ev = item.data;
-        chip.className = "cal-event-chip gcal" + (ev.start?.date ? " all-day" : "");
+        chip.className = "cal-event-chip cal-evt gcal" + (ev.start?.date ? " all-day" : "");
         const timeStr = ev.start?.dateTime
           ? new Date(ev.start.dateTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) + " "
           : "";
         chip.textContent = timeStr + (ev.summary || "(No title)");
-        chip.title = ev.summary || "";
-        chip.onclick = e => { e.stopPropagation(); openCalEdit(ev); };
+        setCalendarChipAction(chip, `Google Calendar event: ${timeStr}${ev.summary || "(No title)"}`, () => openCalEdit(ev));
 
       } else if (item.type === "trello-due") {
         const card = item.data;
         const color = boardColorMap[card.boardId] || "#6366f1";
-        chip.className = "cal-event-chip trello-due";
+        chip.className = "cal-event-chip cal-evt trello-due";
         chip.style.setProperty("--trello-color", color);
         const overdue = !card.dueComplete && new Date(card.due) < today;
         if (overdue) chip.classList.add("trello-overdue");
         if (card.dueComplete) chip.classList.add("trello-done");
-        chip.textContent = "Due " + card.name;
-        chip.title = `[${card.boardName || card.boardId}] ${card.name}`;
-        chip.onclick = e => { e.stopPropagation(); openEditAllTasks(card); };
+        chip.textContent = card.name;
+        setCalendarChipAction(chip, `Trello deadline: [${card.boardName || card.boardId}] ${card.name}`, () => openEditAllTasks(card));
 
       } else if (item.type === "trello-start") {
         const card = item.data;
         const color = boardColorMap[card.boardId] || "#6366f1";
-        chip.className = "cal-event-chip trello-start";
+        chip.className = "cal-event-chip cal-evt trello-start";
         chip.style.setProperty("--trello-color", color);
-        chip.textContent = "Start " + card.name;
-        chip.title = `Start: [${card.boardName || card.boardId}] ${card.name}`;
-        chip.onclick = e => { e.stopPropagation(); openEditAllTasks(card); };
+        chip.textContent = card.name;
+        setCalendarChipAction(chip, `Trello start: [${card.boardName || card.boardId}] ${card.name}`, () => openEditAllTasks(card));
       } else if (item.type === "review-pending" || item.type === "review-approved") {
         const reviewItem = item.data;
-        chip.className = "cal-event-chip " + item.type;
-        chip.textContent = (item.type === "review-approved" ? "Approved " : "Review ") + reviewItem.title;
-        chip.title = reviewItem.sourceLabel || "Review Queue";
-        chip.onclick = e => { e.stopPropagation(); showReviewPage(); };
+        chip.className = "cal-event-chip cal-evt " + item.type;
+        chip.textContent = reviewItem.title;
+        setCalendarChipAction(chip, `${reviewItem.sourceLabel || "Review Queue"}: ${reviewItem.title}`, () => showReviewPage());
       }
 
       cell.appendChild(chip);
@@ -501,11 +630,15 @@ function buildCalGrid(year, month, events, trelloCards = [], reviewItems = []) {
       const more = document.createElement("span");
       more.className = "cal-event-more";
       more.textContent = `+${dayItems.length - maxShow} more`;
+      more.title = "Open event draft for this date. No Google Calendar write happens until Save.";
       more.onclick = e => { e.stopPropagation(); openCalCreate(dateStr); };
       cell.appendChild(more);
     }
 
     cell.onclick = CAL.status?.connected ? () => openCalCreate(dateStr) : null;
+    cell.title = CAL.status?.connected
+      ? "Open event draft for this date. Save is required before any Google Calendar change."
+      : "Google Calendar is disconnected. Trello and Review Queue items remain visible.";
     grid.appendChild(cell);
   }
 
@@ -516,9 +649,13 @@ function buildCalGrid(year, month, events, trelloCards = [], reviewItems = []) {
 function openCalSetup()  {
   const redirectEl = $("setup-redirect-uri");
   if (redirectEl) redirectEl.textContent = CAL.status?.redirectUri || `${window.location.origin}/auth/callback`;
-  $("cal-setup-modal").classList.remove("hidden");
+  if (typeof openSurface === "function") openSurface($("cal-setup-modal"), "#setup-client-id");
+  else $("cal-setup-modal").classList.remove("hidden");
 }
-function closeCalSetup() { $("cal-setup-modal").classList.add("hidden"); }
+function closeCalSetup() {
+  if (typeof closeSurface === "function") closeSurface($("cal-setup-modal"), ".cal-connect-btn, .cal-add-btn");
+  else $("cal-setup-modal").classList.add("hidden");
+}
 
 async function startGoogleAuth() {
   const clientId     = $("setup-client-id").value.trim();
@@ -532,14 +669,15 @@ async function startGoogleAuth() {
     closeCalSetup();
   } catch (e) {
     console.error("[Calendar Connect Error]", e);
-    toast("Google Calendar connection was not completed. Check Settings credentials and retry.", true);
+    toast("Google Calendar connection was not completed. Check Settings connection values and retry.", true);
   }
 }
 
 // ── Calendar Event Modal ──────────────────────────────────────────────────────
 function openCalCreate(dateStr) {
   CAL.editingEventId = null;
-  $("cal-modal-title").textContent = "New Event";
+  $("cal-modal-title").textContent = "New Event Draft";
+  setCalendarModalBoundary("Draft first. No Google Calendar change happens until you choose Save to Calendar.");
   $("cal-title").value = "";
   $("cal-desc").value = "";
   $("cal-reminder").value = "30";
@@ -563,13 +701,16 @@ function openCalCreate(dateStr) {
   }
 
   $("cal-delete-btn").classList.add("hidden");
-  $("cal-event-modal").classList.remove("hidden");
+  if (typeof openSurface === "function") openSurface($("cal-event-modal"));
+  else $("cal-event-modal").classList.remove("hidden");
+  toast("Calendar draft opened. No Google Calendar change happens until Save.");
   setTimeout(() => $("cal-title").focus(), 50);
 }
 
 function openCalEdit(ev) {
   CAL.editingEventId = ev.id;
-  $("cal-modal-title").textContent = "Edit Event";
+  $("cal-modal-title").textContent = "Edit Calendar Event";
+  setCalendarModalBoundary("Connected source. Save to Calendar updates this event through the existing Google Calendar connector.");
   $("cal-title").value = ev.summary || "";
   $("cal-desc").value  = ev.description || "";
 
@@ -591,10 +732,20 @@ function openCalEdit(ev) {
   $("cal-reminder").value = overrides[0]?.minutes ?? "";
 
   $("cal-delete-btn").classList.remove("hidden");
-  $("cal-event-modal").classList.remove("hidden");
+  if (typeof openSurface === "function") openSurface($("cal-event-modal"));
+  else $("cal-event-modal").classList.remove("hidden");
+  setTimeout(() => $("cal-title").focus(), 50);
 }
 
-function closeCalModal() { $("cal-event-modal").classList.add("hidden"); }
+function setCalendarModalBoundary(message) {
+  const note = $("cal-boundary-note");
+  if (note) note.textContent = message;
+}
+
+function closeCalModal() {
+  if (typeof closeSurface === "function") closeSurface($("cal-event-modal"), ".cal-add-btn");
+  else $("cal-event-modal").classList.add("hidden");
+}
 
 async function saveCalEvent() {
   const title = $("cal-title").value.trim();
@@ -631,7 +782,7 @@ async function saveCalEvent() {
     console.error("[Calendar Save Error]", e);
     toast("Calendar event could not be saved. Check the Calendar connection and retry.", true);
   }
-  finally { btn.textContent = "Save"; btn.disabled = false; }
+  finally { btn.textContent = "Save to Calendar"; btn.disabled = false; }
 }
 
 async function deleteCalEvent() {

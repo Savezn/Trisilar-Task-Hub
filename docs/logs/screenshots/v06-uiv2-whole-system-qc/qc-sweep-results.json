@@ -1,0 +1,6693 @@
+{
+  "summary": {
+    "base": "http://127.0.0.1:3032",
+    "generatedAt": "2026-05-18T01:49:19.907Z",
+    "resultCount": 60,
+    "routes": [
+      "Today",
+      "Review Queue",
+      "All Tasks",
+      "Boards Monitor",
+      "Calendar",
+      "Planner",
+      "OKR / Portfolio",
+      "Weekly Focus",
+      "Docs / AI Trace",
+      "Settings"
+    ],
+    "viewports": [
+      "desktop:1440x900",
+      "laptop:1366x768",
+      "tablet:1024x768",
+      "app-pane:747x910",
+      "mobile:390x844",
+      "mobile-small:375x667"
+    ],
+    "issueTallies": {
+      "navigationErrors": 0,
+      "consoleOrPageErrors": 0,
+      "overflow": 0,
+      "unnamedControls": 7,
+      "clipped": 2,
+      "emojiLike": 0,
+      "secretHits": 4,
+      "disabledMismatch": 11
+    },
+    "targeted": [
+      {
+        "routePath": "/docs",
+        "actionName": "Topbar Docs Filter opens dialog, applies status, clears, closes Escape",
+        "ok": true,
+        "dialogVisible": false,
+        "activeText": ""
+      },
+      {
+        "routePath": "/today",
+        "actionName": "Scope picker opens listbox and Escape closes",
+        "ok": true,
+        "listboxVisible": true,
+        "optionCount": 2,
+        "closesOnEscape": true
+      },
+      {
+        "routePath": "/settings",
+        "actionName": "Settings connection/manage controls expose labels",
+        "ok": true,
+        "manageCount": 20,
+        "sample": [
+          {
+            "text": "Manage groups and visibility",
+            "disabled": false,
+            "cls": "icon-btn"
+          },
+          {
+            "text": "Access & policy",
+            "disabled": false,
+            "cls": "sl"
+          },
+          {
+            "text": "Manage",
+            "disabled": false,
+            "cls": "btn sm "
+          },
+          {
+            "text": "Manage",
+            "disabled": false,
+            "cls": "btn sm "
+          },
+          {
+            "text": "Manage",
+            "disabled": false,
+            "cls": "btn sm "
+          },
+          {
+            "text": "Manage",
+            "disabled": false,
+            "cls": "btn sm ai"
+          },
+          {
+            "text": "Policy",
+            "disabled": false,
+            "cls": "btn sm "
+          },
+          {
+            "text": "Save draft",
+            "disabled": false,
+            "cls": "btn primary sm"
+          },
+          {
+            "text": "Visible",
+            "disabled": false,
+            "cls": "vis-toggle"
+          },
+          {
+            "text": "Visible",
+            "disabled": false,
+            "cls": "vis-toggle"
+          },
+          {
+            "text": "Visible",
+            "disabled": false,
+            "cls": "vis-toggle"
+          },
+          {
+            "text": "Visible",
+            "disabled": false,
+            "cls": "vis-toggle"
+          }
+        ]
+      }
+    ]
+  },
+  "results": [
+    {
+      "route": "Today",
+      "path": "/today",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/today",
+      "ms": 7432,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 23,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1223,
+        "y": 32,
+        "w": 197,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1038,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1139,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1223,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Showing all visible work",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 766,
+            "y": 452,
+            "w": 34,
+            "h": 24
+          },
+          "cls": "on"
+        },
+        {
+          "name": "Owner filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 801,
+            "y": 452,
+            "w": 47,
+            "h": 24
+          },
+          "cls": ""
+        },
+        {
+          "name": "Risk filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 848,
+            "y": 452,
+            "w": 51,
+            "h": 24
+          },
+          "cls": ""
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-today-desktop-1440x900.png"
+    },
+    {
+      "route": "Review Queue",
+      "path": "/review",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/review",
+      "ms": 1769,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 27,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1237,
+        "y": 32,
+        "w": 183,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1052,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1153,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Refresh",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1237,
+            "y": 32,
+            "w": 95,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1341,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Intake policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1289,
+            "y": 113,
+            "w": 127,
+            "h": 32
+          },
+          "cls": "btn warn-outline"
+        },
+        {
+          "name": "status: approved",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 472,
+            "y": 191,
+            "w": 120,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        },
+        {
+          "name": "status: rejected",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 600,
+            "y": 191,
+            "w": 113,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-review-queue-desktop-1440x900.png"
+    },
+    {
+      "route": "All Tasks",
+      "path": "/all",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/all",
+      "ms": 1376,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 158,
+      "unnamedControls": [
+        {
+          "selector": "button.btn.sm",
+          "rect": {
+            "x": 1373,
+            "y": 201,
+            "w": 30,
+            "h": 32
+          },
+          "html": "<button class=\"btn sm ghost\" type=\"button\" onclick=\"topbarRefresh()\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\" width=\"16\" height=\"16\"><path d=\"M3 12a9 9 0 0 1 1"
+        }
+      ],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1174,
+        "y": 32,
+        "w": 246,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 989,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1090,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "New task",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1314,
+            "y": 32,
+            "w": 106,
+            "h": 32
+          },
+          "cls": "btn primary"
+        },
+        {
+          "name": "Scope is controlled from the topbar and sidebar.",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 690,
+            "y": 205,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        },
+        {
+          "name": "All visible tasks come from Trello in this V0.6 slice.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 867,
+            "y": 205,
+            "w": 87,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        },
+        {
+          "name": "Additional filter builder is planned for the next UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 1051,
+            "y": 205,
+            "w": 83,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Saved views are not wired yet",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 1193,
+            "y": 201,
+            "w": 174,
+            "h": 32
+          },
+          "cls": "btn sm is-disabled"
+        },
+        {
+          "name": "Export filtered tasks",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1343,
+            "y": 6985,
+            "w": 56,
+            "h": 32
+          },
+          "cls": "btn sm ghost"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-all-tasks-desktop-1440x900.png"
+    },
+    {
+      "route": "Boards Monitor",
+      "path": "/boards",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/boards",
+      "ms": 6276,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 42,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1243,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1344,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Health filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 585,
+            "y": 312,
+            "w": 101,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Owner filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 694,
+            "y": 312,
+            "w": 94,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Stale filter is represented in the current sort and cards",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 796,
+            "y": 312,
+            "w": 94,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        }
+      ]
+    },
+    {
+      "route": "Calendar",
+      "path": "/calendar",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/calendar",
+      "ms": 4242,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 20,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1140,
+        "y": 32,
+        "w": 280,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 956,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1056,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "New event",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1306,
+            "y": 32,
+            "w": 114,
+            "h": 32
+          },
+          "cls": "btn primary cal-add-btn"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-calendar-desktop-1440x900.png"
+    },
+    {
+      "route": "Planner",
+      "path": "/planner",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/planner",
+      "ms": 1844,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 19,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1243,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1344,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "OKR / Portfolio",
+      "path": "/okr",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/okr",
+      "ms": 1230,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 89,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1243,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [
+        {
+          "name": "👤 Nofffie",
+          "rect": {
+            "x": 2015,
+            "y": 2492,
+            "w": 75,
+            "h": 24
+          },
+          "cls": "filter-chip okr-label-filter"
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1344,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Weekly Focus",
+      "path": "/focus",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/focus",
+      "ms": 1219,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 19,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1178,
+        "y": 33,
+        "w": 242,
+        "h": 30
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 993,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1094,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-weekly-focus-desktop-1440x900.png"
+    },
+    {
+      "route": "Docs / AI Trace",
+      "path": "/docs",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/docs",
+      "ms": 1258,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 25,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1244,
+        "y": 32,
+        "w": 176,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1059,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1160,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": "false",
+          "rect": {
+            "x": 1244,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Export",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1331,
+            "y": 32,
+            "w": 89,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Agent filtering needs normalized agent ids from the trace source.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 1229,
+            "y": 201,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-docs-ai-trace-desktop-1440x900.png"
+    },
+    {
+      "route": "Settings",
+      "path": "/settings",
+      "viewport": "desktop",
+      "size": "1440x900",
+      "url": "http://127.0.0.1:3032/settings",
+      "ms": 2568,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 83,
+      "unnamedControls": [
+        {
+          "selector": "input#integration-field-trello-workspaceAlias.form-input",
+          "rect": {
+            "x": 481,
+            "y": 558,
+            "w": 453,
+            "h": 34
+          },
+          "html": "<input class=\"form-input\" id=\"integration-field-trello-workspaceAlias\" data-integration-field=\"workspaceAlias\" type=\"text\" value=\"trisilar\">"
+        },
+        {
+          "selector": "input#integration-field-trello-defaultScope.form-input",
+          "rect": {
+            "x": 946,
+            "y": 558,
+            "w": 453,
+            "h": 34
+          },
+          "html": "<input class=\"form-input\" id=\"integration-field-trello-defaultScope\" data-integration-field=\"defaultScope\" type=\"text\" value=\"All visible boards\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 492,
+            "y": 904,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"69cf6cdee390b025c9368cab\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 492,
+            "y": 944,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"60cd04fda6f13f3800c27253\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 492,
+            "y": 984,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"69f2cfe7f63a58a6772a6cd0\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 1377,
+            "y": 2730,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"reviewApproval\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 1377,
+            "y": 2781,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"connectorHealth\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 1377,
+            "y": 2832,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"weeklyDigest\">"
+        }
+      ],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1220,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 876
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1243,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [
+        "secret",
+        "token"
+      ],
+      "disabledMismatch": [
+        {
+          "name": "Disabled",
+          "rect": {
+            "x": 723,
+            "y": 1877,
+            "w": 54,
+            "h": 18
+          },
+          "cls": ""
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1344,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Access & policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 244,
+            "y": 349,
+            "w": 200,
+            "h": 28
+          },
+          "cls": "sl"
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1316,
+            "y": 249,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1316,
+            "y": 290,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1316,
+            "y": 331,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1316,
+            "y": 372,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm ai"
+        },
+        {
+          "name": "Policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1323,
+            "y": 413,
+            "w": 76,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Save draft",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1263,
+            "y": 758,
+            "w": 77,
+            "h": 26
+          },
+          "cls": "btn primary sm"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1106,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1150,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1194,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1238,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1282,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1326,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1370,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1414,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1310,
+            "y": 1458,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Edit groups",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1297,
+            "y": 1531,
+            "w": 102,
+            "h": 26
+          },
+          "cls": "btn sm"
+        },
+        {
+          "name": "Delete group",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1315,
+            "y": 1628,
+            "w": 73,
+            "h": 32
+          },
+          "cls": "group-del-btn"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-settings-desktop-1440x900.png"
+    },
+    {
+      "route": "Today",
+      "path": "/today",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/today",
+      "ms": 1511,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 23,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1149,
+        "y": 32,
+        "w": 197,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 964,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1065,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1149,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Showing all visible work",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 723,
+            "y": 452,
+            "w": 34,
+            "h": 24
+          },
+          "cls": "on"
+        },
+        {
+          "name": "Owner filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 757,
+            "y": 452,
+            "w": 47,
+            "h": 24
+          },
+          "cls": ""
+        },
+        {
+          "name": "Risk filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 805,
+            "y": 452,
+            "w": 51,
+            "h": 24
+          },
+          "cls": ""
+        }
+      ]
+    },
+    {
+      "route": "Review Queue",
+      "path": "/review",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/review",
+      "ms": 1221,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 27,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1163,
+        "y": 32,
+        "w": 183,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 978,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1079,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Refresh",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1163,
+            "y": 32,
+            "w": 95,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1267,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Intake policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1215,
+            "y": 113,
+            "w": 127,
+            "h": 32
+          },
+          "cls": "btn warn-outline"
+        },
+        {
+          "name": "status: approved",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 472,
+            "y": 191,
+            "w": 120,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        },
+        {
+          "name": "status: rejected",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 600,
+            "y": 191,
+            "w": 113,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        }
+      ]
+    },
+    {
+      "route": "All Tasks",
+      "path": "/all",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/all",
+      "ms": 1366,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 158,
+      "unnamedControls": [
+        {
+          "selector": "button.btn.sm",
+          "rect": {
+            "x": 1299,
+            "y": 237,
+            "w": 30,
+            "h": 32
+          },
+          "html": "<button class=\"btn sm ghost\" type=\"button\" onclick=\"topbarRefresh()\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\" width=\"16\" height=\"16\"><path d=\"M3 12a9 9 0 0 1 1"
+        }
+      ],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1100,
+        "y": 32,
+        "w": 246,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 915,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1016,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "New task",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1240,
+            "y": 32,
+            "w": 106,
+            "h": 32
+          },
+          "cls": "btn primary"
+        },
+        {
+          "name": "Scope is controlled from the topbar and sidebar.",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 690,
+            "y": 203,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        },
+        {
+          "name": "All visible tasks come from Trello in this V0.6 slice.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 867,
+            "y": 203,
+            "w": 87,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        },
+        {
+          "name": "Additional filter builder is planned for the next UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 1051,
+            "y": 203,
+            "w": 83,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Saved views are not wired yet",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 1119,
+            "y": 237,
+            "w": 174,
+            "h": 32
+          },
+          "cls": "btn sm is-disabled"
+        },
+        {
+          "name": "Export filtered tasks",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1269,
+            "y": 7319,
+            "w": 56,
+            "h": 32
+          },
+          "cls": "btn sm ghost"
+        }
+      ]
+    },
+    {
+      "route": "Boards Monitor",
+      "path": "/boards",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/boards",
+      "ms": 1992,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 42,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1169,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1270,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Health filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 585,
+            "y": 312,
+            "w": 101,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Owner filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 694,
+            "y": 312,
+            "w": 94,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Stale filter is represented in the current sort and cards",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 796,
+            "y": 312,
+            "w": 94,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        }
+      ]
+    },
+    {
+      "route": "Calendar",
+      "path": "/calendar",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/calendar",
+      "ms": 1227,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 20,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1066,
+        "y": 32,
+        "w": 280,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 882,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 982,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "New event",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1232,
+            "y": 32,
+            "w": 114,
+            "h": 32
+          },
+          "cls": "btn primary cal-add-btn"
+        }
+      ]
+    },
+    {
+      "route": "Planner",
+      "path": "/planner",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/planner",
+      "ms": 1349,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 19,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1169,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1270,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "OKR / Portfolio",
+      "path": "/okr",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/okr",
+      "ms": 1249,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 89,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1169,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [
+        {
+          "name": "👤 Nofffie",
+          "rect": {
+            "x": 2015,
+            "y": 2492,
+            "w": 75,
+            "h": 24
+          },
+          "cls": "filter-chip okr-label-filter"
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1270,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Weekly Focus",
+      "path": "/focus",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/focus",
+      "ms": 1179,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 19,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1104,
+        "y": 33,
+        "w": 242,
+        "h": 30
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 919,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1020,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Docs / AI Trace",
+      "path": "/docs",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/docs",
+      "ms": 1221,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 25,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 1170,
+        "y": 32,
+        "w": 176,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 985,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1086,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": "false",
+          "rect": {
+            "x": 1170,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Export",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1257,
+            "y": 32,
+            "w": 89,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Agent filtering needs normalized agent ids from the trace source.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 1155,
+            "y": 201,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        }
+      ]
+    },
+    {
+      "route": "Settings",
+      "path": "/settings",
+      "viewport": "laptop",
+      "size": "1366x768",
+      "url": "http://127.0.0.1:3032/settings",
+      "ms": 1262,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 83,
+      "unnamedControls": [
+        {
+          "selector": "input#integration-field-trello-workspaceAlias.form-input",
+          "rect": {
+            "x": 481,
+            "y": 558,
+            "w": 416,
+            "h": 34
+          },
+          "html": "<input class=\"form-input\" id=\"integration-field-trello-workspaceAlias\" data-integration-field=\"workspaceAlias\" type=\"text\" value=\"trisilar\">"
+        },
+        {
+          "selector": "input#integration-field-trello-defaultScope.form-input",
+          "rect": {
+            "x": 909,
+            "y": 558,
+            "w": 416,
+            "h": 34
+          },
+          "html": "<input class=\"form-input\" id=\"integration-field-trello-defaultScope\" data-integration-field=\"defaultScope\" type=\"text\" value=\"All visible boards\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 492,
+            "y": 904,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"69cf6cdee390b025c9368cab\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 492,
+            "y": 944,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"60cd04fda6f13f3800c27253\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 492,
+            "y": 984,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"69f2cfe7f63a58a6772a6cd0\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 1303,
+            "y": 2730,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"reviewApproval\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 1303,
+            "y": 2781,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"connectorHealth\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 1303,
+            "y": 2832,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"weeklyDigest\">"
+        }
+      ],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 1146,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 1169,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [
+        "secret",
+        "token"
+      ],
+      "disabledMismatch": [
+        {
+          "name": "Disabled",
+          "rect": {
+            "x": 723,
+            "y": 1877,
+            "w": 54,
+            "h": 18
+          },
+          "cls": ""
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1270,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Access & policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 244,
+            "y": 349,
+            "w": 200,
+            "h": 28
+          },
+          "cls": "sl"
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1242,
+            "y": 249,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1242,
+            "y": 290,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1242,
+            "y": 331,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1242,
+            "y": 372,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm ai"
+        },
+        {
+          "name": "Policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1249,
+            "y": 413,
+            "w": 76,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Save draft",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1189,
+            "y": 758,
+            "w": 77,
+            "h": 26
+          },
+          "cls": "btn primary sm"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1106,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1150,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1194,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1238,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1282,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1326,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1370,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1414,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1236,
+            "y": 1458,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Edit groups",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1223,
+            "y": 1531,
+            "w": 102,
+            "h": 26
+          },
+          "cls": "btn sm"
+        },
+        {
+          "name": "Delete group",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 1241,
+            "y": 1628,
+            "w": 73,
+            "h": 32
+          },
+          "cls": "group-del-btn"
+        }
+      ]
+    },
+    {
+      "route": "Today",
+      "path": "/today",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/today",
+      "ms": 1553,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 23,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 807,
+        "y": 32,
+        "w": 197,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 622,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 723,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 807,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Showing all visible work",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 848,
+            "y": 452,
+            "w": 34,
+            "h": 24
+          },
+          "cls": "on"
+        },
+        {
+          "name": "Owner filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 882,
+            "y": 452,
+            "w": 47,
+            "h": 24
+          },
+          "cls": ""
+        },
+        {
+          "name": "Risk filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 929,
+            "y": 452,
+            "w": 51,
+            "h": 24
+          },
+          "cls": ""
+        }
+      ]
+    },
+    {
+      "route": "Review Queue",
+      "path": "/review",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/review",
+      "ms": 1200,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 27,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 821,
+        "y": 32,
+        "w": 183,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 636,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 737,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Refresh",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 821,
+            "y": 32,
+            "w": 95,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 925,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Intake policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 873,
+            "y": 142,
+            "w": 127,
+            "h": 32
+          },
+          "cls": "btn warn-outline"
+        },
+        {
+          "name": "status: approved",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 472,
+            "y": 216,
+            "w": 120,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        },
+        {
+          "name": "status: rejected",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 600,
+            "y": 216,
+            "w": 113,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        }
+      ]
+    },
+    {
+      "route": "All Tasks",
+      "path": "/all",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/all",
+      "ms": 1306,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 158,
+      "unnamedControls": [
+        {
+          "selector": "button.btn.sm",
+          "rect": {
+            "x": 957,
+            "y": 266,
+            "w": 30,
+            "h": 32
+          },
+          "html": "<button class=\"btn sm ghost\" type=\"button\" onclick=\"topbarRefresh()\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\" width=\"16\" height=\"16\"><path d=\"M3 12a9 9 0 0 1 1"
+        }
+      ],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 758,
+        "y": 32,
+        "w": 246,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 573,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 674,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "New task",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 898,
+            "y": 32,
+            "w": 106,
+            "h": 32
+          },
+          "cls": "btn primary"
+        },
+        {
+          "name": "Scope is controlled from the topbar and sidebar.",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 690,
+            "y": 232,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip"
+        },
+        {
+          "name": "All visible tasks come from Trello in this V0.6 slice.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 867,
+            "y": 232,
+            "w": 87,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        },
+        {
+          "name": "Additional filter builder is planned for the next UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 346,
+            "y": 270,
+            "w": 83,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Saved views are not wired yet",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 777,
+            "y": 266,
+            "w": 174,
+            "h": 32
+          },
+          "cls": "btn sm is-disabled"
+        },
+        {
+          "name": "Export filtered tasks",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 927,
+            "y": 8018,
+            "w": 56,
+            "h": 32
+          },
+          "cls": "btn sm ghost"
+        }
+      ]
+    },
+    {
+      "route": "Boards Monitor",
+      "path": "/boards",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/boards",
+      "ms": 2055,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 42,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 827,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 928,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Health filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 585,
+            "y": 341,
+            "w": 101,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Owner filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 694,
+            "y": 341,
+            "w": 94,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Stale filter is represented in the current sort and cards",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 796,
+            "y": 341,
+            "w": 94,
+            "h": 24
+          },
+          "cls": "filter-chip is-disabled"
+        }
+      ]
+    },
+    {
+      "route": "Calendar",
+      "path": "/calendar",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/calendar",
+      "ms": 1181,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 20,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 724,
+        "y": 32,
+        "w": 280,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 540,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 640,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "New event",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 890,
+            "y": 32,
+            "w": 114,
+            "h": 32
+          },
+          "cls": "btn primary cal-add-btn"
+        }
+      ]
+    },
+    {
+      "route": "Planner",
+      "path": "/planner",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/planner",
+      "ms": 1381,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 19,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 827,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 928,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "OKR / Portfolio",
+      "path": "/okr",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/okr",
+      "ms": 1227,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 89,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 827,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [
+        {
+          "name": "👤 Nofffie",
+          "rect": {
+            "x": 2015,
+            "y": 2527,
+            "w": 75,
+            "h": 24
+          },
+          "cls": "filter-chip okr-label-filter"
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 928,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Weekly Focus",
+      "path": "/focus",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/focus",
+      "ms": 1235,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 19,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 762,
+        "y": 33,
+        "w": 242,
+        "h": 30
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 577,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 678,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Docs / AI Trace",
+      "path": "/docs",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/docs",
+      "ms": 1194,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 25,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 828,
+        "y": 32,
+        "w": 176,
+        "h": 32
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 643,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 744,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Filter",
+          "disabled": false,
+          "expanded": "false",
+          "rect": {
+            "x": 828,
+            "y": 32,
+            "w": 79,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Export",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 915,
+            "y": 32,
+            "w": 89,
+            "h": 32
+          },
+          "cls": "btn"
+        },
+        {
+          "name": "Agent filtering needs normalized agent ids from the trace source.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 813,
+            "y": 230,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        }
+      ]
+    },
+    {
+      "route": "Settings",
+      "path": "/settings",
+      "viewport": "tablet",
+      "size": "1024x768",
+      "url": "http://127.0.0.1:3032/settings",
+      "ms": 1269,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "Trisilar Task Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 83,
+      "unnamedControls": [
+        {
+          "selector": "input#integration-field-trello-workspaceAlias.form-input",
+          "rect": {
+            "x": 261,
+            "y": 606,
+            "w": 355,
+            "h": 34
+          },
+          "html": "<input class=\"form-input\" id=\"integration-field-trello-workspaceAlias\" data-integration-field=\"workspaceAlias\" type=\"text\" value=\"trisilar\">"
+        },
+        {
+          "selector": "input#integration-field-trello-defaultScope.form-input",
+          "rect": {
+            "x": 628,
+            "y": 606,
+            "w": 355,
+            "h": 34
+          },
+          "html": "<input class=\"form-input\" id=\"integration-field-trello-defaultScope\" data-integration-field=\"defaultScope\" type=\"text\" value=\"All visible boards\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 272,
+            "y": 953,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"69cf6cdee390b025c9368cab\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 272,
+            "y": 993,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"60cd04fda6f13f3800c27253\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 272,
+            "y": 1033,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"69f2cfe7f63a58a6772a6cd0\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 961,
+            "y": 2844,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"reviewApproval\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 961,
+            "y": 2894,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"connectorHealth\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 961,
+            "y": 2945,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"weeklyDigest\">"
+        }
+      ],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 220,
+        "y": 24,
+        "w": 804,
+        "h": 48
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 24,
+        "w": 220,
+        "h": 744
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Scope filter All BUs. Open scope menu.",
+          "rect": {
+            "x": 827,
+            "y": 34,
+            "w": 93,
+            "h": 28
+          }
+        }
+      ],
+      "secretHits": [
+        "secret",
+        "token"
+      ],
+      "disabledMismatch": [
+        {
+          "name": "Disabled",
+          "rect": {
+            "x": 503,
+            "y": 1958,
+            "w": 54,
+            "h": 18
+          },
+          "cls": ""
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Filter workspace to Trisilar",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 8,
+            "y": 485,
+            "w": 203,
+            "h": 28
+          },
+          "cls": "nav-item scope-item"
+        },
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 928,
+            "y": 32,
+            "w": 34,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Access & policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 4034,
+            "y": 198,
+            "w": 756,
+            "h": 28
+          },
+          "cls": "sl"
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 900,
+            "y": 297,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 900,
+            "y": 338,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 900,
+            "y": 379,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 900,
+            "y": 420,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm ai"
+        },
+        {
+          "name": "Policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 907,
+            "y": 461,
+            "w": 76,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Save draft",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 847,
+            "y": 807,
+            "w": 77,
+            "h": 26
+          },
+          "cls": "btn primary sm"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1154,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1198,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1242,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1286,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1330,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1374,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1418,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1462,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 894,
+            "y": 1506,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Edit groups",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 881,
+            "y": 1579,
+            "w": 102,
+            "h": 26
+          },
+          "cls": "btn sm"
+        },
+        {
+          "name": "Delete group",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 899,
+            "y": 1676,
+            "w": 73,
+            "h": 32
+          },
+          "cls": "group-del-btn"
+        }
+      ]
+    },
+    {
+      "route": "Today",
+      "path": "/today",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/today",
+      "ms": 1488,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 10,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Showing all visible work",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 583,
+            "y": 457,
+            "w": 34,
+            "h": 24
+          },
+          "cls": "on"
+        },
+        {
+          "name": "Owner filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 617,
+            "y": 457,
+            "w": 47,
+            "h": 24
+          },
+          "cls": ""
+        },
+        {
+          "name": "Risk filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 664,
+            "y": 457,
+            "w": 51,
+            "h": 24
+          },
+          "cls": ""
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-today-app-pane-747x910.png"
+    },
+    {
+      "route": "Review Queue",
+      "path": "/review",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/review",
+      "ms": 1209,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 4,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-review-queue-app-pane-747x910.png"
+    },
+    {
+      "route": "All Tasks",
+      "path": "/all",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/all",
+      "ms": 1216,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 12,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Export filtered tasks",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 662,
+            "y": 15898,
+            "w": 56,
+            "h": 32
+          },
+          "cls": "btn sm ghost"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-all-tasks-app-pane-747x910.png"
+    },
+    {
+      "route": "Boards Monitor",
+      "path": "/boards",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/boards",
+      "ms": 2105,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 70,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [
+        {
+          "name": "👤 Nofffie",
+          "rect": {
+            "x": 23,
+            "y": 652,
+            "w": 98,
+            "h": 32
+          },
+          "cls": "bm-label-chip"
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Health filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 366,
+            "y": 362,
+            "w": 112,
+            "h": 32
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Owner filter is planned for a later UI V2 slice",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 485,
+            "y": 362,
+            "w": 105,
+            "h": 32
+          },
+          "cls": "filter-chip is-disabled"
+        },
+        {
+          "name": "Stale filter is represented in the current sort and cards",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 599,
+            "y": 362,
+            "w": 104,
+            "h": 32
+          },
+          "cls": "filter-chip is-disabled"
+        }
+      ]
+    },
+    {
+      "route": "Calendar",
+      "path": "/calendar",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/calendar",
+      "ms": 1807,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 5,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-calendar-app-pane-747x910.png"
+    },
+    {
+      "route": "Planner",
+      "path": "/planner",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/planner",
+      "ms": 1339,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 8,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "OKR / Portfolio",
+      "path": "/okr",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/okr",
+      "ms": 1187,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 78,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [
+        {
+          "name": "👤 Nofffie",
+          "rect": {
+            "x": 1783,
+            "y": 5889,
+            "w": 75,
+            "h": 24
+          },
+          "cls": "filter-chip okr-label-filter"
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Weekly Focus",
+      "path": "/focus",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/focus",
+      "ms": 1198,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 13,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-weekly-focus-app-pane-747x910.png"
+    },
+    {
+      "route": "Docs / AI Trace",
+      "path": "/docs",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/docs",
+      "ms": 1307,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 12,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Agent filtering needs normalized agent ids from the trace source.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 641,
+            "y": 239,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-docs-ai-trace-app-pane-747x910.png"
+    },
+    {
+      "route": "Settings",
+      "path": "/settings",
+      "viewport": "app-pane",
+      "size": "747x910",
+      "url": "http://127.0.0.1:3032/settings",
+      "ms": 1302,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 72,
+      "unnamedControls": [
+        {
+          "selector": "input#integration-field-trello-workspaceAlias.form-input",
+          "rect": {
+            "x": 29,
+            "y": 611,
+            "w": 339,
+            "h": 34
+          },
+          "html": "<input class=\"form-input\" id=\"integration-field-trello-workspaceAlias\" data-integration-field=\"workspaceAlias\" type=\"text\" value=\"trisilar\">"
+        },
+        {
+          "selector": "input#integration-field-trello-defaultScope.form-input",
+          "rect": {
+            "x": 380,
+            "y": 611,
+            "w": 339,
+            "h": 34
+          },
+          "html": "<input class=\"form-input\" id=\"integration-field-trello-defaultScope\" data-integration-field=\"defaultScope\" type=\"text\" value=\"All visible boards\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 40,
+            "y": 958,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"69cf6cdee390b025c9368cab\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 40,
+            "y": 998,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"60cd04fda6f13f3800c27253\">"
+        },
+        {
+          "selector": "input.ws-check",
+          "rect": {
+            "x": 40,
+            "y": 1038,
+            "w": 16,
+            "h": 16
+          },
+          "html": "<input type=\"checkbox\" class=\"ws-check\" data-wsid=\"69f2cfe7f63a58a6772a6cd0\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 696,
+            "y": 2849,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"reviewApproval\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 696,
+            "y": 2899,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"connectorHealth\" checked=\"\">"
+        },
+        {
+          "selector": "input",
+          "rect": {
+            "x": 696,
+            "y": 2950,
+            "w": 13,
+            "h": 13
+          },
+          "html": "<input type=\"checkbox\" data-settings-notification=\"weeklyDigest\">"
+        }
+      ],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 747,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [
+        "secret",
+        "token"
+      ],
+      "disabledMismatch": [
+        {
+          "name": "Disabled",
+          "rect": {
+            "x": 271,
+            "y": 1963,
+            "w": 54,
+            "h": 18
+          },
+          "cls": ""
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 701,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Access & policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 3637,
+            "y": 203,
+            "w": 723,
+            "h": 28
+          },
+          "cls": "sl"
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 635,
+            "y": 302,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 635,
+            "y": 343,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 635,
+            "y": 384,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Manage",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 635,
+            "y": 425,
+            "w": 83,
+            "h": 26
+          },
+          "cls": "btn sm ai"
+        },
+        {
+          "name": "Policy",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 642,
+            "y": 466,
+            "w": 76,
+            "h": 26
+          },
+          "cls": "btn sm "
+        },
+        {
+          "name": "Save draft",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 582,
+            "y": 812,
+            "w": 77,
+            "h": 26
+          },
+          "cls": "btn primary sm"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1159,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1203,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1247,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1291,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1335,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1379,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1423,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1467,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Visible",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 629,
+            "y": 1511,
+            "w": 78,
+            "h": 26
+          },
+          "cls": "vis-toggle"
+        },
+        {
+          "name": "Edit groups",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 616,
+            "y": 1584,
+            "w": 102,
+            "h": 26
+          },
+          "cls": "btn sm"
+        },
+        {
+          "name": "Delete group",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 634,
+            "y": 1681,
+            "w": 73,
+            "h": 32
+          },
+          "cls": "group-del-btn"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-settings-app-pane-747x910.png"
+    },
+    {
+      "route": "Today",
+      "path": "/today",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/today",
+      "ms": 1474,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 5,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Review Queue",
+      "path": "/review",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/review",
+      "ms": 1180,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 4,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "All Tasks",
+      "path": "/all",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/all",
+      "ms": 1329,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 6,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Export filtered tasks",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 306,
+            "y": 19108,
+            "w": 56,
+            "h": 32
+          },
+          "cls": "btn sm ghost"
+        }
+      ]
+    },
+    {
+      "route": "Boards Monitor",
+      "path": "/boards",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/boards",
+      "ms": 2041,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 7,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Calendar",
+      "path": "/calendar",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/calendar",
+      "ms": 1202,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 5,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Planner",
+      "path": "/planner",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/planner",
+      "ms": 1310,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 8,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "OKR / Portfolio",
+      "path": "/okr",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/okr",
+      "ms": 2437,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 78,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [
+        {
+          "name": "👤 Nofffie",
+          "rect": {
+            "x": 218,
+            "y": 6680,
+            "w": 75,
+            "h": 24
+          },
+          "cls": "filter-chip okr-label-filter"
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Weekly Focus",
+      "path": "/focus",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/focus",
+      "ms": 1164,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 13,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Docs / AI Trace",
+      "path": "/docs",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/docs",
+      "ms": 1206,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 12,
+      "unnamedControls": [],
+      "clipped": [
+        {
+          "text": "run run_child_docs_20260513_002 Child Agent Execution Notes no session linked · pc_task_001 · 1 task Paperclip Research Child Agent env mock 13/05/2026 13:50 ORPHAN",
+          "rect": {
+            "x": 13,
+            "y": 353,
+            "w": 364,
+            "h": 52
+          },
+          "sw": 560,
+          "cw": 364,
+          "sh": 51,
+          "ch": 51,
+          "cls": "trace-row docs-trace-table-row active"
+        },
+        {
+          "text": "run run_docs_20260513_001 Weekly Marketing Sync Summary no session linked · pc_task_001 · 1 task Paperclip Docs Agent env mock 13/05/2026 13:45 ORPHAN",
+          "rect": {
+            "x": 13,
+            "y": 405,
+            "w": 364,
+            "h": 51
+          },
+          "sw": 560,
+          "cw": 364,
+          "sh": 51,
+          "ch": 51,
+          "cls": "trace-row docs-trace-table-row"
+        }
+      ],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Agent filtering needs normalized agent ids from the trace source.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 25,
+            "y": 317,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        }
+      ]
+    },
+    {
+      "route": "Settings",
+      "path": "/settings",
+      "viewport": "mobile",
+      "size": "390x844",
+      "url": "http://127.0.0.1:3032/settings",
+      "ms": 1289,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 8,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 390,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 344,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Today",
+      "path": "/today",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/today",
+      "ms": 1628,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 5,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-today-mobile-small-375x667.png"
+    },
+    {
+      "route": "Review Queue",
+      "path": "/review",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/review",
+      "ms": 1209,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 4,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-review-queue-mobile-small-375x667.png"
+    },
+    {
+      "route": "All Tasks",
+      "path": "/all",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/all",
+      "ms": 1355,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 6,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Export filtered tasks",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 291,
+            "y": 19503,
+            "w": 56,
+            "h": 32
+          },
+          "cls": "btn sm ghost"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-all-tasks-mobile-small-375x667.png"
+    },
+    {
+      "route": "Boards Monitor",
+      "path": "/boards",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/boards",
+      "ms": 2063,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 7,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Calendar",
+      "path": "/calendar",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/calendar",
+      "ms": 1211,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 5,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-calendar-mobile-small-375x667.png"
+    },
+    {
+      "route": "Planner",
+      "path": "/planner",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/planner",
+      "ms": 1311,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 8,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "OKR / Portfolio",
+      "path": "/okr",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/okr",
+      "ms": 1259,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 78,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [
+        {
+          "name": "👤 Nofffie",
+          "rect": {
+            "x": 25,
+            "y": 6770,
+            "w": 75,
+            "h": 24
+          },
+          "cls": "filter-chip okr-label-filter"
+        }
+      ],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ]
+    },
+    {
+      "route": "Weekly Focus",
+      "path": "/focus",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/focus",
+      "ms": 1250,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 13,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-weekly-focus-mobile-small-375x667.png"
+    },
+    {
+      "route": "Docs / AI Trace",
+      "path": "/docs",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/docs",
+      "ms": 1436,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 12,
+      "unnamedControls": [],
+      "clipped": [
+        {
+          "text": "run run_child_docs_20260513_002 Child Agent Execution Notes no session linked · pc_task_001 · 1 task Paperclip Research Child Agent env mock 13/05/2026 13:50 ORPHAN",
+          "rect": {
+            "x": 13,
+            "y": 353,
+            "w": 349,
+            "h": 52
+          },
+          "sw": 560,
+          "cw": 349,
+          "sh": 51,
+          "ch": 51,
+          "cls": "trace-row docs-trace-table-row active"
+        },
+        {
+          "text": "run run_docs_20260513_001 Weekly Marketing Sync Summary no session linked · pc_task_001 · 1 task Paperclip Docs Agent env mock 13/05/2026 13:45 ORPHAN",
+          "rect": {
+            "x": 13,
+            "y": 405,
+            "w": 349,
+            "h": 51
+          },
+          "sw": 560,
+          "cw": 349,
+          "sh": 51,
+          "ch": 51,
+          "cls": "trace-row docs-trace-table-row"
+        }
+      ],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        },
+        {
+          "name": "Agent filtering needs normalized agent ids from the trace source.",
+          "disabled": true,
+          "expanded": null,
+          "rect": {
+            "x": 25,
+            "y": 317,
+            "w": 81,
+            "h": 24
+          },
+          "cls": "filter-chip is-readonly"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-docs-ai-trace-mobile-small-375x667.png"
+    },
+    {
+      "route": "Settings",
+      "path": "/settings",
+      "viewport": "mobile-small",
+      "size": "375x667",
+      "url": "http://127.0.0.1:3032/settings",
+      "ms": 1211,
+      "consoleItems": [],
+      "pageErrors": [],
+      "title": "Trisilar Task Hub",
+      "routeTitle": "TrisilarTask Hub · v2",
+      "overflowX": 0,
+      "visibleControlCount": 8,
+      "unnamedControls": [],
+      "clipped": [],
+      "emojiLike": [],
+      "topbarRect": {
+        "x": 0,
+        "y": 27,
+        "w": 375,
+        "h": 58
+      },
+      "topbarActionsRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "sidebarRect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "statusStripRect": null,
+      "mobileNavLabels": [],
+      "hamburger": [
+        {
+          "name": "Open navigation",
+          "rect": {
+            "x": 14,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          }
+        }
+      ],
+      "secretHits": [],
+      "disabledMismatch": [],
+      "suspiciousButtons": [
+        {
+          "name": "Refresh current view",
+          "disabled": false,
+          "expanded": null,
+          "rect": {
+            "x": 329,
+            "y": 40,
+            "w": 32,
+            "h": 32
+          },
+          "cls": "btn btn-icon"
+        }
+      ],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-settings-mobile-small-375x667.png"
+    }
+  ]
+}

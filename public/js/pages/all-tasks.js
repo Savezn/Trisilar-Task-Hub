@@ -4,7 +4,7 @@ async function showAllTasks() {
   S.mode = "all";
   S.currentBoardId = null;
   S.currentGroupId = null;
-  $("board-title").textContent = "Tasks";
+  $("board-title").textContent = "All Tasks";
   $("board-subtitle").textContent = "Cross-board inbox";
   $("add-list-btn").classList.add("hidden");
 
@@ -16,8 +16,10 @@ async function showAllTasks() {
       return;
     }
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
+    if (S.mode !== "all") return;
     renderAllTasks(getAllowedCards());
   } catch (e) {
+    if (S.mode !== "all") return;
     content.innerHTML = trelloRouteUnavailableHtml("Tasks");
   }
 }
@@ -32,7 +34,8 @@ function renderAllTasks(cards) {
   let search = S.atSearch || "";
   let labelFilter = S.atLabelFilter || "";
   let ownerFilter = S.atOwnerFilter || "";
-  let groupBy = S.atGroupBy || "due";
+  let viewMode = ["table", "list", "board", "owner"].includes(S.atViewMode) ? S.atViewMode : "table";
+  let groupBy = viewMode === "board" ? "board" : viewMode === "owner" ? "owner" : "none";
 
   const allLabels = [];
   const allMembers = [];
@@ -85,6 +88,14 @@ function renderAllTasks(cards) {
       : "is-active";
   }
 
+  function statusTone(card) {
+    if (card.dueComplete) return "ok";
+    if (isOverdue(card)) return "over";
+    if (isToday(card)) return "warn";
+    if (isUpcoming(card)) return "info";
+    return "muted";
+  }
+
   function taskSourceLabel() {
     return "Source: Trello";
   }
@@ -103,11 +114,12 @@ function renderAllTasks(cards) {
   }
 
   function taskDecisionMeta(card) {
+    const nextAction = taskNextActionLabel(card);
     return `
       <span class="task-source-pill">${taskSourceLabel(card)}</span>
-      <span class="task-context-label">${esc(taskDecisionContext(card))}</span>
+      <span class="task-context-label uiv2-meta-text uiv2-text-reveal" title="${esc(taskDecisionContext(card))}">${esc(taskDecisionContext(card))}</span>
       <span class="task-owner-context">Owner: ${esc(ownerText(card) || "Unassigned")}</span>
-      <span class="task-next-action">${esc(taskNextActionLabel(card))}</span>
+      <span class="task-next-action uiv2-decision-text uiv2-text-reveal" title="${esc(nextAction)}">${esc(nextAction)}</span>
     `;
   }
 
@@ -217,34 +229,55 @@ function renderAllTasks(cards) {
     return S.atSortOrder === "asc" ? " ↑" : " ↓";
   }
 
+  function sortAria(field) {
+    if (S.atSortField !== field) return "none";
+    return S.atSortOrder === "asc" ? "ascending" : "descending";
+  }
+
+  function sortButtonLabel(field, label) {
+    if (S.atSortField !== field) return `Sort by ${label}`;
+    const next = S.atSortOrder === "asc" ? "descending" : "ascending";
+    return `${label} sorted ${sortAria(field)}. Activate to sort ${next}.`;
+  }
+
+  function sortHeader(field, visibleLabel, ariaLabel = visibleLabel) {
+    return `<th aria-sort="${sortAria(field)}"><button class="sortable-header" type="button" data-sort="${field}" aria-label="${esc(sortButtonLabel(field, ariaLabel))}">${visibleLabel}${sortGlyph(field)}</button></th>`;
+  }
+
   function buildCardRow(card) {
     const chips = labelChips(card);
     const done = card.dueComplete;
+    const checklist = checklistMeta(card).replace(/<[^>]*>/g, "").trim() || "-";
+    const title = card.name || "Untitled task";
+    const nextAction = taskNextActionLabel(card);
+    const boardName = card.boardName || "No board";
+    const listName = card.listName || "No list";
+    const boardListTitle = `${boardName} - ${listName}`;
     return `
-      <div class="task-row task-inbox-row ${done ? "is-complete" : ""}" data-card-id="${esc(card.id)}">
-        <button class="task-check-button" type="button" title="${done ? "Completed" : "Mark done"}" data-action="done">
-          ${done ? icon("check") : ""}
-        </button>
-        <div class="task-title">
-          <div class="task-title-text">${esc(card.name || "Untitled task")}</div>
+      <tr class="task-row task-inbox-row ${done ? "is-complete" : ""}" data-card-id="${esc(card.id)}" title="${esc(`${title} - ${boardListTitle}`)}">
+        <td class="ck">
+          <button class="task-check-button tck" type="button" title="${done ? "Mark active" : "Mark done"}" aria-label="${esc(done ? `Mark active: ${title}` : `Mark done: ${title}`)}" data-action="done">
+            ${done ? icon("check") : ""}
+          </button>
+        </td>
+        <td class="task-title">
+          <div class="task-title-text uiv2-decision-text uiv2-text-reveal" title="${esc(title)}">${esc(title)}</div>
           <div class="task-row-meta">
             ${chips ? `<span class="task-label-chips">${chips}</span>` : ""}
-            ${checklistMeta(card)}
-            ${card.desc ? `<span class="task-row-mini">${icon("inbox")}Description</span>` : ""}
-            ${taskDecisionMeta(card)}
+            <span class="task-next-action uiv2-decision-text uiv2-text-reveal" title="${esc(nextAction)}">${esc(nextAction)}</span>
+            <button class="task-row-edit-btn" type="button" data-action="edit" aria-label="Edit card: ${esc(title)}" title="Edit card: ${esc(title)}">${icon("edit")} <span>Edit</span></button>
           </div>
-        </div>
-        <div class="task-board-cell">
-          ${boardChip(card)}
-          <span class="task-list-line">${esc(card.listName || "No list")}</span>
-        </div>
-        <div class="task-owner">${ownerAvatars(card)}</div>
-        <div>${dueCell(card)}</div>
-        <div class="task-row-status">
-          <span class="task-status-pill ${statusClass(card)}">${esc(statusLabel(card))}</span>
-          <button class="btn btn-ghost btn-xs task-open-btn" type="button" data-action="open" title="Open task">${icon("external")}</button>
-        </div>
-      </div>`;
+        </td>
+        <td title="${esc(boardListTitle)}">
+          ${uiBoardTag(boardName, boardColorForName(boardName))}
+          <span class="task-list-line uiv2-meta-text uiv2-text-reveal" title="${esc(listName)}">&middot; ${esc(listName)}</span>
+        </td>
+        <td data-uiv2="task-owner">${uiAvatarStack(card.members || [])}<span class="task-owner-name">${esc(ownerText(card))}</span></td>
+        <td>${uiDue(card.due ? formatThaiDateTime(card.due, false) : "No due", dueStateFromCard(card))}</td>
+        <td>${uiChip(statusTone(card), statusLabel(card), { sm: true })}</td>
+        <td data-uiv2="task-source">${uiChip("muted", "Trello", { sm: true })}</td>
+        <td class="num mono">${esc(checklist)}</td>
+      </tr>`;
   }
 
   function dueBucket(card) {
@@ -289,16 +322,63 @@ function renderAllTasks(cards) {
   function buildGroupedRows(rows) {
     if (!rows.length) {
       return `
-        <div class="tasks-empty-state">
-          <div class="tasks-empty-icon">${icon(search || labelFilter || ownerFilter || filter !== "all" ? "search" : "checkSquare")}</div>
-          <h3>${allCards.length ? "No tasks match this view" : "No tasks found"}</h3>
-          <p>${allCards.length ? "Adjust search, filters, labels, owners, or grouping to widen the inbox." : "Connected boards did not return any visible tasks."}</p>
-          ${allCards.length ? '<button class="btn btn-primary btn-sm" type="button" data-action="clear-filters">Clear filters</button>' : ""}
-        </div>`;
+        <tr class="task-empty-row">
+          <td colspan="8">
+            ${uiStateCard({
+              kind: allCards.length ? "empty" : "disconnected",
+              iconName: search || labelFilter || ownerFilter || filter !== "all" ? "search" : "checkSquare",
+              title: allCards.length ? "No tasks match this view" : "No tasks found",
+              desc: allCards.length ? "Adjust search, filters, labels, owners, or grouping to widen the inbox." : "Connected boards did not return any visible tasks.",
+              actions: allCards.length ? '<button class="btn primary sm" type="button" data-action="clear-filters">Clear filters</button>' : "",
+            })}
+          </td>
+        </tr>`;
     }
     return groupRows(rows).map(group => `
-      ${group.label ? `<div class="task-group-header"><span>${esc(group.label)}</span><span class="task-group-count">${group.cards.length}</span></div>` : ""}
+      ${group.label ? `<tr class="task-group-header-row"><td colspan="8"><span>${esc(group.label)}</span><span class="task-group-count">${group.cards.length}</span></td></tr>` : ""}
       ${group.cards.map(buildCardRow).join("")}
+    `).join("");
+  }
+
+  function buildListCard(card) {
+    const title = card.name || "Untitled task";
+    const boardName = card.boardName || "No board";
+    const listName = card.listName || "No list";
+    const nextAction = taskNextActionLabel(card);
+    const done = card.dueComplete;
+    return `
+      <div class="task-list-card task-row ${done ? "is-complete" : ""}" data-card-id="${esc(card.id)}" title="${esc(`${title} - ${boardName} / ${listName}`)}">
+        <button class="task-check-button tck" type="button" title="${done ? "Mark active" : "Mark done"}" aria-label="${esc(done ? `Mark active: ${title}` : `Mark done: ${title}`)}" data-action="done">${done ? icon("check") : ""}</button>
+        <div class="task-list-card-main">
+          <div class="task-title-text uiv2-decision-text uiv2-text-reveal" title="${esc(title)}">${esc(title)}</div>
+          <div class="task-row-meta">
+            ${uiBoardTag(boardName, boardColorForName(boardName))}
+            <span class="task-list-line uiv2-meta-text uiv2-text-reveal" title="${esc(listName)}">&middot; ${esc(listName)}</span>
+            <span>${uiChip(statusTone(card), statusLabel(card), { sm: true })}</span>
+            <span class="task-next-action uiv2-decision-text uiv2-text-reveal" title="${esc(nextAction)}">${esc(nextAction)}</span>
+          </div>
+        </div>
+        <div class="task-list-card-side">
+          <span data-uiv2="task-owner">${uiAvatarStack(card.members || [])}<span class="task-owner-name">${esc(ownerText(card) || "Unassigned")}</span></span>
+          ${uiDue(card.due ? formatThaiDateTime(card.due, false) : "No due", dueStateFromCard(card))}
+          <button class="btn sm ghost" type="button" data-action="edit" aria-label="Edit card: ${esc(title)}" title="Edit card: ${esc(title)}">${icon("edit")} Edit</button>
+        </div>
+      </div>`;
+  }
+
+  function buildGroupedListRows(rows) {
+    if (!rows.length) {
+      return uiStateCard({
+        kind: allCards.length ? "empty" : "disconnected",
+        iconName: search || labelFilter || ownerFilter || filter !== "all" ? "search" : "checkSquare",
+        title: allCards.length ? "No tasks match this view" : "No tasks found",
+        desc: allCards.length ? "Adjust search, filters, labels, owners, or grouping to widen the inbox." : "Connected boards did not return any visible tasks.",
+        actions: allCards.length ? '<button class="btn primary sm" type="button" data-action="clear-filters">Clear filters</button>' : "",
+      });
+    }
+    return groupRows(rows).map(group => `
+      ${group.label ? `<div class="task-group-header-row task-list-group-header"><span>${esc(group.label)}</span><span class="task-group-count">${group.cards.length}</span></div>` : ""}
+      ${group.cards.map(buildListCard).join("")}
     `).join("");
   }
 
@@ -307,6 +387,7 @@ function renderAllTasks(cards) {
     S.atSearch = search;
     S.atLabelFilter = labelFilter;
     S.atOwnerFilter = ownerFilter;
+    S.atViewMode = viewMode;
     S.atGroupBy = groupBy;
   }
 
@@ -383,17 +464,133 @@ function renderAllTasks(cards) {
     const rows = getSorted(filtered);
     const boardsCount = new Set(allCards.map(card => card.boardId || card.boardName).filter(Boolean)).size;
     const hiddenBoardCount = (S.config.hiddenBoards || []).length;
+    const activeScopeLabel = typeof scopeLabel === "function" ? scopeLabel() : "All BUs";
     const unassignedCount = allCards.filter(card => !(card.members || []).length).length;
     const activeFilterCount = [filter !== "all", search.trim(), labelFilter, ownerFilter].filter(Boolean).length;
     window._filteredCards = rows;
 
+    if (typeof setTopbarRouteActions === "function") {
+      setTopbarRouteActions(`
+        <button class="btn" type="button" id="tasks-topbar-open">${icon("external")} Open in Trello</button>
+        <button class="btn primary" type="button" id="tasks-topbar-new">${icon("plus")} New task</button>
+      `);
+    }
+
     const labelChipHtml = allLabels.map(label =>
-      `<button class="filter-chip at-label-chip${labelFilter === label.name ? " active" : ""}" data-l="${esc(label.name)}" style="${labelFilter === label.name ? `--chip-bg:${labelColor(label.color)}` : ""}">${esc(label.name)}</button>`
+      `<button class="filter-chip at-label-chip${labelFilter === label.name ? " active" : ""}" type="button" data-l="${esc(label.name)}" style="${labelFilter === label.name ? `--chip-bg:${labelColor(label.color)}` : ""}">${esc(label.name)}</button>`
     ).join("");
     const ownerChipHtml = allMembers.map(member =>
-      `<button class="filter-chip at-owner-chip${ownerFilter === member.id ? " active" : ""}" data-mid="${esc(member.id)}">${esc(member.fullName || member.username || member.id)}</button>`
+      `<button class="filter-chip at-owner-chip${ownerFilter === member.id ? " active" : ""}" type="button" data-mid="${esc(member.id)}">${esc(member.fullName || member.username || member.id)}</button>`
     ).join("");
+    const viewLabels = { table: "Table", list: "List", board: "Group by board", owner: "Group by owner" };
+    const sortLabels = { name: "Task", board: "Board", owner: "Owner", due: "Due", status: "Status" };
+    const ownerName = ownerFilter
+      ? (allMembers.find(member => member.id === ownerFilter)?.fullName || allMembers.find(member => member.id === ownerFilter)?.username || ownerFilter)
+      : "";
+    const localFilterParts = [
+      filter !== "all" ? `status:${filter}` : "",
+      search.trim() ? `search:${search.trim()}` : "",
+      labelFilter ? `label:${labelFilter}` : "",
+      ownerFilter ? `owner:${ownerName}` : "",
+    ].filter(Boolean);
+    const currentViewLabel = viewLabels[viewMode] || "Table";
+    const currentSortLabel = `${sortLabels[S.atSortField] || "Due"} ${S.atSortOrder === "desc" ? "desc" : "asc"}`;
+    const currentFilterLabel = localFilterParts.length ? localFilterParts.join(" / ") : "none";
+    const contextChips = [
+      `<span class="tasks-context-chip" aria-label="View: ${esc(currentViewLabel)}"><span>view</span><strong>${esc(currentViewLabel)}</strong></span>`,
+      `<span class="tasks-context-chip" aria-label="Sort: ${esc(currentSortLabel)}"><span>sort</span><strong>${esc(currentSortLabel)}</strong></span>`,
+      `<span class="tasks-context-chip" aria-label="Scope: ${esc(activeScopeLabel)}"><span>scope</span><strong>${esc(activeScopeLabel)}</strong></span>`,
+      `<span class="tasks-context-chip" aria-label="Filters: ${esc(currentFilterLabel)}"><span>filters</span><strong>${esc(currentFilterLabel)}</strong></span>`,
+    ].join("");
 
+    const useV2Tasks = true;
+    if (useV2Tasks) {
+      content.innerHTML = `
+        <div class="all-tasks-content tasks-inbox-page is-${esc(viewMode)}-view">
+          ${uiRouteBar({
+            title: "Cross-board task inbox",
+            sub: `<span>${rows.length} tasks visible</span><span>&middot;</span><span>Trello execution source</span><span>&middot;</span><span>${boardsCount} boards &middot; hidden ${hiddenBoardCount}</span><span>&middot;</span><span>scope: ${esc(activeScopeLabel)}</span>`,
+            actions: `<div class="seg" role="group" aria-label="Task view mode">
+              <button class="${viewMode === "table" ? "on" : ""}" type="button" aria-pressed="${viewMode === "table"}" data-at-view="table" title="Show dense table view">Table</button>
+              <button class="${viewMode === "list" ? "on" : ""}" type="button" aria-pressed="${viewMode === "list"}" data-at-view="list" title="Show scannable list view">List</button>
+              <button class="${viewMode === "board" ? "on" : ""}" type="button" aria-pressed="${viewMode === "board"}" data-at-view="board" title="Group visible tasks by board">Group &middot; board</button>
+              <button class="${viewMode === "owner" ? "on" : ""}" type="button" aria-pressed="${viewMode === "owner"}" data-at-view="owner" title="Group visible tasks by owner">Group &middot; owner</button>
+            </div>`,
+          })}
+
+          <div class="filterbar tasks-primary-filterbar">
+            <span class="search-sm">${icon("search")}<input id="tasks-search-input" type="search" value="${esc(search)}" placeholder="Search tasks..." aria-label="Search tasks by title, board, label, or owner" autocomplete="off"></span>
+            <button class="filter-chip on" data-f="all" type="button"><span class="k">status:</span>open ${filter !== "all" ? icon("x") : ""}</button>
+            <button class="filter-chip is-readonly" type="button" disabled title="The due window is represented by the status chips and Due column in this V0.6 slice."><span class="k">due:</span>next 14d</button>
+            <button class="filter-chip${activeScopeLabel !== "All BUs" ? " on" : ""}" id="tasks-scope-filter-btn" type="button" title="Scope is controlled from the topbar and sidebar."><span class="k">board:</span>${activeScopeLabel === "All BUs" ? "any" : esc(activeScopeLabel)}</button>
+            <button class="filter-chip${ownerFilter ? " active" : " is-readonly"}" id="tasks-owner-filter-clear" type="button" ${ownerFilter ? "" : "disabled"} title="${ownerFilter ? "Clear owner filter" : "Choose an owner from the Owner chips below."}"><span class="k">owner:</span>${ownerFilter ? "filtered" : "any"}</button>
+            <button class="filter-chip is-readonly" type="button" disabled title="All visible tasks come from Trello in this V0.6 slice."><span class="k">source:</span>any</button>
+            <button class="filter-chip${labelFilter ? " active" : " is-readonly"}" id="tasks-label-filter-clear" type="button" ${labelFilter ? "" : "disabled"} title="${labelFilter ? "Clear label filter" : "Choose a label from the Label chips below."}"><span class="k">label:</span>${labelFilter ? esc(labelFilter) : "any"}</button>
+            <button class="filter-chip is-disabled" type="button" id="tasks-add-filter-btn" disabled title="Additional filter builder is planned for the next UI V2 slice">${icon("plus")} Add filter</button>
+            <span class="tasks-filter-actions">
+              <button class="btn sm is-disabled" type="button" disabled title="Saved views are not wired yet">Saved: <strong>Risky open · 14d</strong>${icon("down")}</button>
+              <button class="btn sm ghost" type="button" onclick="topbarRefresh()" aria-label="Refresh task inbox" title="Refresh task inbox">${icon("refresh")}</button>
+            </span>
+          </div>
+
+          <div class="tasks-context-strip" aria-live="polite" aria-label="All Tasks current view, sort, scope, and filters">
+            <div class="tasks-context-main">
+              ${contextChips}
+              <span class="tasks-context-count">${rows.length} of ${allCards.length} visible</span>
+            </div>
+            <div class="tasks-context-actions">
+              <button class="btn sm ghost" type="button" id="tasks-clear-local-filters-btn" ${localFilterParts.length ? "" : "disabled"} title="${localFilterParts.length ? "Clear local All Tasks filters. Scope remains unchanged." : "No local filters to clear."}">Clear filters</button>
+              <button class="btn sm" type="button" id="tasks-reset-view-btn" title="Reset All Tasks to table view, Due ascending sort, and no local filters. Scope remains unchanged.">Reset view</button>
+            </div>
+          </div>
+
+          ${hiddenBoardCount ? `<div class="panel-foot tasks-hidden-notice">${icon("alert")} ${hiddenBoardCount} hidden board${hiddenBoardCount === 1 ? "" : "s"} excluded from this inbox. Manage visibility in Settings.</div>` : ""}
+
+          ${viewMode === "list" ? `
+          <div class="panel tasks-inbox-list" id="task-rows">
+            ${buildGroupedListRows(rows)}
+            <div class="panel-foot">
+              <span>${rows.length} of ${allCards.length}</span>
+              <span style="margin-left:auto">List view keeps decision metadata visible for desktop scanning.</span>
+            </div>
+          </div>` : `
+          <div class="panel tasks-inbox-table">
+            <table class="tbl">
+              <colgroup>
+                <col class="tasks-col-check">
+                <col class="tasks-col-title">
+                <col class="tasks-col-board">
+                <col class="tasks-col-owner">
+                <col class="tasks-col-due">
+                <col class="tasks-col-status">
+                <col class="tasks-col-source">
+                <col class="tasks-col-progress">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="ck"><input type="checkbox" aria-label="Select all visible tasks" disabled></th>
+                  ${sortHeader("name", "Task")}
+                  ${sortHeader("board", "Board &middot; List", "Board and list")}
+                  ${sortHeader("owner", "Owner")}
+                  ${sortHeader("due", "Due")}
+                  ${sortHeader("status", "Status")}
+                  <th>Source</th>
+                  <th class="num" title="Progress">&Delta;</th>
+                </tr>
+              </thead>
+              <tbody id="task-rows">${buildGroupedRows(rows)}</tbody>
+            </table>
+            <div class="panel-foot">
+              <span>${rows.length} of ${allCards.length}</span>
+              <span style="margin-left:auto;display:flex;gap:6px">
+                <button class="btn sm" type="button" disabled>Prev</button>
+                <button class="btn sm" type="button" disabled>Next</button>
+                <button class="btn sm ghost" id="at-export-btn" type="button" title="Export filtered tasks" aria-label="Export filtered tasks">Export</button>
+              </span>
+            </div>
+          </div>`}
+        </div>`;
+    } else {
     content.innerHTML = `
       <div class="all-tasks-content tasks-inbox-page">
         <div class="tasks-command-header">
@@ -402,7 +599,7 @@ function renderAllTasks(cards) {
             <h1 class="tasks-title">Tasks</h1>
             <p class="tasks-subtitle">${rows.length} of ${allCards.length} tasks visible across ${boardsCount} board${boardsCount === 1 ? "" : "s"}. Use source, owner, due state, and next action to choose work.</p>
           </div>
-          <button class="btn btn-ghost btn-sm at-export-btn" id="at-export-btn" title="Export filtered tasks as CSV">${icon("upload")} Export CSV</button>
+          <button class="btn btn-ghost btn-sm at-export-btn" type="button" id="at-export-btn" title="Export filtered tasks as CSV">${icon("upload")} Export CSV</button>
         </div>
 
         <div class="tasks-scan-strip" aria-label="Task inbox summary">
@@ -431,7 +628,7 @@ function renderAllTasks(cards) {
         <div class="tasks-toolbar">
           <label class="tasks-search" for="tasks-search-input">
             ${icon("search")}
-            <input id="tasks-search-input" type="search" value="${esc(search)}" placeholder="Search tasks, boards, labels, owners..." autocomplete="off">
+            <input id="tasks-search-input" type="search" value="${esc(search)}" placeholder="Search tasks, boards, labels, owners..." aria-label="Search tasks by title, board, label, or owner" autocomplete="off">
           </label>
           <div class="tasks-filter-strip" role="group" aria-label="Status filter">
             ${[
@@ -477,6 +674,9 @@ function renderAllTasks(cards) {
           <div id="task-rows">${buildGroupedRows(rows)}</div>
         </div>
       </div>`;
+    }
+
+    if (typeof ensureButtonTypes === "function") ensureButtonTypes(content);
 
     const searchInput = $("tasks-search-input");
     if (searchInput) {
@@ -503,17 +703,66 @@ function renderAllTasks(cards) {
     content.querySelectorAll(".filter-chip[data-f]").forEach(btn => {
       btn.onclick = () => { filter = btn.dataset.f; render(); };
     });
+    content.querySelectorAll("[data-at-view]").forEach(btn => {
+      btn.onclick = () => {
+        viewMode = btn.dataset.atView || "table";
+        groupBy = viewMode === "board" ? "board" : viewMode === "owner" ? "owner" : "none";
+        toast(viewMode === "board" ? "Grouped by board" : viewMode === "owner" ? "Grouped by owner" : viewMode === "list" ? "List view selected" : "Table view selected");
+        render();
+      };
+    });
     content.querySelectorAll(".at-label-chip").forEach(btn => {
       btn.onclick = () => { labelFilter = labelFilter === btn.dataset.l ? "" : btn.dataset.l; render(); };
     });
     content.querySelectorAll(".at-owner-chip").forEach(btn => {
       btn.onclick = () => { ownerFilter = ownerFilter === btn.dataset.mid ? "" : btn.dataset.mid; render(); };
     });
+    content.querySelector("#tasks-scope-filter-btn")?.addEventListener("click", () => {
+      document.querySelector(".topbar .scope-pick")?.focus();
+      toast("Board scope is controlled from the topbar scope picker and sidebar Scope list.");
+    });
+    content.querySelector("#tasks-owner-filter-clear")?.addEventListener("click", () => {
+      ownerFilter = "";
+      render();
+    });
+    content.querySelector("#tasks-label-filter-clear")?.addEventListener("click", () => {
+      labelFilter = "";
+      render();
+    });
+    content.querySelector("#tasks-clear-local-filters-btn")?.addEventListener("click", () => {
+      filter = "all";
+      search = "";
+      labelFilter = "";
+      ownerFilter = "";
+      toast("All Tasks filters cleared. Scope is unchanged.");
+      render();
+    });
+    content.querySelector("#tasks-reset-view-btn")?.addEventListener("click", () => {
+      filter = "all";
+      search = "";
+      labelFilter = "";
+      ownerFilter = "";
+      viewMode = "table";
+      groupBy = "none";
+      S.atSortField = "due";
+      S.atSortOrder = "asc";
+      toast("All Tasks view reset. Scope is unchanged.");
+      render();
+    });
     const groupSel = $("at-group-sel");
     if (groupSel) groupSel.onchange = () => { groupBy = groupSel.value; render(); };
 
     const exportBtn = $("at-export-btn");
     if (exportBtn) exportBtn.onclick = exportTasksCSV;
+    $("tasks-topbar-open")?.addEventListener("click", () => {
+      window.open("https://trello.com", "_blank", "noopener");
+      toast("Opening Trello in a new tab. Task Hub remains the command and review layer.");
+    });
+    $("tasks-topbar-new")?.addEventListener("click", () => {
+      toast("Opening Today quick add. New Trello card behavior is unchanged.");
+      navigateTo("today");
+      setTimeout(() => $("today-topbar-quick-add")?.click(), 80);
+    });
 
     const taskRows = content.querySelector("#task-rows");
     content.querySelector("[data-action='clear-filters']")?.addEventListener("click", () => {
@@ -521,6 +770,7 @@ function renderAllTasks(cards) {
       search = "";
       labelFilter = "";
       ownerFilter = "";
+      toast("Task filters cleared");
       render();
     });
 
@@ -531,11 +781,13 @@ function renderAllTasks(cards) {
       if (!card) return;
       const action = e.target.closest("[data-action]")?.dataset.action;
       if (action === "done") return markDone(card, e.target.closest("[data-action]"));
+      if (action === "edit") return openEditAllTasks(card);
       if (e.target.closest(".task-title")) return;
       openEditAllTasks(card);
     });
 
     taskRows?.addEventListener("dblclick", e => {
+      if (e.target.closest("[data-action]")) return;
       const titleEl = e.target.closest(".task-title");
       if (!titleEl) return;
       const row = titleEl.closest(".task-row");

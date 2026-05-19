@@ -1,0 +1,125 @@
+{
+  "generatedAt": "2026-05-19T08:29:48.333Z",
+  "results": [
+    {
+      "id": "today-loading",
+      "route": "/today",
+      "state": "loading",
+      "ok": true,
+      "expectedText": [
+        "Loading Task Hub",
+        "Loading"
+      ],
+      "title": "Today",
+      "overflowX": 0,
+      "consoleErrors": [],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-state-fixtures/today-loading-desktop-1440x900.png",
+      "reason": "pass"
+    },
+    {
+      "id": "review-empty",
+      "route": "/review",
+      "state": "empty",
+      "ok": true,
+      "expectedText": [
+        "Review queue is empty",
+        "No proposals to review"
+      ],
+      "title": "Review Queue",
+      "overflowX": 0,
+      "consoleErrors": [],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-state-fixtures/review-empty-desktop-1440x900.png",
+      "reason": "pass"
+    },
+    {
+      "id": "review-filtered-no-match",
+      "route": "/review",
+      "state": "filtered no-match",
+      "ok": true,
+      "expectedText": [
+        "No proposals match these filters",
+        "Clear filters"
+      ],
+      "title": "Review Queue",
+      "overflowX": 0,
+      "consoleErrors": [],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-state-fixtures/review-filtered-no-match-desktop-1440x900.png",
+      "reason": "pass"
+    },
+    {
+      "id": "review-missing-context-guard",
+      "route": "/review",
+      "state": "missing-context approval guard",
+      "ok": true,
+      "expectedText": [
+        "Missing owner, list",
+        "Trello write blocked until board/list is resolved"
+      ],
+      "title": "Review Queue",
+      "overflowX": 0,
+      "consoleErrors": [],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-state-fixtures/review-missing-context-guard-desktop-1440x900.png",
+      "reason": "pass"
+    },
+    {
+      "id": "all-tasks-filtered-no-match",
+      "route": "/all",
+      "state": "filtered no-match",
+      "ok": true,
+      "expectedText": [
+        "No tasks match this view",
+        "Clear filters"
+      ],
+      "title": "All Tasks",
+      "overflowX": 0,
+      "consoleErrors": [],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-state-fixtures/all-tasks-filtered-no-match-desktop-1440x900.png",
+      "reason": "pass"
+    },
+    {
+      "id": "docs-filtered-no-match",
+      "route": "/docs",
+      "state": "filtered no-match",
+      "ok": true,
+      "expectedText": [
+        "No documents match the current filters",
+        "Clear search"
+      ],
+      "title": "Docs / AI Trace",
+      "overflowX": 0,
+      "consoleErrors": [],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-state-fixtures/docs-filtered-no-match-desktop-1440x900.png",
+      "reason": "pass"
+    },
+    {
+      "id": "calendar-disconnected",
+      "route": "/calendar",
+      "state": "disconnected",
+      "ok": true,
+      "expectedText": [
+        "Google Calendar is disconnected",
+        "Connect Google Calendar"
+      ],
+      "title": "Calendar",
+      "overflowX": 0,
+      "consoleErrors": [],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-state-fixtures/calendar-disconnected-desktop-1440x900.png",
+      "reason": "pass"
+    },
+    {
+      "id": "planner-disconnected",
+      "route": "/planner",
+      "state": "disconnected",
+      "ok": true,
+      "expectedText": [
+        "Google Tasks is disconnected",
+        "Connect Google Tasks"
+      ],
+      "title": "Planner",
+      "overflowX": 0,
+      "consoleErrors": [],
+      "screenshot": "docs/logs/screenshots/v06-uiv2-state-fixtures/planner-disconnected-desktop-1440x900.png",
+      "reason": "pass"
+    }
+  ]
+}

@@ -7,6 +7,11 @@ async function showReviewPage() {
   $("board-title").textContent = "Review Queue";
   $("board-subtitle").textContent = "AI-extracted tasks waiting for approval";
   $("add-list-btn").classList.add("hidden");
+  if (typeof setTopbarRouteActions === "function") {
+    setTopbarRouteActions(`
+      <button class="btn" type="button" id="review-topbar-filter" onclick="focusReviewFilters()">${icon("filter")} Filter</button>
+    `);
+  }
 
   const content = $("board-content");
   content.innerHTML = '<div class="loading-box"><span class="spinner"></span> Loading sessions...</div>';
@@ -29,13 +34,16 @@ function renderReviewPage(sessions) {
   page.id = "review-page-root";
 
   const counts = getReviewCounts(sessions);
-  if (!S.reviewExpanded.size && sessions.length) {
-    const firstActionable = sessions.find(s => (s.tasks || []).some(t => t.status === "pending")) || sessions[0];
+  const filters = getReviewFilterState();
+  const filteredSessions = filterReviewSessions(sessions, filters);
+  const filteredCounts = getReviewCounts(filteredSessions);
+  $("board-subtitle").textContent = `${counts.pending} pending · paperclip`;
+  if (!S.reviewExpanded.size && filteredSessions.length) {
+    const firstActionable = filteredSessions.find(s => (s.tasks || []).some(t => t.status === "pending")) || filteredSessions[0];
     if (firstActionable) S.reviewExpanded.add(firstActionable.id);
   }
 
-  page.appendChild(buildReviewHeader(counts));
-  page.appendChild(buildReviewSummary(counts));
+  page.appendChild(buildReviewHeader(counts, filteredCounts));
 
   if (!sessions.length) {
     page.appendChild(buildReviewEmptyState());
@@ -45,16 +53,34 @@ function renderReviewPage(sessions) {
     return;
   }
 
+  if (!filteredSessions.length) {
+    page.appendChild(buildReviewNoMatches(filters));
+    content.innerHTML = "";
+    content.appendChild(page);
+    ensureReviewDrawerHost();
+    return;
+  }
+
+  const primarySelection = findPrimaryReviewTask(filteredSessions);
+
   page.appendChild(buildBulkBar());
+
+  const reviewLayout = document.createElement("div");
+  reviewLayout.className = "review-layout rq-layout";
 
   const sessionsWrap = document.createElement("div");
   sessionsWrap.className = "review-sessions";
-  sessions.forEach(session => sessionsWrap.appendChild(buildSessionCard(session)));
-  page.appendChild(sessionsWrap);
+  filteredSessions.forEach(session => sessionsWrap.appendChild(buildSessionCard(session)));
+  reviewLayout.appendChild(sessionsWrap);
+  if (primarySelection) {
+    reviewLayout.appendChild(buildReviewInspectionPanel(primarySelection.session, primarySelection.task));
+  }
+  page.appendChild(reviewLayout);
 
   content.innerHTML = "";
   content.appendChild(page);
   ensureReviewDrawerHost();
+  updateBulkBar();
 }
 
 function getReviewCounts(sessions) {
@@ -69,20 +95,104 @@ function getReviewCounts(sessions) {
   }, { sessions: 0, total: 0, pending: 0, approved: 0, rejected: 0 });
 }
 
-function buildReviewHeader(counts) {
+function getReviewFilterState() {
+  const state = S.reviewFilters || {};
+  const status = ["all", "pending", "approved", "rejected"].includes(state.status) ? state.status : "all";
+  const risk = ["all", "blocked", "ready"].includes(state.risk) ? state.risk : "all";
+  return { status, risk };
+}
+
+function setReviewFilter(type, value) {
+  const current = getReviewFilterState();
+  S.reviewFilters = { ...current, [type]: value };
+  showReviewPage();
+}
+
+function clearReviewFilters() {
+  S.reviewFilters = { status: "all", risk: "all" };
+  showReviewPage();
+}
+
+function reviewTaskMatchesFilter(session, task, filters = getReviewFilterState()) {
+  if (filters.status !== "all" && task.status !== filters.status) return false;
+  if (filters.risk !== "all") {
+    const confPct = Math.round((task.confidence ?? 1) * 100);
+    const safety = reviewTaskSafety(session, task, confPct);
+    const blocked = Boolean(safety.blockApproval || safety.warnings?.length);
+    if (filters.risk === "blocked" && !blocked) return false;
+    if (filters.risk === "ready" && blocked) return false;
+  }
+  return true;
+}
+
+function filterReviewSessions(sessions = [], filters = getReviewFilterState()) {
+  const hasFilter = filters.status !== "all" || filters.risk !== "all";
+  if (!hasFilter) return sessions;
+  return sessions.map(session => ({
+    ...session,
+    tasks: (session.tasks || []).filter(task => reviewTaskMatchesFilter(session, task, filters)),
+  })).filter(session => (session.tasks || []).length);
+}
+
+function focusReviewFilters() {
+  const bar = document.querySelector("#review-filterbar");
+  if (!bar) {
+    toast("Review filters load with the Review Queue route.", true);
+    return;
+  }
+  bar.scrollIntoView({ behavior: "smooth", block: "center" });
+  bar.classList.add("uiv2-control-highlight");
+  bar.querySelector("button:not([disabled])")?.focus();
+  setTimeout(() => bar.classList.remove("uiv2-control-highlight"), 900);
+}
+
+function openReviewIntakePolicy() {
+  navigateTo("settings");
+  setTimeout(() => {
+    document.getElementById("settings-paperclip")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    toast("Review intake policy is controlled in Settings. Runtime mode is unchanged.");
+  }, 160);
+}
+
+function buildReviewHeader(counts, filteredCounts = counts) {
   const hdr = document.createElement("div");
-  hdr.className = "review-command-header";
+  hdr.className = "review-command-header review-v2-header";
+  const filters = getReviewFilterState();
+  const activeFilterCount = [filters.status !== "all", filters.risk !== "all"].filter(Boolean).length;
   hdr.innerHTML = `
-    <div class="review-command-copy">
-      <div class="review-kicker">${icon("sparkles")} AI review queue</div>
-      <h1 class="review-title">Review Queue</h1>
-      <p class="review-subtitle">${counts.pending} task${counts.pending !== 1 ? "s" : ""} awaiting approval across ${counts.sessions} session${counts.sessions !== 1 ? "s" : ""}</p>
-    </div>
-    <div class="review-header-actions">
-      <button class="btn btn-primary" onclick="openTranscriptModal()">${icon("upload")} New session</button>
-    </div>
+    ${uiRouteBar({
+      title: "AI Review Queue",
+      sub: `${uiKV("source", "paperclip", "ai")}${uiKV("env", "production", "env-prod")}${uiKV("auth", "webhook · signed")}<span>·</span><span style="color:var(--ink-2)">${counts.total} proposals · ${counts.pending} pending · ${counts.approved} approved · ${counts.rejected} rejected</span>`,
+      actions: `<button class="btn" type="button" id="review-route-audit" onclick="navigateTo('docs')">${icon("external")} Open audit log</button><button class="btn warn-outline" type="button" id="review-route-policy" onclick="openReviewIntakePolicy()">${icon("lock")} Intake policy</button>`,
+    })}
+    <section class="review-filterbar filterbar" id="review-filterbar" aria-label="Review Queue filters">
+      <button class="filter-chip${filters.status === "all" ? " on" : ""}" type="button" onclick="setReviewFilter('status','all')"><span class="k">status:</span> any</button>
+      <button class="filter-chip${filters.status === "pending" ? " on" : ""}" type="button" onclick="setReviewFilter('status','pending')"><span class="k">status:</span> pending</button>
+      <button class="filter-chip${filters.status === "approved" ? " on" : ""}" type="button" onclick="setReviewFilter('status','approved')"><span class="k">status:</span> approved</button>
+      <button class="filter-chip${filters.status === "rejected" ? " on" : ""}" type="button" onclick="setReviewFilter('status','rejected')"><span class="k">status:</span> rejected</button>
+      <button class="filter-chip${filters.risk === "blocked" ? " on" : ""}" type="button" onclick="setReviewFilter('risk','blocked')"><span class="k">risk:</span> blocked</button>
+      <button class="filter-chip${filters.risk === "ready" ? " on" : ""}" type="button" onclick="setReviewFilter('risk','ready')"><span class="k">risk:</span> ready</button>
+      <button class="filter-chip is-readonly" type="button" disabled title="Review Queue proposals are currently sourced from Paperclip / manual upload."><span class="k">source:</span> paperclip</button>
+      <span class="filter-chip is-readonly" aria-disabled="true"><span class="k">visible:</span> ${filteredCounts.total}/${counts.total}</span>
+      <button class="btn sm ghost" type="button" ${activeFilterCount ? "title=\"Clear active Review Queue filters\" aria-label=\"Clear active Review Queue filters\"" : "disabled title=\"No active Review Queue filters to clear\" aria-label=\"No active Review Queue filters to clear\""} onclick="clearReviewFilters()">${icon("x")} Clear</button>
+    </section>
   `;
   return hdr;
+}
+
+function buildReviewNoMatches(filters = getReviewFilterState()) {
+  const empty = document.createElement("div");
+  empty.className = "review-empty-panel panel";
+  empty.innerHTML = `
+    ${uiStateCard({
+      kind: "empty",
+      iconName: "search",
+      title: "No proposals match these filters",
+      desc: `Current Review Queue filter is status ${filters.status} and risk ${filters.risk}. Clear filters to return to all proposals.`,
+      actions: `<button class="btn primary" type="button" onclick="clearReviewFilters()">Clear filters</button><button class="btn" type="button" onclick="navigateTo('docs')">Open audit log</button>`,
+    })}
+  `;
+  return empty;
 }
 
 function buildReviewSummary(counts) {
@@ -97,27 +207,134 @@ function buildReviewSummary(counts) {
   return summary;
 }
 
+function findPrimaryReviewTask(sessions) {
+  for (const session of sessions) {
+    const task = (session.tasks || []).find(t => t.status === "pending");
+    if (task) return { session, task };
+  }
+  for (const session of sessions) {
+    const task = (session.tasks || [])[0];
+    if (task) return { session, task };
+  }
+  return null;
+}
+
+function buildReviewInspectionPanel(session, task) {
+  const panel = document.createElement("aside");
+  panel.className = "review-inspection-panel drawer panel";
+  panel.setAttribute("aria-label", "Selected proposal inspection");
+
+  const diffMeta = reviewDiffMeta(task.diffStatus);
+  const confPct = Math.round((task.confidence ?? 1) * 100);
+  const confClass = confPct >= 80 ? "conf-high" : confPct >= 50 ? "conf-mid" : "conf-low";
+  const safety = reviewTaskSafety(session, task, confPct);
+  const paperclipMeta = getPaperclipReviewMeta(session);
+  const sourceLabel = formatReviewSource(session.source);
+  const envLabel = session.externalSource?.environment || session.sourceEnv || session.environment || "local";
+  const requestRef = session.requestId || session.externalSource?.requestId || session.sourceRef;
+  const runRef = session.agent?.runId || session.externalSource?.runId || session.runId;
+  const boardLabel = reviewBoardName(task.targetBoardId);
+  const listLabel = task.targetListId ? reviewListLabel(task) : "No list";
+  const dueLabel = task.deadline ? formatThaiDateTime(task.deadline) : "No due date";
+  const sideEffects = reviewApprovalSideEffects(task);
+  const warningsHtml = safety.warnings.length
+    ? safety.warnings.map(w => `<span class="review-risk-pill is-warning">${esc(w)}</span>`).join("")
+    : '<span class="review-risk-pill is-ready">Ready for human approval</span>';
+
+  panel.innerHTML = `
+    <div class="review-inspection-head">
+      <div class="review-kicker">${icon("sparkles")} AI proposal · review</div>
+      <h3>${esc(task.title || "Untitled task")}</h3>
+      <div class="review-inspection-badges">
+        <span class="review-diff-badge ${diffMeta.className}">${diffMeta.icon}${diffMeta.label}</span>
+        <div class="review-conf-bar" title="${confPct}% confidence">
+          <div class="review-conf-track"><div class="review-conf-fill ${confClass}" style="width:${confPct}%"></div></div>
+          <span>${confPct}%</span>
+        </div>
+      </div>
+    </div>
+    <div class="review-inspection-body">
+      <section class="review-inspection-section">
+        <div class="review-inspection-label">Source & trace</div>
+        <dl class="review-inspection-kv">
+          <dt>system</dt><dd>${paperclipMeta.isPaperclip ? "paperclip" : esc(sourceLabel)}</dd>
+          <dt>environment</dt><dd>${esc(envLabel)}</dd>
+          <dt>request</dt><dd class="mono">${esc(shortReviewRef(requestRef)) || "No request"}</dd>
+          <dt>agent</dt><dd>${esc(session.agent?.name || "Task Hub")}</dd>
+          <dt>run id</dt><dd class="mono">${esc(shortReviewRef(runRef)) || "No run"}</dd>
+        </dl>
+      </section>
+      <section class="review-inspection-section">
+        <div class="review-inspection-label">Proposed action · diff</div>
+        <div class="review-inspection-diff">
+          <div><span>title</span><strong>${esc(task.title || "Untitled task")}</strong></div>
+          <div><span>owner</span><strong class="${task.owner ? "" : "is-missing"}">${esc(task.owner || "missing · required before approve")}</strong></div>
+          <div><span>due</span><strong>${esc(dueLabel)}</strong></div>
+          <div><span>target</span><strong>${esc(boardLabel)} · ${esc(listLabel)}</strong></div>
+        </div>
+      </section>
+      <section class="review-inspection-section">
+        <div class="review-inspection-label">Risk & approval gate</div>
+        <div class="review-risk-list">${warningsHtml}</div>
+      </section>
+      <section class="review-inspection-section">
+        <div class="review-inspection-label">External side effects on approve</div>
+        <div class="review-side-effects">
+          ${sideEffects.map(effect => `<span>${esc(effect)}</span>`).join("")}
+        </div>
+      </section>
+      <section class="review-inspection-section">
+        <div class="review-inspection-label">Audit timeline</div>
+        <div class="review-audit-mini">
+          <span><strong>received</strong>${esc(formatThaiDateTime(session.createdAt, false) || "No timestamp")}</span>
+          <span><strong>validated</strong>${safety.blockApproval ? "waiting for required fields" : "ready for reviewer"}</span>
+          <span><strong>gate</strong>Review Queue holds all external writes</span>
+        </div>
+      </section>
+    </div>
+    <div class="review-inspection-foot">
+      <button class="btn btn-ghost btn-sm" type="button" onclick="openReviewTaskDrawer('${session.id}','${task.id}')">${icon("edit")} Edit before approve</button>
+      <button class="btn btn-ghost btn-sm review-hold-btn" type="button" onclick="holdReviewTaskForEdit('${session.id}','${task.id}')">${icon("alert")} Hold</button>
+      <button class="btn btn-danger btn-sm" type="button" onclick="rejectReviewTask('${session.id}','${task.id}')">${icon("x")} Reject</button>
+      <button class="btn btn-success btn-sm" type="button" onclick="approveReviewTask('${session.id}','${task.id}')" ${safety.blockApproval ? 'disabled title="Resolve missing owner, board, or list before approval."' : ""}>${icon("check")} Approve</button>
+    </div>
+  `;
+
+  return panel;
+}
+
 function buildReviewEmptyState() {
   const empty = document.createElement("div");
-  empty.className = "empty-state review-empty-state";
+  empty.className = "review-empty-panel panel";
   empty.innerHTML = `
-    <div class="empty-icon">${icon("sparkles")}</div>
-    <h3>No review sessions yet</h3>
-    <p>Upload a meeting transcript to extract tasks automatically, or add a session manually.</p>
-    <button class="btn btn-primary" style="margin-top:12px" onclick="openTranscriptModal()">${icon("upload")} Upload transcript</button>
+    <div class="panel-head">
+      <div>
+        <span class="eyebrow">Empty state · Review Queue</span>
+        <h3>No proposals to review</h3>
+      </div>
+    </div>
+    ${uiStateCard({
+      kind: "empty",
+      iconName: "inbox",
+      title: "Review queue is empty",
+      desc: "When Paperclip submits proposals from a meeting or workflow, they appear here for approval before anything reaches Trello or Calendar.",
+      actions: `<button class="btn" type="button" onclick="navigateTo('docs')">Open audit log</button><button class="btn primary" type="button" id="review-topbar-upload" onclick="openTranscriptModal()">Manual upload</button>`,
+    })}
   `;
   return empty;
 }
 
 function buildBulkBar() {
   const bulkBar = document.createElement("div");
-  bulkBar.className = "review-bulk-bar hidden";
+  bulkBar.className = "review-bulk-bar bulkbar";
   bulkBar.id = "review-bulk-bar";
   bulkBar.innerHTML = `
-    <span id="review-bulk-count">0 selected</span>
-    <div class="review-bulk-actions">
-      <button class="btn btn-success btn-sm" onclick="bulkApproveReview()">${icon("check")} Approve selected</button>
-      <button class="btn btn-danger btn-sm" onclick="bulkRejectReview()">${icon("x")} Reject selected</button>
+    <span class="count" id="review-bulk-count">0</span>
+    <span id="review-bulk-context">selected &middot; across Review Queue</span>
+    <div class="b-actions review-bulk-actions">
+      <button class="btn btn-sm review-bulk-approve" type="button" data-bulk-action="approve" onclick="bulkApproveReview()" disabled>${icon("check")} Approve&hellip;</button>
+      <button class="btn btn-sm review-bulk-reject" type="button" data-bulk-action="reject" onclick="bulkRejectReview()" disabled>${icon("x")} Reject&hellip;</button>
+      <button class="btn btn-sm" type="button" data-bulk-action="hold" disabled>${icon("chevron")} Hold</button>
     </div>
   `;
   return bulkBar;
@@ -134,6 +351,10 @@ function buildSessionCard(session) {
   const allVisibleSelected = pendingTasks.length > 0 && pendingTasks.every(t => selectedSet.has(t.id));
   const dateStr = formatThaiDateTime(session.createdAt, false);
   const paperclipMeta = getPaperclipReviewMeta(session);
+  const mobileRunRef = shortReviewRef(session.agent?.runId || session.externalSource?.runId || session.runId || session.requestId || session.id) || session.id;
+  const mobileEnv = session.externalSource?.environment || session.sourceEnv || session.environment || "local";
+  const mobileAgent = session.agent?.name || session.agent?.agentName || session.agent?.agentRole || "Task Hub";
+  const mobileReceived = session.receivedAt || shortReviewRef(dateStr) || "received";
   const sourceIcon = paperclipMeta.isPaperclip ? icon("gitMerge") : icon("upload");
   const paperclipBadge = paperclipMeta.isPaperclip
     ? `<span class="chip ${paperclipMeta.isTestOrCanary ? "chip-paperclip-test" : "chip-paperclip-live"}">${esc(paperclipMeta.label)}</span>`
@@ -143,12 +364,12 @@ function buildSessionCard(session) {
     : "";
   const dismissLocked = isPaperclipCleanupLocked(session);
   const cleanupButton = paperclipMeta.isCleanupEligible && pendingTasks.length
-    ? `<button class="btn btn-danger btn-sm" onclick="cleanupPaperclipTestSession('${session.id}')">${icon("x")} Cleanup test</button>`
+    ? `<button class="btn btn-danger btn-sm" type="button" onclick="cleanupPaperclipTestSession('${session.id}')">${icon("x")} Cleanup test</button>`
     : "";
   const sessionTrace = renderReviewSessionTrace(session, pendingTasks);
 
   const card = document.createElement("div");
-  card.className = `review-session-card${expanded ? " active" : ""}`;
+  card.className = `review-session-card rq-session panel${expanded ? " active" : ""}`;
   card.id = `session-${session.id}`;
 
   const hdr = document.createElement("div");
@@ -160,6 +381,7 @@ function buildSessionCard(session) {
       ${allVisibleSelected ? "checked" : ""}
       onchange="toggleSelectAllSession('${session.id}', this.checked)">
     <div class="review-session-copy">
+      <div class="review-mobile-session-kicker">Session - <span class="mono">${esc(mobileRunRef)}</span></div>
       <div class="review-session-title">${esc(session.title)}</div>
       <div class="review-session-meta">
         <span>${dateStr}</span>
@@ -170,18 +392,21 @@ function buildSessionCard(session) {
         <span class="review-meta-dot">-</span>
         <span>${tasks.length} tasks extracted</span>
       </div>
+      <div class="review-mobile-session-meta">
+        <span><b>env</b> ${esc(mobileEnv)}</span>
+        <span><b>agent</b> ${esc(mobileAgent)}</span>
+        <span><b>received</b> ${esc(mobileReceived)}</span>
+      </div>
       ${sessionTrace}
     </div>
     <div class="review-session-controls">
-      ${pendingTasks.length  ? `<span class="chip chip-review">${pendingTasks.length} pending</span>` : ""}
-      ${approvedTasks.length ? `<span class="chip chip-done">${approvedTasks.length} approved</span>` : ""}
-      ${rejectedTasks.length ? `<span class="chip chip-muted">${rejectedTasks.length} rejected</span>` : ""}
-      <button class="btn btn-ghost btn-sm review-expand-btn" onclick="toggleReviewSession('${session.id}')">
+      <button class="btn btn-ghost btn-sm" type="button" onclick="navigateTo('docs')">${icon("external")} Trace</button>
+      <button class="btn btn-ghost btn-sm review-expand-btn" type="button" onclick="toggleReviewSession('${session.id}')">
         ${expanded ? "Collapse" : "Review"}
       </button>
       ${cleanupButton}
       ${allProcessed && !dismissLocked
-        ? `<button class="btn btn-ghost btn-sm" style="color:var(--text-muted)" onclick="dismissReviewSession('${session.id}')">${icon("x")} Dismiss</button>`
+        ? `<button class="btn btn-ghost btn-sm" type="button" style="color:var(--text-muted)" onclick="dismissReviewSession('${session.id}')">${icon("x")} Dismiss</button>`
         : ""}
     </div>
   `;
@@ -224,14 +449,14 @@ function buildTaskCard(session, task, paperclipDocsIndex = []) {
   const linkedDocs = getLinkedPaperclipDocs(session, task, paperclipDocsIndex);
 
   if (task.status !== "pending") {
-    el.className = "review-task-card task-processed";
+    el.className = "review-task-card rq-task task-processed";
     el.innerHTML = buildProcessedTaskHTML(task, linkedDocs);
     return el;
   }
 
   const selectedSet = S.reviewSelected.get(session.id) || new Set();
   const isSelected  = selectedSet.has(task.id);
-  el.className = `review-task-card${isSelected ? " selected" : ""}`;
+  el.className = `review-task-card rq-task${isSelected ? " selected" : ""}`;
 
   const diffMeta = reviewDiffMeta(task.diffStatus);
   const confPct = Math.round((task.confidence ?? 1) * 100);
@@ -243,61 +468,138 @@ function buildTaskCard(session, task, paperclipDocsIndex = []) {
   const dueLabel = task.deadline ? formatThaiDateTime(task.deadline) : "No due date";
   const paperclipContext = renderPaperclipReviewContext(session);
   const safety = reviewTaskSafety(session, task, confPct);
+  const ownerHtml = task.owner
+    ? `<span>${esc(task.owner)}</span>`
+    : '<span class="review-owner-missing">No owner</span>';
+  const riskLabel = safety.warnings.length ? safety.warnings[0] : "Ready";
+  const riskLevel = safety.blockApproval ? "HIGH" : (task.diffStatus === "possible_duplicate" || confPct < 80 ? "MED" : "LOW");
+  const mobileApproveLabel = safety.blockApproval ? "Resolve owner" : "Approve";
+  const compactSub = [
+    ownerHtml,
+    `<span>${esc(dueLabel)}</span>`,
+    task.matchReason ? `<span class="review-compact-muted">vs ${esc(task.matchReason)}</span>` : "",
+  ].filter(Boolean).join('<span class="review-meta-dot">-</span>');
   if (safety.blockApproval) {
     el.classList.add("is-approval-blocked");
     el.dataset.approvalBlocked = "1";
   }
 
   el.innerHTML = `
-    <div class="review-task-header">
-      <input type="checkbox" class="review-task-checkbox" ${isSelected ? "checked" : ""}
+    <div class="review-proposal-row">
+      <input type="checkbox" class="review-task-checkbox" title="Select proposal" ${isSelected ? "checked" : ""}
         onchange="toggleReviewTaskSelect('${session.id}','${task.id}',this.checked)">
-      <div class="review-task-main">
+      <div class="review-proposal-main">
         <div class="review-task-title">${esc(task.title || "Untitled task")}</div>
-        <div class="review-task-badges">
-          <span class="review-diff-badge ${diffMeta.className}">${diffMeta.icon}${diffMeta.label}</span>
-          <div class="review-conf-bar" title="${confPct}% confidence">
-            <div class="review-conf-track">
-              <div class="review-conf-fill ${confClass}" style="width:${confPct}%"></div>
-            </div>
-            <span>${confPct}%</span>
-          </div>
+        <div class="review-proposal-sub">${compactSub}</div>
+      </div>
+      <div class="review-proposal-diff">
+        <span class="review-diff-badge ${diffMeta.className}">${diffMeta.icon}${diffMeta.label}</span>
+        <span class="review-risk-pill ${safety.tone === "warning" ? "is-warning" : "is-ready"}">${esc(riskLabel)}</span>
+      </div>
+      <div class="review-proposal-target">
+        ${esc(boardLabel)}
+        <small>${task.targetListId ? esc(reviewListLabel(task)) : "No list"}</small>
+      </div>
+      <div class="review-conf-bar review-proposal-confidence" title="${confPct}% confidence">
+        <div class="review-conf-track">
+          <div class="review-conf-fill ${confClass}" style="width:${confPct}%"></div>
         </div>
-        ${matchHint}
+        <span>${confPct}%</span>
       </div>
     </div>
-    ${paperclipContext}
-    ${renderReviewTraceStrip(session)}
-    ${renderReviewSafetyPanel(safety)}
-    ${renderReviewApprovalGuard(task, safety)}
-    <div class="review-task-meta-row">
-      <span><span class="label">Owner</span>${esc(task.owner || "Unassigned")}</span>
-      <span><span class="label">Due</span>${esc(dueLabel)}</span>
-      <span><span class="label">Target</span>${esc(boardLabel)}${task.targetListId ? ` / ${esc(reviewListLabel(task))}` : ""}</span>
-      <span><span class="label">Priority</span><span class="chip ${reviewPriorityClass(task.priority)}">${icon("flag")}${esc(task.priority || "medium")}</span></span>
+    <div class="review-mobile-proposal">
+      <div class="review-mobile-proposal-head">
+        <div class="review-mobile-title">${esc(task.title || "Untitled task")}</div>
+        <div class="review-mobile-diff"><span class="review-diff-badge ${diffMeta.className}">${diffMeta.icon}${diffMeta.label}</span></div>
+      </div>
+      <div class="review-mobile-proposal-grid">
+        <div>
+          <span>Owner</span>
+          <strong>${task.owner ? esc(task.owner) : '<span class="review-owner-missing">none</span>'}</strong>
+        </div>
+        <div>
+          <span>Target</span>
+          <strong>${esc(boardLabel)}</strong>
+        </div>
+        <div>
+          <span>Risk</span>
+          ${renderReviewRiskMeter(riskLevel)}
+        </div>
+        <div>
+          <span>Confidence</span>
+          <div class="review-conf-bar review-mobile-confidence" title="${confPct}% confidence">
+            <div class="review-conf-track"><div class="review-conf-fill ${confClass}" style="width:${confPct}%"></div></div>
+            <strong>${confPct}%</strong>
+          </div>
+        </div>
+      </div>
+      <div class="review-mobile-actions">
+        <button class="btn review-reject-btn" type="button" onclick="rejectReviewTask('${session.id}','${task.id}')">Reject</button>
+        <button class="btn primary rq-approve-btn" type="button" onclick="approveReviewTask('${session.id}','${task.id}')" ${safety.blockApproval ? 'disabled title="Resolve missing owner, board, or list before approval."' : ""}>${esc(mobileApproveLabel)}</button>
+      </div>
+      <div class="review-mobile-safety-actions">
+        <button class="btn btn-ghost btn-sm review-hold-btn" type="button" onclick="holdReviewTaskForEdit('${session.id}','${task.id}')">${icon("alert")} Hold / edit</button>
+        <button class="btn btn-ghost btn-sm review-edit-btn" type="button" onclick="openReviewTaskDrawer('${session.id}','${task.id}')">${icon("edit")} Edit</button>
+      </div>
     </div>
-    ${reasoning ? `<div class="review-reasoning"><strong>AI:</strong> ${esc(reasoning)}</div>` : ""}
-    ${renderLinkedPaperclipDocs(linkedDocs)}
-    <div class="review-task-actions">
-      <label class="review-toggle-label">
-        <input type="checkbox" ${task.syncCalendar ? "checked" : ""}
-          onchange="this.closest('label').querySelector('span').textContent=this.checked?'On':'Off';updateReviewField('${session.id}','${task.id}','syncCalendar',this.checked)">
-        ${icon("calendar")} Calendar <span>${task.syncCalendar ? "On" : "Off"}</span>
-      </label>
-      <label class="review-toggle-label">
-        <input type="checkbox" ${task.syncGoogleTasks ? "checked" : ""}
-          onchange="this.closest('label').querySelector('span').textContent=this.checked?'On':'Off';updateReviewField('${session.id}','${task.id}','syncGoogleTasks',this.checked)">
-        ${icon("inbox")} Google Tasks <span>${task.syncGoogleTasks ? "On" : "Off"}</span>
-      </label>
-      <div class="review-actions-spacer"></div>
-      <button class="btn btn-ghost btn-sm review-hold-btn" onclick="holdReviewTaskForEdit('${session.id}','${task.id}')">${icon("alert")} Hold / edit</button>
-      <button class="btn btn-ghost btn-sm" onclick="openReviewTaskDrawer('${session.id}','${task.id}')">${icon("edit")} Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="rejectReviewTask('${session.id}','${task.id}')">${icon("x")} Reject</button>
-      <button class="btn btn-success btn-sm rq-approve-btn" onclick="approveReviewTask('${session.id}','${task.id}')" ${safety.blockApproval ? 'disabled title="Resolve missing owner, board, or list before approval."' : ""}>${icon("check")} Approve</button>
+    <div class="review-task-expanded">
+      <div class="review-task-header">
+        <input type="checkbox" class="review-task-checkbox" ${isSelected ? "checked" : ""}
+          onchange="toggleReviewTaskSelect('${session.id}','${task.id}',this.checked)">
+        <div class="review-task-main">
+          <div class="review-task-title">${esc(task.title || "Untitled task")}</div>
+          <div class="review-task-badges">
+            <span class="review-diff-badge ${diffMeta.className}">${diffMeta.icon}${diffMeta.label}</span>
+            <div class="review-conf-bar" title="${confPct}% confidence">
+              <div class="review-conf-track">
+                <div class="review-conf-fill ${confClass}" style="width:${confPct}%"></div>
+              </div>
+              <span>${confPct}%</span>
+            </div>
+          </div>
+          ${matchHint}
+        </div>
+      </div>
+      ${paperclipContext}
+      ${renderReviewTraceStrip(session)}
+      ${renderReviewSafetyPanel(safety)}
+      ${renderReviewApprovalGuard(task, safety)}
+      <div class="review-task-meta-row">
+        <span><span class="label">Owner</span>${esc(task.owner || "Unassigned")}</span>
+        <span><span class="label">Due</span>${esc(dueLabel)}</span>
+        <span><span class="label">Target</span>${esc(boardLabel)}${task.targetListId ? ` / ${esc(reviewListLabel(task))}` : ""}</span>
+        <span><span class="label">Priority</span><span class="chip ${reviewPriorityClass(task.priority)}">${icon("flag")}${esc(task.priority || "medium")}</span></span>
+      </div>
+      ${reasoning ? `<div class="review-reasoning"><strong>AI:</strong> ${esc(reasoning)}</div>` : ""}
+      ${renderLinkedPaperclipDocs(linkedDocs)}
+      <div class="review-task-actions">
+        <label class="review-toggle-label">
+          <input type="checkbox" ${task.syncCalendar ? "checked" : ""}
+            onchange="this.closest('label').querySelector('span').textContent=this.checked?'On':'Off';updateReviewField('${session.id}','${task.id}','syncCalendar',this.checked)">
+          ${icon("calendar")} Calendar <span>${task.syncCalendar ? "On" : "Off"}</span>
+        </label>
+        <label class="review-toggle-label">
+          <input type="checkbox" ${task.syncGoogleTasks ? "checked" : ""}
+            onchange="this.closest('label').querySelector('span').textContent=this.checked?'On':'Off';updateReviewField('${session.id}','${task.id}','syncGoogleTasks',this.checked)">
+          ${icon("inbox")} Google Tasks <span>${task.syncGoogleTasks ? "On" : "Off"}</span>
+        </label>
+        <div class="review-actions-spacer"></div>
+        <button class="btn btn-ghost btn-sm review-hold-btn" type="button" onclick="holdReviewTaskForEdit('${session.id}','${task.id}')">${icon("alert")} Hold / edit</button>
+        <button class="btn btn-ghost btn-sm review-edit-btn" type="button" onclick="openReviewTaskDrawer('${session.id}','${task.id}')">${icon("edit")} Edit</button>
+        <button class="btn btn-danger btn-sm review-reject-btn" type="button" onclick="rejectReviewTask('${session.id}','${task.id}')">${icon("x")} Reject</button>
+        <button class="btn btn-success btn-sm rq-approve-btn" type="button" onclick="approveReviewTask('${session.id}','${task.id}')" ${safety.blockApproval ? 'disabled title="Resolve missing owner, board, or list before approval."' : ""}>${icon("check")} Approve</button>
+      </div>
     </div>
   `;
 
   return el;
+}
+
+function renderReviewRiskMeter(level) {
+  const normalized = String(level || "LOW").toUpperCase();
+  const active = normalized === "HIGH" ? 5 : normalized === "MED" ? 3 : 1;
+  const bars = Array.from({ length: 5 }, (_, index) => `<i class="${index < active ? "is-on" : ""}"></i>`).join("");
+  return `<div class="review-mobile-risk-meter is-${normalized.toLowerCase()}">${bars}<strong>${esc(normalized)}</strong></div>`;
 }
 
 function shortReviewRef(value) {
@@ -396,7 +698,7 @@ function renderReviewApprovalGuard(task, safety) {
   return `
     <div class="review-approval-guard ${safety.blockApproval ? "is-blocked" : ""}">
       <strong>Human approval required</strong>
-      <span>${safety.blockApproval ? "Approval is blocked until required target context is complete." : "Approval can create or update external work only after this human action."}</span>
+      <span>${safety.blockApproval ? "human approval remains blocked until required target context is complete." : "External work runs only after human approval."}</span>
       <small>Side effects on approval: ${effects.map(esc).join("; ")}</small>
     </div>
   `;
@@ -635,7 +937,7 @@ function renderReviewTaskDrawer() {
       <div class="review-drawer-header">
         <div class="review-drawer-dot"></div>
         <h2>Edit review task</h2>
-        <button class="btn btn-icon" onclick="closeReviewTaskDrawer()" title="Close">${icon("x")}</button>
+        <button class="btn btn-icon" type="button" onclick="closeReviewTaskDrawer()" title="Close">${icon("x")}</button>
       </div>
       <div class="review-drawer-body">
         <div class="review-field">
@@ -690,10 +992,10 @@ function renderReviewTaskDrawer() {
         ${(task.reasoning || task.description || task.sourceText) ? `<div class="review-reasoning"><strong>AI:</strong> ${esc(task.reasoning || task.description || task.sourceText)}</div>` : ""}
       </div>
       <div class="review-drawer-footer">
-        <button class="btn btn-danger" onclick="rejectReviewTask('${sessionId}','${taskId}')">${icon("x")} Reject</button>
+        <button class="btn btn-danger" type="button" onclick="rejectReviewTask('${sessionId}','${taskId}')">${icon("x")} Reject</button>
         <div class="review-actions-spacer"></div>
-        <button class="btn btn-ghost" onclick="closeReviewTaskDrawer()">Close</button>
-        <button class="btn btn-success" onclick="approveReviewTask('${sessionId}','${taskId}')">${icon("check")} Approve</button>
+        <button class="btn btn-ghost" type="button" onclick="closeReviewTaskDrawer()">Close</button>
+        <button class="btn btn-success" type="button" onclick="approveReviewTask('${sessionId}','${taskId}')">${icon("check")} Approve</button>
       </div>
     </aside>
     </div>
@@ -892,6 +1194,7 @@ function toggleReviewTaskSelect(sessionId, taskId, checked) {
   checked ? sel.add(taskId) : sel.delete(taskId);
   const taskEl = $(`task-${taskId}`);
   if (taskEl) taskEl.classList.toggle("selected", checked);
+  taskEl?.querySelectorAll(".review-task-checkbox").forEach(cb => { cb.checked = checked; });
   updateBulkBar();
 }
 
@@ -904,8 +1207,7 @@ function toggleSelectAllSession(sessionId, checked) {
     const tid = el.id.replace("task-", "");
     checked ? sel.add(tid) : sel.delete(tid);
     el.classList.toggle("selected", checked);
-    const cb = el.querySelector(".review-task-checkbox");
-    if (cb) cb.checked = checked;
+    el.querySelectorAll(".review-task-checkbox").forEach(cb => { cb.checked = checked; });
   });
   updateBulkBar();
 }
@@ -915,16 +1217,19 @@ function updateBulkBar() {
   S.reviewSelected.forEach(sel => { total += sel.size; });
   const bar = $("review-bulk-bar");
   if (!bar) return;
-  if (total === 0) { bar.classList.add("hidden"); return; }
   bar.classList.remove("hidden");
   const countEl = $("review-bulk-count");
-  if (countEl) countEl.textContent = `${total} selected`;
+  if (countEl) countEl.textContent = String(total);
+  const activeSessions = [...S.reviewSelected.values()].filter(sel => sel.size).length;
+  const contextEl = $("review-bulk-context");
+  if (contextEl) contextEl.textContent = `selected \u00b7 across ${activeSessions || "Review Queue"}${activeSessions === 1 ? " session" : activeSessions > 1 ? " sessions" : ""}`;
+  bar.querySelectorAll("[data-bulk-action]").forEach(btn => { btn.disabled = total === 0; });
 }
 
 async function bulkApproveReview() {
   const bar = $("review-bulk-bar");
   if (bar) {
-    const btn = bar.querySelector(".btn-success");
+    const btn = bar.querySelector("[data-bulk-action='approve']");
     if (btn) { btn.textContent = "Approving..."; btn.disabled = true; }
   }
   try {
@@ -940,15 +1245,15 @@ async function bulkApproveReview() {
     if (blocked.length) {
       toast(`Resolve missing fields before approving ${blocked.length} selected task${blocked.length === 1 ? "" : "s"}.`, true);
       if (bar) {
-        const btn = bar.querySelector(".btn-success");
-        if (btn) { btn.innerHTML = `${icon("check")} Approve selected`; btn.disabled = false; }
+        const btn = bar.querySelector("[data-bulk-action='approve']");
+        if (btn) { btn.innerHTML = `${icon("check")} Approve&hellip;`; btn.disabled = false; }
       }
       return;
     }
     if (!confirm(`Approve ${selectedCount} selected Review Queue task${selectedCount === 1 ? "" : "s"}?\n\nApproval can create or update Trello, Calendar, or Google Tasks records when each selected item has those side effects enabled.`)) {
       if (bar) {
-        const btn = bar.querySelector(".btn-success");
-        if (btn) { btn.innerHTML = `${icon("check")} Approve selected`; btn.disabled = false; }
+        const btn = bar.querySelector("[data-bulk-action='approve']");
+        if (btn) { btn.innerHTML = `${icon("check")} Approve&hellip;`; btn.disabled = false; }
       }
       return;
     }
@@ -978,8 +1283,8 @@ async function bulkApproveReview() {
   } catch (e) {
     toast("Bulk approve failed: " + e.message, true);
     if (bar) {
-      const btn = bar.querySelector(".btn-success");
-      if (btn) { btn.innerHTML = `${icon("check")} Approve selected`; btn.disabled = false; }
+      const btn = bar.querySelector("[data-bulk-action='approve']");
+      if (btn) { btn.innerHTML = `${icon("check")} Approve&hellip;`; btn.disabled = false; }
     }
   }
 }
@@ -987,7 +1292,7 @@ async function bulkApproveReview() {
 async function bulkRejectReview() {
   const bar = $("review-bulk-bar");
   if (bar) {
-    const btn = bar.querySelector(".btn-danger");
+    const btn = bar.querySelector("[data-bulk-action='reject']");
     if (btn) { btn.textContent = "Rejecting..."; btn.disabled = true; }
   }
   try {
@@ -1017,8 +1322,8 @@ async function bulkRejectReview() {
   } catch (e) {
     toast("Bulk reject failed: " + e.message, true);
     if (bar) {
-      const btn = bar.querySelector(".btn-danger");
-      if (btn) { btn.innerHTML = `${icon("x")} Reject selected`; btn.disabled = false; }
+      const btn = bar.querySelector("[data-bulk-action='reject']");
+      if (btn) { btn.innerHTML = `${icon("x")} Reject&hellip;`; btn.disabled = false; }
     }
   }
 }
@@ -1069,12 +1374,16 @@ async function updateReviewBadge() {
 function openTranscriptModal() {
   $("transcript-title").value = "";
   $("transcript-text").value = "";
-  $("transcript-modal").classList.remove("hidden");
-  $("transcript-title").focus();
+  if (typeof openSurface === "function") openSurface($("transcript-modal"), "#transcript-title");
+  else {
+    $("transcript-modal").classList.remove("hidden");
+    $("transcript-title").focus();
+  }
 }
 
 function closeTranscriptModal() {
-  $("transcript-modal").classList.add("hidden");
+  if (typeof closeSurface === "function") closeSurface($("transcript-modal"), "#review-topbar-upload");
+  else $("transcript-modal").classList.add("hidden");
 }
 
 async function submitTranscript() {

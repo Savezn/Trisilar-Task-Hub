@@ -1,0 +1,126 @@
+{
+  "generatedAt": "2026-05-18T02:27:20.455Z",
+  "url": "http://127.0.0.1:3032/all",
+  "dialogs": [
+    {
+      "i": 0,
+      "id": "",
+      "cls": "modal modal-lg",
+      "role": null,
+      "ariaHidden": null,
+      "inert": false,
+      "hidden": false,
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "0",
+      "pointerEvents": "auto",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "text": " Manage Groups & Visibility Business Units Board Visibility Workspaces Business Unit Groups + New Group Board Visibility อนุญาต Workspace ที่จะแสดงใน Dashboard เลือกเฉพาะ Workspace"
+    },
+    {
+      "i": 1,
+      "id": "",
+      "cls": "modal",
+      "role": null,
+      "ariaHidden": null,
+      "inert": false,
+      "hidden": false,
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "0",
+      "pointerEvents": "auto",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "text": " New Card Title * Description Start Date Due Date Reminder No reminder At due time 5 minutes before 15 minutes before 30 minutes before 1 hour before 2 hours before 1 day before 2 "
+    },
+    {
+      "i": 2,
+      "id": "",
+      "cls": "modal modal-sm",
+      "role": null,
+      "ariaHidden": null,
+      "inert": false,
+      "hidden": false,
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "0",
+      "pointerEvents": "auto",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "text": " Delete Card? Are you sure? This cannot be undone. Cancel Delete "
+    },
+    {
+      "i": 3,
+      "id": "",
+      "cls": "modal modal-md",
+      "role": null,
+      "ariaHidden": null,
+      "inert": false,
+      "hidden": false,
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "0",
+      "pointerEvents": "auto",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "text": " Connect Google Calendar 1 เปิด Google Cloud Console ไปที่ console.cloud.google.com → APIs & Services → Credentials 2 Enable Google Calendar API APIs & Services → Library → ค้นหา \""
+    },
+    {
+      "i": 4,
+      "id": "",
+      "cls": "modal",
+      "role": null,
+      "ariaHidden": null,
+      "inert": false,
+      "hidden": false,
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "0",
+      "pointerEvents": "auto",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "text": " New Event Title * Start Date & Time End Date & Time (Due) All Day Event Start Date End Date Reminder No reminder At time of event 10 minutes before 30 minutes before 1 hour before"
+    },
+    {
+      "i": 5,
+      "id": "",
+      "cls": "modal modal-md",
+      "role": null,
+      "ariaHidden": null,
+      "inert": false,
+      "hidden": false,
+      "display": "flex",
+      "visibility": "visible",
+      "opacity": "0",
+      "pointerEvents": "auto",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0
+      },
+      "text": " New Review Session Meeting Title * Meeting Transcript / Notes (optional) Cancel Create Session "
+    }
+  ]
+}
