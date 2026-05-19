@@ -1,8 +1,8 @@
 # UI V2 Full-Route Fidelity Audit Matrix
 
-Generated: 2026-05-19T07:49:58.568Z
+Generated: 2026-05-19T08:27:35.071Z
 Production base: http://127.0.0.1:3035
-Prototype base: http://127.0.0.1:65327
+Prototype base: http://127.0.0.1:55525
 
 Scope: frontend/design-system visual QA only. API responses were controlled in-browser fixtures; no runtime, Cloudflare, secrets, live Paperclip behavior, webhook auth, or AI harness behavior was changed.
 
