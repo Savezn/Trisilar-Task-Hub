@@ -7,7 +7,7 @@ description: Use when implementing frontend UI, route behavior, browser regressi
 ## Start
 
 1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/DEV_FRONTEND.md`, and the relevant UX or implementation plan.
-2. Confirm branch/worktree with `git status --short --branch`.
+2. Run the Agent Status Refresh Protocol from `.ai-instructions.md`, then confirm branch/worktree freshness and dirty state.
 3. Search targeted frontend files before reading large modules.
 
 ## Do

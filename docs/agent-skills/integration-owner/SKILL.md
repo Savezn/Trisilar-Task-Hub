@@ -7,7 +7,7 @@ description: Use when acting as Integration Owner for accepted-branch merges, de
 ## Start
 
 1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/INTEGRATION_OWNER.md`, and the active release or integration checklist.
-2. Confirm branch/worktree with `git status --short --branch` and inspect remote state before merging.
+2. Run the Agent Status Refresh Protocol from `.ai-instructions.md` and inspect remote state before merging.
 3. Identify accepted source branches and the target branch before making changes.
 4. Confirm Definition of Ready and required acceptance evidence before integration.
 

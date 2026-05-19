@@ -7,7 +7,7 @@ description: Use when working on Paperclip or future AI-agent contracts, webhook
 ## Start
 
 1. Read `.ai-instructions.md`, `CURRENT_SPRINT.md`, `docs/agents/AI_INTEGRATION.md`, and the active Paperclip or AI-integration plan.
-2. Confirm branch/worktree with `git status --short --branch`.
+2. Run the Agent Status Refresh Protocol from `.ai-instructions.md`, then confirm branch/worktree freshness and dirty state.
 3. Review applicable ADRs before changing auth, contract, or side-effect behavior.
 
 ## Do

@@ -84,15 +84,24 @@ Avoid status sprawl. Do not update every document just because a checklist exist
 
 Use explicit local commands as the repo's observability layer. Report the command and result in the handoff.
 
-Common checks:
+Agent Status Refresh Protocol:
 
 ```powershell
+git fetch origin --prune
 git status --short --branch
-git worktree list
 git branch -vv
+git worktree list
+git log --oneline --decorate --max-count=10
+```
+
+Common task-local checks:
+
+```powershell
 git diff --check -- <owned-files>
 rg -n "^<{7}|^={7}|^>{7}" <owned-files>
 ```
+
+The refresh protocol is required before editing, reviewing, merging, or declaring completion. It must be paired with a current read/search of `CURRENT_SPRINT.md`, `TODO.md`, the active version plan, relevant logs, and relevant ADRs.
 
 For behavior changes, use the verification commands in `../testing/TEST_STRATEGY.md`. For docs-only harness policy changes, runtime checks may be skipped when `git diff --check` and conflict-marker scans pass.
 
@@ -104,10 +113,10 @@ This repo may use hook-inspired checks as manual or scripted gates, but they mus
 
 | Check type | Owner | Expected behavior |
 |---|---|---|
-| Before edit | Current role | Confirm role, branch, worktree, dirty state, owned files, and stop conditions |
+| Before edit | Current role | Run Agent Status Refresh Protocol, confirm role, branch, worktree, dirty state, owned files, and stop conditions |
 | Before commit | Current role | Stage specific files only, run applicable verification, scan for conflict markers |
 | Before PR | Current role | Summarize scope, verification, risks, runtime impact, rollback notes, and next role |
-| Before merge | QA / PM / Integration Owner | Confirm acceptance, target branch, conflicts, and integration risk |
+| Before merge | QA / PM / Integration Owner | Rerun Agent Status Refresh Protocol, confirm acceptance, target branch, conflicts, and integration risk |
 | Before cleanup | Integration Owner or assigned owner | Confirm merged/held state, remove completed worktrees/branches, prune stale metadata |
 
 Hidden hooks are optional convenience only. A task is accepted by visible evidence, not by an unseen local automation pass.
@@ -119,3 +128,4 @@ Hidden hooks are optional convenience only. A task is accepted by visible eviden
 | Date | Change | Updated by |
 |---|---|---|
 | 2026-05-17 | Recreated lightweight agent-harness adoption policy from latest `origin/dev` without reviving the stale PR branch; consolidated with existing role-routing rules | Codex Documentation Workflow Owner |
+| 2026-05-17 | Added Agent Status Refresh Protocol as the visible freshness and conflict-risk check before edits, reviews, merges, and completion | Codex Documentation Workflow Owner |
