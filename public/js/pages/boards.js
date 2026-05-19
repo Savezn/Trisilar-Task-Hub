@@ -4,8 +4,17 @@ async function showBoardsMonitor() {
   S.mode = "boards";
   S.currentBoardId = null;
   S.currentGroupId = null;
-  $("board-title").textContent = "Boards Monitor";
-  $("board-subtitle").textContent = `${S.boards.filter(b => !S.config.hiddenBoards.includes(b.id)).length} visible boards`;
+  const visibleBoardCount = typeof getVisibleBoardsForScope === "function"
+    ? getVisibleBoardsForScope().length
+    : S.boards.filter(b => !S.config.hiddenBoards.includes(b.id)).length;
+  const scopeLabelCount = typeof getScopeGroups === "function"
+    ? getScopeGroups().length
+    : (S.config.monitorTeams?.length || 0);
+  const isMobileShell = window.matchMedia?.("(max-width: 700px)").matches;
+  $("board-title").textContent = isMobileShell ? "Boards" : "Boards Monitor";
+  $("board-subtitle").textContent = isMobileShell
+    ? `${visibleBoardCount} boards · ${scopeLabelCount} labels`
+    : `${visibleBoardCount} visible boards`;
   $("add-list-btn").classList.add("hidden");
 
   const content = $("board-content");
@@ -17,15 +26,21 @@ async function showBoardsMonitor() {
       return;
     }
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
-    const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
+    if (S.mode !== "boards") return;
+    const visibleBoards = typeof getVisibleBoardsForScope === "function"
+      ? getVisibleBoardsForScope()
+      : S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
     const healthResults = [];
     for (const b of visibleBoards) {
       healthResults.push(await api.get(`/api/boards/${b.id}/health`).catch(() => ({ ok: true, missing: [] })));
       await new Promise(r => setTimeout(r, 100));
+      if (S.mode !== "boards") return;
     }
     const healthMap = new Map(visibleBoards.map((b, i) => [b.id, healthResults[i]]));
+    if (S.mode !== "boards") return;
     renderBoardsMonitor(getAllowedCards(), healthMap);
   } catch (e) {
+    if (S.mode !== "boards") return;
     content.innerHTML = trelloRouteUnavailableHtml("Boards");
   }
 }
@@ -43,7 +58,9 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
   const content = $("board-content");
   const now = new Date();
   const todayStr = now.toDateString();
-  const visibleBoards = S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
+  const visibleBoards = typeof getVisibleBoardsForScope === "function"
+    ? getVisibleBoardsForScope()
+    : S.boards.filter(b => !S.config.hiddenBoards.includes(b.id));
   const hiddenBoardsCount = (S.config.hiddenBoards || []).length;
   const workspaceScopeCount = (S.config.allowedWorkspaceIds || []).length;
   const lastChecked = now.toLocaleString("en-US", {
@@ -220,70 +237,111 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
   const totalConventionBoards = unfilteredSummaries.filter(b => b.metaHealth.issueCards.length > 0).length;
   const totalOverdueBoards = unfilteredSummaries.filter(b => b.overdue.length > 0).length;
   const teamCount = (S.config.monitorTeams || []).length;
+  const scopeLabelCount = typeof getScopeGroups === "function"
+    ? getScopeGroups().length
+    : (S.config.monitorTeams?.length || 0);
+
+  function mobileSparkline(stat) {
+    const bars = stat.topLists.length
+      ? stat.topLists.map(([, count]) => Math.max(18, Math.min(100, Math.round((count / Math.max(1, stat.cards.length)) * 100))))
+      : [35, 52, 61, 44, 70, 58, 74, 68, 86];
+    while (bars.length < 9) bars.push(bars[(bars.length - 1) % Math.max(1, bars.length)] || 42);
+    return `<span class="boards-mobile-spark">${bars.slice(-9).map((height, index) => `<i class="${index === 8 ? "is-current" : ""}" style="height:${height}%"></i>`).join("")}</span>`;
+  }
+
+  function boardGroupName(boardId) {
+    const scope = typeof getActiveScopeGroup === "function" ? getActiveScopeGroup() : null;
+    if (scope) return scope.name;
+    const labels = new Set((S.config.monitorTeams || []).map(normalizeScopeName).filter(Boolean));
+    const card = allCards.find(item =>
+      item.boardId === boardId && (item.labels || []).some(label => labels.has(normalizeScopeName(label.name)))
+    );
+    const matched = (card?.labels || []).find(label => labels.has(normalizeScopeName(label.name)));
+    return matched?.name || "No team label";
+  }
+
+  function boardOwnerName(stat) {
+    const member = stat.cards
+      .flatMap(card => card.members || [])
+      .find(m => m.fullName || m.username || m.name || m.id);
+    const rawName = member?.fullName || member?.username || member?.name || member?.id || "team";
+    return String(rawName).split(/\s+/).filter(Boolean)[0] || "team";
+  }
+
+  function mobileBoardsHtml() {
+    const cards = buildBoardSummaries().slice(0, 5);
+    return `
+      <div class="boards-mobile-source" data-uiv2="mobile-boards-prototype">
+        <div class="boards-mobile-stat-grid">
+          <div class="m-card boards-mobile-stat is-over">
+            <div class="m-eyebrow">Overdue</div>
+            <strong>${totalOverdue}</strong>
+            <span>${totalOverdueBoards || visibleBoards.length} board${(totalOverdueBoards || visibleBoards.length) === 1 ? "" : "s"}</span>
+          </div>
+          <div class="m-card boards-mobile-stat is-warn">
+            <div class="m-eyebrow">Stale 7d+</div>
+            <strong>${totalConventionBoards}</strong>
+            <span>Convention signals</span>
+          </div>
+        </div>
+
+        ${cards.map(stat => {
+          const { board, color, overdue, dueToday, cards, active, completionPct, topLists, pending = [] } = stat;
+          const pendingCount = stat.metaHealth.issueCards.length;
+          const warningChips = [
+            overdue.length ? uiChip("over", `${overdue.length} overdue`, { sm: true }) : "",
+            dueToday.length ? uiChip("warn", `${dueToday.length} today`, { sm: true }) : "",
+            pendingCount ? uiChip("ai", `${pendingCount} pending`, { sm: true }) : "",
+            !overdue.length && !pendingCount ? uiChip("ok", "healthy", { sm: true }) : "",
+          ].filter(Boolean).join("");
+          return `
+            <button class="board-card boards-mobile-card" type="button" data-board-id="${esc(board.id)}">
+              <div class="bc-head">
+                <div>
+                  <div class="bc-name"><span class="dot" style="background:${esc(color)}"></span>${esc(board.name)}</div>
+                  <div class="bc-meta">${esc(boardGroupName(board.id))} &middot; owner ${esc(boardOwnerName(stat))}</div>
+                </div>
+                ${mobileSparkline(stat)}
+              </div>
+              <div class="boards-mobile-card-stats">
+                <span><small>Cards</small><strong>${cards.length}</strong></span>
+                <span><small>Over</small><strong class="${overdue.length ? "is-over" : ""}">${overdue.length}</strong></span>
+                <span><small>Stale</small><strong class="${pendingCount ? "is-warn" : ""}">${pendingCount}</strong></span>
+                <span><small>Pend</small><strong class="${dueToday.length ? "is-ai" : ""}">${dueToday.length}</strong></span>
+              </div>
+              <div class="warnings">${warningChips}</div>
+            </button>`;
+        }).join("")}
+      </div>`;
+  }
 
   const page = document.createElement("div");
   page.className = "boards-monitor-page";
   page.innerHTML = `
-    <section class="boards-command-panel">
-      <div class="boards-command-copy">
-        <div class="boards-kicker">${icon("layout")} Boards monitor</div>
-        <h1 class="boards-title">Boards</h1>
-        <p class="boards-subtitle">${visibleBoards.length} visible board${visibleBoards.length === 1 ? "" : "s"} / ${totalActive} active card${totalActive === 1 ? "" : "s"} across the workspace. Health and convention warnings are read-only.</p>
-      </div>
-      <div class="boards-command-stats" aria-label="Boards summary">
-        <div class="boards-stat-card">
-          <span>Visible boards</span>
-          <strong>${visibleBoards.length}</strong>
-        </div>
-        <div class="boards-stat-card is-danger">
-          <span>Overdue</span>
-          <strong>${totalOverdue}</strong>
-        </div>
-        <div class="boards-stat-card is-warning">
-          <span>Due today</span>
-          <strong>${totalDueToday}</strong>
-        </div>
-        <div class="boards-stat-card is-review">
-          <span>Metadata flags</span>
-          <strong>${totalMetaIssues}</strong>
-        </div>
-        <div class="boards-stat-card is-muted">
-          <span>Hidden boards</span>
-          <strong>${hiddenBoardsCount}</strong>
-        </div>
-      </div>
-    </section>
-    <section class="boards-health-strip" aria-label="Board health summary">
-      <div class="boards-health-item ${totalOverdueBoards ? "is-danger" : "is-ok"}">
-        <span>Status</span>
-        <strong>${totalOverdueBoards ? `${totalOverdueBoards} board${totalOverdueBoards === 1 ? "" : "s"} need attention` : "No overdue board warnings"}</strong>
-        <small>${totalOverdue ? `${totalOverdue} active card${totalOverdue === 1 ? "" : "s"} past due.` : "No overdue active cards in visible boards."}</small>
-      </div>
-      <div class="boards-health-item ${totalConventionBoards ? "is-warning" : "is-ok"}">
-        <span>Conventions</span>
-        <strong>${totalConventionBoards ? `${totalConventionBoards} board${totalConventionBoards === 1 ? "" : "s"} flagged` : "Conventions look clear"}</strong>
-        <small>${totalMetaIssues ? `${totalMetaIssues} card${totalMetaIssues === 1 ? "" : "s"} missing owner, priority, due, OKR/KR, or category metadata.` : "No visible metadata gaps found."}</small>
-      </div>
-      <div class="boards-health-item ${hiddenBoardsCount ? "is-warning" : "is-muted"}">
-        <span>Visibility</span>
-        <strong>${hiddenBoardsCount ? `${hiddenBoardsCount} hidden board${hiddenBoardsCount === 1 ? "" : "s"}` : "All loaded boards visible"}</strong>
-        <small>${workspaceScopeCount ? `${workspaceScopeCount} workspace${workspaceScopeCount === 1 ? "" : "s"} allowed in Settings.` : "Workspace scope is set to all available workspaces."}</small>
-      </div>
-      <div class="boards-health-item is-muted">
-        <span>Last checked</span>
-        <strong>${esc(lastChecked)}</strong>
-        <small>Read-only scan from loaded Trello data and board health endpoints.</small>
-      </div>
-    </section>
+    ${mobileBoardsHtml()}
+
+    ${uiRouteBar({
+      title: "Board & team health",
+      sub: `<span>${visibleBoards.length} boards visible</span><span>scope ${esc(typeof scopeLabel === "function" ? scopeLabel() : "All BUs")}</span><span>${scopeLabelCount} Team mode labels</span><span>last sync ${esc(lastChecked)}</span>`,
+      actions: `<div class="seg"><button type="button" class="${S.bmGroupBy !== "teams" && !S.bmConventionOnly ? "on" : ""}" aria-pressed="${S.bmGroupBy !== "teams" && !S.bmConventionOnly}" title="Show board health grouped by board." onclick="S.bmConventionOnly=false;S.bmGroupBy='boards';showBoardsMonitor()">Board mode</button><button type="button" class="${S.bmGroupBy === "teams" && !S.bmConventionOnly ? "on" : ""}" aria-pressed="${S.bmGroupBy === "teams" && !S.bmConventionOnly}" title="Show board health grouped by team owner." onclick="S.bmConventionOnly=false;S.bmGroupBy='teams';showBoardsMonitor()">Team mode</button><button type="button" class="${S.bmConventionOnly ? "on" : ""}" aria-pressed="${Boolean(S.bmConventionOnly)}" title="Show board convention and metadata issues without changing Trello." onclick="S.bmConventionOnly=!S.bmConventionOnly;S.bmGroupBy='boards';showBoardsMonitor()">Convention warnings</button></div>`,
+    })}
+    ${uiStatStrip([
+      { label: "Overdue cards", value: totalOverdue, detail: `Across ${totalOverdueBoards || visibleBoards.length} boards`, tone: "over" },
+      { label: "Stale 7d+", value: totalConventionBoards, detail: "Bug triage lanes", tone: "warn" },
+      { label: "Convention warnings", value: totalMetaIssues, detail: "Naming / owners", tone: "ai" },
+      { label: "AI-touched cards", value: totalActive, detail: "Last 7 days", tone: "info" },
+    ])}
   `;
 
   const toolbar = document.createElement("div");
-  toolbar.className = "boards-monitor-toolbar";
+  toolbar.className = "boards-monitor-toolbar filterbar";
   toolbar.innerHTML = `
+    <span class="search-sm">${icon("search")}<input type="search" placeholder="Search boards..." aria-label="Search boards"></span>
     <div class="bm-toolbar-group">
-      <span class="sort-label">View</span>
-      <button class="filter-chip${S.bmGroupBy === "boards" ? " active" : ""}" data-view="boards" type="button">${icon("layout")} Boards</button>
-      <button class="filter-chip${S.bmGroupBy === "teams" ? " active" : ""}" data-view="teams" type="button">${icon("target")} Teams <span>${teamCount}</span></button>
+      <button class="filter-chip on" data-view="boards" type="button"><span class="k">label:</span>${esc(typeof scopeLabel === "function" ? scopeLabel() : "all")}</button>
+      <button class="filter-chip is-disabled" type="button" disabled title="Health filter is planned for a later UI V2 slice"><span class="k">health:</span>any</button>
+      <button class="filter-chip is-disabled" type="button" disabled title="Owner filter is planned for a later UI V2 slice"><span class="k">owner:</span>any</button>
+      <button class="filter-chip is-disabled" type="button" disabled title="Stale filter is represented in the current sort and cards"><span class="k">stale:</span>7d+</button>
     </div>
     ${S.bmGroupBy === "teams" ? `
     <div class="bm-toolbar-group">
@@ -293,10 +351,10 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
     </div>
     ` : ""}
     <div class="bm-toolbar-group" id="bm-sort-controls" style="${S.bmGroupBy === "teams" ? "display:none" : ""}">
-      <span class="sort-label">Sort by</span>
-      <button class="filter-chip active" data-sort="name" type="button">Name</button>
-      <button class="filter-chip" data-sort="overdue" type="button">Most overdue</button>
-      <button class="filter-chip" data-sort="total" type="button">Most cards</button>
+      <span class="sort-label">Sort</span>
+      <button class="filter-chip active" data-sort="name" type="button">Stale desc</button>
+      <button class="filter-chip" data-sort="overdue" type="button">Overdue</button>
+      <button class="filter-chip" data-sort="total" type="button">Cards</button>
     </div>
   `;
   page.appendChild(toolbar);
@@ -363,7 +421,10 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
   });
 
   function sortedStats() {
-    const s = buildBoardSummaries();
+    const s = buildBoardSummaries().filter(stat => {
+      if (!S.bmConventionOnly) return true;
+      return !stat.health.ok || stat.metaHealth.issueCards.length > 0;
+    });
     if (currentSort === "overdue") s.sort((a, b) => b.overdue.length - a.overdue.length);
     else if (currentSort === "total") s.sort((a, b) => b.cards.length - a.cards.length);
     else s.sort((a, b) => a.board.name.localeCompare(b.board.name));
@@ -423,7 +484,7 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
     grid.classList.remove("bm-grid-board-mode");
     teams.map(summarizeTeam).forEach(team => {
       const card = document.createElement("div");
-      card.className = "board-monitor-card team-monitor-card";
+      card.className = "board-monitor-card board-card team-monitor-card panel";
       const overdueClass = team.overdue.length > 0 ? " has-issues" : "";
       const todayClass = team.dueToday.length > 0 ? " has-issues" : "";
       card.innerHTML = `
@@ -477,7 +538,7 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
       const todayClass = dueToday.length > 0 ? " has-issues" : "";
 
       const card = document.createElement("div");
-      card.className = "board-monitor-card";
+      card.className = "board-monitor-card board-card panel";
       card.innerHTML = `
         <div class="bm-banner" style="background:${color}"></div>
         <div class="bm-body">
@@ -487,7 +548,7 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
               <div class="bm-card-title">${esc(board.name)}${conventionBadge}</div>
               <div class="bm-card-sub">${cards.length} visible / ${rawCards.length} total cards · Last checked ${esc(lastChecked)}</div>
             </div>
-            <button class="btn btn-ghost btn-sm bm-open-btn" type="button" title="Open board">${icon("external")} Open</button>
+            <button class="btn btn-ghost btn-sm bm-open-btn" type="button" data-board-open="${esc(board.id)}" title="Open board">${icon("external")} Open</button>
           </div>
           <div class="bm-warning-row">
             <span class="bm-warning-chip ${warningCount ? "has-warning" : "is-clear"}">${warningCount} warning${warningCount === 1 ? "" : "s"}</span>
@@ -533,6 +594,76 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
     });
   }
 
+  function renderBoardModeProto() {
+    grid.classList.remove("bm-grid-board-mode");
+    const stats = sortedStats();
+    if (!stats.length) {
+      grid.innerHTML = `<div class="empty-state boards-empty-state"><div class="empty-icon">${icon("check")}</div><h3>No convention warnings</h3><p>Visible boards have the required workflow lists and task metadata for this filter.</p></div>`;
+      return;
+    }
+    function boardSparkline(stat) {
+      const bars = stat.topLists.length
+        ? stat.topLists.map(([, count]) => Math.max(18, Math.min(100, Math.round((count / Math.max(1, stat.cards.length)) * 100))))
+        : [35, 52, 61, 44, 70, 58, 74, 68, 86];
+      while (bars.length < 12) bars.push(bars[(bars.length - 1) % Math.max(1, bars.length)] || 42);
+      return `<span class="board-sparkline">${bars.slice(-12).map((height, index) => `<i class="${index === 11 ? "is-current" : ""}" style="height:${height}%"></i>`).join("")}</span>`;
+    }
+
+    stats.forEach(stat => {
+      const { board, color, health, metaHealth, rawCards, cards, overdue, dueToday, topLists } = stat;
+      const missingLists = health.missing || [];
+      const warningCount = overdue.length + missingLists.length + metaHealth.issueCards.length;
+      const conventionTitle = [
+        !health.ok ? `Missing lists: ${missingLists.join(", ")}` : "",
+        metaHealth.issueCards.length ? `${metaHealth.issueCards.length} card metadata issue${metaHealth.issueCards.length !== 1 ? "s" : ""}` : "",
+      ].filter(Boolean).join(" / ");
+      const warningChips = [
+        overdue.length > 0 ? uiChip("over", `${overdue.length} overdue`, { sm: true }) : "",
+        dueToday.length > 0 ? uiChip("warn", `${dueToday.length} due today`, { sm: true }) : "",
+        metaHealth.issueCards.length > 0 ? uiChip("warn", `${metaHealth.issueCards.length} naming`, { sm: true }) : "",
+        missingLists.length > 0 ? uiChip("warn", "stale", { sm: true }) : "",
+        !warningCount ? uiChip("ok", "healthy", { sm: true }) : "",
+      ].filter(Boolean).join("");
+
+      const card = document.createElement("div");
+      card.className = "board-monitor-card board-card panel board-card-proto";
+      card.innerHTML = `
+        <div class="bc-head">
+          <div>
+            <div class="bc-name"><span class="dot" style="background:${color}"></span>${esc(board.name)}</div>
+            <div class="bc-meta">
+              <span>${esc(boardGroupName(board.id))}</span> &middot; ${topLists.length || 0} lists &middot; owner <span>${esc(boardOwnerName(stat))}</span>
+            </div>
+          </div>
+          <button class="iconbtn bm-more-btn" type="button" data-board-warning="${esc(board.id)}" title="${esc(conventionTitle || "Board actions")}">${icon("more")}</button>
+        </div>
+        <div class="bc-row">
+          <div class="bc-stat"><span class="k">Cards</span><span class="v tnum">${cards.length}</span></div>
+          <div class="bc-stat"><span class="k">Overdue</span><span class="v tnum ${overdue.length ? "is-over" : ""}">${overdue.length}</span></div>
+          <div class="bc-stat"><span class="k">Stale 7d+</span><span class="v tnum ${metaHealth.issueCards.length > 2 ? "is-warn" : ""}">${metaHealth.issueCards.length}</span></div>
+          ${boardSparkline(stat)}
+        </div>
+        <div class="warnings">${warningChips}</div>
+        <div class="bc-foot">
+          <button class="btn sm ghost bm-open-btn" type="button" data-board-open="${esc(board.id)}">Open ${icon("arrowR")}</button>
+          <span>last activity &middot; ${esc(lastChecked)}</span>
+        </div>
+        ${S.bmHiddenLabels.size && rawCards.length > cards.length ? `<div class="bm-label-filter-note">${rawCards.length - cards.length} card${rawCards.length - cards.length !== 1 ? "s" : ""} hidden by label filter</div>` : ""}
+      `;
+
+      card.querySelector(".bm-open-btn").addEventListener("click", e => {
+        e.stopPropagation();
+        selectBoard(board.id, board.name);
+      });
+      card.querySelector(".bm-more-btn")?.addEventListener("click", e => {
+        e.stopPropagation();
+        toast(conventionTitle || `${board.name} has no board-level warning in the current scan.`);
+      });
+      card.addEventListener("click", () => selectBoard(board.id, board.name));
+      grid.appendChild(card);
+    });
+  }
+
   function renderGrid() {
     grid.innerHTML = "";
     if (S.bmGroupBy === "teams") {
@@ -546,11 +677,17 @@ function renderBoardsMonitor(allCards, healthMap = new Map()) {
       else renderTeamStatsMode(teams);
       return;
     }
-    renderBoardMode();
+    renderBoardModeProto();
   }
 
   renderGrid();
   page.appendChild(grid);
   content.innerHTML = "";
   content.appendChild(page);
+  page.querySelectorAll(".boards-mobile-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const board = visibleBoards.find(b => b.id === card.dataset.boardId);
+      if (board) selectBoard(board.id, board.name);
+    });
+  });
 }

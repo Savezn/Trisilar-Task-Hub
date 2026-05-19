@@ -1,0 +1,5529 @@
+{
+  "generatedAt": "2026-05-18T15:04:21.534Z",
+  "source": "docs/logs/screenshots/v06-uiv2-whole-system-qc/qc-third-pass-results.json",
+  "totals": {
+    "contrast": {
+      "needs_review_alpha_background_compositing": 5,
+      "needs_review_eyebrow_muted_token": 48,
+      "needs_review_dense_table_header_token": 24,
+      "needs_review_mobile_section_label_token": 2
+    },
+    "targets": {
+      "superseded_status_strip_compact_signal": 80,
+      "needs_review_sidebar_scope_hit_area": 10,
+      "needs_review_dense_row_action_target": 76,
+      "needs_review_segment_or_chip_hit_area": 171,
+      "needs_review_compact_search_input_target": 17,
+      "needs_review_dense_table_or_sort_target": 10,
+      "needs_review_unclassified_focus_target": 112,
+      "needs_review_compact_icon_button_target": 2
+    },
+    "genericControls": {
+      "needs_review_route_filter_action_help": 3,
+      "superseded_planner_contextual_settings_cta": 6,
+      "superseded_okr_contextual_kr_detail_labels": 90,
+      "superseded_settings_contextual_action_labels": 28
+    },
+    "lowContrastTotal": 79,
+    "smallTargetTotal": 478,
+    "genericControlTotal": 127
+  },
+  "routes": [
+    {
+      "route": "today",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-today-desktop-1440x900.png",
+      "lowContrastTotal": 6,
+      "smallTargetTotal": 10,
+      "genericControlTotal": 1,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_alpha_background_compositing": {
+          "count": 2,
+          "examples": [
+            {
+              "selector": "button.btn",
+              "text": "Mark done",
+              "ratio": 1,
+              "color": "rgb(255, 255, 255)",
+              "bg": "rgba(255, 255, 255, 0.08)",
+              "rect": {
+                "x": 404,
+                "y": 372,
+                "w": 113,
+                "h": 32,
+                "bottom": 404,
+                "right": 517
+              }
+            },
+            {
+              "selector": "button.btn",
+              "text": "Reschedule",
+              "ratio": 1,
+              "color": "rgb(255, 255, 255)",
+              "bg": "rgba(255, 255, 255, 0.08)",
+              "rect": {
+                "x": 525,
+                "y": 372,
+                "w": 119,
+                "h": 32,
+                "bottom": 404,
+                "right": 644
+              }
+            }
+          ]
+        },
+        "needs_review_eyebrow_muted_token": {
+          "count": 4,
+          "examples": [
+            {
+              "selector": "span.eyebrow",
+              "text": "8 ITEMS",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 708,
+                "y": 457,
+                "w": 48,
+                "h": 14,
+                "bottom": 472,
+                "right": 755
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "AI REVIEW QUEUE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 951,
+                "y": 290,
+                "w": 151,
+                "h": 14,
+                "bottom": 304,
+                "right": 1103
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "0 EVENTS",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 1340,
+                "y": 508,
+                "w": 59,
+                "h": 14,
+                "bottom": 523,
+                "right": 1399
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "CROSS-BOARD SIGNALS",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 951,
+                "y": 770,
+                "w": 146,
+                "h": 14,
+                "bottom": 784,
+                "right": 1097
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:22. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 1038,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1131
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "needs_review_route_filter_action_help": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "#today-topbar-filter",
+              "text": "Filter",
+              "rect": {
+                "x": 1223,
+                "y": 32,
+                "w": 79,
+                "h": 32,
+                "bottom": 64,
+                "right": 1303
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "review-queue",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-review-queue-desktop-1440x900.png",
+      "lowContrastTotal": 1,
+      "smallTargetTotal": 16,
+      "genericControlTotal": 1,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_eyebrow_muted_token": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "span.eyebrow",
+              "text": "EMPTY STATE · REVIEW QUEUE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 261,
+                "y": 260,
+                "w": 183,
+                "h": 14,
+                "bottom": 274,
+                "right": 444
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:22. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 1052,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1145
+              }
+            }
+          ]
+        },
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 6,
+          "examples": [
+            {
+              "selector": "button.filter-chip.on",
+              "text": "status: any",
+              "rect": {
+                "x": 257,
+                "y": 191,
+                "w": 87,
+                "h": 24,
+                "bottom": 215,
+                "right": 344
+              }
+            },
+            {
+              "selector": "button.filter-chip",
+              "text": "status: pending",
+              "rect": {
+                "x": 352,
+                "y": 191,
+                "w": 112,
+                "h": 24,
+                "bottom": 215,
+                "right": 464
+              }
+            },
+            {
+              "selector": "button.filter-chip",
+              "text": "status: approved",
+              "rect": {
+                "x": 472,
+                "y": 191,
+                "w": 120,
+                "h": 24,
+                "bottom": 215,
+                "right": 592
+              }
+            },
+            {
+              "selector": "button.filter-chip",
+              "text": "status: rejected",
+              "rect": {
+                "x": 600,
+                "y": 191,
+                "w": 113,
+                "h": 24,
+                "bottom": 215,
+                "right": 714
+              }
+            },
+            {
+              "selector": "button.filter-chip",
+              "text": "risk: blocked",
+              "rect": {
+                "x": 722,
+                "y": 191,
+                "w": 98,
+                "h": 24,
+                "bottom": 215,
+                "right": 819
+              }
+            },
+            {
+              "selector": "button.filter-chip",
+              "text": "risk: ready",
+              "rect": {
+                "x": 827,
+                "y": 191,
+                "w": 86,
+                "h": 24,
+                "bottom": 215,
+                "right": 913
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "needs_review_route_filter_action_help": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "#review-topbar-filter",
+              "text": "Filter",
+              "rect": {
+                "x": 1341,
+                "y": 32,
+                "w": 79,
+                "h": 32,
+                "bottom": 64,
+                "right": 1420
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "all-tasks",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-all-tasks-desktop-1440x900.png",
+      "lowContrastTotal": 12,
+      "smallTargetTotal": 80,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 1,
+      "contrast": {
+        "needs_review_dense_table_header_token": {
+          "count": 12,
+          "examples": [
+            {
+              "selector": "th",
+              "text": "TASK",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 292,
+                "y": 318,
+                "w": 374,
+                "h": 37,
+                "bottom": 354,
+                "right": 666
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "TASK",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 304,
+                "y": 330,
+                "w": 30,
+                "h": 11,
+                "bottom": 341,
+                "right": 334
+              }
+            },
+            {
+              "selector": "th",
+              "text": "BOARD · LIST",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 666,
+                "y": 318,
+                "w": 269,
+                "h": 37,
+                "bottom": 354,
+                "right": 935
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "BOARD · LIST",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 678,
+                "y": 330,
+                "w": 78,
+                "h": 11,
+                "bottom": 341,
+                "right": 756
+              }
+            },
+            {
+              "selector": "th",
+              "text": "OWNER",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 935,
+                "y": 318,
+                "w": 129,
+                "h": 37,
+                "bottom": 354,
+                "right": 1064
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "OWNER",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 947,
+                "y": 330,
+                "w": 44,
+                "h": 11,
+                "bottom": 341,
+                "right": 992
+              }
+            },
+            {
+              "selector": "th",
+              "text": "DUE ↑",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 1064,
+                "y": 318,
+                "w": 117,
+                "h": 37,
+                "bottom": 354,
+                "right": 1181
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "DUE ↑",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 1076,
+                "y": 330,
+                "w": 37,
+                "h": 11,
+                "bottom": 341,
+                "right": 1113
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:22. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 63,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 989,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1082
+              }
+            },
+            {
+              "selector": "button.task-check-button.tck",
+              "text": "Mark done",
+              "rect": {
+                "x": 255,
+                "y": 371,
+                "w": 14,
+                "h": 14,
+                "bottom": 385,
+                "right": 269
+              }
+            },
+            {
+              "selector": "button.task-check-button.tck",
+              "text": "Mark done",
+              "rect": {
+                "x": 255,
+                "y": 431,
+                "w": 14,
+                "h": 14,
+                "bottom": 445,
+                "right": 269
+              }
+            },
+            {
+              "selector": "button.task-check-button.tck",
+              "text": "Mark done",
+              "rect": {
+                "x": 255,
+                "y": 499,
+                "w": 14,
+                "h": 14,
+                "bottom": 513,
+                "right": 269
+              }
+            },
+            {
+              "selector": "button.task-check-button.tck",
+              "text": "Mark done",
+              "rect": {
+                "x": 255,
+                "y": 567,
+                "w": 14,
+                "h": 14,
+                "bottom": 581,
+                "right": 269
+              }
+            },
+            {
+              "selector": "button.task-check-button.tck",
+              "text": "Mark done",
+              "rect": {
+                "x": 255,
+                "y": 635,
+                "w": 14,
+                "h": 14,
+                "bottom": 649,
+                "right": 269
+              }
+            },
+            {
+              "selector": "button.task-check-button.tck",
+              "text": "Mark done",
+              "rect": {
+                "x": 255,
+                "y": 695,
+                "w": 14,
+                "h": 14,
+                "bottom": 709,
+                "right": 269
+              }
+            },
+            {
+              "selector": "button.task-check-button.tck",
+              "text": "Mark done",
+              "rect": {
+                "x": 255,
+                "y": 747,
+                "w": 14,
+                "h": 14,
+                "bottom": 761,
+                "right": 269
+              }
+            }
+          ]
+        },
+        "needs_review_compact_search_input_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "#tasks-search-input",
+              "text": "Search tasks...",
+              "rect": {
+                "x": 288,
+                "y": 209,
+                "w": 178,
+                "h": 15,
+                "bottom": 224,
+                "right": 466
+              }
+            }
+          ]
+        },
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 2,
+          "examples": [
+            {
+              "selector": "button.filter-chip.on",
+              "text": "status: open",
+              "rect": {
+                "x": 485,
+                "y": 205,
+                "w": 95,
+                "h": 24,
+                "bottom": 229,
+                "right": 580
+              }
+            },
+            {
+              "selector": "#tasks-scope-filter-btn",
+              "text": "Scope is controlled from the topbar and sidebar.",
+              "rect": {
+                "x": 690,
+                "y": 205,
+                "w": 81,
+                "h": 24,
+                "bottom": 229,
+                "right": 771
+              }
+            }
+          ]
+        },
+        "needs_review_dense_table_or_sort_target": {
+          "count": 5,
+          "examples": [
+            {
+              "selector": "button.sortable-header",
+              "text": "TASK",
+              "rect": {
+                "x": 304,
+                "y": 330,
+                "w": 30,
+                "h": 11,
+                "bottom": 341,
+                "right": 334
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "BOARD · LIST",
+              "rect": {
+                "x": 678,
+                "y": 330,
+                "w": 78,
+                "h": 11,
+                "bottom": 341,
+                "right": 756
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "OWNER",
+              "rect": {
+                "x": 947,
+                "y": 330,
+                "w": 44,
+                "h": 11,
+                "bottom": 341,
+                "right": 992
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "DUE ↑",
+              "rect": {
+                "x": 1076,
+                "y": 330,
+                "w": 37,
+                "h": 11,
+                "bottom": 341,
+                "right": 1113
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "STATUS",
+              "rect": {
+                "x": 1193,
+                "y": 330,
+                "w": 45,
+                "h": 11,
+                "bottom": 341,
+                "right": 1238
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "boards-monitor",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-boards-monitor-desktop-1440x900.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 10,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:22. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 1243,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1336
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "calendar",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-calendar-desktop-1440x900.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 13,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:22. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 956,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1048
+              }
+            }
+          ]
+        },
+        "needs_review_unclassified_focus_target": {
+          "count": 3,
+          "examples": [
+            {
+              "selector": "button",
+              "text": "Day",
+              "rect": {
+                "x": 1143,
+                "y": 36,
+                "w": 43,
+                "h": 24,
+                "bottom": 60,
+                "right": 1186
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Week",
+              "rect": {
+                "x": 1186,
+                "y": 36,
+                "w": 52,
+                "h": 24,
+                "bottom": 60,
+                "right": 1238
+              }
+            },
+            {
+              "selector": "button.on",
+              "text": "Month",
+              "rect": {
+                "x": 1238,
+                "y": 36,
+                "w": 57,
+                "h": 24,
+                "bottom": 60,
+                "right": 1295
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "planner",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-planner-desktop-1440x900.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 13,
+      "genericControlTotal": 2,
+      "duplicateNameTotal": 1,
+      "contrast": {},
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:23. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 1243,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1336
+              }
+            }
+          ]
+        },
+        "needs_review_unclassified_focus_target": {
+          "count": 3,
+          "examples": [
+            {
+              "selector": "button.on",
+              "text": "Today",
+              "rect": {
+                "x": 1204,
+                "y": 118,
+                "w": 55,
+                "h": 24,
+                "bottom": 142,
+                "right": 1259
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Tomorrow",
+              "rect": {
+                "x": 1259,
+                "y": 118,
+                "w": 77,
+                "h": 24,
+                "bottom": 142,
+                "right": 1336
+              }
+            },
+            {
+              "selector": "button",
+              "text": "This week",
+              "rect": {
+                "x": 1336,
+                "y": 118,
+                "w": 77,
+                "h": 24,
+                "bottom": 142,
+                "right": 1413
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "superseded_planner_contextual_settings_cta": {
+          "count": 2,
+          "examples": [
+            {
+              "selector": "button.btn.sm",
+              "text": "Open Settings",
+              "rect": {
+                "x": 1300,
+                "y": 212,
+                "w": 99,
+                "h": 32,
+                "bottom": 244,
+                "right": 1399
+              }
+            },
+            {
+              "selector": "button.btn.primary.sm",
+              "text": "Open Settings",
+              "rect": {
+                "x": 428,
+                "y": 539,
+                "w": 99,
+                "h": 32,
+                "bottom": 571,
+                "right": 527
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "okr-portfolio",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-okr-portfolio-desktop-1440x900.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 56,
+      "genericControlTotal": 30,
+      "duplicateNameTotal": 1,
+      "contrast": {},
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:23. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 1243,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1336
+              }
+            }
+          ]
+        },
+        "needs_review_unclassified_focus_target": {
+          "count": 4,
+          "examples": [
+            {
+              "selector": "button.on",
+              "text": "All",
+              "rect": {
+                "x": 1195,
+                "y": 118,
+                "w": 34,
+                "h": 24,
+                "bottom": 142,
+                "right": 1229
+              }
+            },
+            {
+              "selector": "button",
+              "text": "On track",
+              "rect": {
+                "x": 1229,
+                "y": 118,
+                "w": 68,
+                "h": 24,
+                "bottom": 142,
+                "right": 1298
+              }
+            },
+            {
+              "selector": "button",
+              "text": "At risk",
+              "rect": {
+                "x": 1298,
+                "y": 118,
+                "w": 56,
+                "h": 24,
+                "bottom": 142,
+                "right": 1354
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Behind",
+              "rect": {
+                "x": 1354,
+                "y": 118,
+                "w": 59,
+                "h": 24,
+                "bottom": 142,
+                "right": 1413
+              }
+            }
+          ]
+        },
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 42,
+          "examples": [
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "O3",
+              "rect": {
+                "x": 304,
+                "y": 2492,
+                "w": 32,
+                "h": 24,
+                "bottom": 2516,
+                "right": 337
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "KR3.1",
+              "rect": {
+                "x": 345,
+                "y": 2492,
+                "w": 46,
+                "h": 24,
+                "bottom": 2516,
+                "right": 391
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "SaaS",
+              "rect": {
+                "x": 399,
+                "y": 2492,
+                "w": 45,
+                "h": 24,
+                "bottom": 2516,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "P1",
+              "rect": {
+                "x": 452,
+                "y": 2492,
+                "w": 28,
+                "h": 24,
+                "bottom": 2516,
+                "right": 481
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Later",
+              "rect": {
+                "x": 489,
+                "y": 2492,
+                "w": 46,
+                "h": 24,
+                "bottom": 2516,
+                "right": 535
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Product",
+              "rect": {
+                "x": 543,
+                "y": 2492,
+                "w": 61,
+                "h": 24,
+                "bottom": 2516,
+                "right": 603
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Revenue",
+              "rect": {
+                "x": 611,
+                "y": 2492,
+                "w": 65,
+                "h": 24,
+                "bottom": 2516,
+                "right": 676
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "2026-Q3",
+              "rect": {
+                "x": 684,
+                "y": 2492,
+                "w": 67,
+                "h": 24,
+                "bottom": 2516,
+                "right": 751
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "superseded_okr_contextual_kr_detail_labels": {
+          "count": 30,
+          "examples": [
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 1373,
+                "y": 364,
+                "w": 30,
+                "h": 32,
+                "bottom": 396,
+                "right": 1403
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 1373,
+                "y": 414,
+                "w": 30,
+                "h": 32,
+                "bottom": 446,
+                "right": 1403
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 1373,
+                "y": 464,
+                "w": 30,
+                "h": 32,
+                "bottom": 496,
+                "right": 1403
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 1373,
+                "y": 514,
+                "w": 30,
+                "h": 32,
+                "bottom": 546,
+                "right": 1403
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 1373,
+                "y": 564,
+                "w": 30,
+                "h": 32,
+                "bottom": 596,
+                "right": 1403
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 1373,
+                "y": 614,
+                "w": 30,
+                "h": 32,
+                "bottom": 646,
+                "right": 1403
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 1373,
+                "y": 758,
+                "w": 30,
+                "h": 32,
+                "bottom": 790,
+                "right": 1403
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 1373,
+                "y": 808,
+                "w": 30,
+                "h": 32,
+                "bottom": 840,
+                "right": 1403
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "weekly-focus",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-weekly-focus-desktop-1440x900.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 13,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:23. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 993,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1086
+              }
+            }
+          ]
+        },
+        "needs_review_unclassified_focus_target": {
+          "count": 3,
+          "examples": [
+            {
+              "selector": "button",
+              "text": "Last week",
+              "rect": {
+                "x": 1181,
+                "y": 36,
+                "w": 78,
+                "h": 24,
+                "bottom": 60,
+                "right": 1259
+              }
+            },
+            {
+              "selector": "button.on",
+              "text": "This week",
+              "rect": {
+                "x": 1259,
+                "y": 36,
+                "w": 77,
+                "h": 24,
+                "bottom": 60,
+                "right": 1336
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Next week",
+              "rect": {
+                "x": 1336,
+                "y": 36,
+                "w": 81,
+                "h": 24,
+                "bottom": 60,
+                "right": 1417
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "docs-ai-trace",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-docs-ai-trace-desktop-1440x900.png",
+      "lowContrastTotal": 6,
+      "smallTargetTotal": 12,
+      "genericControlTotal": 1,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_eyebrow_muted_token": {
+          "count": 6,
+          "examples": [
+            {
+              "selector": "span.eyebrow",
+              "text": "RUN ID",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 257,
+                "y": 274,
+                "w": 200,
+                "h": 14,
+                "bottom": 288,
+                "right": 457
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "TITLE · SESSION",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 469,
+                "y": 274,
+                "w": 598,
+                "h": 14,
+                "bottom": 288,
+                "right": 1067
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "AGENT · ENV",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 1079,
+                "y": 274,
+                "w": 120,
+                "h": 14,
+                "bottom": 288,
+                "right": 1199
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "RECEIVED",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 1211,
+                "y": 274,
+                "w": 100,
+                "h": 14,
+                "bottom": 288,
+                "right": 1311
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "STATUS",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 1323,
+                "y": 274,
+                "w": 80,
+                "h": 14,
+                "bottom": 288,
+                "right": 1403
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "INSPECTING",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 259,
+                "y": 450,
+                "w": 73,
+                "h": 14,
+                "bottom": 464,
+                "right": 332
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:23. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 1059,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1152
+              }
+            }
+          ]
+        },
+        "needs_review_compact_search_input_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "#docs-search-input",
+              "text": "",
+              "rect": {
+                "x": 288,
+                "y": 199,
+                "w": 617,
+                "h": 28,
+                "bottom": 227,
+                "right": 905
+              }
+            }
+          ]
+        },
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.filter-chip.on",
+              "text": "status: any",
+              "rect": {
+                "x": 1133,
+                "y": 201,
+                "w": 87,
+                "h": 24,
+                "bottom": 225,
+                "right": 1221
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "needs_review_route_filter_action_help": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "#docs-topbar-filter",
+              "text": "Filter",
+              "rect": {
+                "x": 1244,
+                "y": 32,
+                "w": 79,
+                "h": 32,
+                "bottom": 64,
+                "right": 1323
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "settings",
+      "viewport": "desktop-1440x900",
+      "screenshot": "qc3-settings-desktop-1440x900.png",
+      "lowContrastTotal": 10,
+      "smallTargetTotal": 69,
+      "genericControlTotal": 14,
+      "duplicateNameTotal": 2,
+      "contrast": {
+        "needs_review_eyebrow_muted_token": {
+          "count": 10,
+          "examples": [
+            {
+              "selector": "div.eyebrow",
+              "text": "CONNECTIONS",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 481,
+                "y": 207,
+                "w": 72,
+                "h": 10,
+                "bottom": 217,
+                "right": 553
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "CONNECTION EDITOR",
+              "ratio": 3.06,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(248, 250, 252)",
+              "rect": {
+                "x": 481,
+                "y": 464,
+                "w": 731,
+                "h": 10,
+                "bottom": 473,
+                "right": 1212
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "WORKSPACE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 481,
+                "y": 826,
+                "w": 114,
+                "h": 10,
+                "bottom": 836,
+                "right": 595
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "BOARD VISIBILITY",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 481,
+                "y": 1050,
+                "w": 87,
+                "h": 10,
+                "bottom": 1060,
+                "right": 568
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "WORKSPACE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 481,
+                "y": 1531,
+                "w": 159,
+                "h": 10,
+                "bottom": 1541,
+                "right": 640
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "PAPERCLIP / AI INTAKE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 481,
+                "y": 1819,
+                "w": 126,
+                "h": 10,
+                "bottom": 1829,
+                "right": 607
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "POLICY",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 481,
+                "y": 2096,
+                "w": 94,
+                "h": 10,
+                "bottom": 2106,
+                "right": 575
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "GOVERNANCE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 481,
+                "y": 2380,
+                "w": 99,
+                "h": 10,
+                "bottom": 2389,
+                "right": 580
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "superseded_status_strip_compact_signal": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "env dev. Current app environment label for this preview. It is display-only and does not expose ",
+              "rect": {
+                "x": 13,
+                "y": 2,
+                "w": 69,
+                "h": 18,
+                "bottom": 21,
+                "right": 82
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "build ui-v2. UI V2 shell and component system is active in this preview build.",
+              "rect": {
+                "x": 109,
+                "y": 2,
+                "w": 82,
+                "h": 18,
+                "bottom": 21,
+                "right": 191
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "workspace trisilar. Current workspace context. Production data still comes from the existing app",
+              "rect": {
+                "x": 218,
+                "y": 2,
+                "w": 130,
+                "h": 18,
+                "bottom": 21,
+                "right": 348
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "trello · ok. Trello is verified. Trello remains the execution surface while Task Hub stays the c",
+              "rect": {
+                "x": 839,
+                "y": 2,
+                "w": 95,
+                "h": 18,
+                "bottom": 21,
+                "right": 935
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gcal · ok. Google Calendar is connected. Calendar context can be shown, while writes stay behind",
+              "rect": {
+                "x": 945,
+                "y": 2,
+                "w": 81,
+                "h": 18,
+                "bottom": 21,
+                "right": 1026
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "paperclip staged. Paperclip intake is staged and gated. Proposed work must pass Review Queue bef",
+              "rect": {
+                "x": 1036,
+                "y": 2,
+                "w": 143,
+                "h": 18,
+                "bottom": 21,
+                "right": 1179
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "gtasks off. Google Tasks is off in this status strip. Planner keeps Trello deadline planning vis",
+              "rect": {
+                "x": 1189,
+                "y": 2,
+                "w": 102,
+                "h": 18,
+                "bottom": 21,
+                "right": 1291
+              }
+            },
+            {
+              "selector": "span.statusbar-group.has-status-help",
+              "text": "last sync 09:23. Last browser-side status refresh time for the current shell. Use Refresh to pul",
+              "rect": {
+                "x": 1318,
+                "y": 2,
+                "w": 110,
+                "h": 18,
+                "bottom": 21,
+                "right": 1427
+              }
+            }
+          ]
+        },
+        "needs_review_sidebar_scope_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.nav-item.scope-item",
+              "text": "Filter workspace to Trisilar",
+              "rect": {
+                "x": 8,
+                "y": 485,
+                "w": 203,
+                "h": 28,
+                "bottom": 513,
+                "right": 211
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 3,
+          "examples": [
+            {
+              "selector": "div.scope-pick",
+              "text": "Scope filter All BUs. Open scope menu.",
+              "rect": {
+                "x": 1243,
+                "y": 34,
+                "w": 93,
+                "h": 28,
+                "bottom": 62,
+                "right": 1336
+              }
+            },
+            {
+              "selector": "#settings-add-group-btn",
+              "text": "Edit groups",
+              "rect": {
+                "x": 1297,
+                "y": 1531,
+                "w": 102,
+                "h": 26,
+                "bottom": 1557,
+                "right": 1399
+              }
+            },
+            {
+              "selector": "button.btn.sm",
+              "text": "Open trace 14d",
+              "rect": {
+                "x": 1291,
+                "y": 2590,
+                "w": 108,
+                "h": 26,
+                "bottom": 2616,
+                "right": 1399
+              }
+            }
+          ]
+        },
+        "needs_review_unclassified_focus_target": {
+          "count": 41,
+          "examples": [
+            {
+              "selector": "button.sl.on",
+              "text": "Integrations",
+              "rect": {
+                "x": 244,
+                "y": 198,
+                "w": 200,
+                "h": 28,
+                "bottom": 226,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Workspace visibility",
+              "rect": {
+                "x": 244,
+                "y": 228,
+                "w": 200,
+                "h": 28,
+                "bottom": 256,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Hidden boards",
+              "rect": {
+                "x": 244,
+                "y": 258,
+                "w": 200,
+                "h": 28,
+                "bottom": 287,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "BU groups",
+              "rect": {
+                "x": 244,
+                "y": 289,
+                "w": 200,
+                "h": 28,
+                "bottom": 317,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Paperclip / AI intake",
+              "rect": {
+                "x": 244,
+                "y": 319,
+                "w": 200,
+                "h": 28,
+                "bottom": 347,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Access & policy",
+              "rect": {
+                "x": 244,
+                "y": 349,
+                "w": 200,
+                "h": 28,
+                "bottom": 377,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Audit / retention",
+              "rect": {
+                "x": 244,
+                "y": 379,
+                "w": 200,
+                "h": 28,
+                "bottom": 408,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Display",
+              "rect": {
+                "x": 244,
+                "y": 440,
+                "w": 200,
+                "h": 28,
+                "bottom": 468,
+                "right": 444
+              }
+            }
+          ]
+        },
+        "needs_review_compact_icon_button_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.sl",
+              "text": "Notifications",
+              "rect": {
+                "x": 244,
+                "y": 410,
+                "w": 200,
+                "h": 28,
+                "bottom": 438,
+                "right": 444
+              }
+            }
+          ]
+        },
+        "needs_review_compact_search_input_target": {
+          "count": 6,
+          "examples": [
+            {
+              "selector": "input.ws-check",
+              "text": "Games Studio",
+              "rect": {
+                "x": 492,
+                "y": 904,
+                "w": 16,
+                "h": 16,
+                "bottom": 920,
+                "right": 508
+              }
+            },
+            {
+              "selector": "input.ws-check",
+              "text": "Sprouting Tech TH",
+              "rect": {
+                "x": 492,
+                "y": 944,
+                "w": 16,
+                "h": 16,
+                "bottom": 960,
+                "right": 508
+              }
+            },
+            {
+              "selector": "input.ws-check",
+              "text": "Trisilar",
+              "rect": {
+                "x": 492,
+                "y": 984,
+                "w": 16,
+                "h": 16,
+                "bottom": 1000,
+                "right": 508
+              }
+            },
+            {
+              "selector": "input.group-color-picker",
+              "text": "Group color",
+              "rect": {
+                "x": 492,
+                "y": 1630,
+                "w": 28,
+                "h": 28,
+                "bottom": 1658,
+                "right": 520
+              }
+            },
+            {
+              "selector": "input.group-edit-name",
+              "text": "Group name",
+              "rect": {
+                "x": 528,
+                "y": 1630,
+                "w": 779,
+                "h": 28,
+                "bottom": 1658,
+                "right": 1307
+              }
+            },
+            {
+              "selector": "#new-team-input",
+              "text": "Add monitor label, e.g. Design",
+              "rect": {
+                "x": 497,
+                "y": 2305,
+                "w": 807,
+                "h": 28,
+                "bottom": 2333,
+                "right": 1304
+              }
+            }
+          ]
+        },
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 9,
+          "examples": [
+            {
+              "selector": "button.board-chip.selected",
+              "text": "OKR",
+              "rect": {
+                "x": 492,
+                "y": 1670,
+                "w": 54,
+                "h": 26,
+                "bottom": 1696,
+                "right": 546
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - AI Chatbot + All-in-One Chat",
+              "rect": {
+                "x": 552,
+                "y": 1670,
+                "w": 238,
+                "h": 26,
+                "bottom": 1696,
+                "right": 791
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Auto Post SaaS Beta",
+              "rect": {
+                "x": 797,
+                "y": 1670,
+                "w": 196,
+                "h": 26,
+                "bottom": 1696,
+                "right": 992
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Education Passive & High-Ticket Bundle",
+              "rect": {
+                "x": 998,
+                "y": 1670,
+                "w": 300,
+                "h": 26,
+                "bottom": 1696,
+                "right": 1298
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Marketing Content & ASEAN Expansion",
+              "rect": {
+                "x": 492,
+                "y": 1702,
+                "w": 297,
+                "h": 26,
+                "bottom": 1728,
+                "right": 789
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Product Factory Automation",
+              "rect": {
+                "x": 795,
+                "y": 1702,
+                "w": 237,
+                "h": 26,
+                "bottom": 1728,
+                "right": 1033
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Revenue Workflow Sales & Niche Launch",
+              "rect": {
+                "x": 1039,
+                "y": 1702,
+                "w": 306,
+                "h": 26,
+                "bottom": 1728,
+                "right": 1344
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Sprouting Tech SG Website",
+              "rect": {
+                "x": 492,
+                "y": 1734,
+                "w": 231,
+                "h": 26,
+                "bottom": 1760,
+                "right": 723
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "superseded_settings_contextual_action_labels": {
+          "count": 14,
+          "examples": [
+            {
+              "selector": "button.btn.sm",
+              "text": "Manage",
+              "rect": {
+                "x": 1316,
+                "y": 249,
+                "w": 83,
+                "h": 26,
+                "bottom": 275,
+                "right": 1399
+              }
+            },
+            {
+              "selector": "button.btn.sm",
+              "text": "Manage",
+              "rect": {
+                "x": 1316,
+                "y": 290,
+                "w": 83,
+                "h": 26,
+                "bottom": 316,
+                "right": 1399
+              }
+            },
+            {
+              "selector": "button.btn.sm",
+              "text": "Manage",
+              "rect": {
+                "x": 1316,
+                "y": 331,
+                "w": 83,
+                "h": 26,
+                "bottom": 357,
+                "right": 1399
+              }
+            },
+            {
+              "selector": "button.btn.sm.ai",
+              "text": "Manage",
+              "rect": {
+                "x": 1316,
+                "y": 372,
+                "w": 83,
+                "h": 26,
+                "bottom": 398,
+                "right": 1399
+              }
+            },
+            {
+              "selector": "button.btn.sm",
+              "text": "Policy",
+              "rect": {
+                "x": 1323,
+                "y": 413,
+                "w": 76,
+                "h": 26,
+                "bottom": 439,
+                "right": 1399
+              }
+            },
+            {
+              "selector": "button.vis-toggle",
+              "text": "Visible",
+              "rect": {
+                "x": 1310,
+                "y": 1106,
+                "w": 78,
+                "h": 26,
+                "bottom": 1132,
+                "right": 1388
+              }
+            },
+            {
+              "selector": "button.vis-toggle",
+              "text": "Visible",
+              "rect": {
+                "x": 1310,
+                "y": 1150,
+                "w": 78,
+                "h": 26,
+                "bottom": 1176,
+                "right": 1388
+              }
+            },
+            {
+              "selector": "button.vis-toggle",
+              "text": "Visible",
+              "rect": {
+                "x": 1310,
+                "y": 1194,
+                "w": 78,
+                "h": 26,
+                "bottom": 1220,
+                "right": 1388
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "today",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-today-app-pane-747x910.png",
+      "lowContrastTotal": 6,
+      "smallTargetTotal": 0,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_alpha_background_compositing": {
+          "count": 2,
+          "examples": [
+            {
+              "selector": "button.btn",
+              "text": "Mark done",
+              "ratio": 1,
+              "color": "rgb(255, 255, 255)",
+              "bg": "rgba(255, 255, 255, 0.08)",
+              "rect": {
+                "x": 172,
+                "y": 377,
+                "w": 113,
+                "h": 32,
+                "bottom": 409,
+                "right": 285
+              }
+            },
+            {
+              "selector": "button.btn",
+              "text": "Reschedule",
+              "ratio": 1,
+              "color": "rgb(255, 255, 255)",
+              "bg": "rgba(255, 255, 255, 0.08)",
+              "rect": {
+                "x": 293,
+                "y": 377,
+                "w": 119,
+                "h": 32,
+                "bottom": 409,
+                "right": 412
+              }
+            }
+          ]
+        },
+        "needs_review_eyebrow_muted_token": {
+          "count": 4,
+          "examples": [
+            {
+              "selector": "span.eyebrow",
+              "text": "8 ITEMS",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 524,
+                "y": 462,
+                "w": 48,
+                "h": 14,
+                "bottom": 477,
+                "right": 572
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "AI REVIEW QUEUE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 949,
+                "w": 151,
+                "h": 14,
+                "bottom": 964,
+                "right": 180
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "0 EVENTS",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 659,
+                "y": 1168,
+                "w": 59,
+                "h": 14,
+                "bottom": 1182,
+                "right": 718
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "CROSS-BOARD SIGNALS",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 1429,
+                "w": 146,
+                "h": 14,
+                "bottom": 1444,
+                "right": 175
+              }
+            }
+          ]
+        }
+      },
+      "targets": {},
+      "genericControls": {}
+    },
+    {
+      "route": "review-queue",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-review-queue-app-pane-747x910.png",
+      "lowContrastTotal": 1,
+      "smallTargetTotal": 0,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_eyebrow_muted_token": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "span.eyebrow",
+              "text": "EMPTY STATE · REVIEW QUEUE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 113,
+                "w": 183,
+                "h": 14,
+                "bottom": 127,
+                "right": 212
+              }
+            }
+          ]
+        }
+      },
+      "targets": {},
+      "genericControls": {}
+    },
+    {
+      "route": "all-tasks",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-all-tasks-app-pane-747x910.png",
+      "lowContrastTotal": 12,
+      "smallTargetTotal": 6,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_dense_table_header_token": {
+          "count": 12,
+          "examples": [
+            {
+              "selector": "th",
+              "text": "TASK",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 49,
+                "y": 201,
+                "w": 228,
+                "h": 37,
+                "bottom": 237,
+                "right": 277
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "TASK",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 61,
+                "y": 213,
+                "w": 30,
+                "h": 11,
+                "bottom": 224,
+                "right": 91
+              }
+            },
+            {
+              "selector": "th",
+              "text": "BOARD · LIST",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 277,
+                "y": 201,
+                "w": 164,
+                "h": 37,
+                "bottom": 237,
+                "right": 441
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "BOARD · LIST",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 289,
+                "y": 213,
+                "w": 78,
+                "h": 11,
+                "bottom": 224,
+                "right": 367
+              }
+            },
+            {
+              "selector": "th",
+              "text": "OWNER",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 441,
+                "y": 201,
+                "w": 78,
+                "h": 37,
+                "bottom": 237,
+                "right": 520
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "OWNER",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 453,
+                "y": 213,
+                "w": 44,
+                "h": 11,
+                "bottom": 224,
+                "right": 498
+              }
+            },
+            {
+              "selector": "th",
+              "text": "DUE ↑",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 520,
+                "y": 201,
+                "w": 71,
+                "h": 37,
+                "bottom": 237,
+                "right": 591
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "DUE ↑",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 532,
+                "y": 213,
+                "w": 37,
+                "h": 11,
+                "bottom": 224,
+                "right": 569
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "needs_review_compact_search_input_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "#tasks-search-input",
+              "text": "Search tasks...",
+              "rect": {
+                "x": 43,
+                "y": 104,
+                "w": 178,
+                "h": 15,
+                "bottom": 119,
+                "right": 221
+              }
+            }
+          ]
+        },
+        "needs_review_dense_table_or_sort_target": {
+          "count": 5,
+          "examples": [
+            {
+              "selector": "button.sortable-header",
+              "text": "TASK",
+              "rect": {
+                "x": 61,
+                "y": 213,
+                "w": 30,
+                "h": 11,
+                "bottom": 224,
+                "right": 91
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "BOARD · LIST",
+              "rect": {
+                "x": 289,
+                "y": 213,
+                "w": 78,
+                "h": 11,
+                "bottom": 224,
+                "right": 367
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "OWNER",
+              "rect": {
+                "x": 453,
+                "y": 213,
+                "w": 44,
+                "h": 11,
+                "bottom": 224,
+                "right": 498
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "DUE ↑",
+              "rect": {
+                "x": 532,
+                "y": 213,
+                "w": 37,
+                "h": 11,
+                "bottom": 224,
+                "right": 569
+              }
+            },
+            {
+              "selector": "button.sortable-header",
+              "text": "STATUS",
+              "rect": {
+                "x": 603,
+                "y": 213,
+                "w": 45,
+                "h": 11,
+                "bottom": 224,
+                "right": 648
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "boards-monitor",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-boards-monitor-app-pane-747x910.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 4,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 1,
+      "contrast": {},
+      "targets": {
+        "needs_review_unclassified_focus_target": {
+          "count": 3,
+          "examples": [
+            {
+              "selector": "button.on",
+              "text": "Board mode",
+              "rect": {
+                "x": 434,
+                "y": 152,
+                "w": 85,
+                "h": 24,
+                "bottom": 176,
+                "right": 519
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Team mode",
+              "rect": {
+                "x": 519,
+                "y": 152,
+                "w": 81,
+                "h": 24,
+                "bottom": 176,
+                "right": 599
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Convention warnings",
+              "rect": {
+                "x": 599,
+                "y": 152,
+                "w": 133,
+                "h": 24,
+                "bottom": 176,
+                "right": 732
+              }
+            }
+          ]
+        },
+        "needs_review_compact_search_input_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "input",
+              "text": "Search boards",
+              "rect": {
+                "x": 56,
+                "y": 370,
+                "w": 178,
+                "h": 15,
+                "bottom": 385,
+                "right": 234
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "calendar",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-calendar-app-pane-747x910.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 0,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {},
+      "genericControls": {}
+    },
+    {
+      "route": "planner",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-planner-app-pane-747x910.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 3,
+      "genericControlTotal": 2,
+      "duplicateNameTotal": 1,
+      "contrast": {},
+      "targets": {
+        "needs_review_unclassified_focus_target": {
+          "count": 3,
+          "examples": [
+            {
+              "selector": "button.on",
+              "text": "Today",
+              "rect": {
+                "x": 523,
+                "y": 123,
+                "w": 55,
+                "h": 24,
+                "bottom": 147,
+                "right": 578
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Tomorrow",
+              "rect": {
+                "x": 578,
+                "y": 123,
+                "w": 77,
+                "h": 24,
+                "bottom": 147,
+                "right": 655
+              }
+            },
+            {
+              "selector": "button",
+              "text": "This week",
+              "rect": {
+                "x": 655,
+                "y": 123,
+                "w": 77,
+                "h": 24,
+                "bottom": 147,
+                "right": 732
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "superseded_planner_contextual_settings_cta": {
+          "count": 2,
+          "examples": [
+            {
+              "selector": "button.btn.sm",
+              "text": "Open Settings",
+              "rect": {
+                "x": 619,
+                "y": 227,
+                "w": 99,
+                "h": 32,
+                "bottom": 259,
+                "right": 718
+              }
+            },
+            {
+              "selector": "button.btn.primary.sm",
+              "text": "Open Settings",
+              "rect": {
+                "x": 29,
+                "y": 538,
+                "w": 99,
+                "h": 32,
+                "bottom": 570,
+                "right": 128
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "okr-portfolio",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-okr-portfolio-app-pane-747x910.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 46,
+      "genericControlTotal": 30,
+      "duplicateNameTotal": 1,
+      "contrast": {},
+      "targets": {
+        "needs_review_unclassified_focus_target": {
+          "count": 4,
+          "examples": [
+            {
+              "selector": "button.on",
+              "text": "All",
+              "rect": {
+                "x": 514,
+                "y": 123,
+                "w": 34,
+                "h": 24,
+                "bottom": 147,
+                "right": 548
+              }
+            },
+            {
+              "selector": "button",
+              "text": "On track",
+              "rect": {
+                "x": 548,
+                "y": 123,
+                "w": 68,
+                "h": 24,
+                "bottom": 147,
+                "right": 617
+              }
+            },
+            {
+              "selector": "button",
+              "text": "At risk",
+              "rect": {
+                "x": 617,
+                "y": 123,
+                "w": 56,
+                "h": 24,
+                "bottom": 147,
+                "right": 673
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Behind",
+              "rect": {
+                "x": 673,
+                "y": 123,
+                "w": 59,
+                "h": 24,
+                "bottom": 147,
+                "right": 732
+              }
+            }
+          ]
+        },
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 42,
+          "examples": [
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "O3",
+              "rect": {
+                "x": 72,
+                "y": 5889,
+                "w": 32,
+                "h": 24,
+                "bottom": 5913,
+                "right": 105
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "KR3.1",
+              "rect": {
+                "x": 113,
+                "y": 5889,
+                "w": 46,
+                "h": 24,
+                "bottom": 5913,
+                "right": 159
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "SaaS",
+              "rect": {
+                "x": 167,
+                "y": 5889,
+                "w": 45,
+                "h": 24,
+                "bottom": 5913,
+                "right": 212
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "P1",
+              "rect": {
+                "x": 220,
+                "y": 5889,
+                "w": 28,
+                "h": 24,
+                "bottom": 5913,
+                "right": 249
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Later",
+              "rect": {
+                "x": 257,
+                "y": 5889,
+                "w": 46,
+                "h": 24,
+                "bottom": 5913,
+                "right": 303
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Product",
+              "rect": {
+                "x": 311,
+                "y": 5889,
+                "w": 61,
+                "h": 24,
+                "bottom": 5913,
+                "right": 371
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Revenue",
+              "rect": {
+                "x": 379,
+                "y": 5889,
+                "w": 65,
+                "h": 24,
+                "bottom": 5913,
+                "right": 444
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "2026-Q3",
+              "rect": {
+                "x": 452,
+                "y": 5889,
+                "w": 67,
+                "h": 24,
+                "bottom": 5913,
+                "right": 519
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "superseded_okr_contextual_kr_detail_labels": {
+          "count": 30,
+          "examples": [
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 497,
+                "w": 693,
+                "h": 32,
+                "bottom": 529,
+                "right": 720
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 654,
+                "w": 693,
+                "h": 32,
+                "bottom": 686,
+                "right": 720
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 811,
+                "w": 693,
+                "h": 32,
+                "bottom": 843,
+                "right": 720
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 968,
+                "w": 693,
+                "h": 32,
+                "bottom": 1000,
+                "right": 720
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1125,
+                "w": 693,
+                "h": 32,
+                "bottom": 1157,
+                "right": 720
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1282,
+                "w": 693,
+                "h": 32,
+                "bottom": 1314,
+                "right": 720
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1511,
+                "w": 693,
+                "h": 32,
+                "bottom": 1543,
+                "right": 720
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1668,
+                "w": 693,
+                "h": 32,
+                "bottom": 1700,
+                "right": 720
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "weekly-focus",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-weekly-focus-app-pane-747x910.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 8,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "button.filter-chip.focus-filter-chip.active",
+              "text": "All sources",
+              "rect": {
+                "x": 85,
+                "y": 1093,
+                "w": 77,
+                "h": 24,
+                "bottom": 1117,
+                "right": 162
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Trello",
+              "rect": {
+                "x": 168,
+                "y": 1093,
+                "w": 47,
+                "h": 24,
+                "bottom": 1117,
+                "right": 215
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "AI / agent",
+              "rect": {
+                "x": 221,
+                "y": 1093,
+                "w": 72,
+                "h": 24,
+                "bottom": 1117,
+                "right": 294
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip.active",
+              "text": "All status",
+              "rect": {
+                "x": 360,
+                "y": 1093,
+                "w": 69,
+                "h": 24,
+                "bottom": 1117,
+                "right": 428
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Do Now",
+              "rect": {
+                "x": 434,
+                "y": 1093,
+                "w": 61,
+                "h": 24,
+                "bottom": 1117,
+                "right": 496
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Review",
+              "rect": {
+                "x": 502,
+                "y": 1093,
+                "w": 57,
+                "h": 24,
+                "bottom": 1117,
+                "right": 559
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Blocked",
+              "rect": {
+                "x": 565,
+                "y": 1093,
+                "w": 61,
+                "h": 24,
+                "bottom": 1117,
+                "right": 626
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Scheduled",
+              "rect": {
+                "x": 632,
+                "y": 1093,
+                "w": 76,
+                "h": 24,
+                "bottom": 1117,
+                "right": 708
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "docs-ai-trace",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-docs-ai-trace-app-pane-747x910.png",
+      "lowContrastTotal": 6,
+      "smallTargetTotal": 1,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_eyebrow_muted_token": {
+          "count": 6,
+          "examples": [
+            {
+              "selector": "span.eyebrow",
+              "text": "RUN ID",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 25,
+                "y": 348,
+                "w": 200,
+                "h": 14,
+                "bottom": 362,
+                "right": 225
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "TITLE · SESSION",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 237,
+                "y": 348,
+                "w": 149,
+                "h": 14,
+                "bottom": 362,
+                "right": 386
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "AGENT · ENV",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 398,
+                "y": 348,
+                "w": 120,
+                "h": 14,
+                "bottom": 362,
+                "right": 518
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "RECEIVED",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 530,
+                "y": 348,
+                "w": 100,
+                "h": 14,
+                "bottom": 362,
+                "right": 630
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "STATUS",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 642,
+                "y": 348,
+                "w": 80,
+                "h": 14,
+                "bottom": 362,
+                "right": 722
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "INSPECTING",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 27,
+                "y": 527,
+                "w": 73,
+                "h": 14,
+                "bottom": 542,
+                "right": 100
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.filter-chip.on",
+              "text": "status: any",
+              "rect": {
+                "x": 546,
+                "y": 239,
+                "w": 87,
+                "h": 24,
+                "bottom": 263,
+                "right": 633
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "settings",
+      "viewport": "app-pane-747x910",
+      "screenshot": "qc3-settings-app-pane-747x910.png",
+      "lowContrastTotal": 10,
+      "smallTargetTotal": 59,
+      "genericControlTotal": 14,
+      "duplicateNameTotal": 2,
+      "contrast": {
+        "needs_review_eyebrow_muted_token": {
+          "count": 10,
+          "examples": [
+            {
+              "selector": "div.eyebrow",
+              "text": "CONNECTIONS",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 260,
+                "w": 72,
+                "h": 10,
+                "bottom": 270,
+                "right": 101
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "CONNECTION EDITOR",
+              "ratio": 3.06,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(248, 250, 252)",
+              "rect": {
+                "x": 29,
+                "y": 517,
+                "w": 502,
+                "h": 10,
+                "bottom": 527,
+                "right": 531
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "WORKSPACE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 880,
+                "w": 114,
+                "h": 10,
+                "bottom": 890,
+                "right": 143
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "BOARD VISIBILITY",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 1104,
+                "w": 87,
+                "h": 10,
+                "bottom": 1114,
+                "right": 116
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "WORKSPACE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 1584,
+                "w": 159,
+                "h": 10,
+                "bottom": 1594,
+                "right": 188
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "PAPERCLIP / AI INTAKE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 1904,
+                "w": 126,
+                "h": 10,
+                "bottom": 1914,
+                "right": 155
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "POLICY",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 2181,
+                "w": 94,
+                "h": 10,
+                "bottom": 2191,
+                "right": 123
+              }
+            },
+            {
+              "selector": "div.eyebrow",
+              "text": "GOVERNANCE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 2498,
+                "w": 99,
+                "h": 10,
+                "bottom": 2508,
+                "right": 128
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "needs_review_unclassified_focus_target": {
+          "count": 41,
+          "examples": [
+            {
+              "selector": "button.sl.on",
+              "text": "Integrations",
+              "rect": {
+                "x": 12,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 735
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Workspace visibility",
+              "rect": {
+                "x": 737,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 1460
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Hidden boards",
+              "rect": {
+                "x": 1462,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 2185
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "BU groups",
+              "rect": {
+                "x": 2187,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 2910
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Paperclip / AI intake",
+              "rect": {
+                "x": 2912,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 3635
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Access & policy",
+              "rect": {
+                "x": 3637,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 4360
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Audit / retention",
+              "rect": {
+                "x": 4362,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 5085
+              }
+            },
+            {
+              "selector": "button.sl",
+              "text": "Display",
+              "rect": {
+                "x": 5812,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 6535
+              }
+            }
+          ]
+        },
+        "needs_review_compact_icon_button_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.sl",
+              "text": "Notifications",
+              "rect": {
+                "x": 5087,
+                "y": 203,
+                "w": 723,
+                "h": 28,
+                "bottom": 231,
+                "right": 5810
+              }
+            }
+          ]
+        },
+        "needs_review_compact_search_input_target": {
+          "count": 6,
+          "examples": [
+            {
+              "selector": "input.ws-check",
+              "text": "Games Studio",
+              "rect": {
+                "x": 40,
+                "y": 958,
+                "w": 16,
+                "h": 16,
+                "bottom": 974,
+                "right": 56
+              }
+            },
+            {
+              "selector": "input.ws-check",
+              "text": "Sprouting Tech TH",
+              "rect": {
+                "x": 40,
+                "y": 998,
+                "w": 16,
+                "h": 16,
+                "bottom": 1014,
+                "right": 56
+              }
+            },
+            {
+              "selector": "input.ws-check",
+              "text": "Trisilar",
+              "rect": {
+                "x": 40,
+                "y": 1038,
+                "w": 16,
+                "h": 16,
+                "bottom": 1054,
+                "right": 56
+              }
+            },
+            {
+              "selector": "input.group-color-picker",
+              "text": "Group color",
+              "rect": {
+                "x": 40,
+                "y": 1683,
+                "w": 28,
+                "h": 28,
+                "bottom": 1711,
+                "right": 68
+              }
+            },
+            {
+              "selector": "input.group-edit-name",
+              "text": "Group name",
+              "rect": {
+                "x": 76,
+                "y": 1683,
+                "w": 550,
+                "h": 28,
+                "bottom": 1711,
+                "right": 626
+              }
+            },
+            {
+              "selector": "#new-team-input",
+              "text": "Add monitor label, e.g. Design",
+              "rect": {
+                "x": 45,
+                "y": 2424,
+                "w": 578,
+                "h": 28,
+                "bottom": 2452,
+                "right": 623
+              }
+            }
+          ]
+        },
+        "needs_review_dense_row_action_target": {
+          "count": 2,
+          "examples": [
+            {
+              "selector": "#settings-add-group-btn",
+              "text": "Edit groups",
+              "rect": {
+                "x": 616,
+                "y": 1584,
+                "w": 102,
+                "h": 26,
+                "bottom": 1610,
+                "right": 718
+              }
+            },
+            {
+              "selector": "button.btn.sm",
+              "text": "Open trace 14d",
+              "rect": {
+                "x": 610,
+                "y": 2708,
+                "w": 108,
+                "h": 26,
+                "bottom": 2734,
+                "right": 718
+              }
+            }
+          ]
+        },
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 9,
+          "examples": [
+            {
+              "selector": "button.board-chip.selected",
+              "text": "OKR",
+              "rect": {
+                "x": 40,
+                "y": 1723,
+                "w": 54,
+                "h": 26,
+                "bottom": 1749,
+                "right": 94
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - AI Chatbot + All-in-One Chat",
+              "rect": {
+                "x": 100,
+                "y": 1723,
+                "w": 238,
+                "h": 26,
+                "bottom": 1749,
+                "right": 339
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Auto Post SaaS Beta",
+              "rect": {
+                "x": 345,
+                "y": 1723,
+                "w": 196,
+                "h": 26,
+                "bottom": 1749,
+                "right": 540
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Education Passive & High-Ticket Bundle",
+              "rect": {
+                "x": 40,
+                "y": 1755,
+                "w": 300,
+                "h": 26,
+                "bottom": 1781,
+                "right": 340
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Marketing Content & ASEAN Expansion",
+              "rect": {
+                "x": 346,
+                "y": 1755,
+                "w": 297,
+                "h": 26,
+                "bottom": 1781,
+                "right": 643
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Product Factory Automation",
+              "rect": {
+                "x": 40,
+                "y": 1787,
+                "w": 237,
+                "h": 26,
+                "bottom": 1813,
+                "right": 277
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Revenue Workflow Sales & Niche Launch",
+              "rect": {
+                "x": 283,
+                "y": 1787,
+                "w": 306,
+                "h": 26,
+                "bottom": 1813,
+                "right": 589
+              }
+            },
+            {
+              "selector": "button.board-chip.selected",
+              "text": "Project - Sprouting Tech SG Website",
+              "rect": {
+                "x": 40,
+                "y": 1819,
+                "w": 231,
+                "h": 26,
+                "bottom": 1845,
+                "right": 271
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "superseded_settings_contextual_action_labels": {
+          "count": 14,
+          "examples": [
+            {
+              "selector": "button.btn.sm",
+              "text": "Manage",
+              "rect": {
+                "x": 635,
+                "y": 302,
+                "w": 83,
+                "h": 26,
+                "bottom": 328,
+                "right": 718
+              }
+            },
+            {
+              "selector": "button.btn.sm",
+              "text": "Manage",
+              "rect": {
+                "x": 635,
+                "y": 343,
+                "w": 83,
+                "h": 26,
+                "bottom": 369,
+                "right": 718
+              }
+            },
+            {
+              "selector": "button.btn.sm",
+              "text": "Manage",
+              "rect": {
+                "x": 635,
+                "y": 384,
+                "w": 83,
+                "h": 26,
+                "bottom": 410,
+                "right": 718
+              }
+            },
+            {
+              "selector": "button.btn.sm.ai",
+              "text": "Manage",
+              "rect": {
+                "x": 635,
+                "y": 425,
+                "w": 83,
+                "h": 26,
+                "bottom": 451,
+                "right": 718
+              }
+            },
+            {
+              "selector": "button.btn.sm",
+              "text": "Policy",
+              "rect": {
+                "x": 642,
+                "y": 466,
+                "w": 76,
+                "h": 26,
+                "bottom": 492,
+                "right": 718
+              }
+            },
+            {
+              "selector": "button.vis-toggle",
+              "text": "Visible",
+              "rect": {
+                "x": 629,
+                "y": 1159,
+                "w": 78,
+                "h": 26,
+                "bottom": 1185,
+                "right": 707
+              }
+            },
+            {
+              "selector": "button.vis-toggle",
+              "text": "Visible",
+              "rect": {
+                "x": 629,
+                "y": 1203,
+                "w": 78,
+                "h": 26,
+                "bottom": 1229,
+                "right": 707
+              }
+            },
+            {
+              "selector": "button.vis-toggle",
+              "text": "Visible",
+              "rect": {
+                "x": 629,
+                "y": 1247,
+                "w": 78,
+                "h": 26,
+                "bottom": 1273,
+                "right": 707
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "today",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-today-mobile-small-375x667.png",
+      "lowContrastTotal": 1,
+      "smallTargetTotal": 0,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_alpha_background_compositing": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.btn",
+              "text": "Done",
+              "ratio": 1,
+              "color": "rgb(255, 255, 255)",
+              "bg": "rgba(255, 255, 255, 0.08)",
+              "rect": {
+                "x": 192,
+                "y": 244,
+                "w": 152,
+                "h": 38,
+                "bottom": 282,
+                "right": 343
+              }
+            }
+          ]
+        }
+      },
+      "targets": {},
+      "genericControls": {}
+    },
+    {
+      "route": "review-queue",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-review-queue-mobile-small-375x667.png",
+      "lowContrastTotal": 1,
+      "smallTargetTotal": 0,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_eyebrow_muted_token": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "span.eyebrow",
+              "text": "EMPTY STATE · REVIEW QUEUE",
+              "ratio": 3.21,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(255, 255, 255)",
+              "rect": {
+                "x": 29,
+                "y": 113,
+                "w": 183,
+                "h": 14,
+                "bottom": 127,
+                "right": 212
+              }
+            }
+          ]
+        }
+      },
+      "targets": {},
+      "genericControls": {}
+    },
+    {
+      "route": "all-tasks",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-all-tasks-mobile-small-375x667.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 1,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {
+        "needs_review_compact_search_input_target": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "#tasks-search-input",
+              "text": "Search tasks...",
+              "rect": {
+                "x": 43,
+                "y": 104,
+                "w": 309,
+                "h": 15,
+                "bottom": 119,
+                "right": 352
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "boards-monitor",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-boards-monitor-mobile-small-375x667.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 0,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {},
+      "genericControls": {}
+    },
+    {
+      "route": "calendar",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-calendar-mobile-small-375x667.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 0,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {},
+      "genericControls": {}
+    },
+    {
+      "route": "planner",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-planner-mobile-small-375x667.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 3,
+      "genericControlTotal": 2,
+      "duplicateNameTotal": 1,
+      "contrast": {},
+      "targets": {
+        "needs_review_unclassified_focus_target": {
+          "count": 3,
+          "examples": [
+            {
+              "selector": "button.on",
+              "text": "Today",
+              "rect": {
+                "x": 15,
+                "y": 182,
+                "w": 55,
+                "h": 24,
+                "bottom": 206,
+                "right": 70
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Tomorrow",
+              "rect": {
+                "x": 70,
+                "y": 182,
+                "w": 77,
+                "h": 24,
+                "bottom": 206,
+                "right": 147
+              }
+            },
+            {
+              "selector": "button",
+              "text": "This week",
+              "rect": {
+                "x": 147,
+                "y": 182,
+                "w": 77,
+                "h": 24,
+                "bottom": 206,
+                "right": 224
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "superseded_planner_contextual_settings_cta": {
+          "count": 2,
+          "examples": [
+            {
+              "selector": "button.btn.sm",
+              "text": "Open Settings",
+              "rect": {
+                "x": 247,
+                "y": 306,
+                "w": 99,
+                "h": 32,
+                "bottom": 338,
+                "right": 346
+              }
+            },
+            {
+              "selector": "button.btn.primary.sm",
+              "text": "Open Settings",
+              "rect": {
+                "x": 29,
+                "y": 686,
+                "w": 99,
+                "h": 32,
+                "bottom": 718,
+                "right": 128
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "okr-portfolio",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-okr-portfolio-mobile-small-375x667.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 46,
+      "genericControlTotal": 30,
+      "duplicateNameTotal": 1,
+      "contrast": {},
+      "targets": {
+        "needs_review_unclassified_focus_target": {
+          "count": 4,
+          "examples": [
+            {
+              "selector": "button.on",
+              "text": "All",
+              "rect": {
+                "x": 15,
+                "y": 153,
+                "w": 34,
+                "h": 24,
+                "bottom": 177,
+                "right": 49
+              }
+            },
+            {
+              "selector": "button",
+              "text": "On track",
+              "rect": {
+                "x": 49,
+                "y": 153,
+                "w": 68,
+                "h": 24,
+                "bottom": 177,
+                "right": 118
+              }
+            },
+            {
+              "selector": "button",
+              "text": "At risk",
+              "rect": {
+                "x": 118,
+                "y": 153,
+                "w": 56,
+                "h": 24,
+                "bottom": 177,
+                "right": 174
+              }
+            },
+            {
+              "selector": "button",
+              "text": "Behind",
+              "rect": {
+                "x": 174,
+                "y": 153,
+                "w": 59,
+                "h": 24,
+                "bottom": 177,
+                "right": 233
+              }
+            }
+          ]
+        },
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 42,
+          "examples": [
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "O3",
+              "rect": {
+                "x": 72,
+                "y": 6578,
+                "w": 32,
+                "h": 24,
+                "bottom": 6602,
+                "right": 105
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "KR3.1",
+              "rect": {
+                "x": 113,
+                "y": 6578,
+                "w": 46,
+                "h": 24,
+                "bottom": 6602,
+                "right": 159
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "SaaS",
+              "rect": {
+                "x": 167,
+                "y": 6578,
+                "w": 45,
+                "h": 24,
+                "bottom": 6602,
+                "right": 212
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "P1",
+              "rect": {
+                "x": 220,
+                "y": 6578,
+                "w": 28,
+                "h": 24,
+                "bottom": 6602,
+                "right": 249
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Later",
+              "rect": {
+                "x": 257,
+                "y": 6578,
+                "w": 46,
+                "h": 24,
+                "bottom": 6602,
+                "right": 303
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Product",
+              "rect": {
+                "x": 25,
+                "y": 6610,
+                "w": 61,
+                "h": 24,
+                "bottom": 6634,
+                "right": 86
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "Revenue",
+              "rect": {
+                "x": 94,
+                "y": 6610,
+                "w": 65,
+                "h": 24,
+                "bottom": 6634,
+                "right": 159
+              }
+            },
+            {
+              "selector": "button.filter-chip.okr-label-filter",
+              "text": "2026-Q3",
+              "rect": {
+                "x": 167,
+                "y": 6610,
+                "w": 67,
+                "h": 24,
+                "bottom": 6634,
+                "right": 234
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {
+        "superseded_okr_contextual_kr_detail_labels": {
+          "count": 30,
+          "examples": [
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 587,
+                "w": 321,
+                "h": 32,
+                "bottom": 619,
+                "right": 348
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 744,
+                "w": 321,
+                "h": 32,
+                "bottom": 776,
+                "right": 348
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 901,
+                "w": 321,
+                "h": 32,
+                "bottom": 933,
+                "right": 348
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1058,
+                "w": 321,
+                "h": 32,
+                "bottom": 1090,
+                "right": 348
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1215,
+                "w": 321,
+                "h": 32,
+                "bottom": 1247,
+                "right": 348
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1392,
+                "w": 321,
+                "h": 32,
+                "bottom": 1424,
+                "right": 348
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1621,
+                "w": 321,
+                "h": 32,
+                "bottom": 1653,
+                "right": 348
+              }
+            },
+            {
+              "selector": "button.btn.sm.ghost",
+              "text": "Open KR detail",
+              "rect": {
+                "x": 27,
+                "y": 1778,
+                "w": 321,
+                "h": 32,
+                "bottom": 1810,
+                "right": 348
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "route": "weekly-focus",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-weekly-focus-mobile-small-375x667.png",
+      "lowContrastTotal": 0,
+      "smallTargetTotal": 8,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {},
+      "targets": {
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 8,
+          "examples": [
+            {
+              "selector": "button.filter-chip.focus-filter-chip.active",
+              "text": "All sources",
+              "rect": {
+                "x": 25,
+                "y": 1405,
+                "w": 77,
+                "h": 24,
+                "bottom": 1429,
+                "right": 102
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Trello",
+              "rect": {
+                "x": 108,
+                "y": 1405,
+                "w": 47,
+                "h": 24,
+                "bottom": 1429,
+                "right": 155
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "AI / agent",
+              "rect": {
+                "x": 161,
+                "y": 1405,
+                "w": 72,
+                "h": 24,
+                "bottom": 1429,
+                "right": 234
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip.active",
+              "text": "All status",
+              "rect": {
+                "x": 25,
+                "y": 1464,
+                "w": 69,
+                "h": 24,
+                "bottom": 1488,
+                "right": 94
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Do Now",
+              "rect": {
+                "x": 100,
+                "y": 1464,
+                "w": 61,
+                "h": 24,
+                "bottom": 1488,
+                "right": 161
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Review",
+              "rect": {
+                "x": 167,
+                "y": 1464,
+                "w": 57,
+                "h": 24,
+                "bottom": 1488,
+                "right": 224
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Blocked",
+              "rect": {
+                "x": 230,
+                "y": 1464,
+                "w": 61,
+                "h": 24,
+                "bottom": 1488,
+                "right": 291
+              }
+            },
+            {
+              "selector": "button.filter-chip.focus-filter-chip",
+              "text": "Scheduled",
+              "rect": {
+                "x": 25,
+                "y": 1494,
+                "w": 76,
+                "h": 24,
+                "bottom": 1518,
+                "right": 101
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "docs-ai-trace",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-docs-ai-trace-mobile-small-375x667.png",
+      "lowContrastTotal": 5,
+      "smallTargetTotal": 1,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_eyebrow_muted_token": {
+          "count": 5,
+          "examples": [
+            {
+              "selector": "span.eyebrow",
+              "text": "RUN ID",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 25,
+                "y": 315,
+                "w": 200,
+                "h": 14,
+                "bottom": 329,
+                "right": 225
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "AGENT · ENV",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 249,
+                "y": 315,
+                "w": 120,
+                "h": 14,
+                "bottom": 329,
+                "right": 369
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "RECEIVED",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 381,
+                "y": 315,
+                "w": 100,
+                "h": 14,
+                "bottom": 329,
+                "right": 481
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "STATUS",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 493,
+                "y": 315,
+                "w": 80,
+                "h": 14,
+                "bottom": 329,
+                "right": 573
+              }
+            },
+            {
+              "selector": "span.eyebrow",
+              "text": "INSPECTING",
+              "ratio": 3.12,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(251, 252, 253)",
+              "rect": {
+                "x": 27,
+                "y": 500,
+                "w": 73,
+                "h": 14,
+                "bottom": 514,
+                "right": 100
+              }
+            }
+          ]
+        }
+      },
+      "targets": {
+        "needs_review_segment_or_chip_hit_area": {
+          "count": 1,
+          "examples": [
+            {
+              "selector": "button.filter-chip.on",
+              "text": "status: any",
+              "rect": {
+                "x": 234,
+                "y": 285,
+                "w": 87,
+                "h": 24,
+                "bottom": 309,
+                "right": 322
+              }
+            }
+          ]
+        }
+      },
+      "genericControls": {}
+    },
+    {
+      "route": "settings",
+      "viewport": "mobile-small-375x667",
+      "screenshot": "qc3-settings-mobile-small-375x667.png",
+      "lowContrastTotal": 2,
+      "smallTargetTotal": 0,
+      "genericControlTotal": 0,
+      "duplicateNameTotal": 0,
+      "contrast": {
+        "needs_review_mobile_section_label_token": {
+          "count": 2,
+          "examples": [
+            {
+              "selector": "div.settings-mobile-section-label.eyebrow",
+              "text": "INTEGRATIONS",
+              "ratio": 2.99,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(246, 247, 249)",
+              "rect": {
+                "x": 12,
+                "y": 364,
+                "w": 351,
+                "h": 12,
+                "bottom": 376,
+                "right": 363
+              }
+            },
+            {
+              "selector": "div.settings-mobile-section-label.eyebrow",
+              "text": "STATUS",
+              "ratio": 2.99,
+              "color": "rgb(138, 144, 156)",
+              "bg": "rgb(246, 247, 249)",
+              "rect": {
+                "x": 12,
+                "y": 637,
+                "w": 351,
+                "h": 12,
+                "bottom": 649,
+                "right": 363
+              }
+            }
+          ]
+        }
+      },
+      "targets": {},
+      "genericControls": {}
+    }
+  ]
+}

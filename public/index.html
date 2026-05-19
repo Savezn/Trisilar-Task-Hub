@@ -4,59 +4,95 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trisilar Task Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="app">
+  <div class="shell-status-strip" aria-label="Current workspace context">
+    <span class="statusbar-group" data-statusbar-item="env"><span class="status-dot dot-green"></span><span class="status-key">env</span><span class="status-value">dev</span></span>
+    <span class="statusbar-sep"></span>
+    <span class="statusbar-group" data-statusbar-item="build"><span class="status-key">build</span><span class="status-value">ui-v2</span></span>
+    <span class="statusbar-sep"></span>
+    <span class="statusbar-group" data-statusbar-item="workspace"><span class="status-key">workspace</span><span class="status-value">trisilar</span></span>
+    <span class="statusbar-fill"></span>
+    <span class="statusbar-group" data-statusbar-item="trello"><span class="status-dot" id="statusbar-trello-dot"></span><span class="status-value" id="statusbar-trello">trello</span></span>
+    <span class="statusbar-group" data-statusbar-item="gcal"><span class="status-dot" id="statusbar-gcal-dot"></span><span class="status-value" id="statusbar-gcal">gcal</span></span>
+    <span class="statusbar-group"><span class="status-dot dot-orange"></span><span class="status-value">paperclip · staged</span></span>
+    <span class="statusbar-group"><span class="status-dot dot-gray"></span><span class="status-value">gtasks · off</span></span>
+    <span class="statusbar-sep"></span>
+    <span class="statusbar-group" data-statusbar-item="sync"><span class="status-key">last sync</span><span class="status-value" id="statusbar-sync">checking</span></span>
+    <button class="statusbar-details-btn" id="statusbar-details" type="button">status details</button>
+  </div>
 
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo">⬡</div>
-      <h1>Trisilar<span>Task Hub</span></h1>
+  <aside class="sidebar side">
+    <div class="sidebar-header side-head">
+      <div class="logo side-logo">T</div>
+      <h1 class="side-title">Trisilar<span>Task Hub · v2</span></h1>
+    </div>
+
+    <div class="side-search">
+      <span class="side-search-icon"></span>
+      <input type="search" placeholder="Search tasks, boards, runs..." aria-label="Search tasks, boards, runs">
+      <span class="side-search-kbd">⌘K</span>
     </div>
 
     <!-- Top Nav -->
     <nav class="sidebar-nav">
+      <div class="side-section-h">Workspace</div>
       <a class="nav-item" data-page="today" onclick="navigateTo('today')">
-        <span class="nav-icon">📊</span>
-        <span class="nav-label">Today</span>
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">Today</span>
       </a>
       <a class="nav-item" data-page="review" onclick="navigateTo('review')">
-        <span class="nav-icon">🔍</span>
-        <span class="nav-label">Review Queue</span>
-        <span class="nav-badge" id="review-badge" style="display:none">0</span>
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">Review Queue</span>
+        <span class="nav-badge badge ai" id="review-badge" style="display:none">0</span>
       </a>
       <a class="nav-item" data-page="all" onclick="navigateTo('all')">
-        <span class="nav-icon">✅</span>
-        <span class="nav-label">Tasks</span>
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">All Tasks</span>
       </a>
       <a class="nav-item" data-page="boards" onclick="navigateTo('boards')">
-        <span class="nav-icon">⊞</span>
-        <span class="nav-label">Boards</span>
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">Boards Monitor</span>
       </a>
       <a class="nav-item" data-page="calendar" onclick="navigateTo('calendar')">
-        <span class="nav-icon">📅</span>
-        <span class="nav-label">Calendar</span>
-      </a>
-      <a class="nav-item" data-page="docs" onclick="navigateTo('docs')">
-        <span class="nav-icon">&#128196;</span>
-        <span class="nav-label">Docs</span>
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">Calendar</span>
       </a>
       <a class="nav-item" data-page="planner" onclick="navigateTo('planner')">
-        <span class="nav-icon">📝</span>
-        <span class="nav-label">Planner</span>
-        <span class="nav-badge-soon">Soon</span>
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">Planner</span>
+        <span class="nav-badge-soon badge muted">off</span>
       </a>
       <a class="nav-item" data-page="okr" onclick="navigateTo('okr')">
-        <span class="nav-icon">🎯</span>
-        <span class="nav-label">OKR</span>
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">OKR / Portfolio</span>
       </a>
       <a class="nav-item" data-page="focus" onclick="navigateTo('focus')">
-        <span class="nav-icon">🗓</span>
-        <span class="nav-label">Weekly Focus</span>
-        <span id="focus-pending-badge" class="nav-badge" style="display:none"></span>
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">Weekly Focus</span>
+        <span id="focus-pending-badge" class="nav-badge badge warn" style="display:none"></span>
       </a>
+      <a class="nav-item" data-page="docs" onclick="navigateTo('docs')">
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">Docs / AI Trace</span>
+      </a>
+      <a class="nav-item" data-page="settings" onclick="navigateTo('settings')">
+        <span class="nav-icon ico"></span>
+        <span class="nav-label lbl">Settings</span>
+      </a>
+      <div class="side-section-h scope-heading">Scope</div>
+      <div class="scope-list" aria-label="Business unit scope">
+        <button class="nav-item scope-item" type="button" disabled aria-disabled="true" style="--scope-color:#6b7280">
+          <span class="ico scope-dot" style="--scope-color:#6b7280"></span>
+          <span class="lbl">Loading scope</span>
+        </button>
+      </div>
     </nav>
 
     <div class="sidebar-divider"></div>
@@ -66,14 +102,14 @@
       <!-- BU Groups -->
       <div class="sidebar-section-label">
         <span>BUSINESS UNITS</span>
-        <button id="manage-btn" class="icon-btn" title="Manage Groups" onclick="navigateTo('settings')">⚙</button>
+        <button id="manage-btn" class="icon-btn" type="button" title="Manage Groups" onclick="navigateTo('settings')" aria-label="Manage Groups"></button>
       </div>
       <ul id="groups-list" class="groups-list"></ul>
 
       <!-- All Boards (ungrouped + all) -->
       <div class="sidebar-section-label" style="margin-top:8px">
         <span>BOARDS</span>
-        <button id="refresh-btn" class="icon-btn" title="Refresh">↻</button>
+        <button id="refresh-btn" class="icon-btn" type="button" title="Refresh" aria-label="Refresh boards"></button>
       </div>
       <ul id="boards-list" class="boards-list">
         <li class="sidebar-loading">Loading...</li>
@@ -81,79 +117,85 @@
 
       <!-- Hidden toggle -->
       <div id="hidden-section" class="hidden-section" style="display:none">
-        <button id="toggle-hidden-btn" class="toggle-hidden-btn">👁 Show hidden boards (<span id="hidden-count">0</span>)</button>
+        <button id="toggle-hidden-btn" class="toggle-hidden-btn" type="button">Show hidden boards (<span id="hidden-count">0</span>)</button>
         <ul id="hidden-boards-list" class="boards-list hidden-boards" style="display:none"></ul>
       </div>
     </div>
 
     <!-- Sidebar footer -->
-    <div class="sidebar-footer">
-      <a class="nav-item" data-page="settings" onclick="navigateTo('settings')">
-        <span class="nav-icon">⚙</span>
-        <span class="nav-label">Settings</span>
-      </a>
-      <div class="sidebar-status" id="sidebar-status">
-        <div class="status-dot dot-gray"></div>
-        <span class="status-label">Checking Trello</span>
-      </div>
-      <div class="sidebar-status" id="sidebar-gcal-status" style="display:none">
-        <div class="status-dot dot-green"></div>
-        <span class="status-label">GCal connected</span>
+    <div class="sidebar-footer side-foot" aria-label="Connection exceptions">
+      <button class="sidebar-connection-summary" id="sidebar-connection-summary" type="button" onclick="navigateTo('settings')" aria-label="Connection summary. Open Settings for connector details.">
+        <span class="conn-summary-main">
+          <span class="status-dot dot-orange" id="sidebar-connection-summary-dot"></span>
+          <span id="sidebar-connection-summary-text">Connections</span>
+        </span>
+        <span class="conn-summary-detail" id="sidebar-connection-summary-detail">Exceptions only in sidebar</span>
+      </button>
+      <div class="sidebar-connection-exceptions" id="sidebar-connection-exceptions" aria-live="polite">
+        <span class="conn-exception-chip is-muted">checking</span>
       </div>
     </div>
   </aside>
 
   <!-- Main -->
-  <div class="main">
+  <main class="main" id="app-main" aria-labelledby="board-title">
+    <div class="mobile-status-row" aria-hidden="true">
+      <span>9:32</span>
+      <span class="mobile-status-system">
+        <span class="mobile-status-network">5G</span>
+        <span class="mobile-status-battery"><span></span></span>
+      </span>
+    </div>
     <header class="topbar">
       <div class="topbar-left">
         <button id="mobile-nav-btn" class="mobile-nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
+        <div class="route-crumb"><span>trisilar</span><span class="crumb-sep">/</span><span id="shell-route-pill" class="crumb-now">Today</span></div>
         <h2 id="board-title">Today</h2>
         <span id="board-subtitle" class="board-subtitle"></span>
       </div>
       <div class="topbar-actions">
-        <button id="topbar-refresh-btn" class="btn btn-icon" title="Refresh" onclick="topbarRefresh()">↻</button>
-        <button id="add-list-btn" class="btn btn-primary hidden">+ Add List</button>
+        <button class="scope-pick" type="button" aria-label="All business units"><span class="scope-dot"></span><span class="scope-pick-label">All BUs</span></button>
+        <button id="topbar-refresh-btn" class="btn btn-icon" type="button" title="Refresh" onclick="topbarRefresh()" aria-label="Refresh current view"></button>
+        <button id="topbar-notifications-btn" class="btn btn-icon" type="button" title="Notifications" aria-label="Notifications"></button>
+        <div id="topbar-route-actions" class="topbar-route-actions" hidden></div>
+        <button id="add-list-btn" class="btn btn-primary hidden" type="button">+ Add List</button>
       </div>
     </header>
 
-    <div class="shell-status-strip" aria-label="Current workspace context">
-      <span id="shell-route-pill" class="shell-status-pill is-route">Today</span>
-      <span class="shell-status-pill is-work">Trello execution</span>
-      <span class="shell-status-pill is-review">Review gate</span>
-      <span class="shell-status-pill is-ai">Paperclip intake</span>
-    </div>
-
     <div id="board-content" class="board-content">
-      <div class="empty-state">
-        <div class="empty-icon">📊</div>
-        <h3>Loading...</h3>
+      <div class="loading-box shell-loading">
+        <span class="spinner"></span>
+        Loading Task Hub...
       </div>
     </div>
-  </div>
+  </main>
 </div>
 
 <!-- ── Manage Groups Modal ─────────────────────────────────────────────────── -->
 <nav class="mobile-route-bar" aria-label="Primary routes">
-  <a class="nav-item mobile-route-item" data-page="today" onclick="navigateTo('today')">
-    <span class="nav-icon"></span>
-    <span class="nav-label">Today</span>
-  </a>
-  <a class="nav-item mobile-route-item" data-page="review" onclick="navigateTo('review')">
-    <span class="nav-icon"></span>
-    <span class="nav-label">Review</span>
-    <span class="nav-badge" data-review-badge style="display:none">0</span>
-  </a>
-  <a class="nav-item mobile-route-item" data-page="all" onclick="navigateTo('all')">
-    <span class="nav-icon"></span>
-    <span class="nav-label">Tasks</span>
-  </a>
-  <a class="nav-item mobile-route-item" data-page="settings" onclick="navigateTo('settings')">
-    <span class="nav-icon"></span>
-    <span class="nav-label">Settings</span>
-  </a>
+  <button class="nav-item mobile-route-item" type="button" data-page="today" onclick="navigateTo('today')" aria-label="Open Today">
+    <span class="nav-icon ico"></span>
+    <span class="nav-label lbl">Today</span>
+  </button>
+  <button class="nav-item mobile-route-item" type="button" data-page="review" onclick="navigateTo('review')" aria-label="Open Review Queue">
+    <span class="nav-icon ico"></span>
+    <span class="nav-label lbl">Review</span>
+    <span class="nav-badge badge ai" data-review-badge style="display:none">0</span>
+  </button>
+  <button class="nav-item mobile-route-item" type="button" data-page="all" onclick="navigateTo('all')" aria-label="Open All Tasks">
+    <span class="nav-icon ico"></span>
+    <span class="nav-label lbl">Tasks</span>
+  </button>
+  <button class="nav-item mobile-route-item" type="button" data-page="boards" onclick="navigateTo('boards')" aria-label="Open Boards Monitor">
+    <span class="nav-icon ico"></span>
+    <span class="nav-label lbl">Boards</span>
+  </button>
+  <button class="nav-item mobile-route-item" type="button" data-page="settings" onclick="navigateTo('settings')" aria-label="Open More routes">
+    <span class="nav-icon ico"></span>
+    <span class="nav-label lbl">More</span>
+  </button>
 </nav>
 
 <div id="mobile-nav-overlay" class="mobile-nav-overlay" aria-hidden="true"></div>
@@ -161,16 +203,16 @@
 <div id="manage-modal" class="modal-overlay hidden">
   <div class="modal modal-lg">
     <div class="modal-header">
-      <h3>⚙ Manage Groups &amp; Visibility</h3>
-      <button class="modal-close" onclick="closeManage()">✕</button>
+      <h3>Manage Groups &amp; Visibility</h3>
+      <button class="modal-close" type="button" onclick="closeManage()">✕</button>
     </div>
     <div class="modal-body manage-body" style="flex-direction:column;gap:0">
 
       <!-- Tabs -->
       <div class="manage-tabs">
-        <button class="manage-tab active" data-tab="groups" onclick="switchManageTab('groups')">Business Units</button>
-        <button class="manage-tab" data-tab="visibility" onclick="switchManageTab('visibility')">Board Visibility</button>
-        <button class="manage-tab" data-tab="workspaces" onclick="switchManageTab('workspaces')">🏢 Workspaces</button>
+        <button class="manage-tab active" type="button" data-tab="groups" onclick="switchManageTab('groups')">Business Units</button>
+        <button class="manage-tab" type="button" data-tab="visibility" onclick="switchManageTab('visibility')">Board Visibility</button>
+        <button class="manage-tab" type="button" data-tab="workspaces" onclick="switchManageTab('workspaces')">Workspaces</button>
       </div>
 
       <!-- Tab: Groups + Visibility (side by side) -->
@@ -178,7 +220,7 @@
         <div class="manage-col">
           <div class="manage-col-header">
             <span>Business Unit Groups</span>
-            <button class="btn btn-primary btn-sm" onclick="addGroup()">+ New Group</button>
+            <button class="btn btn-primary btn-sm" type="button" onclick="addGroup()">+ New Group</button>
           </div>
           <div id="groups-editor" class="groups-editor"></div>
         </div>
@@ -205,8 +247,8 @@
     <div class="modal-footer">
       <div></div>
       <div class="footer-right">
-        <button class="btn btn-ghost" onclick="closeManage()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveConfig()">Save Changes</button>
+        <button class="btn btn-ghost" type="button" onclick="closeManage()">Cancel</button>
+        <button class="btn btn-primary" type="button" onclick="saveConfig()">Save Changes</button>
       </div>
     </div>
   </div>
@@ -217,29 +259,29 @@
   <div class="modal">
     <div class="modal-header">
       <h3 id="modal-title">New Card</h3>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" type="button" onclick="closeModal()" aria-label="Close Edit Card">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label>Title <span class="required">*</span></label>
+        <label for="card-name">Title <span class="required">*</span></label>
         <input type="text" id="card-name" class="form-input" placeholder="Card title...">
       </div>
       <div class="form-group">
-        <label>Description</label>
+        <label for="card-desc">Description</label>
         <textarea id="card-desc" class="form-textarea" rows="3" placeholder="Add description..."></textarea>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Start Date</label>
+          <label for="card-start">Start Date</label>
           <input type="datetime-local" id="card-start" class="form-input">
         </div>
         <div class="form-group">
-          <label>Due Date</label>
+          <label for="card-due">Due Date</label>
           <input type="datetime-local" id="card-due" class="form-input">
         </div>
       </div>
       <div class="form-group">
-        <label>Reminder</label>
+        <label for="card-reminder">Reminder</label>
         <select id="card-reminder" class="form-select">
           <option value="-1">No reminder</option>
           <option value="0">At due time</option>
@@ -255,14 +297,14 @@
       <!-- Checklists (only shown when editing existing card) -->
       <div class="form-group" id="checklist-section" style="display:none">
         <div class="checklist-section-header">
-          <label>☑ Checklists</label>
-          <button class="btn btn-ghost btn-sm" onclick="promptAddChecklist()">+ Add Checklist</button>
+          <label for="checklists-container">Checklists</label>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="promptAddChecklist()">+ Add Checklist</button>
         </div>
         <div id="checklists-container"></div>
       </div>
 
       <div class="form-group" id="list-select-group">
-        <label>List</label>
+        <label for="card-list">List</label>
         <select id="card-list" class="form-select"></select>
       </div>
 
@@ -270,15 +312,15 @@
       <div class="form-group" id="gcal-sync-group" style="display:none">
         <label class="checkbox-label">
           <input type="checkbox" id="gcal-sync-check" checked>
-          <span>📅 สร้าง / อัปเดต event ใน Google Calendar อัตโนมัติ</span>
+          <span>สร้าง / อัปเดต event ใน Google Calendar อัตโนมัติ</span>
         </label>
       </div>
     </div>
     <div class="modal-footer">
-      <button id="delete-card-btn" class="btn btn-danger hidden" onclick="confirmDelete()">🗑 Delete</button>
+      <button id="delete-card-btn" class="btn btn-danger hidden" type="button" onclick="confirmDelete()">Delete</button>
       <div class="footer-right">
-        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-        <button id="save-btn" class="btn btn-primary" onclick="saveCard()">Save</button>
+        <button class="btn btn-ghost" type="button" onclick="closeModal()">Cancel</button>
+        <button id="save-btn" class="btn btn-primary" type="button" onclick="saveCard()">Save</button>
       </div>
     </div>
   </div>
@@ -292,8 +334,8 @@
     <div class="modal-footer">
       <div></div>
       <div class="footer-right">
-        <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
-        <button class="btn btn-danger" onclick="doDelete()">Delete</button>
+        <button class="btn btn-ghost" type="button" onclick="closeConfirm()">Cancel</button>
+        <button class="btn btn-danger" type="button" onclick="doDelete()">Delete</button>
       </div>
     </div>
   </div>
@@ -303,8 +345,8 @@
 <div id="cal-setup-modal" class="modal-overlay hidden">
   <div class="modal modal-md">
     <div class="modal-header">
-      <h3>📅 Connect Google Calendar</h3>
-      <button class="modal-close" onclick="closeCalSetup()">✕</button>
+      <h3>Connect Google Calendar</h3>
+      <button class="modal-close" type="button" onclick="closeCalSetup()">✕</button>
     </div>
     <div class="modal-body">
       <div class="setup-steps">
@@ -348,8 +390,8 @@
     <div class="modal-footer">
       <div></div>
       <div class="footer-right">
-        <button class="btn btn-ghost" onclick="closeCalSetup()">Cancel</button>
-        <button class="btn btn-primary" onclick="startGoogleAuth()">Connect →</button>
+        <button class="btn btn-ghost" type="button" onclick="closeCalSetup()">Cancel</button>
+        <button class="btn btn-primary" type="button" onclick="startGoogleAuth()">Connect →</button>
       </div>
     </div>
   </div>
@@ -360,21 +402,24 @@
   <div class="modal">
     <div class="modal-header">
       <h3 id="cal-modal-title">New Event</h3>
-      <button class="modal-close" onclick="closeCalModal()">✕</button>
+      <button class="modal-close" type="button" onclick="closeCalModal()">✕</button>
     </div>
     <div class="modal-body">
+      <div id="cal-boundary-note" class="calendar-write-boundary" role="note">
+        Draft first. No Google Calendar change happens until you choose Save to Calendar.
+      </div>
       <div class="form-group">
-        <label>Title <span class="required">*</span></label>
+        <label for="cal-title">Title <span class="required">*</span></label>
         <input type="text" id="cal-title" class="form-input" placeholder="Event title...">
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>Start Date &amp; Time</label>
+          <label for="cal-start">Start Date &amp; Time</label>
           <input type="datetime-local" id="cal-start" class="form-input">
         </div>
         <div class="form-group">
-          <label>End Date &amp; Time <span class="label-hint">(Due)</span></label>
+          <label for="cal-end">End Date &amp; Time <span class="label-hint">(Due)</span></label>
           <input type="datetime-local" id="cal-end" class="form-input">
         </div>
       </div>
@@ -387,17 +432,17 @@
 
       <div class="form-row" id="cal-allday-dates" style="display:none">
         <div class="form-group">
-          <label>Start Date</label>
+          <label for="cal-start-date">Start Date</label>
           <input type="date" id="cal-start-date" class="form-input">
         </div>
         <div class="form-group">
-          <label>End Date</label>
+          <label for="cal-end-date">End Date</label>
           <input type="date" id="cal-end-date" class="form-input">
         </div>
       </div>
 
       <div class="form-group">
-        <label>Reminder</label>
+        <label for="cal-reminder">Reminder</label>
         <select id="cal-reminder" class="form-select">
           <option value="">No reminder</option>
           <option value="0">At time of event</option>
@@ -409,15 +454,15 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Description</label>
+        <label for="cal-desc">Description</label>
         <textarea id="cal-desc" class="form-textarea" rows="2" placeholder="Details..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
-      <button id="cal-delete-btn" class="btn btn-danger hidden" onclick="deleteCalEvent()">🗑 Delete</button>
+      <button id="cal-delete-btn" class="btn btn-danger hidden" type="button" onclick="deleteCalEvent()">Delete</button>
       <div class="footer-right">
-        <button class="btn btn-ghost" onclick="closeCalModal()">Cancel</button>
-        <button id="cal-save-btn" class="btn btn-primary" onclick="saveCalEvent()">Save</button>
+        <button class="btn btn-ghost" type="button" onclick="closeCalModal()">Cancel</button>
+        <button id="cal-save-btn" class="btn btn-primary" type="button" onclick="saveCalEvent()">Save to Calendar</button>
       </div>
     </div>
   </div>
@@ -427,8 +472,8 @@
 <div id="transcript-modal" class="modal-overlay hidden">
   <div class="modal modal-md">
     <div class="modal-header">
-      <h3>📋 New Review Session</h3>
-      <button class="modal-close" onclick="closeTranscriptModal()">✕</button>
+      <h3>New Review Session</h3>
+      <button class="modal-close" type="button" onclick="closeTranscriptModal()">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-group">
@@ -444,14 +489,14 @@
     <div class="modal-footer">
       <div></div>
       <div class="footer-right">
-        <button class="btn btn-ghost" onclick="closeTranscriptModal()">Cancel</button>
-        <button id="transcript-submit-btn" class="btn btn-primary" onclick="submitTranscript()">Create Session</button>
+        <button class="btn btn-ghost" type="button" onclick="closeTranscriptModal()">Cancel</button>
+        <button id="transcript-submit-btn" class="btn btn-primary" type="button" onclick="submitTranscript()">Create Session</button>
       </div>
     </div>
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" aria-hidden="true"></div>
 <div id="overdue-alert" class="overdue-alert hidden"></div>
 <!-- Implemented by: Codex Dev (2026-05-07). Plain scripts depend on this order: utils/api/state/router, page modules, then app bootstrap. -->
 <script src="js/utils.js"></script>

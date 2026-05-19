@@ -31,7 +31,7 @@ This file tracks the broad roadmap. It does not replace `CURRENT_SPRINT.md`, ver
 | Runtime operations | `docs/deployment/RUNTIME_OPERATIONS_RUNBOOK.md`, `docs/deployment/TROUBLESHOOTING.md`, and `docs/deployment/ENVIRONMENT_MATRIX.md` |
 | Security and backup policy | `docs/reference/SECURITY_ACCESS_POLICY.md` and `docs/reference/DATA_BACKUP_RETENTION_POLICY.md` |
 | Team onboarding | `docs/operations/TEAM_ONBOARDING_GUIDE.md` |
-| UI V2 design experiment and V0.6 route | `docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md`, `docs/design/ui-design-v2/CLAUDE_DESIGN_UI_V2_GUIDELINES.md`, `docs/design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`, `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`, `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md`, and `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` |
+| UI V2 source-led parity and V0.6 route | `docs/design/ui-design-v2/UI_V2_CODEX_PARITY_HANDOFF.md`, `docs/design/ui-design-v2/UI_V2_PROTOTYPE_SOURCE_INVENTORY.md`, `docs/design/ui-design-v2/UI_V2_VISUAL_PARITY_REVIEW.md`, `docs/logs/UI_V2_FULL_ROUTE_FIDELITY_AUDIT.md`, `docs/design/ui-design-v2/UI_V2_COMPONENT_PARITY_AUDIT.md`, `docs/plans/UI_WEB_DESIGN_V2_RESEARCH_AND_CLAUDE_DESIGN_HANDOFF_PLAN.md`, `docs/design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`, `docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`, `docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md`, and `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` |
 
 ---
 
@@ -87,9 +87,9 @@ Use `docs/plans/VERSION_0_5_FOUNDATION_HARDENING_PLAN.md` and ADRs `ADR_0003` / 
 
 ### V0.6 - UI V2 Design System Implementation
 
-Status: Active implementation route. V0.6-S0 through V0.6-S9 are merged; V0.6-S10 Weekly Focus has QA pass evidence on `codex/v06-s10-weekly-focus`; PM merge review is next.
+Status: Source-led QA pass / PM-UX re-review pending after component sweep 2, RUX visible-copy follow-up, global shell/sidebar recovery, and desktop Scope/affordance recovery. V0.6 route/component parity is tracked on `codex/v06-uiv2-full-fidelity` with `UI_V2_CODEX_PARITY_HANDOFF.md` as the first-read contract.
 
-Goal: promote UI V2 tokens and component language into production route-by-route on top of the accepted V0.5 foundation, without forcing an uncontrolled frontend rewrite.
+Goal: promote UI V2 tokens and component language into production route-by-route on top of the accepted V0.5 foundation, without forcing an uncontrolled frontend rewrite. Generated audit PASS remains automated evidence only; PM/UX visual re-review is pending for the latest sidebar first-paint, desktop Scope filtering, first-paint emoji/icon artifact removal, non-wired filter affordance, Today/topbar, All Tasks footer/topbar, Weekly Focus lane primitive, and RUX visible-copy corrections before merge-review acceptance is restored.
 
 ### V0.7 - Team Operating System Pilot
 
@@ -115,7 +115,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 | L5 | V0.3 Product Reliability + UX Stabilization | Complete on dev/dev-demo; PM accepted for main promotion through PR #20 |
 | L6 | V0.4 Live AI Operations | Complete; production permanent enablement active with Review Queue gate |
 | L7 | V0.5 Foundation Hardening | Complete / PM Accepted after hosted dev/demo SQLite canary, rollback proof, and short monitor passed |
-| L8 | V0.6 UI V2 Design System Implementation | S10 Weekly Focus QA pass / PM merge review |
+| L8 | V0.6 UI V2 Design System Implementation | QA pass / PM-UX re-review pending |
 | L9 | V0.7 Team Operating System Pilot | Future |
 | L10 | V0.8+ Full Rewrite Decision | Future decision memo only |
 
@@ -133,7 +133,7 @@ Goal: decide whether a full rewrite is still justified after V0.5 foundation har
 - UX issue intake and route-by-route usability review.
 - Agent role docs and future Codex skill extraction after PM approval.
 - Team onboarding docs exist; next step is team pilot feedback and routine-use SOP refinement.
-- UI Web Design V2 handoff for V0.6 implementation; S0-S10 route-by-route implementation is complete after S10 merge acceptance unless PM opens a new V0.6 follow-up.
+- UI Web Design V2 handoff for V0.6 implementation; source-led parity handoff is now first-read for any follow-up, the latest PM/UX P1/P2 recovery, shared mobile shell repair, sidebar/icon first-paint primitive correction, desktop Scope/filter affordance correction, Today/topbar task-row correction, All Tasks topbar/footer correction, Weekly Focus lane primitive correction, and RUX visible-copy correction are QA-passed, and PM/UX visual re-review is pending.
 - Full Rewrite decision memo after V0.5/V0.6 evidence; no full rewrite implementation yet.
 
 ---
@@ -152,7 +152,7 @@ These items are not blockers for the completed V0.2 or V0.3 release baselines. V
 | V0.3 operating model | Long-term role ownership moves beyond W1/W2/W3 labels. | PM accepted `docs/reference/ORGANIZATION_OPERATING_MODEL.md`, `docs/reference/AI_AGENT_GOVERNANCE.md`, `docs/reference/CODEX_PARALLEL_DEVELOPMENT_MODEL.md`, and `docs/agents/`; reusable Codex workflow skill is deferred until the docs prove useful in real sessions. |
 | V0.3 Product Reliability + UX Stabilization | Human workflow reliability and UX clarity stabilized before larger AI automation. | `RUX-001` and `RUX-002` are PM Accepted under `V0.3-RUX-02A` at `516b33e`; `RUX-003` is PM Accepted under `V0.3-RUX-03` at `b2425a4`; `RUX-004` is PM Accepted under `V0.3-RUX-04` at `d72f979`; `RUX-005` is PM Accepted under `V0.3-RUX-05` at `0af9417`; `V0.3-RUX-06` is PM Accepted at `df29307`; operating-model prerequisite merged at `dev@ed9fae0`; V0.3 integrated through PR #18 and merged/deployed at `dev@02fe7cf`; runtime QA passed; PR #20 release candidate verified and PM accepted for main promotion. Production deploy remains a separate runtime decision. |
 | Operations docs baseline | Runtime operators and teammates need durable long-term runbooks for production/permanent Paperclip use. | Baseline docs cover runtime operations, troubleshooting, environment matrix, security/access policy, backup/retention policy, and team onboarding. Next hardening step is live pilot feedback and future runtime evidence updates; V0.5 is accepted. |
-| UI V2 design experiment | PM/UX accepted the UI V2 prototype, design-system handoff, closeout packet, V0.6 planning artifacts, and S0 first-slice plan. | Use the accepted `docs/design/ui-design-v2/` handoff plus `docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` as the starting point for V0.6 route-by-route implementation. Do not treat V0.6 as runtime work, Team OS product work, or a full rewrite. |
+| UI V2 design experiment | PM/UX accepted the UI V2 prototype, design-system handoff, closeout packet, V0.6 planning artifacts, and S0 first-slice plan. Full-fidelity recovery is now source-led through `UI_V2_CODEX_PARITY_HANDOFF.md`; the latest component sweep plus RUX visible-copy follow-up are QA-passed after PM/UX reopened the final visual review, with PM/UX re-review pending. | Use `UI_V2_CODEX_PARITY_HANDOFF.md` first for future reopened gaps, then prototype source inventory, visual parity review, route audit, component audit, and deviation log. Do not treat V0.6 as runtime work, Team OS product work, or a full rewrite. |
 | Team Operating System | Team OS is still needed, but product implementation depends on trustworthy persistence, contracts, tests, and UI shell stability. | Keep docs-only pilot assumptions allowed in parallel; route product implementation to V0.7 after V0.6 shell/workflow stability. |
 | Full Rewrite | A full rewrite could solve some frontend/platform issues but would combine persistence, UI, and operating-model risk too early. | Keep Full Rewrite as V0.8+ decision memo only until V0.5/V0.6 evidence shows incremental migration is insufficient. |
 | Historical document encoding | Some archive/log files still contain mojibake from earlier encoding corruption. | Run a separate UTF-8 repair task on archive/log docs only; use targeted edits and preserve historical meaning. |

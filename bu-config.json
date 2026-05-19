@@ -31,5 +31,11 @@
   "allowedWorkspaceIds": [
     "69f2cfe7f63a58a6772a6cd0"
   ],
-  "monitorTeams": ["Marketing", "Education", "Ops", "Revenue", "SaaS"]
+  "monitorTeams": [
+    "Marketing",
+    "Education",
+    "Ops",
+    "Revenue",
+    "SaaS"
+  ]
 }

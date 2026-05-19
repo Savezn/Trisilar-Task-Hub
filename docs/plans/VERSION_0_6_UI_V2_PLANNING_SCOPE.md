@@ -1,11 +1,11 @@
 # Version 0.6 UI V2 Planning Scope
 
 **Doc Role:** PM/UX planning scope for V0.6 UI V2 implementation
-**Status:** Complete for planning; V0.6 implementation route opened after V0.5 acceptance
+**Status:** Complete for planning and implementation parity evidence; source-led QA pass / PM-UX re-review pending after sidebar/icon correction
 **Owner:** PM / UX Owner
 **Created:** 2026-05-15
 **Updated by:** Codex PM / UX Owner
-**Related Docs:** `PROJECT_LADDER.md`, `../../TODO.md`, `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`, `../design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`, `../design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`, `../design/ui-design-v2/UI_V2_CLAUDE_OUTPUT_REVIEW.md`, `../design/ui-design-v2/UI_V2_DESIGN_SYSTEM_HANDOFF.md`, `../design/ui-design-v2/UI_V2_ROUTE_SCREEN_SPECS.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../logs/DECISION_LOG.md`
+**Related Docs:** `PROJECT_LADDER.md`, `../../TODO.md`, `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`, `../design/ui-design-v2/UI_V2_CODEX_PARITY_HANDOFF.md`, `../design/ui-design-v2/UI_V2_PROTOTYPE_SOURCE_INVENTORY.md`, `../design/ui-design-v2/UI_V2_VISUAL_PARITY_REVIEW.md`, `../design/ui-design-v2/UI_V2_COMPONENT_PARITY_AUDIT.md`, `../logs/UI_V2_FULL_ROUTE_FIDELITY_AUDIT.md`, `../design/ui-design-v2/UI_V2_PROTOTYPE_DEVIATION_LOG.md`, `../design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`, `../design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`, `../design/ui-design-v2/UI_V2_CLAUDE_OUTPUT_REVIEW.md`, `../design/ui-design-v2/UI_V2_DESIGN_SYSTEM_HANDOFF.md`, `../design/ui-design-v2/UI_V2_ROUTE_SCREEN_SPECS.md`, `../logs/V0_3_RUX_FINDINGS.md`, `../logs/DECISION_LOG.md`
 
 ---
 
@@ -15,12 +15,16 @@ Decision: **Accept V0.6 UI V2 planning artifacts as the implementation-planning 
 
 This opens implementation planning after V0.5 acceptance. It does not approve production app changes outside scoped V0.6 UI slices, runtime changes, Cloudflare changes, Paperclip behavior changes, Team OS product scope, or a full rewrite.
 
-Implementation planning may proceed because V0.5 is accepted. First code work is routed through `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`, which defines route order, file ownership, regression targets, and rollback boundaries.
+Implementation planning may proceed because V0.5 is accepted. The original first code work was routed through `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`; continuing fixes are now routed through the source-led parity gate below.
+
+Current parity control is stricter than the original planning gate. `../design/ui-design-v2/UI_V2_CODEX_PARITY_HANDOFF.md` is now the first-read contract for any further V0.6 UI V2 fix. It requires prototype source references, a gap row before code, narrow route/component patches, regenerated evidence, and PM/UX visual review before acceptance.
+
+Latest source-led recovery closed the PM/UX P1 screenshot-pack blockers for Today mobile, Boards mobile, OKR / Portfolio desktop, shared mobile shell title stack, and sidebar/icon primitive parity, and tightened the Mobile More P2 density row. The sidebar/icon correction is QA-passed; PM/UX re-review is pending before merge-review acceptance is restored. Automated PASS remains supporting evidence for future reopened gaps.
 
 Current allowed scope:
 
-- V0.6 route-by-route UI implementation planning.
-- Shell/navigation and route state planning before deeper route rewrites.
+- V0.6 route-by-route UI implementation planning and source-led parity fixes.
+- Shell/navigation, shared route states, and component parity fixes when tied to a logged prototype-source gap.
 - Use accepted design artifacts as baseline.
 - Keep all runtime, production, Paperclip, Cloudflare, secret, webhook auth, Team OS product, and Full Rewrite work out of V0.6 UI slices.
 
@@ -63,7 +67,7 @@ V0.6 planning may include:
 
 V0.6 planning must not include:
 
-- Edits under `public/` or `src/` until a scoped first-slice plan is accepted.
+- Unscoped edits under `public/` or `src/` outside a V0.6 source-led parity slice.
 - Runtime setup, runtime flags, service deployment, or Cloudflare changes.
 - Secrets, live tokens, production data, or Paperclip live behavior changes.
 - New Trello, Calendar, Google Tasks, or Paperclip side effects.
@@ -87,6 +91,11 @@ Use these artifacts as the V0.6 planning baseline:
 | `../logs/V0_3_RUX_FINDINGS.md` | Existing reliability and UX baseline that UI V2 must preserve |
 | `PROJECT_LADDER.md` | Version sequencing and release gates |
 | `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` | S0 write ownership, route order, regression targets, and rollback boundary |
+| `../design/ui-design-v2/UI_V2_CODEX_PARITY_HANDOFF.md` | Active source-led parity workflow, ECC boundary, acceptance rules, and Codex prompt template |
+| `../design/ui-design-v2/UI_V2_PROTOTYPE_SOURCE_INVENTORY.md` | Source-derived tokens, shell, elements, components, route composition, mobile, state, and safety specs |
+| `../design/ui-design-v2/UI_V2_VISUAL_PARITY_REVIEW.md` | PM/UX-facing visual gap ledger and severity model |
+| `../logs/UI_V2_FULL_ROUTE_FIDELITY_AUDIT.md` | Generated route/screenshot evidence; automated gate only, not PM/UX acceptance |
+| `../design/ui-design-v2/UI_V2_COMPONENT_PARITY_AUDIT.md` | Generated component presence audit; structural gate only |
 
 ---
 
@@ -104,6 +113,9 @@ Use these artifacts as the V0.6 planning baseline:
 
 Current artifact packet:
 
+- `../design/ui-design-v2/UI_V2_CODEX_PARITY_HANDOFF.md`
+- `../design/ui-design-v2/UI_V2_PROTOTYPE_SOURCE_INVENTORY.md`
+- `../design/ui-design-v2/UI_V2_VISUAL_PARITY_REVIEW.md`
 - `../design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md`
 - `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md`
 
@@ -111,7 +123,9 @@ PM/UX review result:
 
 - Planning artifacts accepted.
 - V0.6 implementation route is opened by the later V0.5 acceptance decision.
-- First implementation branch/worktree is `codex/v06-ui-v2-implementation` / `trisilar-task-hub-v06-ui-v2`.
+- Current V0.6 source-led parity branch/worktree is `codex/v06-uiv2-full-fidelity` / `trisilar-task-hub-v06-uiv2-qa`.
+- `VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md` remains historical route-order and ownership context; `UI_V2_CODEX_PARITY_HANDOFF.md` is now the active first-read implementation contract.
+- Latest source-led P1 recovery repaired Today mobile from `screens-mobile.jsx` `MToday`, Boards mobile from `screens-mobile.jsx` `MBoards`, OKR / Portfolio desktop from `screens-3.jsx` `ScreenOKR`, shared mobile shell title stack from `screens-mobile.jsx` `MTopbar`, and sidebar/icon primitive parity from `components.jsx` `Ic.*` / `NAV` / `Sidebar`; PM/UX re-review is pending for the reopened sidebar/icon gap.
 - Production/runtime work and Full Rewrite remain out of scope.
 - PM closeout packet: `../design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md`.
 
@@ -119,7 +133,7 @@ PM/UX review result:
 
 ## V0.6 Implementation Ready Gate
 
-Frontend Dev planning may start from current `origin/dev`. First code slice may start only after PM records all required inputs:
+Frontend Dev planning may start from current `origin/dev`. Continuing code slices may proceed only when they stay inside the recorded source-led parity gate and PM records all required inputs:
 
 - V0.5 accepted evidence remains current.
 - Current target branch and integration route are named.
@@ -128,6 +142,18 @@ Frontend Dev planning may start from current `origin/dev`. First code slice may 
 - Review Queue safety spec is approved.
 - QA plan is approved and includes responsive/browser evidence expectations.
 - Production/runtime boundaries are restated: no secrets, no runtime flag changes, no Cloudflare changes, no Paperclip side effects, no auto-approval.
+
+## Source-Led Parity Gate
+
+After PM/UX preview identified gaps in the alignment pass, every remaining V0.6 UI V2 fix must satisfy this gate:
+
+- Read `../design/ui-design-v2/UI_V2_CODEX_PARITY_HANDOFF.md` first.
+- Identify the prototype source file/component before changing code.
+- Add or update a row in `../design/ui-design-v2/UI_V2_VISUAL_PARITY_REVIEW.md` before patching.
+- Patch one route/component slice unless the change is a shared token/primitive.
+- Regenerate `../logs/UI_V2_FULL_ROUTE_FIDELITY_AUDIT.md`, `../design/ui-design-v2/UI_V2_COMPONENT_PARITY_AUDIT.md`, and screenshot evidence when visible UI changes.
+- Log intentional prototype differences in `../design/ui-design-v2/UI_V2_PROTOTYPE_DEVIATION_LOG.md`.
+- Treat generated PASS as automated evidence only. PM/UX visual review remains final acceptance.
 
 ---
 
@@ -149,9 +175,13 @@ Hold V0.6 planning or implementation if any of these occur:
 
 ```text
 Role: Frontend Dev / UX Owner / QA
-Task: Execute the accepted V0.6-S0 implementation slice only.
+Task: Continue V0.6 UI V2 source-led full-fidelity recovery only when PM/UX identifies a route/component mismatch.
 
 Inputs:
+- docs/design/ui-design-v2/UI_V2_CODEX_PARITY_HANDOFF.md
+- docs/design/ui-design-v2/UI_V2_PROTOTYPE_SOURCE_INVENTORY.md
+- docs/design/ui-design-v2/UI_V2_VISUAL_PARITY_REVIEW.md
+- docs/logs/UI_V2_FULL_ROUTE_FIDELITY_AUDIT.md
 - docs/plans/VERSION_0_6_UI_V2_PLANNING_SCOPE.md
 - docs/design/ui-design-v2/UI_V2_PM_CLOSEOUT_HANDOFF.md
 - docs/design/ui-design-v2/UI_V2_V0_6_PLANNING_ARTIFACTS.md
@@ -162,15 +192,21 @@ Inputs:
 - docs/plans/VERSION_0_6_UI_V2_FIRST_SLICE_IMPLEMENTATION_PLAN.md
 
 Rules:
-- S0 only: shell/navigation, token layer, shared route states.
+- Do not start from screenshot guessing.
+- Identify the prototype source file/component before changing code.
+- Add or update a gap row in `UI_V2_VISUAL_PARITY_REVIEW.md` before patching.
+- Patch one route/component slice unless the issue is a shared token/primitive.
+- Treat route/component audit PASS as automated evidence only; PM/UX visual review remains final acceptance.
 - Do not start Full Rewrite.
 - Do not touch runtime, Cloudflare, secrets, or Paperclip live behavior.
 - Preserve Trello as execution surface, Task Hub as command/review layer, and Review Queue as human gate.
 - Keep V0.6 route-by-route and outside Team OS product scope.
 
 Expected output:
-- S0 implementation summary
+- Prototype source reference
+- gap/evidence row updated before code
+- source-led slice implementation summary
 - route/component coverage
-- browser/responsive evidence
-- regression and rollback confirmation
+- browser/responsive evidence and screenshots for affected route
+- regression and no-runtime-scope confirmation
 ```

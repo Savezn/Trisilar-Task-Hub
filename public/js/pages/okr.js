@@ -6,7 +6,7 @@ async function showOKRPage() {
   S.mode = "okr";
   S.currentBoardId = null;
   S.currentGroupId = null;
-  $("board-title").textContent = "OKR Progress";
+  $("board-title").textContent = "OKR / Portfolio";
   $("board-subtitle").textContent = "Portfolio progress";
   $("add-list-btn").classList.add("hidden");
 
@@ -18,10 +18,39 @@ async function showOKRPage() {
       return;
     }
     if (!S.allCardsCache) S.allCardsCache = await api.get("/api/all-cards");
-    renderOKRPage(getAllowedCards(), S.boards || []);
+    if (S.mode !== "okr") return;
+    renderOKRPage(
+      getAllowedCards(),
+      typeof getVisibleBoardsForScope === "function" ? getVisibleBoardsForScope() : (S.boards || [])
+    );
   } catch (e) {
+    if (S.mode !== "okr") return;
     content.innerHTML = trelloRouteUnavailableHtml("OKR Progress");
   }
+}
+
+function okrCycleContext(now = new Date()) {
+  const quarter = Math.floor(now.getMonth() / 3) + 1;
+  const year = now.getFullYear();
+  const start = new Date(year, (quarter - 1) * 3, 1);
+  const end = new Date(year, quarter * 3, 0, 23, 59, 59, 999);
+  const elapsed = Math.max(0, Math.min(1, (now - start) / (end - start || 1)));
+  const phaseLabel = elapsed < 0.18 ? "Planning phase" : elapsed < 0.72 ? "Execution phase" : "Closeout phase";
+  const cadenceLabel = elapsed < 0.34 ? "early-quarter" : elapsed < 0.67 ? "mid-quarter" : "late-quarter";
+  return {
+    label: `Q${quarter} ${year}`,
+    phaseLabel,
+    cadenceLabel,
+    rangeLabel: `${start.toLocaleDateString("en-GB", { day: "2-digit", month: "short" })} - ${end.toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}`,
+  };
+}
+
+function okrCycleLabelForName(name, fallbackLabel) {
+  const text = String(name || "");
+  const quarter = text.match(/\bQ([1-4])\b/i);
+  const year = text.match(/\b(20\d{2})\b/);
+  if (quarter && year) return `Q${quarter[1]} ${year[1]}`;
+  return fallbackLabel;
 }
 
 function renderOKRPage(allCards, boards) {
@@ -77,7 +106,7 @@ function renderOKRPage(allCards, boards) {
               </div>
             </details>
           </div>
-          <button class="btn btn-primary btn-sm okr-refresh-btn" onclick="showOKRPage()">Refresh OKR scan</button>
+          <button class="btn btn-primary btn-sm okr-refresh-btn" type="button" onclick="showOKRPage()">Refresh OKR scan</button>
         </div>
       </div>`;
     return;
@@ -90,6 +119,9 @@ function renderOKRPage(allCards, boards) {
   let labelFilter = "";
   let memberFilter = "";
   let statusFilter = "";
+  let objectiveStatusFilter = ["all", "on", "risk", "behind"].includes(S.okrObjectiveStatusFilter)
+    ? S.okrObjectiveStatusFilter
+    : "all";
 
   const allLabels = [];
   const allMembers = [];
@@ -306,9 +338,18 @@ function renderOKRPage(allCards, boards) {
   }
 
   function renderOverview() {
-    const filtersActive = Boolean(labelFilter || memberFilter || statusFilter);
+    const cycle = okrCycleContext();
+    const filtersActive = Boolean(labelFilter || memberFilter || statusFilter || objectiveStatusFilter !== "all");
+    function objectiveSourceOrder(name) {
+      if (/^reach|\bARR\b|revenue/i.test(name)) return 0;
+      if (/ship|paperclip|canary/i.test(name)) return 1;
+      if (/marketing|brand/i.test(name)) return 2;
+      return 3;
+    }
+
     const visibleObjectives = [...objectiveMap.entries()]
       .map(([objName, krCards]) => ({ objName, krCards: visibleKrsFor(krCards) }))
+      .sort((a, b) => objectiveSourceOrder(a.objName) - objectiveSourceOrder(b.objName) || a.objName.localeCompare(b.objName))
       .filter(obj => obj.krCards.length > 0);
     const visibleKrs = visibleObjectives.flatMap(obj => obj.krCards);
     const visibleLinked = visibleKrs.flatMap(card => linkedCards(card));
@@ -321,104 +362,159 @@ function renderOKRPage(allCards, boards) {
     const missingLinkCount = statusInfos.filter(info => info.kind === "missing-link").length;
     const staleCount = statusInfos.filter(info => info.stale || info.kind === "stale").length;
     const highConfidenceCount = statusInfos.filter(info => info.confidence === "High").length;
+    const objectiveModelsAll = visibleObjectives.map(({ objName, krCards }) => {
+      const avgProgress = averageProgress(krCards);
+      const linked = krCards.flatMap(card => linkedCards(card));
+      const linkedIds = new Set(linked.map(c => c.id));
+      const uniqueLinked = [...linkedIds].map(id => linked.find(c => c.id === id));
+      const stats = linkedStats(uniqueLinked);
+      const status = avgProgress >= 60 ? "on" : avgProgress >= 35 ? "risk" : "behind";
+      return { objName, krCards, avgProgress, uniqueLinked, stats, status };
+    });
+    const objectiveModels = objectiveStatusFilter === "all"
+      ? objectiveModelsAll
+      : objectiveModelsAll.filter(obj => obj.status === objectiveStatusFilter);
+    const onTrackCount = objectiveModels.filter(obj => obj.status === "on").length;
+    const atRiskCount = objectiveModels.filter(obj => obj.status === "risk").length;
+    const behindCount = objectiveModels.filter(obj => obj.status === "behind").length;
 
-    const objectivesHtml = visibleObjectives.map(({ objName, krCards: visibleKrs }) => {
-      const avgProg = averageProgress(visibleKrs);
-      const objectiveLinked = visibleKrs.flatMap(card => linkedCards(card));
-      const objectiveLinkedIds = new Set(objectiveLinked.map(c => c.id));
-      const objectiveUniqueLinked = [...objectiveLinkedIds].map(id => objectiveLinked.find(c => c.id === id));
-      const objectiveStats = linkedStats(objectiveUniqueLinked);
-
+    const objectivesHtml = objectiveModels.map(({ objName, krCards: visibleKrs, avgProgress, uniqueLinked, stats: objectiveStats, status: objectiveStatus }) => {
+      const statusTone = objectiveStatus === "on" ? "ok" : objectiveStatus === "risk" ? "warn" : "over";
+      const statusLabel = objectiveStatus === "on" ? "On track" : objectiveStatus === "risk" ? "At risk" : "Behind";
+      const objectiveCycle = okrCycleLabelForName(objName, cycle.label);
       const krsHtml = visibleKrs.map(card => {
         const prog = krProgress(card);
         const linked = linkedCards(card);
         const stats = linkedStats(linked);
         const status = krStatusInfo(card, linked);
+        const linkBoard = linked[0]?.boardName || card.boardName || "No board";
+        const krTitle = card.name || "Untitled key result";
+        const rowTitle = `KR: ${krTitle} - ${status.action}`;
 
         return `
-          <div class="okr-kr-row" data-card-id="${card.id}">
-            <div class="okr-kr-main">
-              <div class="okr-kr-name">${esc(card.name)}</div>
-              <div class="okr-kr-submeta">${esc(krProgressLabel(card))} / ${esc(krSignalText(card, linked))}</div>
-            </div>
-            <div class="okr-kr-progress">
-              <div class="okr-progress-bar"><div class="okr-progress-fill" style="width:${prog}%"></div></div>
-              <span class="okr-progress-pct">${prog}%</span>
-            </div>
-            <div class="okr-kr-meta">
-              <span class="okr-status-chip is-${status.kind}">${esc(status.label)}</span>
-              <span class="okr-confidence-chip is-${status.confidence.toLowerCase()}">${esc(status.confidence)} confidence</span>
-              ${status.stale ? `<span class="okr-status-chip is-stale">Stale status</span>` : ""}
-              ${linked.length ? `<span class="okr-meta-tag">${linked.length} task${linked.length !== 1 ? "s" : ""}</span>` : ""}
-              ${stats.done.length ? `<span class="okr-meta-tag okr-meta-done">${stats.done.length} done</span>` : ""}
-              ${stats.overdue.length ? `<span class="okr-meta-tag okr-meta-overdue">${stats.overdue.length} overdue</span>` : ""}
-              ${stats.nextDue ? `<span class="okr-meta-tag">Next: ${formatThaiDateTime(stats.nextDue.due)}</span>` : ""}
-              ${!linked.length ? `<span class="okr-meta-tag" style="color:var(--text-faint)">No linked tasks</span>` : ""}
-            </div>
+          <div class="okr-kr-row okr-kr-row-proto" data-card-id="${card.id}" title="${esc(rowTitle)}">
+            <span class="kr-name uiv2-decision-text uiv2-text-reveal" title="${esc(krTitle)}">${esc(krTitle)}</span>
+            <span class="kr-bar"><i style="width:${prog}%"></i></span>
+            ${uiBoardTag(linkBoard, boardColorForName(linkBoard))}
+            <span class="num">${prog}%</span>
+            <button class="btn sm ghost" type="button" data-action="open-kr-detail" aria-label="Open KR detail: ${esc(krTitle)}" title="Open KR detail: ${esc(krTitle)}">${icon("external")}</button>
           </div>`;
       }).join("");
 
       return `
-        <div class="okr-objective">
-          <div class="okr-objective-header">
-            <div class="okr-objective-name">${esc(objName)}</div>
-            <div class="okr-objective-stats">
-              <span>${visibleKrs.length} KR${visibleKrs.length !== 1 ? "s" : ""}</span>
-              <span>${objectiveUniqueLinked.length} linked task${objectiveUniqueLinked.length !== 1 ? "s" : ""}</span>
-              ${objectiveStats.overdue.length ? `<span class="okr-stat-danger">${objectiveStats.overdue.length} overdue</span>` : ""}
+        <div class="okr-objective okr-obj okr-proto-objective panel" data-uiv2="objective-row">
+          <div class="okr-obj-head">
+            <div style="flex:1; min-width:0">
+              <div class="okr-obj-title">${esc(objName)}</div>
+              <div class="okr-obj-meta">
+                ${uiKV("owner", uniqueLinked[0]?.members?.[0]?.fullName || uniqueLinked[0]?.members?.[0]?.username || "Unassigned")}
+                <span>·</span>
+                ${uiKV("cycle", objectiveCycle)}
+                <span>·</span>
+                ${uiKV("krs", `${visibleKrs.length} key results`)}
+                ${objectiveStats.overdue.length ? `<span>·</span>${uiKV("risk", `${objectiveStats.overdue.length} overdue`, "env-prod")}` : ""}
+              </div>
+              <div class="okr-proto-progress okr-progress ${objectiveStatus}" data-uiv2="okr-progress">
+                <i style="width:${avgProgress}%"></i>
+              </div>
             </div>
-            <div class="okr-objective-progress">
-              <div class="okr-progress-bar okr-progress-bar--lg"><div class="okr-progress-fill" style="width:${avgProg}%"></div></div>
-              <span class="okr-progress-pct">${avgProg}%</span>
+            <div class="okr-obj-score">
+              <strong>${avgProgress}%</strong>
+              ${uiChip(statusTone, statusLabel, { sm: true })}
             </div>
           </div>
           <div class="okr-kr-list">${krsHtml}</div>
         </div>`;
     }).join("");
 
+    const quarterPlanHtml = objectiveModels.map(({ objName, krCards, avgProgress, uniqueLinked, stats, status }) => {
+      const statusTone = status === "on" ? "ok" : status === "risk" ? "warn" : "over";
+      const statusLabel = status === "on" ? "On track" : status === "risk" ? "At risk" : "Behind";
+      const objectiveCycle = okrCycleLabelForName(objName, cycle.label);
+      const nextDue = stats.nextDue;
+      const nextDueLabel = nextDue?.due ? formatThaiDateTime(nextDue.due, false) : "No next due work";
+      const owner = uniqueLinked[0]?.members?.[0]?.fullName || uniqueLinked[0]?.members?.[0]?.username || "Unassigned";
+      return `
+        <div class="okr-quarter-card">
+          <div class="okr-quarter-card-head">
+            <span class="okr-quarter-cycle">${esc(objectiveCycle)}</span>
+            ${uiChip(statusTone, statusLabel, { sm: true })}
+          </div>
+          <h4 class="uiv2-decision-text uiv2-text-reveal" title="${esc(objName)}">${esc(objName)}</h4>
+          <div class="okr-quarter-meta">
+            ${uiKV("owner", owner)}
+            ${uiKV("krs", `${krCards.length}`)}
+            ${uiKV("linked", `${uniqueLinked.length}`)}
+            ${uiKV("next", nextDueLabel)}
+          </div>
+          <div class="okr-proto-progress okr-progress ${status}" data-uiv2="quarter-progress">
+            <i style="width:${avgProgress}%"></i>
+          </div>
+        </div>`;
+    }).join("");
+
     content.innerHTML = `
       <div class="okr-page">
-        <section class="okr-command-panel">
-          <div>
-            <div class="okr-kicker">Source: ${sourceLabel}</div>
-            <h2 class="okr-command-title">OKR Progress</h2>
-            <p class="okr-command-subtitle">Track objectives, key results, and linked project work without changing Trello data.</p>
+        ${uiRouteBar({
+          title: "OKR / Portfolio",
+          sub: `<span>${esc(cycle.label)} &middot; ${esc(cycle.cadenceLabel)} &middot; ${esc(cycle.phaseLabel)}</span><span>${visibleObjectives.length} objectives &middot; ${visibleKrs.length} key results</span><span>Source: ${esc(sourceLabel)}</span><span>${filtersActive ? "Filtered view" : "Cycle view"}</span>`,
+          actions: `
+            <div class="seg" aria-label="Objective status filter">
+              <button type="button" class="${objectiveStatusFilter === "all" ? "on" : ""}" aria-pressed="${objectiveStatusFilter === "all"}" data-okr-objective-status="all">All</button>
+              <button type="button" class="${objectiveStatusFilter === "on" ? "on" : ""}" aria-pressed="${objectiveStatusFilter === "on"}" data-okr-objective-status="on">On track</button>
+              <button type="button" class="${objectiveStatusFilter === "risk" ? "on" : ""}" aria-pressed="${objectiveStatusFilter === "risk"}" data-okr-objective-status="risk">At risk</button>
+              <button type="button" class="${objectiveStatusFilter === "behind" ? "on" : ""}" aria-pressed="${objectiveStatusFilter === "behind"}" data-okr-objective-status="behind">Behind</button>
+            </div>`,
+        })}
+        ${uiStatStrip([
+          { label: "On track", value: onTrackCount, detail: "objective stack", tone: "ok" },
+          { label: "At risk", value: atRiskCount, detail: `${missingLinkCount} missing link`, tone: "warn" },
+          { label: "Behind", value: behindCount, detail: `${summaryStats.overdue.length} linked overdue`, tone: "over" },
+          { label: "Avg progress", value: `${overallProgress}%`, detail: `${highConfidenceCount} high confidence`, tone: "ok" },
+        ])}
+        <section class="panel okr-section-panel" data-uiv2="objective-scorecard">
+          <div class="okr-section-head">
+            <div>
+              <div class="eyebrow">OKR</div>
+              <h3>Objective Scorecard</h3>
+              <p>Tracks objective health, KR progress, confidence, and linked Trello execution signals.</p>
+            </div>
           </div>
-          <div class="okr-command-stats">
-            <div class="okr-summary-card"><span class="okr-summary-num">${visibleObjectives.length}</span><span class="okr-summary-label">Objectives</span></div>
-            <div class="okr-summary-card"><span class="okr-summary-num">${visibleKrs.length}</span><span class="okr-summary-label">Key Results</span></div>
-            <div class="okr-summary-card"><span class="okr-summary-num">${overallProgress}%</span><span class="okr-summary-label">Avg Progress</span></div>
-            <div class="okr-summary-card"><span class="okr-summary-num">${uniqueLinked.length}</span><span class="okr-summary-label">Linked Tasks</span></div>
-            <div class="okr-summary-card"><span class="okr-summary-num" style="color:var(--danger)">${summaryStats.overdue.length}</span><span class="okr-summary-label">Overdue</span></div>
+          <div class="okr-overview">
+            ${objectivesHtml || `<div class="empty-state okr-empty-state"><h3>${filtersActive ? "No OKRs match this filter" : "No OKR cards yet"}</h3><p>${filtersActive ? "Try clearing the active label/member filter or link matching project cards to the KR labels." : "Create Key Result cards in the OKR board to populate this progress view."}</p></div>`}
           </div>
         </section>
-        <div class="okr-confidence-strip" aria-label="OKR status confidence summary">
-          <div class="okr-confidence-card">
-            <span>Portfolio source</span>
-            <strong>${okrBoards.length} OKR board${okrBoards.length === 1 ? "" : "s"}</strong>
-            <p>${sourceLabel}</p>
+        <section class="panel okr-section-panel okr-quarter-plan-panel" data-uiv2="quarter-execution-plan">
+          <div class="okr-section-head">
+            <div>
+              <div class="eyebrow">Quarter</div>
+              <h3>Quarter Execution Plan</h3>
+              <p>Shows what this ${esc(cycle.label)} cycle is committing to, who owns the visible work, and the next due execution signal.</p>
+            </div>
+            <div class="okr-section-meta">
+              ${uiKV("phase", cycle.phaseLabel)}
+              ${uiKV("range", cycle.rangeLabel)}
+            </div>
           </div>
-          <div class="okr-confidence-card is-ok">
-            <span>Status confidence</span>
-            <strong>${highConfidenceCount}/${visibleKrs.length || 0} high confidence</strong>
-            <p>Confidence improves when KR progress, due date, and linked work are all present.</p>
+          <div class="okr-quarter-grid">
+            ${quarterPlanHtml || `<div class="empty-state okr-empty-state"><h3>No quarter commitments in this filter</h3><p>Clear filters to review the full quarter execution plan.</p></div>`}
           </div>
-          <div class="okr-confidence-card ${missingLinkCount || staleCount ? "is-warning" : "is-ok"}">
-            <span>Quality signals</span>
-            <strong>${missingLinkCount} missing links / ${staleCount} stale</strong>
-            <p>${missingLinkCount || staleCount ? "Safe next action: update Trello KR labels, checklist, or due date." : "KR links and progress signals are visible."}</p>
-          </div>
-        </div>
-        <div class="okr-toolbar">
+        </section>
+        <div class="filterbar okr-toolbar okr-secondary-toolbar">
           <div class="okr-board-label">Filters narrow linked project cards, owners, status risk, and visible KRs.</div>
           ${filterBarHtml()}
-        </div>
-        <div class="okr-overview">
-          ${objectivesHtml || `<div class="empty-state okr-empty-state"><h3>${filtersActive ? "No OKRs match this filter" : "No OKR cards yet"}</h3><p>${filtersActive ? "Try clearing the active label/member filter or link matching project cards to the KR labels." : "Create Key Result cards in the OKR board to populate this progress view."}</p></div>`}
         </div>
       </div>`;
 
     bindPortfolioFilters();
+    content.querySelectorAll("[data-okr-objective-status]").forEach(btn => {
+      btn.onclick = () => {
+        objectiveStatusFilter = btn.dataset.okrObjectiveStatus || "all";
+        S.okrObjectiveStatusFilter = objectiveStatusFilter;
+        drillCard = null;
+        renderOverview();
+      };
+    });
     content.querySelectorAll(".okr-kr-row").forEach(row => {
       row.onclick = () => {
         drillCard = okrCards.find(c => c.id === row.dataset.cardId);

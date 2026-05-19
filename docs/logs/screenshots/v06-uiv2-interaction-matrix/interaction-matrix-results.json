@@ -1,0 +1,738 @@
+{
+  "baseUrl": "http://127.0.0.1:3035",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "generatedAt": "2026-05-19T07:58:25.174Z",
+  "controls": [
+    {
+      "id": "statusbar-details",
+      "route": "/today",
+      "selector": "#statusbar-details",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "help",
+        "focusVisible": {
+          "outline": "solid",
+          "outlineWidth": "1px",
+          "boxShadow": "rgba(148, 163, 184, 0.22) 0px 0px 0px 2px",
+          "activeId": "statusbar-details",
+          "activeText": "status details"
+        },
+        "open": {
+          "openSelector": "#statusbar-tooltip",
+          "exists": true,
+          "visible": true,
+          "triggerId": "statusbar-details",
+          "triggerText": "status details"
+        },
+        "afterEscapeFocus": {
+          "activeId": "statusbar-details",
+          "activeText": "status details",
+          "activeTag": "BUTTON"
+        }
+      }
+    },
+    {
+      "id": "topbar-scope",
+      "route": "/today",
+      "selector": ".topbar .scope-pick",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 3px",
+          "activeId": "",
+          "activeText": "All BUs"
+        },
+        "open": {
+          "openSelector": "#topbar-scope-popover",
+          "exists": true,
+          "visible": true,
+          "triggerId": "",
+          "triggerText": "All BUs"
+        },
+        "afterEscapeFocus": {
+          "activeId": "",
+          "activeText": "All BUs",
+          "activeTag": "BUTTON"
+        }
+      }
+    },
+    {
+      "id": "topbar-notifications",
+      "route": "/today",
+      "selector": "#topbar-notifications-btn",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 2.99877px",
+          "activeId": "topbar-notifications-btn",
+          "activeText": ""
+        },
+        "open": {
+          "openSelector": "#topbar-notification-popover",
+          "exists": true,
+          "visible": true,
+          "triggerId": "",
+          "triggerText": ""
+        },
+        "afterEscapeFocus": {
+          "activeId": "topbar-notifications-btn",
+          "activeText": "",
+          "activeTag": "BUTTON"
+        }
+      }
+    },
+    {
+      "id": "today-filter-highlight",
+      "route": "/today",
+      "selector": "#today-topbar-filter",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 2.99877px",
+          "activeId": "today-topbar-filter",
+          "activeText": "Filter"
+        },
+        "afterClick": {
+          "highlighted": true,
+          "activeText": "All",
+          "toast": "Today's work filters are ready: All, Mine, and Risky."
+        }
+      }
+    },
+    {
+      "id": "today-quick-add",
+      "route": "/today",
+      "selector": "#today-topbar-quick-add",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.216) 0px 0px 0px 2.95042px",
+          "activeId": "today-topbar-quick-add",
+          "activeText": "Quick add"
+        },
+        "afterClick": {
+          "quickPanelOpen": true,
+          "activeId": "today-quick-input"
+        }
+      }
+    },
+    {
+      "id": "review-filter-focus",
+      "route": "/review",
+      "selector": "#review-topbar-filter",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 2.99877px",
+          "activeId": "review-topbar-filter",
+          "activeText": "Filter"
+        },
+        "afterClick": {
+          "highlighted": true,
+          "activeText": "status: any"
+        }
+      }
+    },
+    {
+      "id": "review-manual-upload",
+      "route": "/review",
+      "selector": "#review-topbar-upload",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 2.99877px",
+          "activeId": "review-topbar-upload",
+          "activeText": "Manual upload"
+        },
+        "open": {
+          "openSelector": "#transcript-modal:not(.hidden)",
+          "exists": true,
+          "visible": true,
+          "triggerId": "transcript-title",
+          "triggerText": ""
+        },
+        "afterEscapeFocus": {
+          "activeId": "transcript-title",
+          "activeText": "",
+          "activeTag": "INPUT"
+        }
+      }
+    },
+    {
+      "id": "docs-filter-popover",
+      "route": "/docs",
+      "selector": "#docs-topbar-filter",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.216) 0px 0px 0px 2.95042px",
+          "activeId": "docs-topbar-filter",
+          "activeText": "Filter"
+        },
+        "open": {
+          "openSelector": "#docs-filter-popover",
+          "exists": true,
+          "visible": true,
+          "triggerId": "docs-filter-menu-query",
+          "triggerText": ""
+        },
+        "afterEscapeFocus": {
+          "activeId": "docs-topbar-filter",
+          "activeText": "Filter",
+          "activeTag": "BUTTON"
+        }
+      }
+    },
+    {
+      "id": "docs-export",
+      "route": "/docs",
+      "selector": "#docs-topbar-export",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.216) 0px 0px 0px 2.9499px",
+          "activeId": "docs-topbar-export",
+          "activeText": "Export"
+        }
+      }
+    },
+    {
+      "id": "all-tasks-due-sort",
+      "route": "/all",
+      "selector": ".sortable-header[data-sort='due']",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgb(184, 200, 247) 0px 0px 0px 1px inset",
+          "activeId": "",
+          "activeText": "Due ↑"
+        },
+        "afterClick": {
+          "dueHeaderSort": "descending",
+          "activeText": ""
+        }
+      }
+    },
+    {
+      "id": "boards-warning-menu",
+      "route": "/boards",
+      "selector": ".bm-more-btn",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 3px",
+          "activeId": "",
+          "activeText": ""
+        },
+        "afterClick": {
+          "toast": "Missing lists: Ready, Doing, Review/QA / 30 card metadata issues"
+        }
+      }
+    },
+    {
+      "id": "planner-week-segment",
+      "route": "/planner",
+      "selector": ".route-bar .seg button[onclick=\"setPlannerWindow('week')\"]",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 2.99869px",
+          "activeId": "",
+          "activeText": "This week"
+        },
+        "afterClick": {
+          "pressed": "true",
+          "routeTitle": "Planner"
+        }
+      }
+    },
+    {
+      "id": "calendar-week-segment",
+      "route": "/calendar",
+      "selector": ".cal-view-seg button:nth-child(2)",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 2.99877px",
+          "activeId": "",
+          "activeText": "Week"
+        },
+        "afterClick": {
+          "pressed": "true",
+          "className": "on",
+          "toast": "Calendar week view active"
+        }
+      }
+    },
+    {
+      "id": "calendar-event-draft",
+      "route": "/calendar",
+      "selector": "#cal-add",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 2.99882px",
+          "activeId": "cal-add",
+          "activeText": "New event draft"
+        },
+        "open": {
+          "openSelector": "#cal-event-modal:not(.hidden)",
+          "exists": true,
+          "visible": true,
+          "triggerId": "cal-title",
+          "triggerText": ""
+        },
+        "afterEscapeFocus": {
+          "activeId": "cal-add",
+          "activeText": "New event draft",
+          "activeTag": "BUTTON"
+        }
+      }
+    },
+    {
+      "id": "okr-risk-segment",
+      "route": "/okr",
+      "selector": ".route-bar .seg [data-okr-objective-status='risk']",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.22) 0px 0px 0px 2.99877px",
+          "activeId": "",
+          "activeText": "At risk"
+        },
+        "afterClick": {
+          "pressed": "true",
+          "activeRows": 0
+        }
+      }
+    },
+    {
+      "id": "weekly-focus-next-week",
+      "route": "/focus",
+      "selector": ".topbar-route-actions .seg button[onclick='setWeeklyFocusWeekOffset(1)']",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.216) 0px 0px 0px 2.95042px",
+          "activeId": "",
+          "activeText": "Next week"
+        },
+        "afterClick": {
+          "pressed": "true",
+          "title": "Weekly Focus"
+        }
+      }
+    },
+    {
+      "id": "weekly-focus-owner",
+      "route": "/focus",
+      "selector": "[data-action='owner-filter']",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.216) 0px 0px 0px 2.95042px",
+          "activeId": "",
+          "activeText": "Owner"
+        },
+        "afterClick": {
+          "activeId": "",
+          "toast": "No owner filter is available for the current visible work."
+        }
+      }
+    },
+    {
+      "id": "settings-first-integration",
+      "route": "/settings",
+      "selector": "[data-settings-integration]",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "pointer",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "0px",
+          "boxShadow": "rgba(37, 99, 235, 0.12) 0px 0px 0px 1px inset",
+          "activeId": "",
+          "activeText": "Manage"
+        },
+        "afterClick": {
+          "editorVisible": true,
+          "activeIntegration": "trello"
+        }
+      }
+    },
+    {
+      "id": "all-tasks-readonly-table",
+      "route": "/all",
+      "selector": ".tasks-primary-filterbar .filter-chip.is-readonly[disabled]",
+      "exists": true,
+      "checks": {
+        "hoverCursor": "not-allowed",
+        "focusVisible": {
+          "outline": "none",
+          "outlineWidth": "3px",
+          "boxShadow": "none",
+          "activeId": "tasks-search-input",
+          "activeText": ""
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "label": "statusbar-details default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/statusbar-details-default.png"
+    },
+    {
+      "label": "statusbar-details hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/statusbar-details-hover.png"
+    },
+    {
+      "label": "statusbar-details focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/statusbar-details-focus.png"
+    },
+    {
+      "label": "statusbar-details open",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/statusbar-details-open.png"
+    },
+    {
+      "label": "topbar-scope default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/topbar-scope-default.png"
+    },
+    {
+      "label": "topbar-scope hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/topbar-scope-hover.png"
+    },
+    {
+      "label": "topbar-scope focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/topbar-scope-focus.png"
+    },
+    {
+      "label": "topbar-scope open",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/topbar-scope-open.png"
+    },
+    {
+      "label": "topbar-notifications default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/topbar-notifications-default.png"
+    },
+    {
+      "label": "topbar-notifications hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/topbar-notifications-hover.png"
+    },
+    {
+      "label": "topbar-notifications focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/topbar-notifications-focus.png"
+    },
+    {
+      "label": "topbar-notifications open",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/topbar-notifications-open.png"
+    },
+    {
+      "label": "today-filter-highlight default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/today-filter-highlight-default.png"
+    },
+    {
+      "label": "today-filter-highlight hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/today-filter-highlight-hover.png"
+    },
+    {
+      "label": "today-filter-highlight focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/today-filter-highlight-focus.png"
+    },
+    {
+      "label": "today-filter-highlight clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/today-filter-highlight-clicked.png"
+    },
+    {
+      "label": "today-quick-add default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/today-quick-add-default.png"
+    },
+    {
+      "label": "today-quick-add hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/today-quick-add-hover.png"
+    },
+    {
+      "label": "today-quick-add focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/today-quick-add-focus.png"
+    },
+    {
+      "label": "today-quick-add clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/today-quick-add-clicked.png"
+    },
+    {
+      "label": "review-filter-focus default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/review-filter-focus-default.png"
+    },
+    {
+      "label": "review-filter-focus hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/review-filter-focus-hover.png"
+    },
+    {
+      "label": "review-filter-focus focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/review-filter-focus-focus.png"
+    },
+    {
+      "label": "review-filter-focus clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/review-filter-focus-clicked.png"
+    },
+    {
+      "label": "review-manual-upload default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/review-manual-upload-default.png"
+    },
+    {
+      "label": "review-manual-upload hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/review-manual-upload-hover.png"
+    },
+    {
+      "label": "review-manual-upload focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/review-manual-upload-focus.png"
+    },
+    {
+      "label": "review-manual-upload open",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/review-manual-upload-open.png"
+    },
+    {
+      "label": "docs-filter-popover default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/docs-filter-popover-default.png"
+    },
+    {
+      "label": "docs-filter-popover hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/docs-filter-popover-hover.png"
+    },
+    {
+      "label": "docs-filter-popover focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/docs-filter-popover-focus.png"
+    },
+    {
+      "label": "docs-filter-popover open",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/docs-filter-popover-open.png"
+    },
+    {
+      "label": "docs-export default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/docs-export-default.png"
+    },
+    {
+      "label": "docs-export hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/docs-export-hover.png"
+    },
+    {
+      "label": "docs-export focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/docs-export-focus.png"
+    },
+    {
+      "label": "all-tasks-due-sort default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/all-tasks-due-sort-default.png"
+    },
+    {
+      "label": "all-tasks-due-sort hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/all-tasks-due-sort-hover.png"
+    },
+    {
+      "label": "all-tasks-due-sort focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/all-tasks-due-sort-focus.png"
+    },
+    {
+      "label": "all-tasks-due-sort clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/all-tasks-due-sort-clicked.png"
+    },
+    {
+      "label": "boards-warning-menu default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/boards-warning-menu-default.png"
+    },
+    {
+      "label": "boards-warning-menu hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/boards-warning-menu-hover.png"
+    },
+    {
+      "label": "boards-warning-menu focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/boards-warning-menu-focus.png"
+    },
+    {
+      "label": "boards-warning-menu clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/boards-warning-menu-clicked.png"
+    },
+    {
+      "label": "planner-week-segment default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/planner-week-segment-default.png"
+    },
+    {
+      "label": "planner-week-segment hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/planner-week-segment-hover.png"
+    },
+    {
+      "label": "planner-week-segment focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/planner-week-segment-focus.png"
+    },
+    {
+      "label": "planner-week-segment clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/planner-week-segment-clicked.png"
+    },
+    {
+      "label": "calendar-week-segment default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/calendar-week-segment-default.png"
+    },
+    {
+      "label": "calendar-week-segment hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/calendar-week-segment-hover.png"
+    },
+    {
+      "label": "calendar-week-segment focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/calendar-week-segment-focus.png"
+    },
+    {
+      "label": "calendar-week-segment clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/calendar-week-segment-clicked.png"
+    },
+    {
+      "label": "calendar-event-draft default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/calendar-event-draft-default.png"
+    },
+    {
+      "label": "calendar-event-draft hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/calendar-event-draft-hover.png"
+    },
+    {
+      "label": "calendar-event-draft focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/calendar-event-draft-focus.png"
+    },
+    {
+      "label": "calendar-event-draft open",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/calendar-event-draft-open.png"
+    },
+    {
+      "label": "okr-risk-segment default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/okr-risk-segment-default.png"
+    },
+    {
+      "label": "okr-risk-segment hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/okr-risk-segment-hover.png"
+    },
+    {
+      "label": "okr-risk-segment focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/okr-risk-segment-focus.png"
+    },
+    {
+      "label": "okr-risk-segment clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/okr-risk-segment-clicked.png"
+    },
+    {
+      "label": "weekly-focus-next-week default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/weekly-focus-next-week-default.png"
+    },
+    {
+      "label": "weekly-focus-next-week hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/weekly-focus-next-week-hover.png"
+    },
+    {
+      "label": "weekly-focus-next-week focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/weekly-focus-next-week-focus.png"
+    },
+    {
+      "label": "weekly-focus-next-week clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/weekly-focus-next-week-clicked.png"
+    },
+    {
+      "label": "weekly-focus-owner default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/weekly-focus-owner-default.png"
+    },
+    {
+      "label": "weekly-focus-owner hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/weekly-focus-owner-hover.png"
+    },
+    {
+      "label": "weekly-focus-owner focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/weekly-focus-owner-focus.png"
+    },
+    {
+      "label": "weekly-focus-owner clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/weekly-focus-owner-clicked.png"
+    },
+    {
+      "label": "settings-first-integration default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/settings-first-integration-default.png"
+    },
+    {
+      "label": "settings-first-integration hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/settings-first-integration-hover.png"
+    },
+    {
+      "label": "settings-first-integration focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/settings-first-integration-focus.png"
+    },
+    {
+      "label": "settings-first-integration clicked",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/settings-first-integration-clicked.png"
+    },
+    {
+      "label": "all-tasks-readonly-table default",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/all-tasks-readonly-table-default.png"
+    },
+    {
+      "label": "all-tasks-readonly-table hover",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/all-tasks-readonly-table-hover.png"
+    },
+    {
+      "label": "all-tasks-readonly-table focus",
+      "file": "docs/logs/screenshots/v06-uiv2-interaction-matrix/all-tasks-readonly-table-focus.png"
+    }
+  ],
+  "console": [],
+  "pageErrors": [],
+  "global": {
+    "overflowX": 0,
+    "buttonsMissingType": 0,
+    "statusbarFocusableGroups": 0,
+    "statusbarDetailsReady": true,
+    "enabledControlsWithDefaultCursor": []
+  }
+}

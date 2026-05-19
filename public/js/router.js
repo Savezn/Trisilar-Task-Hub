@@ -20,12 +20,12 @@ const PATH_PAGES = Object.fromEntries(
 const ROUTE_META = {
   today: { label: "Today", tone: "work" },
   review: { label: "Review Queue", tone: "review" },
-  all: { label: "Tasks", tone: "work" },
-  boards: { label: "Boards", tone: "ops" },
+  all: { label: "All Tasks", tone: "work" },
+  boards: { label: "Boards Monitor", tone: "ops" },
   calendar: { label: "Calendar", tone: "info" },
   docs: { label: "Docs / AI Trace", tone: "ai" },
   planner: { label: "Planner", tone: "work" },
-  okr: { label: "OKR", tone: "ops" },
+  okr: { label: "OKR / Portfolio", tone: "ops" },
   focus: { label: "Weekly Focus", tone: "work" },
   settings: { label: "Settings", tone: "ops" },
 };
@@ -54,8 +54,10 @@ function updateShellRouteState(page) {
   const routePill = $("shell-route-pill");
   if (routePill) {
     routePill.textContent = meta.label;
-    routePill.className = `shell-status-pill is-route is-${meta.tone}`;
+    routePill.className = "crumb-now";
   }
+  if (typeof setTopbarRouteActions === "function") setTopbarRouteActions("");
+  if (typeof updateScopeShell === "function") updateScopeShell();
 }
 
 function navigateTo(page, options = {}) {
@@ -68,15 +70,21 @@ function navigateTo(page, options = {}) {
 
     updateShellRouteState(page);
 
-    // Update active nav items
-    document.querySelectorAll(".nav-item").forEach(el => {
-      el.classList.toggle("active", el.dataset.page === page);
+    // Update active nav items. Mobile keeps non-tab routes under More, matching UI V2 MTabBar.
+    const mobileActivePage = ["today", "review", "all", "boards"].includes(page) ? page : "settings";
+    document.querySelectorAll(".nav-item[data-page]").forEach(el => {
+      const targetPage = el.classList.contains("mobile-route-item") ? mobileActivePage : page;
+      el.classList.toggle("active", el.dataset.page === targetPage);
     });
+    if (typeof renderScopeList === "function") renderScopeList();
 
     // Show/hide boards section in sidebar
     const boardsSection = $("sidebar-boards-section");
     const showBoards = page === "board" || page === "group";
-    if (boardsSection) boardsSection.style.display = showBoards ? "" : "none";
+    if (boardsSection) {
+      boardsSection.style.display = showBoards ? "" : "none";
+      if (typeof setInteractiveHidden === "function") setInteractiveHidden(boardsSection, !showBoards);
+    }
 
     switch (page) {
       case "today":    showTodayPage();       break;
@@ -99,10 +107,10 @@ function navigateTo(page, options = {}) {
     if (content) {
       content.innerHTML = `
         <div class="empty-state">
-          <div class="empty-icon">⚠</div>
+          <div class="empty-icon">${icon("alert")}</div>
           <h3>Failed to load page</h3>
           <p style="color:var(--danger)">${esc(e.message)}</p>
-          <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="location.reload()">Reload Application</button>
+          <button class="btn btn-primary btn-sm" type="button" style="margin-top:12px" onclick="location.reload()">Reload Application</button>
         </div>`;
     }
     toast(`Page load error: ${e.message}`, true);
